@@ -34,20 +34,20 @@
     </v-app-bar>
 
     <v-main>
-      <HelloWorld />
+      <FormLogin />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import FormLogin from "./components/FormLogin.vue";
 
 export default Vue.extend({
   name: "App",
 
   components: {
-    HelloWorld
+    FormLogin
   },
 
   data: () => ({
