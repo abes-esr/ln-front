@@ -31,7 +31,13 @@
             <v-row>
               <v-col cols="9"></v-col>
               <v-col cols="2">
-                <v-btn color="success" x-large @click="login()">Login</v-btn>
+                <v-btn
+                  color="success"
+                  :loading="buttonLoading"
+                  x-large
+                  @click="login()"
+                  >Login</v-btn
+                >
               </v-col>
             </v-row>
           </v-card-actions>
@@ -50,12 +56,14 @@ export default Vue.extend({
   data() {
     return {
       username: "" as string,
-      password: "" as string
+      password: "" as string,
+      buttonLoading: false
     };
   },
   methods: {
     login(): void {
       if (this.username !== "" && this.password !== null) {
+        this.buttonLoading = true;
         axios
           .post("http://localhost:8081/signin", {
             username: this.username,
@@ -64,8 +72,10 @@ export default Vue.extend({
           .then(
             result => {
               console.log("login réussi" + result);
+              this.$router.push("Home");
             },
             error => {
+              this.buttonLoading = false;
               console.log("échec login" + error);
             }
           );
