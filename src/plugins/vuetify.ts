@@ -8,5 +8,19 @@ export default new Vuetify({
   lang: {
     locales: { fr },
     current: "fr"
+  },
+  theme: {
+    themes: {
+      light: {
+        primary: "#295494",
+        secondary: "#252C61",
+        accent: "#980827"
+      },
+      dark: {
+        primary: "#404552",
+        secondary: "#383c4a",
+        accent: "#980827"
+      }
+    }
   }
 });
