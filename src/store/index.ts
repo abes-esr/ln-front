@@ -24,7 +24,7 @@ export default new Vuex.Store({
     login({ commit }, credentials) {
       return axios
         .post(process.env.VUE_APP_ROOT_API + "login", {
-          username: credentials.username,
+          login: credentials.siren,
           password: credentials.password
         })
         .then(result => {

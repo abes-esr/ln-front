@@ -10,9 +10,10 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-text-field
-                    label="Nom d'utilisateur"
-                    placeholder="Nom d'utilisateur"
-                    v-model="username"
+                    outlined
+                    label="SIREN"
+                    placeholder="SIREN"
+                    v-model="siren"
                     :rules="loginRules"
                     required
                     @keyup.enter="validate()"
@@ -23,6 +24,7 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-text-field
+                    outlined
                     label="Mot de passe"
                     placeholder="Mot de passe"
                     type="password"
@@ -67,13 +69,10 @@ export default Vue.extend({
   name: "FormLogin",
   data() {
     return {
-      username: "" as string,
+      siren: "" as string,
       loginRules: [
-        (v: any) => !!v || "Login obligatoire",
-        (v: any) =>
-          /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-            v
-          ) || "Le login doit être un email valide"
+        (v: any) => !!v || "SIREN obligatoire",
+        (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
       ],
 
       passwordRules: [(v: any) => !!v || "Mot de passe obligatoire"],
@@ -96,7 +95,7 @@ export default Vue.extend({
     login(): void {
       this.buttonLoading = true;
       this.loginAction({
-        username: this.username,
+        siren: this.siren,
         password: this.password
       })
         .then(() => {
