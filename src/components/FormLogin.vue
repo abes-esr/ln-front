@@ -3,7 +3,7 @@
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
         <v-card witdh="100%">
-          <v-form ref="form">
+          <v-form ref="form" lazy-validation>
             <v-card-title>Connexion</v-card-title>
             <v-card-text>
               <v-row>
@@ -13,7 +13,9 @@
                     label="Nom d'utilisateur"
                     placeholder="Nom d'utilisateur"
                     v-model="username"
+                    :rules="loginRules"
                     required
+                    @keyup.enter="validate()"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -25,7 +27,9 @@
                     placeholder="Mot de passe"
                     type="password"
                     v-model="password"
+                    :rules="passwordRules"
                     required
+                    @keyup.enter="validate()"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -38,7 +42,7 @@
                     color="success"
                     :loading="buttonLoading"
                     x-large
-                    @click="login()"
+                    @click="validate()"
                     >Login</v-btn
                   >
                 </v-col>
@@ -46,6 +50,10 @@
             </v-card-actions>
           </v-form>
         </v-card>
+        <br />
+        <v-alert dense outlined :value="alert" type="error">
+          {{ error }}
+        </v-alert>
       </v-col>
     </v-row>
   </v-container>
@@ -60,29 +68,45 @@ export default Vue.extend({
   data() {
     return {
       username: "" as string,
+      loginRules: [
+        (v: any) => !!v || "Login obligatoire",
+        (v: any) =>
+          /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+            v
+          ) || "Le login doit être un email valide"
+      ],
+
+      passwordRules: [(v: any) => !!v || "Mot de passe obligatoire"],
       password: "" as string,
-      buttonLoading: false
+      buttonLoading: false,
+      alert: false,
+      error: ""
     };
   },
   methods: {
     ...mapActions({
       loginAction: "login"
     }),
+    validate(): void {
+      this.alert = false;
+      this.error = "";
+      if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
+        this.login();
+    },
     login(): void {
-      if (this.username !== "" && this.password !== null) {
-        this.loginAction({
-          username: this.username,
-          password: this.password
+      this.buttonLoading = true;
+      this.loginAction({
+        username: this.username,
+        password: this.password
+      })
+        .then(() => {
+          this.$router.push({ name: "home" });
         })
-          .then(() => {
-            this.$router.push({ name: "home" });
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      } else {
-        console.log("login et mdp obligatoire");
-      }
+        .catch(err => {
+          this.buttonLoading = false;
+          this.error = err;
+          this.alert = true;
+        });
     }
   }
 });
