@@ -1,64 +1,60 @@
 <template>
-  <v-container fill-height class="d-flex justify-center">
-    <v-row align="center" justify="center">
-      <v-col lg="5" md="8" xs="10">
-        <v-card witdh="100%">
-          <v-form ref="form" lazy-validation>
-            <v-card-title>Connexion</v-card-title>
-            <v-card-text>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-text-field
-                    outlined
-                    label="SIREN"
-                    placeholder="SIREN"
-                    v-model="siren"
-                    :rules="loginRules"
-                    required
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-text-field
-                    outlined
-                    label="Mot de passe"
-                    placeholder="Mot de passe"
-                    type="password"
-                    v-model="password"
-                    :rules="passwordRules"
-                    required
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-card-text>
-            <v-card-actions>
-              <v-row>
-                <v-col cols="9"></v-col>
-                <v-col cols="2">
-                  <v-btn
-                    color="success"
-                    :loading="buttonLoading"
-                    x-large
-                    @click="validate()"
-                    >Login</v-btn
-                  >
-                </v-col>
-              </v-row>
-            </v-card-actions>
-          </v-form>
-        </v-card>
-        <br />
-        <v-alert dense outlined :value="alert" type="error">
-          {{ error }}
-        </v-alert>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div>
+    <v-card witdh="100%">
+      <v-form ref="form" lazy-validation>
+        <v-card-title>Connexion</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                outlined
+                label="SIREN"
+                placeholder="SIREN"
+                v-model="siren"
+                :rules="loginRules"
+                required
+                @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                outlined
+                label="Mot de passe"
+                placeholder="Mot de passe"
+                type="password"
+                v-model="password"
+                :rules="passwordRules"
+                required
+                @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-row>
+            <v-col cols="9"></v-col>
+            <v-col cols="2">
+              <v-btn
+                color="success"
+                :loading="buttonLoading"
+                x-large
+                @click="validate()"
+                >Login</v-btn
+              >
+            </v-col>
+          </v-row>
+        </v-card-actions>
+      </v-form>
+    </v-card>
+    <br />
+    <v-alert dense outlined :value="alert" type="error">
+      {{ error }}
+    </v-alert>
+  </div>
 </template>
 
 <script lang="ts">

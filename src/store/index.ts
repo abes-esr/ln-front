@@ -1,23 +1,30 @@
 import axios from "axios";
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    user: { name: "", token: "", isLoggedIn: false }
+    user: { name: "", token: "", isLoggedIn: false, isAdmin: false },
+    darkTheme: false
   },
   mutations: {
     SET_TOKEN(state, token) {
       state.user.token = token.accessToken;
       state.user.name = token.userName;
       state.user.isLoggedIn = true;
+      state.user.isAdmin = token.isAdmin;
     },
     SET_LOGOUT(state) {
       state.user.token = "";
       state.user.name = "";
       state.user.isLoggedIn = false;
+      state.user.isAdmin = false;
+    },
+    SET_THEME(state) {
+      state.darkTheme = !state.darkTheme;
     }
   },
   actions: {
@@ -33,6 +40,9 @@ export default new Vuex.Store({
     },
     logout({ commit }) {
       commit("SET_LOGOUT");
+    },
+    changeTheme({ commit }) {
+      commit("SET_THEME");
     }
   },
   getters: {
@@ -44,6 +54,13 @@ export default new Vuex.Store({
     },
     isLoggedIn: state => {
       return state.user.isLoggedIn;
+    },
+    isAdmin: state => {
+      return state.user.isAdmin;
+    },
+    isDark: state => {
+      return state.darkTheme;
     }
-  }
+  },
+  plugins: [createPersistedState()]
 });

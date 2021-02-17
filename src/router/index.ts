@@ -2,7 +2,7 @@ import Vue from "vue";
 import store from "../store/index";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
-import FormLogin from "../components/FormLogin.vue";
+import Login from "../views/Login.vue";
 
 Vue.use(VueRouter);
 
@@ -18,7 +18,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/login",
     name: "Login",
-    component: FormLogin
+    component: Login
   },
   {
     path: "*",

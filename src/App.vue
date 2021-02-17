@@ -7,6 +7,7 @@
       disable-resize-watcher
       app
     >
+      <side-menu></side-menu>
     </v-navigation-drawer>
     <v-app-bar color="primary" app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
@@ -22,12 +23,28 @@
 
 <script lang="ts">
 import Vue from "vue";
+import SideMenu from "./components/SideMenu.vue";
+
+import { mapGetters } from "vuex";
 
 export default Vue.extend({
   name: "App",
   data: () => ({
     drawer: false
-  })
+  }),
+  components: {
+    SideMenu
+  },
+  computed: {
+    ...mapGetters({
+      darkTheme: "isDark"
+    })
+  },
+  mounted() {
+    if (this.darkTheme) {
+      this.$vuetify.theme.dark = true;
+    }
+  }
 });
 </script>
 
