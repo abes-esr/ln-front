@@ -10,14 +10,8 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item v-on:click="saveTheme()">
-        <v-switch
-          v-model="$vuetify.theme.dark"
-          style="margin-top: 8px"
-          inset
-        ></v-switch>
-        <v-list-item-title style="padding-bottom: 1.2em"
-          >Changer de thème</v-list-item-title
-        >
+        <v-switch v-model="$vuetify.theme.dark" inset></v-switch>
+        <v-list-item-title>Changer de thème</v-list-item-title>
       </v-list-item>
     </v-list>
   </div>

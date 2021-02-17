@@ -43,7 +43,7 @@
                 :loading="buttonLoading"
                 x-large
                 @click="validate()"
-                >Login</v-btn
+                >Envoyer</v-btn
               >
             </v-col>
           </v-row>

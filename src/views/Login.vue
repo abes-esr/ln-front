@@ -2,7 +2,26 @@
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
-        <FormLogin />
+        <transition name="fade">
+          <form-login v-if="!forgotPasswordVisible" />
+        </transition>
+        <transition name="fade">
+          <forgot-password v-if="forgotPasswordVisible" />
+        </transition>
+        <transition name="fade">
+          <a
+            v-if="!forgotPasswordVisible"
+            @click="forgotPasswordVisible = !forgotPasswordVisible"
+            >Mot de passe ou identifiant oublié ?</a
+          >
+        </transition>
+        <transition name="fade">
+          <a
+            v-if="forgotPasswordVisible"
+            @click="forgotPasswordVisible = !forgotPasswordVisible"
+            >Revenir au formulaire de connexion</a
+          >
+        </transition>
       </v-col>
     </v-row>
   </v-container>
@@ -11,11 +30,29 @@
 <script lang="ts">
 import Vue from "vue";
 import FormLogin from "../components/FormLogin.vue";
+import ForgotPassword from "../components/ForgotPassword.vue";
 
 export default Vue.extend({
   name: "Login",
   components: {
-    FormLogin
+    FormLogin,
+    ForgotPassword
+  },
+  data() {
+    return {
+      forgotPasswordVisible: false
+    };
   }
 });
 </script>
+
+<style scoped>
+.fade-enter-active {
+  transition: opacity 0.8s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+</style>
