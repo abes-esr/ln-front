@@ -1,4 +1,7 @@
 <template>
+  <v-container fill-height class="d-flex justify-center">
+    <v-row align="center" justify="center">
+      <v-col lg="5" md="8" xs="10">
   <div>
     <v-card witdh="100%">
       <v-form ref="form" lazy-validation>
@@ -36,6 +39,7 @@
             <v-col cols="1" />
             <v-col cols="10">
               <v-select
+                  outlined
                   v-model="typeEtab"
                   :items="choixetabtype"
                   label="Type de l'établissement"
@@ -100,6 +104,77 @@
               ></v-text-field>
             </v-col>
           </v-row>
+          <v-card-title>Informations contact</v-card-title>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Nom"
+                  placeholder="Nom"
+                  v-model="nomContact"
+                  :rules="nomContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Prénom"
+                  placeholder="Prénom"
+                  v-model="prenomContact"
+                  :rules="prenomContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Téléphone"
+                  placeholder="Téléphone"
+                  v-model="telContact"
+                  :rules="telContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Adresse e-mail"
+                  placeholder="Adresse e-mail"
+                  v-model="emailContact"
+                  :rules="emailContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Confirmez votre adresse e-mail"
+                  placeholder="Confirmez votre adresse e-mail"
+                  v-model="confirmEmailContact"
+                  :rules="confirmEmailContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-row>
@@ -112,6 +187,9 @@
                 @click="validate()"
                 >Envoyer</v-btn
               >
+              <v-btn @click="clear">
+                Effacer
+              </v-btn>
             </v-col>
           </v-row>
         </v-card-actions>
@@ -122,6 +200,9 @@
       {{ error }}
     </v-alert>
   </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
