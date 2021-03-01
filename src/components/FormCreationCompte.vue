@@ -41,7 +41,7 @@
               <v-select
                   outlined
                   v-model="typeEtab"
-                  :items="typeEtab"
+                  :items="typesEtab"
                   label="Type de l'établissement"
                   :rules="typeEtabRules"
                   required
@@ -251,6 +251,7 @@ export default Vue.extend({
       nomEtab: "" as string,
       nomEtabRules: [
         (v: any) => !!v || "Le nom de l'établissement est obligatoire",
+        (v: any) => /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) || "Le nom d'établissement fourni n'est pas valide"
 
       ],
       sirenEtab: "" as string,
@@ -259,7 +260,7 @@ export default Vue.extend({
         (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
       ],
 
-      typeEtab:  [  "EPIC/EPST",
+      typesEtab:  [  "EPIC/EPST",
                           "Ecoles d'ingénieurs",
                           "Ecoles de formation spécialisée",
                           "Ecoles de Management",
@@ -272,6 +273,7 @@ export default Vue.extend({
                           "Universités",
                           "Etablissement membre du réseau Latitude France",
                           "Autre"],
+      typeEtab: "" as string,
       typeEtabRules: [
         (v: any) => !!v || "Le type de l'établissement est obligatoire",
       ],
@@ -323,22 +325,41 @@ export default Vue.extend({
       confirmPassContact: "" as string,
       confirmPassContactRules: [
         (v: any) => !!v || "Vous devez confirmer le mot de passe du contact",
-      ]
+      ],
+      roleContact:"etab" as string,
+      idAbes:"" as string,
+      buttonLoading: false,
+      alert: false,
+      error: ""
 
     };
   },
   computed: {
-       confirmEmailContactRule() {
-         return (v: any) => (this.confirmEmailContact === this.emailContact) || 'L\'adresse mail de confirmation n\'est pas valide'
-       },
-      confirmPassContactRule() {
-        return (v: any) => (this.confirmPassContact === this.passContact) || 'Le mot de passe de confirmation n\'est pas valide'
-      },
+     confirmEmailContactRule() {
+       return (v: any) => (this.confirmEmailContact === this.emailContact) || 'L\'adresse mail de confirmation n\'est pas valide'
+     },
+     confirmPassContactRule() {
+      return (v: any) => (this.confirmPassContact === this.passContact) || 'Le mot de passe de confirmation n\'est pas valide'
     },
+      setIdAbes() {
+        return (v: any) => (this.randomNumber + this.nomEtab.substring(0,4) + "ABES")
+      },
+      loggedIn() {
+        return this.$store.state.user.isLoggedIn;
+      }
+    },
+  mounted() {
+    if (this.loggedIn) {
+      this.$router.push('/profile');
+    }
+  },
   methods: {
     ...mapActions({
       creationCompteAction: "creationCompte"
     }),
+    randomNumber : function(){
+      return Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+    },
     validate(): void {
       this.alert = false;
       this.error = "";
@@ -360,7 +381,7 @@ export default Vue.extend({
         telContact:this.telContact,
         emailContact:this.emailContact,
         passContact:this.passContact,
-
+        idAbes:this.setIdAbes
       })
         .then(() => {
           this.$router.push({ name: "home" });

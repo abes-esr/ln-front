@@ -45,7 +45,27 @@ export default new Vuex.Store({
     },
     changeTheme({ commit }) {
       commit("SET_THEME");
-    }
+    },
+    creationCompte({ commit }, data) {
+      return axios
+          .post("http://localhost:8080/" + "creation", {
+            nom:data.nomEtab,
+            adresse:data.adresseEtab,
+            siren:data.sirenEtab,
+            typeEtablissement:data.typeEtab,
+            motDePasse:data.passContact,
+            idAbes:data.idAbes,
+            mailContact:data.emailContact,
+            nomContact:data.nomContact,
+            prenomContact:data.prenomContact,
+            telephoneContact:data.telContact,
+            adresseContact:data.adresseContact,
+            roleContact:data.roleContact
+          })
+          .then(result => {
+            commit(result.data);
+          });
+    },
   },
   getters: {
     userName: state => {
