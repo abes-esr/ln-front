@@ -41,7 +41,7 @@
               <v-select
                   outlined
                   v-model="typeEtab"
-                  :items="choixetabtype"
+                  :items="typeEtab"
                   label="Type de l'établissement"
                   :rules="typeEtabRules"
                   required
@@ -69,8 +69,8 @@
                   outlined
                   label="Code postal"
                   placeholder="Code postal"
-                  v-model="codepostalEtab"
-                  :rules="codepostalEtabRules"
+                  v-model="codePostalEtab"
+                  :rules="codePostalEtabRules"
                   required
                   @keyup.enter="validate()"
               ></v-text-field>
@@ -169,7 +169,42 @@
                   label="Confirmez votre adresse e-mail"
                   placeholder="Confirmez votre adresse e-mail"
                   v-model="confirmEmailContact"
-                  :rules="confirmEmailContactRules"
+                  :rules="confirmEmailContactRules.concat(confirmEmailContactRule)"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-alert
+                  border="left"
+                  color="grey"
+                  dark
+              >
+                Votre mot de passe doit contenir au minimum 8 caractères dont une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial parmis @ $ ! % * ? &
+              </v-alert>
+              <v-text-field
+                  outlined
+                  label="Mot de passe"
+                  placeholder="Mot de passe"
+                  v-model="passContact"
+                  :rules="passContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Confirmez votre mot de passe"
+                  placeholder="Confirmez votre mot de passe"
+                  v-model="confirmPassContact"
+                  :rules="confirmPassContactRules.concat(confirmPassContactRule)"
                   required
                   @keyup.enter="validate()"
               ></v-text-field>
@@ -224,7 +259,7 @@ export default Vue.extend({
         (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
       ],
 
-      choixetabtype:  [  "EPIC/EPST",
+      typeEtab:  [  "EPIC/EPST",
                           "Ecoles d'ingénieurs",
                           "Ecoles de formation spécialisée",
                           "Ecoles de Management",
@@ -240,8 +275,66 @@ export default Vue.extend({
       typeEtabRules: [
         (v: any) => !!v || "Le type de l'établissement est obligatoire",
       ],
+      adresseEtab: "" as string,
+      adresseEtabRules: [
+        (v: any) => !!v || "L'adresse postale de l'établissement est obligatoire",
+        (v: any) => /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) || "L'adresse postale fournie n'est pas valide"
+      ],
+      codePostalEtab: "" as string,
+      codePostalEtabRules: [
+        (v: any) => !!v || "Le code postal de l'établissement est obligatoire",
+        (v: any) => /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
+      ],
+      villeEtab: "" as string,
+      villeEtabRules: [
+        (v: any) => !!v || "La ville de l'établissement est obligatoire",
+        (v: any) => /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(v) || "La ville fournie n'est pas valide"
+      ],
+      cedexEtab:"" as string,
+      nomContact: "" as string,
+      nomContactRules: [
+        (v: any) => !!v || "Le nom du contact est obligatoire",
+        (v: any) => /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(v) || "Le nom fourni n'est pas valide"
+      ],
+      prenomContact: "" as string,
+      prenomContactRules: [
+        (v: any) => !!v || "Le prénom du contact est obligatoire",
+        (v: any) => /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(v) || "Le prénom fourni n'est pas valide"
+      ],
+      telContact: "" as string,
+      telContactRules: [
+        (v: any) => !!v || "Le téléphone du contact est obligatoire",
+        (v: any) => /^\d{10}$/.test(v) || "Veuillez entrer 10 chiffres sans espace"
+      ],
+      emailContact: "" as string,
+      emailContactRules: [
+        (v: any) => !!v || "L'adresse mail du contact est obligatoire",
+        (v: any) => /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) || "L'adresse mail fournie n'est pas valide"
+      ],
+      confirmEmailContact: "" as string,
+      confirmEmailContactRules: [
+        (v: any) => !!v || "Vous devez confirmer l'adresse mail du contact",
+      ],
+      passContact: "" as string,
+      passContactRules: [
+        (v: any) => !!v || "Le mot de passe du contact est obligatoire",
+        (v: any) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v) || "Le mot de passe fourni n'est pas valide"
+      ],
+      confirmPassContact: "" as string,
+      confirmPassContactRules: [
+        (v: any) => !!v || "Vous devez confirmer le mot de passe du contact",
+      ]
+
     };
   },
+  computed: {
+       confirmEmailContactRule() {
+         return (v: any) => (this.confirmEmailContact === this.emailContact) || 'L\'adresse mail de confirmation n\'est pas valide'
+       },
+      confirmPassContactRule() {
+        return (v: any) => (this.confirmPassContact === this.passContact) || 'Le mot de passe de confirmation n\'est pas valide'
+      },
+    },
   methods: {
     ...mapActions({
       creationCompteAction: "creationCompte"
@@ -262,7 +355,11 @@ export default Vue.extend({
         codePostalEtab:this.codePostalEtab,
         villeEtab:this.villeEtab,
         cedexEtab:this.cedexEtab,
-        password: this.password,
+        nomContact:this.nomContact,
+        prenomContact:this.prenomContact,
+        telContact:this.telContact,
+        emailContact:this.emailContact,
+        passContact:this.passContact,
 
       })
         .then(() => {
