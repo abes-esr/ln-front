@@ -32,7 +32,7 @@ export default new Vuex.Store({
   actions: {
     login({ commit }, credentials) {
       return axios
-        .post("http://localhost:8080/" + "login", {
+        .post("http://localhost:8081/" + "login", {
           login: credentials.siren,
           password: credentials.password
         })
@@ -48,18 +48,21 @@ export default new Vuex.Store({
     },
     creationCompte({ commit }, data) {
       return axios
-          .post("http://localhost:8080/" + "creation", {
+          .post("http://localhost:8081/" + "creationCompte", {
             nom:data.nomEtab,
-            adresse:data.adresseEtab,
             siren:data.sirenEtab,
             typeEtablissement:data.typeEtab,
-            motDePasse:data.passContact,
             idAbes:data.idAbes,
-            mailContact:data.emailContact,
             nomContact:data.nomContact,
             prenomContact:data.prenomContact,
-            telephoneContact:data.telContact,
             adresseContact:data.adresseContact,
+            boitePostaleContact:data.boitePostaleContact,
+            codePostalContact:data.codePostalContact,
+            villeContact:data.villeContact,
+            cedexContact:data.cedexContact,
+            telephoneContact:data.telContact,
+            mailContact:data.emailContact,
+            motDePasse:data.passContact,
             roleContact:data.roleContact
           })
           .then(result => {

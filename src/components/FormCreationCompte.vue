@@ -48,62 +48,6 @@
               ></v-select>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col cols="1" />
-            <v-col cols="10">
-              <v-text-field
-                  outlined
-                  label="Adresse postale"
-                  placeholder="Adresse postale"
-                  v-model="adresseEtab"
-                  :rules="adresseEtabRules"
-                  required
-                  @keyup.enter="validate()"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="1" />
-            <v-col cols="10">
-              <v-text-field
-                  outlined
-                  label="Code postal"
-                  placeholder="Code postal"
-                  v-model="codePostalEtab"
-                  :rules="codePostalEtabRules"
-                  required
-                  @keyup.enter="validate()"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="1" />
-            <v-col cols="10">
-              <v-text-field
-                  outlined
-                  label="Ville"
-                  placeholder="Ville"
-                  v-model="villeEtab"
-                  :rules="villeEtabRules"
-                  required
-                  @keyup.enter="validate()"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="1" />
-            <v-col cols="10">
-              <v-text-field
-                  outlined
-                  label="Cedex"
-                  placeholder="Cedex"
-                  v-model="cedexEtab"
-                  :rules="cedexEtabRules"
-                  required
-                  @keyup.enter="validate()"
-              ></v-text-field>
-            </v-col>
-          </v-row>
           <v-card-title>Informations contact</v-card-title>
           <v-row>
             <v-col cols="1" />
@@ -129,6 +73,72 @@
                   v-model="prenomContact"
                   :rules="prenomContactRules"
                   required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Adresse postale"
+                  placeholder="Adresse postale"
+                  v-model="adresseContact"
+                  :rules="adresseContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Boîte postale"
+                  placeholder="Boîte postale"
+                  v-model="boitePostaleContact"
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Code postal"
+                  placeholder="Code postal"
+                  v-model="codePostalContact"
+                  :rules="codePostalContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Ville"
+                  placeholder="Ville"
+                  v-model="villeContact"
+                  :rules="villeContactRules"
+                  required
+                  @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                  outlined
+                  label="Cedex"
+                  placeholder="Cedex"
+                  v-model="cedexContact"
                   @keyup.enter="validate()"
               ></v-text-field>
             </v-col>
@@ -277,22 +287,7 @@ export default Vue.extend({
       typeEtabRules: [
         (v: any) => !!v || "Le type de l'établissement est obligatoire",
       ],
-      adresseEtab: "" as string,
-      adresseEtabRules: [
-        (v: any) => !!v || "L'adresse postale de l'établissement est obligatoire",
-        (v: any) => /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) || "L'adresse postale fournie n'est pas valide"
-      ],
-      codePostalEtab: "" as string,
-      codePostalEtabRules: [
-        (v: any) => !!v || "Le code postal de l'établissement est obligatoire",
-        (v: any) => /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
-      ],
-      villeEtab: "" as string,
-      villeEtabRules: [
-        (v: any) => !!v || "La ville de l'établissement est obligatoire",
-        (v: any) => /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(v) || "La ville fournie n'est pas valide"
-      ],
-      cedexEtab:"" as string,
+
       nomContact: "" as string,
       nomContactRules: [
         (v: any) => !!v || "Le nom du contact est obligatoire",
@@ -303,6 +298,23 @@ export default Vue.extend({
         (v: any) => !!v || "Le prénom du contact est obligatoire",
         (v: any) => /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(v) || "Le prénom fourni n'est pas valide"
       ],
+      adresseContact: "" as string,
+      adresseContactRules: [
+        (v: any) => !!v || "L'adresse postale de l'établissement est obligatoire",
+        (v: any) => /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) || "L'adresse postale fournie n'est pas valide"
+      ],
+      boitePostaleContact: "" as string,
+      codePostalContact: "" as string,
+      codePostalContactRules: [
+        (v: any) => !!v || "Le code postal de l'établissement est obligatoire",
+        (v: any) => /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
+      ],
+      villeContact: "" as string,
+      villeContactRules: [
+        (v: any) => !!v || "La ville de l'établissement est obligatoire",
+        (v: any) => /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(v) || "La ville fournie n'est pas valide"
+      ],
+      cedexContact:"" as string,
       telContact: "" as string,
       telContactRules: [
         (v: any) => !!v || "Le téléphone du contact est obligatoire",
@@ -326,7 +338,6 @@ export default Vue.extend({
       confirmPassContactRules: [
         (v: any) => !!v || "Vous devez confirmer le mot de passe du contact",
       ],
-      roleContact:"etab" as string,
       idAbes:"" as string,
       buttonLoading: false,
       alert: false,
@@ -372,12 +383,13 @@ export default Vue.extend({
         nomEtab:this.nomEtab,
         sirenEtab: this.sirenEtab,
         typeEtab:this.typeEtab,
-        adresseEtab:this.adresseEtab,
-        codePostalEtab:this.codePostalEtab,
-        villeEtab:this.villeEtab,
-        cedexEtab:this.cedexEtab,
         nomContact:this.nomContact,
         prenomContact:this.prenomContact,
+        adresseContact:this.adresseContact,
+        codePostalContact:this.codePostalContact,
+        villeContact:this.villeContact,
+        cedexContact:this.cedexContact,
+        boitePostaleContact:this.boitePostaleContact,
         telContact:this.telContact,
         emailContact:this.emailContact,
         passContact:this.passContact,
