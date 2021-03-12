@@ -4,7 +4,7 @@
       <v-col lg="5" md="8" xs="10">
   <div>
     <v-card witdh="100%">
-      <v-form ref="form" lazy-validation>
+      <v-form ref="formCreationCompte" lazy-validation>
         <v-card-title>Création d'un compte institutionnel</v-card-title>
         <v-card-text>
           <v-row>
@@ -220,6 +220,12 @@
               ></v-text-field>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col cols="1" />
+            <v-col cols="10">
+
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-row>
@@ -235,6 +241,7 @@
               <v-btn @click="clear">
                 Effacer
               </v-btn>
+
             </v-col>
           </v-row>
         </v-card-actions>
@@ -250,14 +257,20 @@
   </v-container>
 </template>
 
+
 <script lang="ts">
+
 import Vue from "vue";
 import { mapActions } from "vuex";
+import axios from "axios";
+
+
 
 export default Vue.extend({
   name: "FormCreationCompte",
   data() {
     return {
+      token:  this.$recaptchaLoaded() as any,
       nomEtab: "" as string,
       nomEtabRules: [
         (v: any) => !!v || "Le nom de l'établissement est obligatoire",
@@ -270,19 +283,19 @@ export default Vue.extend({
         (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
       ],
 
-      typesEtab:  [  "EPIC/EPST",
-                          "Ecoles d'ingénieurs",
-                          "Ecoles de formation spécialisée",
-                          "Ecoles de Management",
-                          "Enseignement Supérieur et Recherche",
-                          "Fondations",
-                          "GIP",
-                          "Grands etablissements publics",
-                          "Hôpitaux universitaires",
-                          "Lecture publique",
-                          "Universités",
-                          "Etablissement membre du réseau Latitude France",
-                          "Autre"],
+      typesEtab: ["EPIC/EPST",
+        "Ecoles d'ingénieurs",
+        "Ecoles de formation spécialisée",
+        "Ecoles de Management",
+        "Enseignement Supérieur et Recherche",
+        "Fondations",
+        "GIP",
+        "Grands etablissements publics",
+        "Hôpitaux universitaires",
+        "Lecture publique",
+        "Universités",
+        "Etablissement membre du réseau Latitude France",
+        "Autre"],
       typeEtab: "" as string,
       typeEtabRules: [
         (v: any) => !!v || "Le type de l'établissement est obligatoire",
@@ -314,7 +327,7 @@ export default Vue.extend({
         (v: any) => !!v || "La ville de l'établissement est obligatoire",
         (v: any) => /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(v) || "La ville fournie n'est pas valide"
       ],
-      cedexContact:"" as string,
+      cedexContact: "" as string,
       telContact: "" as string,
       telContactRules: [
         (v: any) => !!v || "Le téléphone du contact est obligatoire",
@@ -338,7 +351,7 @@ export default Vue.extend({
       confirmPassContactRules: [
         (v: any) => !!v || "Vous devez confirmer le mot de passe du contact",
       ],
-      idAbes:"" as string,
+      idAbes: "" as string,
       buttonLoading: false,
       alert: false,
       error: ""
@@ -346,66 +359,96 @@ export default Vue.extend({
     };
   },
   computed: {
-     confirmEmailContactRule() {
-       return (v: any) => (this.confirmEmailContact === this.emailContact) || 'L\'adresse mail de confirmation n\'est pas valide'
-     },
-     confirmPassContactRule() {
+    confirmEmailContactRule() {
+      return (v: any) => (this.confirmEmailContact === this.emailContact) || 'L\'adresse mail de confirmation n\'est pas valide'
+    },
+    confirmPassContactRule() {
       return (v: any) => (this.confirmPassContact === this.passContact) || 'Le mot de passe de confirmation n\'est pas valide'
     },
-      setIdAbes() {
-        return (v: any) => (this.randomNumber + this.nomEtab.substring(0,4) + "ABES")
-      },
-      loggedIn() {
-        return this.$store.state.user.isLoggedIn;
-      }
+    setIdAbes() {
+      return (v: any) => (this.randomNumber + this.nomEtab.substring(0, 4) + "ABES")
     },
+    loggedIn() {
+      return this.$store.state.user.isLoggedIn;
+    }
+  },
   mounted() {
     if (this.loggedIn) {
       this.$router.push('/profile');
     }
   },
+
   methods: {
     ...mapActions({
       creationCompteAction: "creationCompte"
     }),
-    randomNumber : function(){
+      randomNumber: function () {
       return Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+    },
+    async recaptcha() {
+      // (optional) Wait until recaptcha has been loaded.
+      await this.$recaptchaLoaded()
+
+      // Execute reCAPTCHA with action "creationCompte".
+      this.token = await this.$recaptcha('creationCompte');
+      console.log("token dans recaptcha() " + this.token);
+      // Do stuff with the received token.
+    },
+    isHuman(token: any) {
+      const endpoint = `${process.env.VUE_APP_RECAPTCHA_VERIFY_URL}?response=${token}&secret=${process.env.VUE_APP_RECAPTCHA_KEY_SITE}`;
+      console.log("requete axios = " + axios.post(endpoint)
+          .then(({data}) => data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD));
+      return axios.post(endpoint)
+          .then(({data}) => data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD);
+
     },
     validate(): void {
       this.alert = false;
       this.error = "";
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
-        this.creationCompte();
+      this.recaptcha();
+      //if (this.isHuman(this.token)) {
+      if (this.token != null) {
+        if ((this.$refs.formCreationCompte as Vue & { validate: () => boolean }).validate()) {
+          this.creationCompte();
+        }
+      }
     },
+
     creationCompte(): void {
       this.buttonLoading = true;
       this.creationCompteAction({
-        nomEtab:this.nomEtab,
+        nomEtab: this.nomEtab,
         sirenEtab: this.sirenEtab,
-        typeEtab:this.typeEtab,
-        nomContact:this.nomContact,
-        prenomContact:this.prenomContact,
-        adresseContact:this.adresseContact,
-        codePostalContact:this.codePostalContact,
-        villeContact:this.villeContact,
-        cedexContact:this.cedexContact,
-        boitePostaleContact:this.boitePostaleContact,
-        telContact:this.telContact,
-        emailContact:this.emailContact,
-        passContact:this.passContact,
-        idAbes:this.setIdAbes
+        typeEtab: this.typeEtab,
+        nomContact: this.nomContact,
+        prenomContact: this.prenomContact,
+        adresseContact: this.adresseContact,
+        codePostalContact: this.codePostalContact,
+        villeContact: this.villeContact,
+        cedexContact: this.cedexContact,
+        boitePostaleContact: this.boitePostaleContact,
+        telContact: this.telContact,
+        emailContact: this.emailContact,
+        passContact: this.passContact,
+        idAbes: this.setIdAbes,
+        recaptchaToken: this.token
       })
-        .then(() => {
-          this.$router.push({ name: "home" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.error = err;
-          this.alert = true;
-        });
-    }
+          .then(() => {
+            this.$router.push({name: "home"});
+          })
+          .catch(err => {
+            this.buttonLoading = false;
+            this.error = err;
+            this.alert = true;
+          });
+    },
+
+    clear() {
+      this.$refs.formCreationCompte.reset();
+    },
   }
-});
+})
+
 </script>
 
 <style scoped></style>

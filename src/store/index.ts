@@ -32,7 +32,7 @@ export default new Vuex.Store({
   actions: {
     login({ commit }, credentials) {
       return axios
-        .post("http://localhost:8081/" + "login", {
+        .post(process.env.VUE_APP_ROOT_API + "login", {
           login: credentials.siren,
           password: credentials.password
         })
@@ -47,8 +47,9 @@ export default new Vuex.Store({
       commit("SET_THEME");
     },
     creationCompte({ commit }, data) {
+        console.log("token dans axios = " + data.recaptchaToken);
       return axios
-          .post("http://localhost:8081/" + "creationCompte", {
+          .post(process.env.VUE_APP_ROOT_API + "creationCompte", {
             nom:data.nomEtab,
             siren:data.sirenEtab,
             typeEtablissement:data.typeEtab,
@@ -63,7 +64,8 @@ export default new Vuex.Store({
             telephoneContact:data.telContact,
             mailContact:data.emailContact,
             motDePasse:data.passContact,
-            roleContact:data.roleContact
+            roleContact:data.roleContact,
+            recaptcha:data.recaptchaToken
           })
           .then(result => {
             commit(result.data);
