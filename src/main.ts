@@ -6,7 +6,7 @@ import vuetify from "./plugins/vuetify";
 import {VueReCaptcha} from "vue-recaptcha-v3";
 
 Vue.config.productionTip = false;
-console.log(process.env.VUE_APP_RECAPTCHA_KEY);
+console.log(process.env.VUE_APP_RECAPTCHA_KEY_SITE);
 Vue.use(VueReCaptcha, { siteKey: process.env.VUE_APP_RECAPTCHA_KEY_SITE })
 
 new Vue({

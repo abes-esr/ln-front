@@ -235,7 +235,7 @@
                 color="success"
                 :loading="buttonLoading"
                 x-large
-                @click="validate()"
+                @click="recaptcha()"
                 >Envoyer</v-btn
               >
               <v-btn @click="clear">
@@ -393,6 +393,7 @@ export default Vue.extend({
       this.token = await this.$recaptcha('creationCompte');
       console.log("token dans recaptcha() " + this.token);
       // Do stuff with the received token.
+      this.validate();
     },
     /* si on veut faire la verif du score sur le front et pas le back on peut faire comme ceci :
     isHuman(token: any) {
@@ -406,7 +407,7 @@ export default Vue.extend({
     validate(): void {
       this.alert = false;
       this.error = "";
-      this.recaptcha();
+      //this.recaptcha();
       //if (this.isHuman(this.recaptcha()) {
       if (this.token != null) {
         if ((this.$refs.formCreationCompte as Vue & { validate: () => boolean }).validate()) {
