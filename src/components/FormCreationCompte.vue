@@ -394,7 +394,7 @@ export default Vue.extend({
       console.log("token dans recaptcha() " + this.token);
       // Do stuff with the received token.
     },
-    /* la verif du score peut se faire côté front comme ceci (même si nous avons choisi de l'implémenter côté back  :
+    /* si on veut faire la verif du score sur le front et pas le back on peut faire comme ceci :
     isHuman(token: any) {
       const endpoint = `${process.env.VUE_APP_RECAPTCHA_VERIFY_URL}?response=${token}&secret=${process.env.VUE_APP_RECAPTCHA_KEY_SITE}`;
       console.log("requete axios = " + axios.post(endpoint)
@@ -407,7 +407,7 @@ export default Vue.extend({
       this.alert = false;
       this.error = "";
       this.recaptcha();
-      //if (this.isHuman(this.token)) {
+      //if (this.isHuman(this.recaptcha()) {
       if (this.token != null) {
         if ((this.$refs.formCreationCompte as Vue & { validate: () => boolean }).validate()) {
           this.creationCompte();
