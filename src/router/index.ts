@@ -22,10 +22,11 @@ const routes: Array<RouteConfig> = [
     component: Login
   },
   {
-    path: "/profil",
-    name: "Profil",
-    component: Profil
+    path: "/creationCompte",
+    name: "CreationCompte",
+    component: () => import("../components/FormCreationCompte.vue")
   },
+  { path: "/profil", name: "Profil", component: Profil },
   {
     path: "*",
     /* component: NotFoundComponent, */

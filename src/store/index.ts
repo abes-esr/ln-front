@@ -38,7 +38,7 @@ export default new Vuex.Store({
   actions: {
     login({ commit }, credentials) {
       return axios
-        .post("http://localhost:8080/" + "login", {
+        .post(process.env.VUE_APP_ROOT_API + "login", {
           login: credentials.siren,
           password: credentials.password
         })
@@ -51,7 +51,32 @@ export default new Vuex.Store({
     },
     changeTheme({ commit }) {
       commit("SET_THEME");
-    }
+    },
+    creationCompte({ commit }, data) {
+        console.log("token dans axios = " + data.recaptchaToken);
+      return axios
+          .post(process.env.VUE_APP_ROOT_API + "creationCompte", {
+            nom:data.nomEtab,
+            siren:data.sirenEtab,
+            typeEtablissement:data.typeEtab,
+            idAbes:data.idAbes,
+            nomContact:data.nomContact,
+            prenomContact:data.prenomContact,
+            adresseContact:data.adresseContact,
+            boitePostaleContact:data.boitePostaleContact,
+            codePostalContact:data.codePostalContact,
+            villeContact:data.villeContact,
+            cedexContact:data.cedexContact,
+            telephoneContact:data.telContact,
+            mailContact:data.emailContact,
+            motDePasse:data.passContact,
+            roleContact:data.roleContact,
+            recaptcha:data.recaptchaToken
+          })
+          .then(result => {
+            commit(result.data);
+          });
+    },
   },
   getters: {
     userName: state => {
