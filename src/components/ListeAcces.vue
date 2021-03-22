@@ -1,4 +1,3 @@
-<!--
 <template>
   <v-row align="center" class="list px-3 mx-auto">
     <v-col cols="12" md="8">
@@ -38,10 +37,14 @@
   </v-row>
 </template>
 
-<script>
-import AccesDataService from "../services/AccesDataService";
-export default {
-  name: "acces-list",
+<script lang="ts">
+//import AccesDataService from "../services/AccesDataService";
+//import http from "../http-commons";
+import Vue from "vue";
+import axios from "axios";
+
+export default Vue.extend({
+  name: "ListeAcces",
   data() {
     return {
       acces: [],
@@ -57,9 +60,51 @@ export default {
       ],
     };
   },
+  computed: {
+
+    loggedIn() {
+      return this.$store.state.user.isLoggedIn;
+    },
+    getUserSiren() {
+      return this.$store.state.user.name;
+    }
+  },
+  mounted() {
+    if (this.loggedIn) {
+      this.$router.push("/profile");
+    }
+  },
   methods: {
+    getAll() {
+      return axios.get(process.env.VUE_APP_ROOT_API +"/ip")
+    },
+
+    get(id) {
+      return axios.get(process.env.VUE_APP_ROOT_API +`/ip/${id}`);
+    },
+
+    create(data) {
+      return axios.post(process.env.VUE_APP_ROOT_API +"/ip", data);
+    },
+
+    update(id, data) {
+      return axios.put(process.env.VUE_APP_ROOT_API +`/ip/${id}`, data);
+    },
+
+    delete(id) {
+      return axios.delete(process.env.VUE_APP_ROOT_API +`/ip/${id}`);
+    },
+
+    deleteAll() {
+      return axios.delete(process.env.VUE_APP_ROOT_API +`/ip`);
+    },
+
+    findByValeur(valeur) {
+      return axios.get(process.env.VUE_APP_ROOT_API +`/ip?valeur=${valeur}`);
+    },
+
     collecterAcces() {
-      AccesDataService.getAll()
+      this.getAll()
           .then((response) => {
             this.acces = response.data.map(this.affichageAcces);
             console.log(response.data);
@@ -74,7 +119,7 @@ export default {
     },
 
     suppTousAcces() {
-      AccesDataService.deleteAll()
+      this.deleteAll()
           .then((response) => {
             console.log(response.data);
             this.refreshList();
@@ -85,7 +130,7 @@ export default {
     },
 
     rechercheParValeur() {
-      AccesDataService.findByValeur(this.valeur)
+      this.findByValeur(this.valeur)
           .then((response) => {
             this.acces = response.data.map(this.affichageAcces);
             console.log(response.data);
@@ -104,7 +149,7 @@ export default {
     },
 
     supprimerAcces(id) {
-      AccesDataService.delete(id)
+      this.delete(id)
           .then(() => {
             this.refreshList();
           })
@@ -129,7 +174,7 @@ export default {
   mounted() {
     this.collecterAcces();
   },
-};
+});
 </script>
 
 <style>
@@ -137,4 +182,4 @@ export default {
   max-width: 750px;
 }
 </style>
--->
+
