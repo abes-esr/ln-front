@@ -4,7 +4,6 @@ import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 
-
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
