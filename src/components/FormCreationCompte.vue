@@ -11,13 +11,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="NOM DE L'ETABLISSEMENT"
-                      placeholder="NOM DE L'ETABLISSEMENT"
-                      v-model="nomEtab"
-                      :rules="nomEtabRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="NOM DE L'ETABLISSEMENT"
+                        placeholder="NOM DE L'ETABLISSEMENT"
+                        v-model="nomEtab"
+                        :rules="nomEtabRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -238,11 +238,11 @@
                   <v-col cols="9"></v-col>
                   <v-col cols="2">
                     <v-btn
-                      color="success"
-                      :loading="buttonLoading"
-                      x-large
-                      @click="recaptcha()"
-                      >Envoyer</v-btn
+                        color="success"
+                        :loading="buttonLoading"
+                        x-large
+                        @click="recaptcha()"
+                    >Envoyer</v-btn
                     >
                     <v-btn @click="clear">
                       Effacer
@@ -268,7 +268,7 @@
 
 import Vue from "vue";
 import { mapActions } from "vuex";
-//import axios from "axios";
+import axios from "axios";
 
 
 
@@ -359,6 +359,7 @@ export default Vue.extend({
         (v: any) => !!v || "Vous devez confirmer le mot de passe du contact"
       ],
       idAbes: "" as string,
+      roleContact:"" as string,
       buttonLoading: false,
       alert: false,
       error: ""
@@ -372,9 +373,7 @@ export default Vue.extend({
     confirmPassContactRule() {
       return (v: any) => (this.confirmPassContact === this.passContact) || 'Le mot de passe de confirmation n\'est pas valide'
     },
-    setIdAbes() {
-      return (v: any) => (this.randomNumber + this.nomEtab.substring(0, 4) + "ABES")
-    },
+
     loggedIn() {
       return this.$store.state.user.isLoggedIn;
     }
@@ -386,12 +385,7 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions({
-      creationCompteAction: "creationCompte"
-    }),
-      randomNumber: function () {
-      return Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-    },
+
     async recaptcha() {
       // (optional) Wait until recaptcha has been loaded.
       await this.$recaptchaLoaded()
@@ -422,26 +416,27 @@ export default Vue.extend({
         }
       }
     },
-
     creationCompte(): void {
       this.buttonLoading = true;
-      this.creationCompteAction({
-        nomEtab: this.nomEtab,
-        sirenEtab: this.sirenEtab,
-        typeEtab: this.typeEtab,
-        nomContact: this.nomContact,
-        prenomContact: this.prenomContact,
-        adresseContact: this.adresseContact,
-        codePostalContact: this.codePostalContact,
-        villeContact: this.villeContact,
-        cedexContact: this.cedexContact,
-        boitePostaleContact: this.boitePostaleContact,
-        telContact: this.telContact,
-        emailContact: this.emailContact,
-        passContact: this.passContact,
-        idAbes: this.setIdAbes,
-        recaptchaToken: this.token
-      })
+      axios
+          .post(process.env.VUE_APP_ROOT_API + "creationCompte", {
+            nom: this.nomEtab,
+            siren:this.sirenEtab,
+            typeEtablissement:this.typeEtab,
+            idAbes:this.idAbes,
+            nomContact:this.nomContact,
+            prenomContact:this.prenomContact,
+            adresseContact:this.adresseContact,
+            boitePostaleContact:this.boitePostaleContact,
+            codePostalContact:this.codePostalContact,
+            villeContact:this.villeContact,
+            cedexContact:this.cedexContact,
+            telephoneContact:this.telContact,
+            mailContact:this.emailContact,
+            motDePasse:this.passContact,
+            roleContact:this.roleContact,
+            recaptcha:this.token
+          })
           .then(() => {
             this.$router.push({name: "home"});
           })
