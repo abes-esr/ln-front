@@ -27,6 +27,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/FormCreationCompte.vue")
   },
   {
+    path: "/forgotPassword",
+    name: "ForgotPassword",
+    component: () => import("../components/ForgotPassword.vue")
+  },
+  {
     path: "/listeAcces",
     name: "ListeAcces",
     component: () => import("../components/ListeAcces.vue")

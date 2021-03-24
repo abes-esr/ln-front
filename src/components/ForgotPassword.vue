@@ -73,6 +73,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import axios from "axios";
 
 export default Vue.extend({
   name: "ForgotPassword",
@@ -103,13 +104,33 @@ export default Vue.extend({
         )
           console.log;
         //TODO : Appel mot de passe oublié
+        axios
+            .post(process.env.VUE_APP_ROOT_API + "ln/reinitialisationMotDePasse/resetPasswordBySiren", {
+              siren: this.siren
+            })
+            .then(() => {
+              this.$router.push({ name: "home" });
+            })
+            .catch(err => {
+              this.buttonLoading = false;
+            });
       } else {
         if (
           (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
         )
           console.log;
         //TODO : Appel mot de passe oublié
-      }
+        axios
+            .post(process.env.VUE_APP_ROOT_API + "ln/reinitialisationMotDePasse/resetPasswordByMail", {
+              email: this.mail
+            })
+            .then(() => {
+              this.$router.push({ name: "home" });
+            })
+            .catch(err => {
+              this.buttonLoading = false;
+            });
+        }
     }
   }
 });

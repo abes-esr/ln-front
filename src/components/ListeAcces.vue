@@ -38,8 +38,6 @@
 </template>
 
 <script lang="ts">
-//import AccesDataService from "../services/AccesDataService";
-//import http from "../http-commons";
 import Vue from "vue";
 import axios from "axios";
 
@@ -62,24 +60,26 @@ export default Vue.extend({
   },
   computed: {
 
-    loggedIn() {
+    //siren:this.$store.state.user.siren as string,
+    /*loggedIn() {
       return this.$store.state.user.isLoggedIn;
-    },
+    },*/
     getUserSiren() {
-      return this.$store.state.user.name;
+      return this.$store.state.user.siren;
     }
   },
   mounted() {
-    if (this.loggedIn) {
+    /*if (this.loggedIn) {
       this.$router.push("/profile");
-    }
+    }*/
+    this.collecterAcces();
   },
   methods: {
     getAll() {
-      return axios.get(process.env.VUE_APP_ROOT_API +"/ip")
+      return axios.get(process.env.VUE_APP_ROOT_API +'/ip/' + this.getUserSiren);
     },
 
-    get(id) {
+    /*get(id) {
       return axios.get(process.env.VUE_APP_ROOT_API +`/ip/${id}`);
     },
 
@@ -101,7 +101,7 @@ export default Vue.extend({
 
     findByValeur(valeur) {
       return axios.get(process.env.VUE_APP_ROOT_API +`/ip?valeur=${valeur}`);
-    },
+    },*/
 
     collecterAcces() {
       this.getAll()
@@ -114,7 +114,7 @@ export default Vue.extend({
           });
     },
 
-    refreshList() {
+   /* refreshList() {
       this.collecterAcces();
     },
 
@@ -156,7 +156,7 @@ export default Vue.extend({
           .catch((e) => {
             console.log(e);
           });
-    },
+    },*/
 
     affichageAcces(acces) {
       return {
@@ -171,9 +171,7 @@ export default Vue.extend({
       };
     },
   },
-  mounted() {
-    this.collecterAcces();
-  },
+
 });
 </script>
 
