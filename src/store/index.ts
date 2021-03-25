@@ -7,7 +7,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    user: { siren: "", token: "", nameEtab: "", isLoggedIn: false, isAdmin: false },
+    user: {
+      siren: "",
+      token: "",
+      nameEtab: "",
+      isLoggedIn: false,
+      isAdmin: false
+    },
     darkTheme: false
   },
   mutations: {
@@ -45,7 +51,7 @@ export default new Vuex.Store({
     },
     changeTheme({ commit }) {
       commit("SET_THEME");
-    },
+    }
   },
   getters: {
     userSiren: state => {

@@ -3,7 +3,7 @@ import store from "../store/index";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
-
+import Profil from "../views/Profile.vue";
 
 Vue.use(VueRouter);
 
@@ -26,6 +26,7 @@ const routes: Array<RouteConfig> = [
     name: "CreationCompte",
     component: () => import("../components/FormCreationCompte.vue")
   },
+  { path: "/profil", name: "Profil", component: Profil },
   {
     path: "/forgotPassword",
     name: "ForgotPassword",
