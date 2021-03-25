@@ -271,7 +271,7 @@ export default Vue.extend({
   data() {
     return {
       show1: false,
-      token: this.$recaptchaLoaded() as string,
+      token: this.$recaptchaLoaded() as unknown,
       nomEtab: "" as string,
       nomEtabRules: [
         (v: never) => !!v || "Le nom de l'établissement est obligatoire",
@@ -355,9 +355,10 @@ export default Vue.extend({
       emailContact: "" as string,
       emailContactRules: [
         (v: never) => !!v || "L'adresse mail du contact est obligatoire",
-        (v: never) =>
-            /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||
-            "L'adresse mail fournie n'est pas valide"
+        (v: any) =>
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+                v
+            ) || "L'adresse mail fournie n'est pas valide"
       ],
       confirmEmailContact: "" as string,
       confirmEmailContactRules: [
