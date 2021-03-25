@@ -1,3 +1,4 @@
+<!--
 <template>
   <v-row align="center" class="list px-3 mx-auto">
     <v-col cols="12" md="8">
@@ -181,3 +182,4 @@ export default Vue.extend({
 }
 </style>
 
+-->
