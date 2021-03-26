@@ -4,7 +4,7 @@
       <v-col lg="5" md="8" xs="10">
         <div>
           <v-card witdh="100%">
-            <v-form ref="formCreationCompte" lazy-validation>
+            <v-form ref="formReinitialisationPass" lazy-validation>
               <v-card-title>Réinitialisation de votre mot de passe</v-card-title>
               <v-card-text>
                 <v-row>
@@ -157,18 +157,18 @@ export default Vue.extend({
       //if (this.isHuman(this.recaptcha()) {
       if (this.tokenrecaptcha != null) {
         if (
-            (this.$refs.formCreationCompte as Vue & {
+            (this.$refs.formReinitialisationPass as Vue & {
               validate: () => boolean;
             }).validate()
         ) {
-          this.creationCompte();
+          this.reinitialisationPass();
         }
       }
     },
-    creationCompte(): void {
+    reinitialisationPass(): void {
       this.buttonLoading = true;
       axios
-          .post(process.env.VUE_APP_ROOT_API + "reinitialisationPass", {
+          .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/enregistrerPassword", {
             //nom: this.nomEtab,
             //siren: this.sirenEtab,
             motDePasse: this.passContact,
@@ -187,7 +187,7 @@ export default Vue.extend({
     },
 
     clear() {
-      //this.$refs.formCreationCompte.reset();
+      //this.$refs.formReinitialisationPass.reset();
     }
   }
 });
