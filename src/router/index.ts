@@ -33,7 +33,7 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/ForgotPassword.vue")
   },
   {
-    path: "/reinitialisationPass?token="${token},
+    path: "/reinitialisationPass",
     name: "ReinitialisationPass",
     component: () => import("../components/FormReinitialisationPass.vue")
   },

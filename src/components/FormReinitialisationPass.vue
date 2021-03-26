@@ -91,7 +91,8 @@ export default Vue.extend({
   data() {
     return {
       show1: false,
-      token: this.$recaptchaLoaded() as unknown,
+      token:"" as unknown,
+      tokenrecaptcha: this.$recaptchaLoaded() as unknown,
 
       passContact: "" as string,
       passContactRules: [
@@ -125,6 +126,8 @@ export default Vue.extend({
     if (this.loggedIn) {
       this.$router.push("/profile");
     }
+    this.token = this.$route.query.token
+      console.log(this.token)
   },
 
   methods: {
@@ -133,7 +136,7 @@ export default Vue.extend({
       await this.$recaptchaLoaded();
 
       // Execute reCAPTCHA with action "creationCompte".
-      this.token = await this.$recaptcha("reinitialisationPass");
+      this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
       console.log("token dans recaptcha() " + this.token);
       // Do stuff with the received token.
       this.validate();
@@ -152,7 +155,7 @@ export default Vue.extend({
       this.error = "";
       //this.recaptcha();
       //if (this.isHuman(this.recaptcha()) {
-      if (this.token != null) {
+      if (this.tokenrecaptcha != null) {
         if (
             (this.$refs.formCreationCompte as Vue & {
               validate: () => boolean;
@@ -170,7 +173,8 @@ export default Vue.extend({
             //siren: this.sirenEtab,
             motDePasse: this.passContact,
             //roleContact: this.roleContact,
-            recaptcha: this.token
+            recaptcha: this.tokenrecaptcha,
+            token:this.token
           })
           .then(() => {
             this.$router.push({ name: "home" });

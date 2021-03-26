@@ -443,7 +443,7 @@ export default Vue.extend({
     creationCompte(): void {
       this.buttonLoading = true;
       axios
-          .post(process.env.VUE_APP_ROOT_API + "creationCompte", {
+          .post(process.env.VUE_APP_ROOT_API + "/creationCompte", {
             nom: this.nomEtab,
             siren: this.sirenEtab,
             typeEtablissement: this.typeEtab,

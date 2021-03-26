@@ -104,9 +104,8 @@ export default Vue.extend({
           (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
         )
           console.log;
-        //TODO : Appel mot de passe oublié
         axios
-            .post(process.env.VUE_APP_ROOT_API + "ln/reinitialisationMotDePasse/resetPasswordBySiren", {
+            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPasswordBySiren", {
               siren: this.siren
             })
             .then(() => {
@@ -120,9 +119,8 @@ export default Vue.extend({
           (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
         )
           console.log;
-        //TODO : Appel mot de passe oublié
         axios
-            .post(process.env.VUE_APP_ROOT_API + "ln/reinitialisationMotDePasse/resetPasswordByMail", {
+            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPasswordByMail", {
               email: this.mail
             })
             .then(() => {
