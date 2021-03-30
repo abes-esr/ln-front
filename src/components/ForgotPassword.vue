@@ -52,6 +52,22 @@
           </v-row>
         </v-card-text>
       </v-radio-group>
+      <v-row>
+        <v-col cols="1" />
+        <v-col cols="10">
+          <v-alert dense outlined :value="alert" type="error">
+            {{ error }}
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="1" />
+        <v-col cols="10">
+          <v-alert dense outlined :value="alertOk" type="success">
+            {{ message }}
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-actions>
         <v-row>
           <v-col cols="9"></v-col>
@@ -80,6 +96,10 @@ export default Vue.extend({
   name: "ForgotPassword",
   data() {
     return {
+      alert: false,
+      error: "",
+      alertOk: false,
+      message:"",
       siren: "" as string,
       sirenRules: [
         (v: any) => !!v || "SIREN obligatoire",
@@ -99,20 +119,28 @@ export default Vue.extend({
   },
   methods: {
     validate(): void {
+      this.alert = false;
+      this.error = "";
+      this.alertOk = false;
+      this.message = "";
       if (this.sirenRadio) {
         if (
           (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
         )
           console.log;
         axios
-            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPasswordBySiren", {
+            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPassword", {
               siren: this.siren
             })
-            .then(() => {
-              this.$router.push({ name: "home" });
+            .then((response) =>{
+              this.message = response.data;
+              this.alertOk = true;
+              //this.$router.push({ name: "home" });
             })
             .catch(err => {
               this.buttonLoading = false;
+              this.error = err.response.data;
+              this.alert = true;
             });
       } else {
         if (
@@ -120,14 +148,18 @@ export default Vue.extend({
         )
           console.log;
         axios
-            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPasswordByMail", {
+            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPassword", {
               email: this.mail
             })
-            .then(() => {
-              this.$router.push({ name: "home" });
+            .then((response) =>{
+              this.message = response.data;
+              this.alertOk = true;
+              //this.$router.push({ name: "home" });
             })
             .catch(err => {
               this.buttonLoading = false;
+              this.error = err.response.data;
+              this.alert = true;
             });
         }
     }

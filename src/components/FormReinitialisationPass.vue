@@ -53,6 +53,22 @@
                   <v-col cols="10"> </v-col>
                 </v-row>
               </v-card-text>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-alert dense outlined :value="alert" type="error">
+                    {{ error }}
+                  </v-alert>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-alert dense outlined :value="alertOk" type="success">
+                    {{ message }}
+                  </v-alert>
+                </v-col>
+              </v-row>
               <v-card-actions>
                 <v-row>
                   <v-col cols="9"></v-col>
@@ -64,6 +80,8 @@
                         @click="recaptcha()"
                     >Envoyer</v-btn
                     >
+                  </v-col>
+                  <v-col cols="2">
                     <v-btn @click="clear">
                       Effacer
                     </v-btn>
@@ -73,9 +91,6 @@
             </v-form>
           </v-card>
           <br />
-          <v-alert dense outlined :value="alert" type="error">
-            {{ error }}
-          </v-alert>
         </div>
       </v-col>
     </v-row>
@@ -93,6 +108,8 @@ export default Vue.extend({
       show1: false,
       token:"" as unknown,
       tokenrecaptcha: this.$recaptchaLoaded() as unknown,
+      alertOk: false,
+      message:"",
 
       passContact: "" as string,
       passContactRules: [
@@ -135,26 +152,19 @@ export default Vue.extend({
       // (optional) Wait until recaptcha has been loaded.
       await this.$recaptchaLoaded();
 
-      // Execute reCAPTCHA with action "creationCompte".
+      // Execute reCAPTCHA with action "reinitialisationPass".
       this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
-      console.log("token dans recaptcha() " + this.token);
+      console.log("token dans recaptcha() " + this.tokenrecaptcha);
       // Do stuff with the received token.
       this.validate();
     },
-    /* si on veut faire la verif du score sur le front et pas le back on peut faire comme ceci :
-    isHuman(token: any) {
-      const endpoint = `${process.env.VUE_APP_RECAPTCHA_VERIFY_URL}?response=${token}&secret=${process.env.VUE_APP_RECAPTCHA_KEY_SITE}`;
-      console.log("requete axios = " + axios.post(endpoint)
-          .then(({data}) => data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD));
-      return axios.post(endpoint)
-          .then(({data}) => data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD);
 
-    },*/
     validate(): void {
       this.alert = false;
       this.error = "";
-      //this.recaptcha();
-      //if (this.isHuman(this.recaptcha()) {
+      this.alertOk = false;
+      this.message = "";
+
       if (this.tokenrecaptcha != null) {
         if (
             (this.$refs.formReinitialisationPass as Vue & {
@@ -169,25 +179,25 @@ export default Vue.extend({
       this.buttonLoading = true;
       axios
           .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/enregistrerPassword", {
-            //nom: this.nomEtab,
-            //siren: this.sirenEtab,
             motDePasse: this.passContact,
-            //roleContact: this.roleContact,
             recaptcha: this.tokenrecaptcha,
             token:this.token
           })
-          .then(() => {
-            this.$router.push({ name: "home" });
+          .then((response) =>{
+            this.buttonLoading = false;
+            this.message = response.data;
+            this.alertOk = true;
+            //this.$router.push({ name: "home" });
           })
           .catch(err => {
             this.buttonLoading = false;
-            this.error = err;
+            this.error = err.response.data;
             this.alert = true;
           });
     },
 
     clear() {
-      //this.$refs.formReinitialisationPass.reset();
+      (this.$refs.formReinitialisationPass as HTMLFormElement).reset()
     }
   }
 });

@@ -472,7 +472,7 @@ export default Vue.extend({
     },
 
     clear() {
-      //this.$refs.formCreationCompte.reset();
+      (this.$refs.formCreationCompte as HTMLFormElement).reset()
     }
   }
 });
