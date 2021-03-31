@@ -52,6 +52,17 @@
           </v-row>
         </v-card-text>
       </v-radio-group>
+      <v-row>
+        <v-col cols="1" />
+        <v-col cols="10">
+          <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
+            {{ message }}
+          </v-alert>
+          <v-alert v-else dense outlined :value="alert" type="success">
+            {{ message }}
+          </v-alert>
+        </v-col>
+      </v-row>
       <v-card-actions>
         <v-row>
           <v-col cols="9"></v-col>
@@ -74,6 +85,7 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
+import axios from "axios";
 
 export default Vue.extend({
   name: "ForgotPassword",
@@ -93,24 +105,58 @@ export default Vue.extend({
       ],
       mail: "" as string,
       sirenRadio: true,
-      buttonLoading: false
+      buttonLoading: false,
+      alert: false,
+      retourKo:false,
+      message:""
     };
   },
   methods: {
     validate(): void {
+      this.alert = false;
+      this.message = "";
+      this.retourKo=false;
       if (this.sirenRadio) {
         if (
           (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
         )
           console.log;
-        //TODO : Appel mot de passe oublié
+        axios
+            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPassword", {
+              siren: this.siren
+            })
+            .then((response) =>{
+              this.buttonLoading = false;
+              this.message = response.data;
+              this.alert = true;
+              //this.$router.push({ name: "home" });
+            })
+            .catch(err => {
+              this.buttonLoading = false;
+              this.message = err.response.data;
+              this.alert = true;
+              this.retourKo=true;
+            });
       } else {
         if (
           (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
         )
           console.log;
-        //TODO : Appel mot de passe oublié
-      }
+        axios
+            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPassword", {
+              email: this.mail
+            })
+            .then((response) =>{
+              this.message = response.data;
+              this.alertOk = true;
+              //this.$router.push({ name: "home" });
+            })
+            .catch(err => {
+              this.buttonLoading = false;
+              this.error = err.response.data;
+              this.alert = true;
+            });
+        }
     }
   }
 });
