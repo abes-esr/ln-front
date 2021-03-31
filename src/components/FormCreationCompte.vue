@@ -234,21 +234,27 @@
                 </v-row>
               </v-card-text>
               <v-card-actions>
-                <v-row>
-                  <v-col cols="9"></v-col>
-                  <v-col cols="2">
-                    <v-btn
-                        color="success"
-                        :loading="buttonLoading"
-                        x-large
-                        @click="recaptcha()"
-                    >Envoyer</v-btn
-                    >
-                    <v-btn @click="clear">
-                      Effacer
-                    </v-btn>
-                  </v-col>
-                </v-row>
+                <v-col cols="5"></v-col>
+                <v-col cols="5">
+                  <v-row justify='space-between'>
+                    <v-col>
+                      <v-btn
+                          x-large
+                          color="grey"
+                          @click="clear">
+                        Effacer</v-btn>
+                    </v-col>
+                    <v-col cols="1"></v-col>
+                    <v-col cols="4">
+                      <v-btn
+                          color="success"
+                          :loading="buttonLoading"
+                          x-large
+                          @click="recaptcha()"
+                      >Envoyer</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-col>
               </v-card-actions>
             </v-form>
           </v-card>
