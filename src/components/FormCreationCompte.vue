@@ -11,13 +11,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="NOM DE L'ETABLISSEMENT"
-                      placeholder="NOM DE L'ETABLISSEMENT"
-                      v-model="nomEtab"
-                      :rules="nomEtabRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="NOM DE L'ETABLISSEMENT"
+                        placeholder="NOM DE L'ETABLISSEMENT"
+                        v-model="nomEtab"
+                        :rules="nomEtabRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -25,13 +25,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="SIREN"
-                      placeholder="SIREN"
-                      v-model="sirenEtab"
-                      :rules="sirenEtabRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="SIREN"
+                        placeholder="SIREN"
+                        v-model="sirenEtab"
+                        :rules="sirenEtabRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -39,12 +39,12 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-select
-                      outlined
-                      v-model="typeEtab"
-                      :items="typesEtab"
-                      label="Type de l'établissement"
-                      :rules="typeEtabRules"
-                      required
+                        outlined
+                        v-model="typeEtab"
+                        :items="typesEtab"
+                        label="Type de l'établissement"
+                        :rules="typeEtabRules"
+                        required
                     ></v-select>
                   </v-col>
                 </v-row>
@@ -53,13 +53,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Nom"
-                      placeholder="Nom"
-                      v-model="nomContact"
-                      :rules="nomContactRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Nom"
+                        placeholder="Nom"
+                        v-model="nomContact"
+                        :rules="nomContactRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -67,13 +67,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Prénom"
-                      placeholder="Prénom"
-                      v-model="prenomContact"
-                      :rules="prenomContactRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Prénom"
+                        placeholder="Prénom"
+                        v-model="prenomContact"
+                        :rules="prenomContactRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -81,13 +81,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Adresse postale"
-                      placeholder="Adresse postale"
-                      v-model="adresseContact"
-                      :rules="adresseContactRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Adresse postale"
+                        placeholder="Adresse postale"
+                        v-model="adresseContact"
+                        :rules="adresseContactRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -95,11 +95,11 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Boîte postale"
-                      placeholder="Boîte postale"
-                      v-model="boitePostaleContact"
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Boîte postale"
+                        placeholder="Boîte postale"
+                        v-model="boitePostaleContact"
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -107,13 +107,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Code postal"
-                      placeholder="Code postal"
-                      v-model="codePostalContact"
-                      :rules="codePostalContactRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Code postal"
+                        placeholder="Code postal"
+                        v-model="codePostalContact"
+                        :rules="codePostalContactRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -121,13 +121,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Ville"
-                      placeholder="Ville"
-                      v-model="villeContact"
-                      :rules="villeContactRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Ville"
+                        placeholder="Ville"
+                        v-model="villeContact"
+                        :rules="villeContactRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -135,11 +135,11 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Cedex"
-                      placeholder="Cedex"
-                      v-model="cedexContact"
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Cedex"
+                        placeholder="Cedex"
+                        v-model="cedexContact"
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -147,13 +147,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Téléphone"
-                      placeholder="Téléphone"
-                      v-model="telContact"
-                      :rules="telContactRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Téléphone"
+                        placeholder="Téléphone"
+                        v-model="telContact"
+                        :rules="telContactRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -161,13 +161,13 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Adresse e-mail"
-                      placeholder="Adresse e-mail"
-                      v-model="emailContact"
-                      :rules="emailContactRules"
-                      required
-                      @keyup.enter="validate()"
+                        outlined
+                        label="Adresse e-mail"
+                        placeholder="Adresse e-mail"
+                        v-model="emailContact"
+                        :rules="emailContactRules"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -175,15 +175,15 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      label="Confirmez votre adresse e-mail"
-                      placeholder="Confirmez votre adresse e-mail"
-                      v-model="confirmEmailContact"
-                      :rules="
+                        outlined
+                        label="Confirmez votre adresse e-mail"
+                        placeholder="Confirmez votre adresse e-mail"
+                        v-model="confirmEmailContact"
+                        :rules="
                         confirmEmailContactRules.concat(confirmEmailContactRule)
                       "
-                      required
-                      @keyup.enter="validate()"
+                        required
+                        @keyup.enter="validate()"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -196,16 +196,16 @@
                       chiffre et un caractère spécial parmis @ $ ! % * ? &
                     </v-alert>
                     <v-text-field
-                      outlined
-                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      label="Mot de passe"
-                      placeholder="Mot de passe"
-                      v-model="passContact"
-                      :rules="passContactRules"
-                      :type="show1 ? 'text' : 'password'"
-                      required
-                      @keyup.enter="validate()"
-                      @click:append="show1 = !show1"
+                        outlined
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                        label="Mot de passe"
+                        placeholder="Mot de passe"
+                        v-model="passContact"
+                        :rules="passContactRules"
+                        :type="show1 ? 'text' : 'password'"
+                        required
+                        @keyup.enter="validate()"
+                        @click:append="show1 = !show1"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -213,18 +213,18 @@
                   <v-col cols="1" />
                   <v-col cols="10">
                     <v-text-field
-                      outlined
-                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      label="Confirmez votre mot de passe"
-                      placeholder="Confirmez votre mot de passe"
-                      v-model="confirmPassContact"
-                      :rules="
+                        outlined
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                        label="Confirmez votre mot de passe"
+                        placeholder="Confirmez votre mot de passe"
+                        v-model="confirmPassContact"
+                        :rules="
                         confirmPassContactRules.concat(confirmPassContactRule)
                       "
-                      :type="show1 ? 'text' : 'password'"
-                      required
-                      @keyup.enter="validate()"
-                      @click:append="show1 = !show1"
+                        :type="show1 ? 'text' : 'password'"
+                        required
+                        @keyup.enter="validate()"
+                        @click:append="show1 = !show1"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -234,21 +234,27 @@
                 </v-row>
               </v-card-text>
               <v-card-actions>
-                <v-row>
-                  <v-col cols="9"></v-col>
-                  <v-col cols="2">
-                    <v-btn
-                      color="success"
-                      :loading="buttonLoading"
-                      x-large
-                      @click="recaptcha()"
-                      >Envoyer</v-btn
-                    >
-                    <v-btn @click="clear">
-                      Effacer
-                    </v-btn>
-                  </v-col>
-                </v-row>
+                <v-col cols="5"></v-col>
+                <v-col cols="5">
+                  <v-row justify='space-between'>
+                    <v-col>
+                      <v-btn
+                          x-large
+                          color="grey"
+                          @click="clear">
+                        Effacer</v-btn>
+                    </v-col>
+                    <v-col cols="1"></v-col>
+                    <v-col cols="4">
+                      <v-btn
+                          color="success"
+                          :loading="buttonLoading"
+                          x-large
+                          @click="recaptcha()"
+                      >Envoyer</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-col>
               </v-card-actions>
             </v-form>
           </v-card>
@@ -271,13 +277,13 @@ export default Vue.extend({
   data() {
     return {
       show1: false,
-      token: this.$recaptchaLoaded() as string,
+      token: this.$recaptchaLoaded() as unknown,
       nomEtab: "" as string,
       nomEtabRules: [
         (v: never) => !!v || "Le nom de l'établissement est obligatoire",
         (v: never) =>
-          /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-          "Le nom d'établissement fourni n'est pas valide"
+            /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+            "Le nom d'établissement fourni n'est pas valide"
       ],
       sirenEtab: "" as string,
       sirenEtabRules: [
@@ -309,55 +315,56 @@ export default Vue.extend({
       nomContactRules: [
         (v: never) => !!v || "Le nom du contact est obligatoire",
         (v: never) =>
-          /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-            v
-          ) || "Le nom fourni n'est pas valide"
+            /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
+                v
+            ) || "Le nom fourni n'est pas valide"
       ],
       prenomContact: "" as string,
       prenomContactRules: [
         (v: never) => !!v || "Le prénom du contact est obligatoire",
         (v: never) =>
-          /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-            v
-          ) || "Le prénom fourni n'est pas valide"
+            /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
+                v
+            ) || "Le prénom fourni n'est pas valide"
       ],
       adresseContact: "" as string,
       adresseContactRules: [
         (v: never) =>
-          !!v || "L'adresse postale de l'établissement est obligatoire",
+            !!v || "L'adresse postale de l'établissement est obligatoire",
         (v: never) =>
-          /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-          "L'adresse postale fournie n'est pas valide"
+            /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+            "L'adresse postale fournie n'est pas valide"
       ],
       boitePostaleContact: "" as string,
       codePostalContact: "" as string,
       codePostalContactRules: [
         (v: never) =>
-          !!v || "Le code postal de l'établissement est obligatoire",
+            !!v || "Le code postal de l'établissement est obligatoire",
         (v: never) =>
-          /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
+            /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
       ],
       villeContact: "" as string,
       villeContactRules: [
         (v: never) => !!v || "La ville de l'établissement est obligatoire",
         (v: never) =>
-          /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(
-            v
-          ) || "La ville fournie n'est pas valide"
+            /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(
+                v
+            ) || "La ville fournie n'est pas valide"
       ],
       cedexContact: "" as string,
       telContact: "" as string,
       telContactRules: [
         (v: never) => !!v || "Le téléphone du contact est obligatoire",
         (v: never) =>
-          /^\d{10}$/.test(v) || "Veuillez entrer 10 chiffres sans espace"
+            /^\d{10}$/.test(v) || "Veuillez entrer 10 chiffres sans espace"
       ],
       emailContact: "" as string,
       emailContactRules: [
         (v: never) => !!v || "L'adresse mail du contact est obligatoire",
-        (v: never) =>
-          /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||
-          "L'adresse mail fournie n'est pas valide"
+        (v: any) =>
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+                v
+            ) || "L'adresse mail fournie n'est pas valide"
       ],
       confirmEmailContact: "" as string,
       confirmEmailContactRules: [
@@ -367,9 +374,9 @@ export default Vue.extend({
       passContactRules: [
         (v: never) => !!v || "Le mot de passe du contact est obligatoire",
         (v: never) =>
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-            v
-          ) || "Le mot de passe fourni n'est pas valide"
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+                v
+            ) || "Le mot de passe fourni n'est pas valide"
       ],
       confirmPassContact: "" as string,
       confirmPassContactRules: [
@@ -385,13 +392,13 @@ export default Vue.extend({
   computed: {
     confirmEmailContactRule() {
       return () =>
-        this.confirmEmailContact === this.emailContact ||
-        "L'adresse mail de confirmation n'est pas valide";
+          this.confirmEmailContact === this.emailContact ||
+          "L'adresse mail de confirmation n'est pas valide";
     },
     confirmPassContactRule() {
       return () =>
-        this.confirmPassContact === this.passContact ||
-        "Le mot de passe de confirmation n'est pas valide";
+          this.confirmPassContact === this.passContact ||
+          "Le mot de passe de confirmation n'est pas valide";
     },
 
     loggedIn() {
@@ -431,9 +438,9 @@ export default Vue.extend({
       //if (this.isHuman(this.recaptcha()) {
       if (this.token != null) {
         if (
-          (this.$refs.formCreationCompte as Vue & {
-            validate: () => boolean;
-          }).validate()
+            (this.$refs.formCreationCompte as Vue & {
+              validate: () => boolean;
+            }).validate()
         ) {
           this.creationCompte();
         }
@@ -442,36 +449,36 @@ export default Vue.extend({
     creationCompte(): void {
       this.buttonLoading = true;
       axios
-        .post(process.env.VUE_APP_ROOT_API + "creationCompte", {
-          nom: this.nomEtab,
-          siren: this.sirenEtab,
-          typeEtablissement: this.typeEtab,
-          idAbes: this.idAbes,
-          nomContact: this.nomContact,
-          prenomContact: this.prenomContact,
-          adresseContact: this.adresseContact,
-          boitePostaleContact: this.boitePostaleContact,
-          codePostalContact: this.codePostalContact,
-          villeContact: this.villeContact,
-          cedexContact: this.cedexContact,
-          telephoneContact: this.telContact,
-          mailContact: this.emailContact,
-          motDePasse: this.passContact,
-          roleContact: this.roleContact,
-          recaptcha: this.token
-        })
-        .then(() => {
-          this.$router.push({ name: "home" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.error = err;
-          this.alert = true;
-        });
+          .post(process.env.VUE_APP_ROOT_API + "/creationCompte", {
+            nom: this.nomEtab,
+            siren: this.sirenEtab,
+            typeEtablissement: this.typeEtab,
+            idAbes: this.idAbes,
+            nomContact: this.nomContact,
+            prenomContact: this.prenomContact,
+            adresseContact: this.adresseContact,
+            boitePostaleContact: this.boitePostaleContact,
+            codePostalContact: this.codePostalContact,
+            villeContact: this.villeContact,
+            cedexContact: this.cedexContact,
+            telephoneContact: this.telContact,
+            mailContact: this.emailContact,
+            motDePasse: this.passContact,
+            roleContact: this.roleContact,
+            recaptcha: this.token
+          })
+          .then(() => {
+            this.$router.push({ name: "home" });
+          })
+          .catch(err => {
+            this.buttonLoading = false;
+            this.error = err;
+            this.alert = true;
+          });
     },
 
     clear() {
-      //this.$refs.formCreationCompte.reset();
+      (this.$refs.formCreationCompte as HTMLFormElement).reset()
     }
   }
 });
