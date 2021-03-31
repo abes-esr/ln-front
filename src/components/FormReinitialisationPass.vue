@@ -56,15 +56,10 @@
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
-                  <v-alert dense outlined :value="alert" type="error">
-                    {{ error }}
+                  <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
+                    {{ message }}
                   </v-alert>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-alert dense outlined :value="alertOk" type="success">
+                  <v-alert v-else dense outlined :value="alert" type="success">
                     {{ message }}
                   </v-alert>
                 </v-col>
@@ -112,9 +107,6 @@ export default Vue.extend({
       show1: false,
       token:"" as unknown,
       tokenrecaptcha: this.$recaptchaLoaded() as unknown,
-      alertOk: false,
-      message:"",
-
       passContact: "" as string,
       passContactRules: [
         (v: never) => !!v || "Le mot de passe du contact est obligatoire",
@@ -129,7 +121,8 @@ export default Vue.extend({
       ],
       buttonLoading: false,
       alert: false,
-      error: ""
+      retourKo:false,
+      message:""
     };
   },
   computed: {
@@ -165,9 +158,8 @@ export default Vue.extend({
 
     validate(): void {
       this.alert = false;
-      this.error = "";
-      this.alertOk = false;
       this.message = "";
+      this.retourKo=false;
 
       if (this.tokenrecaptcha != null) {
         if (
@@ -190,13 +182,14 @@ export default Vue.extend({
           .then((response) =>{
             this.buttonLoading = false;
             this.message = response.data;
-            this.alertOk = true;
+            this.alert = true;
             //this.$router.push({ name: "home" });
           })
           .catch(err => {
             this.buttonLoading = false;
-            this.error = err.response.data;
+            this.message = err.response.data;
             this.alert = true;
+            this.retourKo=true;
           });
     },
 

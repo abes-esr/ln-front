@@ -55,15 +55,10 @@
       <v-row>
         <v-col cols="1" />
         <v-col cols="10">
-          <v-alert dense outlined :value="alert" type="error">
-            {{ error }}
+          <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
+            {{ message }}
           </v-alert>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="1" />
-        <v-col cols="10">
-          <v-alert dense outlined :value="alertOk" type="success">
+          <v-alert v-else dense outlined :value="alert" type="success">
             {{ message }}
           </v-alert>
         </v-col>
@@ -96,10 +91,6 @@ export default Vue.extend({
   name: "ForgotPassword",
   data() {
     return {
-      alert: false,
-      error: "",
-      alertOk: false,
-      message:"",
       siren: "" as string,
       sirenRules: [
         (v: any) => !!v || "SIREN obligatoire",
@@ -114,15 +105,17 @@ export default Vue.extend({
       ],
       mail: "" as string,
       sirenRadio: true,
-      buttonLoading: false
+      buttonLoading: false,
+      alert: false,
+      retourKo:false,
+      message:""
     };
   },
   methods: {
     validate(): void {
       this.alert = false;
-      this.error = "";
-      this.alertOk = false;
       this.message = "";
+      this.retourKo=false;
       if (this.sirenRadio) {
         if (
           (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
@@ -133,14 +126,16 @@ export default Vue.extend({
               siren: this.siren
             })
             .then((response) =>{
+              this.buttonLoading = false;
               this.message = response.data;
-              this.alertOk = true;
+              this.alert = true;
               //this.$router.push({ name: "home" });
             })
             .catch(err => {
               this.buttonLoading = false;
-              this.error = err.response.data;
+              this.message = err.response.data;
               this.alert = true;
+              this.retourKo=true;
             });
       } else {
         if (
