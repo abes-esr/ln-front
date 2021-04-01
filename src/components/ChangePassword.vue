@@ -95,7 +95,7 @@ export default Vue.extend({
       this.alert = false;
       this.error = "";
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
-        this.sumbit();
+       // this.sumbit();
     },
     submit(): void {
       this.buttonLoading = true;
