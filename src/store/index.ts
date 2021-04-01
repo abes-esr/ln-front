@@ -7,20 +7,26 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    user: { name: "", token: "", nameEtab: "", isLoggedIn: false, isAdmin: false },
+    user: {
+      siren: "",
+      token: "",
+      nameEtab: "",
+      isLoggedIn: false,
+      isAdmin: false
+    },
     darkTheme: false
   },
   mutations: {
     SET_TOKEN(state, token) {
       state.user.token = token.accessToken;
-      state.user.name = token.userName;
-      state.user.nameEtab = token.userNameEtab;
+      state.user.siren = token.siren;
+      state.user.nameEtab = token.nameEtab;
       state.user.isLoggedIn = true;
       state.user.isAdmin = token.isAdmin;
     },
     SET_LOGOUT(state) {
       state.user.token = "";
-      state.user.name = "";
+      state.user.siren = "";
       state.user.nameEtab = "";
       state.user.isLoggedIn = false;
       state.user.isAdmin = false;
@@ -45,36 +51,11 @@ export default new Vuex.Store({
     },
     changeTheme({ commit }) {
       commit("SET_THEME");
-    },
-    creationCompte({ commit }, data) {
-        console.log("token dans axios = " + data.recaptchaToken);
-      return axios
-          .post(process.env.VUE_APP_ROOT_API + "creationCompte", {
-            nom:data.nomEtab,
-            siren:data.sirenEtab,
-            typeEtablissement:data.typeEtab,
-            idAbes:data.idAbes,
-            nomContact:data.nomContact,
-            prenomContact:data.prenomContact,
-            adresseContact:data.adresseContact,
-            boitePostaleContact:data.boitePostaleContact,
-            codePostalContact:data.codePostalContact,
-            villeContact:data.villeContact,
-            cedexContact:data.cedexContact,
-            telephoneContact:data.telContact,
-            mailContact:data.emailContact,
-            motDePasse:data.passContact,
-            roleContact:data.roleContact,
-            recaptcha:data.recaptchaToken
-          })
-          .then(result => {
-            commit(result.data);
-          });
-    },
+    }
   },
   getters: {
-    userName: state => {
-      return state.user.name;
+    userSiren: state => {
+      return state.user.siren;
     },
     userEtab: state => {
       return state.user.nameEtab;
