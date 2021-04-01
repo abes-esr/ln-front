@@ -258,7 +258,7 @@ export default Vue.extend({
         });
     },
     updateJsonObject(): void {
-      this.jsonResponse.mailContact = this.mail;
+      /*this.jsonResponse.mailContact = this.mail;
       this.jsonResponse.nomContact = this.nomContact;
       this.jsonResponse.prenomContact = this.prenomContact;
       this.jsonResponse.adresseContact = this.adresse;
@@ -268,7 +268,7 @@ export default Vue.extend({
       this.jsonResponse.villeContact = this.ville;
       this.jsonResponse.telephoneContact = this.telephone;
       this.jsonResponse.idContact = this.idContact;
-      this.jsonResponse.idAbes = this.idAbes;
+      this.jsonResponse.idAbes = this.idAbes;*/
     }
   }
 });
