@@ -48,6 +48,20 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-text-field
+                    outlined
+                    label="Téléphone"
+                    placeholder="Téléphone"
+                    v-model="telephone"
+                    :rules="telRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
             </v-col>
             <v-col lg="6" md="12" xs="12">
               <v-row>
@@ -137,6 +151,10 @@
         </v-card-actions></v-form
       >
     </v-card>
+    <br />
+    <v-alert dense outlined :value="alert" type="error">
+      {{ error }}
+    </v-alert>
   </div>
 </template>
 
@@ -144,6 +162,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
+import { mapGetters } from "vuex";
 
 export default Vue.extend({
   name: "FormProfile",
@@ -157,6 +176,12 @@ export default Vue.extend({
       mail: "",
       nomContact: "",
       prenomContact: "",
+      telephone: "",
+      jsonResponse: {},
+      idContact: "",
+      idAbes: "",
+      alert: false,
+      error: "",
 
       nomRules: [(v: any) => !!v || "Champ obligatoire"],
       adrRules: [
@@ -176,36 +201,74 @@ export default Vue.extend({
         (v: any) =>
           /[\d]{5}/.test(v) || "Le code postal doit être composé de 5 chiffres"
       ],
-
+      telRules: [
+        (v: any) => !!v || "Champ obligatoire",
+        (v: any) =>
+          /^[\d]*$/.test(v) ||
+          "Le téléphone doit être composé de chiffres uniquement"
+      ],
       buttonLoading: false
     };
   },
+  computed: mapGetters(["userSiren"]),
   mounted() {
     this.fetchEtab();
   },
   methods: {
     validate(): void {
+      this.error = "";
+      this.alert = false;
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
         this.buttonLoading = true;
-        HTTP.post("/Etablissement/modification")
-          .then(result => {
-            this.buttonLoading = false;
-            console.log(result);
-          })
-          .catch(err => {
-            this.buttonLoading = false;
-            console.log(err);
-          });
+        this.submitProfil();
       }
     },
     fetchEtab(): void {
-      HTTP.get("/Etablissement/")
+      HTTP.get("/ln/etablissement/" + this.userSiren)
         .then(result => {
-          console.log(result);
+          this.idAbes = result.data.idAbes;
+          this.idContact = result.data.contact.id;
+          this.mail = result.data.contact.mail;
+          this.nomContact = result.data.contact.nom;
+          this.prenomContact = result.data.contact.prenom;
+          this.adresse = result.data.contact.adresse;
+          this.bp = result.data.contact.boitePostal;
+          this.codePostal = result.data.contact.codePostal;
+          this.cedex = result.data.contact.cedex;
+          this.ville = result.data.contact.ville;
+          this.telephone = result.data.contact.telephone;
         })
         .catch(err => {
-          console.log(err);
+          this.alert = true;
+          this.error = err;
         });
+    },
+    submitProfil(): void {
+      this.updateJsonObject();
+      console.log(this.jsonResponse);
+      HTTP.post("/ln/etablissement/modification", this.jsonResponse)
+        .then(() => {
+          this.buttonLoading = false;
+          this.$router.push({ name: "home" });
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.alert = true;
+          this.error = err;
+        });
+    },
+    updateJsonObject(): void {
+      /*this.jsonResponse.mailContact = this.mail;
+      this.jsonResponse.nomContact = this.nomContact;
+      this.jsonResponse.prenomContact = this.prenomContact;
+      this.jsonResponse.adresseContact = this.adresse;
+      this.jsonResponse.boitePostaleContact = this.bp;
+      this.jsonResponse.codePostalContact = this.codePostal;
+      this.jsonResponse.cedexContact = this.cedex;
+      this.jsonResponse.villeContact = this.ville;
+      this.jsonResponse.telephoneContact = this.telephone;
+      this.jsonResponse.idContact = this.idContact;
+      this.jsonResponse.idAbes = this.idAbes;*/
     }
   }
 });

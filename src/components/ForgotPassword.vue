@@ -107,56 +107,64 @@ export default Vue.extend({
       sirenRadio: true,
       buttonLoading: false,
       alert: false,
-      retourKo:false,
-      message:""
+      retourKo: false,
+      message: ""
     };
   },
   methods: {
     validate(): void {
       this.alert = false;
       this.message = "";
-      this.retourKo=false;
+      this.retourKo = false;
       if (this.sirenRadio) {
         if (
           (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
         )
           console.log;
         axios
-            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPassword", {
+          .post(
+            process.env.VUE_APP_ROOT_API +
+              "/ln/reinitialisationMotDePasse/resetPassword",
+            {
               siren: this.siren
-            })
-            .then((response) =>{
-              this.buttonLoading = false;
-              this.message = response.data;
-              this.alert = true;
-              //this.$router.push({ name: "home" });
-            })
-            .catch(err => {
-              this.buttonLoading = false;
-              this.message = err.response.data;
-              this.alert = true;
-              this.retourKo=true;
-            });
+            }
+          )
+          .then(response => {
+            this.buttonLoading = false;
+            this.message = response.data;
+            this.alert = true;
+            //this.$router.push({ name: "home" });
+          })
+          .catch(err => {
+            this.buttonLoading = false;
+            this.message = err.response.data;
+            this.alert = true;
+            this.retourKo = true;
+          });
       } else {
         if (
           (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
         )
           console.log;
         axios
-            .post(process.env.VUE_APP_ROOT_API + "/ln/reinitialisationMotDePasse/resetPassword", {
+          .post(
+            process.env.VUE_APP_ROOT_API +
+              "/ln/reinitialisationMotDePasse/resetPassword",
+            {
               email: this.mail
-            })
-            .then((response) =>{
-              this.message = response.data;
-              this.alertOk = true;
-              //this.$router.push({ name: "home" });
-            })
-            .catch(err => {
-              this.buttonLoading = false;
-              this.error = err.response.data;
-              this.alert = true;
-            });
-        }
+            }
+          )
+          .then(response => {
+            this.message = response.data;
+            //this.alertOk = true;
+            //this.$router.push({ name: "home" });
+          })
+          .catch(err => {
+            this.buttonLoading = false;
+            //this.error = err.response.data;
+            this.alert = true;
+          });
+      }
     }
   }
 });
