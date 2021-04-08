@@ -140,6 +140,7 @@ node {
             }
 
             writeFile file: ".env", text: "${newconfig}"
+            echo "texte = ${newconfig}"
 
           } catch (e) {
             currentBuild.result = hudson.model.Result.FAILURE.toString()
