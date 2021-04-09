@@ -472,7 +472,7 @@ export default Vue.extend({
           })
           .catch(err => {
             this.buttonLoading = false;
-            this.error = err;
+            this.error = err.response.data;
             this.alert = true;
           });
     },

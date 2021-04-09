@@ -155,14 +155,15 @@ export default Vue.extend({
             }
           )
           .then(response => {
+            this.buttonLoading = false;
             this.message = response.data;
-            //this.alertOk = true;
-            //this.$router.push({ name: "home" });
+            this.alert = true;
           })
           .catch(err => {
             this.buttonLoading = false;
-            //this.error = err.response.data;
+            this.message = err.response.data;
             this.alert = true;
+            this.retourKo = true;
           });
       }
     }
