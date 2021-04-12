@@ -110,6 +110,45 @@ node {
         }
     }
 
+    stage("Edit .env file...") {
+          try {
+            echo "Edit .env file..."
+
+            original = readFile ".env"
+            newconfig = original
+
+            if (ENV == 'DEV') {
+                withCredentials([
+                  string(credentialsId: "url-api-ln-dev", variable: 'url')
+                ]) {
+                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
+                }
+
+            } else if (ENV == 'TEST') {
+                withCredentials([
+                  string(credentialsId: "url-api-ln-test", variable: 'url')
+                ]) {
+                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
+                }
+
+            } else if (ENV == 'PROD') {
+                withCredentials([
+                  string(credentialsId: "url-api-ln-prod", variable: 'url')
+                ]) {
+                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
+                }
+            }
+
+            writeFile file: ".env", text: "${newconfig}"
+            echo "texte = ${newconfig}"
+
+          } catch (e) {
+            currentBuild.result = hudson.model.Result.FAILURE.toString()
+            notifySlack(slackChannel, "Failed to edit .env file : " + e.getLocalizedMessage())
+            throw e
+          }
+    }
+
     stage('Dependencies') {
         try {
             sh 'npm install'
