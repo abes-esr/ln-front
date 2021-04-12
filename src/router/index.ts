@@ -52,6 +52,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/FormReinitialisationPass.vue")
   },
   {
+    path: "/listeAcces",
+    name: "ListeAcces",
+    component: () => import("../components/ListeAcces.vue")
+  },
+  {
     path: "*",
     /* component: NotFoundComponent, */
     redirect: "/"
