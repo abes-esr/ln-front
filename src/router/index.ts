@@ -57,6 +57,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/ListeAcces.vue")
   },
   {
+    path: "/listeEtab",
+    name: "ListeEtab",
+    component: () => import("../components/ListeEtab.vue")
+  },
+  {
     path: "*",
     /* component: NotFoundComponent, */
     redirect: "/"
