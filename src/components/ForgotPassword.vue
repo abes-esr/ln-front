@@ -125,7 +125,7 @@ export default Vue.extend({
         axios
           .post(
             process.env.VUE_APP_ROOT_API +
-              "/ln/reinitialisationMotDePasse/resetPassword",
+              "ln/reinitialisationMotDePasse/resetPassword",
             {
               siren: this.siren
             }
@@ -149,7 +149,7 @@ export default Vue.extend({
         axios
           .post(
             process.env.VUE_APP_ROOT_API +
-              "/ln/reinitialisationMotDePasse/resetPassword",
+              "ln/reinitialisationMotDePasse/resetPassword",
             {
               email: this.mail
             }

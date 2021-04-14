@@ -468,7 +468,7 @@ export default Vue.extend({
           recaptcha: this.token
         })
         .then(() => {
-          this.$router.push({ name: "home" });
+          this.$router.push({ name: "Home" });
         })
         .catch(err => {
           this.buttonLoading = false;

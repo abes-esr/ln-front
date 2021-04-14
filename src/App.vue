@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <v-navigation-drawer
-      v-if="isLogged"
       v-model="drawer"
       bottom
       temporary
@@ -11,11 +10,12 @@
       <side-menu></side-menu>
     </v-navigation-drawer>
     <v-app-bar color="primary" app>
-      <v-app-bar-nav-icon
-        v-if="isLogged"
-        @click="drawer = !drawer"
-      ></v-app-bar-nav-icon>
-      <v-toolbar-title>Licences Nationales</v-toolbar-title>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title
+        id="titleBar"
+        v-on:click="$router.push({ name: 'Home' }).catch(err => {})"
+        >Licences Nationales</v-toolbar-title
+      >
     </v-app-bar>
     <v-main>
       <transition name="fade">
@@ -60,5 +60,8 @@ export default Vue.extend({
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+#titleBar {
+  cursor: pointer;
 }
 </style>

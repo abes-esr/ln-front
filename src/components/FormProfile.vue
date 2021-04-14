@@ -245,7 +245,7 @@ export default Vue.extend({
       HTTP.post("/ln/etablissement/modification", this.jsonResponse)
         .then(() => {
           this.buttonLoading = false;
-          this.$router.push({ name: "home" });
+          this.$router.push({ name: "Home" });
         })
         .catch(err => {
           this.buttonLoading = false;
@@ -262,7 +262,7 @@ export default Vue.extend({
       json.mailContact = this.mail;
       json.nomContact = this.nomContact;
       json.prenomContact = this.prenomContact;
-      json.Rejsonsponse.siren = this.userSiren;
+      json.siren = this.userSiren;
       json.telephoneContact = this.telephone;
       json.villeContact = this.ville;
       this.jsonResponse = json;
