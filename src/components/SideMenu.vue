@@ -55,8 +55,9 @@
 
 <script lang="ts">
 import { mapActions } from "vuex";
+import Vue from "vue";
 
-export default {
+export default Vue.extend({
   name: "SideMenu",
   methods: {
     ...mapActions({
@@ -71,5 +72,5 @@ export default {
       this.$router.push({ name: "Login" });
     }
   }
-};
+});
 </script>

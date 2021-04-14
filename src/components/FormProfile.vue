@@ -254,16 +254,18 @@ export default Vue.extend({
         });
     },
     updateJsonObject(): void {
-      this.jsonResponse.adresseContact = this.adresse;
-      this.jsonResponse.boitePostaleContact = this.bp;
-      this.jsonResponse.cedexContact = this.cedex;
-      this.jsonResponse.codePostalContact = this.codePostal;
-      this.jsonResponse.mailContact = this.mail;
-      this.jsonResponse.nomContact = this.nomContact;
-      this.jsonResponse.prenomContact = this.prenomContact;
-      this.jsonResponse.siren = this.userSiren;
-      this.jsonResponse.telephoneContact = this.telephone;
-      this.jsonResponse.villeContact = this.ville;
+      const json: any = {};
+      json.adresseContact = this.adresse;
+      json.boitePostaleContact = this.bp;
+      json.cedexContact = this.cedex;
+      json.codePostalContact = this.codePostal;
+      json.mailContact = this.mail;
+      json.nomContact = this.nomContact;
+      json.prenomContact = this.prenomContact;
+      json.Rejsonsponse.siren = this.userSiren;
+      json.telephoneContact = this.telephone;
+      json.villeContact = this.ville;
+      this.jsonResponse = json;
     }
   }
 });
