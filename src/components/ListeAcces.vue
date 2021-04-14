@@ -1,40 +1,55 @@
 <template>
-  <v-row align="center" class="list px-3 mx-auto">
-    <v-col cols="12" md="8">
-      <v-text-field v-model="valeur" label="Recherche par valeur"></v-text-field>
-    </v-col>
-    <v-col cols="12" md="4">
-      <v-btn small @click="rechercheParValeur">
-        Search
-      </v-btn>
-    </v-col>
-    <v-col cols="12" sm="12">
-      <v-card class="mx-auto" tile>
-        <v-card-title>Liste des Accès</v-card-title>
-        <v-data-table
-            :headers="headers"
-            :items="acces"
-            disable-pagination
-            :hide-default-footer="true"
-        >
-          <template v-slot:[`item.action`]="{ item }">
-            <v-icon small class="mr-2" @click="modifierAcces(item.id)">mdi-pencil</v-icon>
-            <v-icon small class="mr-2" @click="analyserAcces(item.id)">mdi-help-circle-outline</v-icon>
-            <v-icon small @click="supprimerAcces(item.id)">mdi-delete</v-icon>
-          </template>
-        </v-data-table>
-        <v-card-actions v-if="acces.length > 0">
-          <v-btn small color="error" @click="suppTousAcces">
-            Supprimer tous les accès
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <div>
+    <v-card width="100%">
+        <v-card-title>Modifier mes informations</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col lg="12" md="12" xs="12">
+              <v-row>
+                <v-col cols="12" md="8">
+                  <v-text-field v-model="valeur" label="Recherche par valeur"></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-btn small @click="rechercheParValeur">
+                    Search
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" sm="12">
+                  <v-card class="mx-auto" tile>
+                    <v-card-title>Liste des Accès</v-card-title>
+                    <v-data-table
+                        :headers="headers"
+                        :items="acces"
+                        disable-pagination
+                        :hide-default-footer="true"
+                    >
+                      <template v-slot:[`item.action`]="{ item }">
+                        <v-icon small class="mr-2" @click="modifierAcces(item.id)">mdi-pencil</v-icon>
+                        <v-icon small class="mr-2" @click="analyserAcces(item.id)">mdi-help-circle-outline</v-icon>
+                        <v-icon small @click="supprimerAcces(item.id)">mdi-delete</v-icon>
+                      </template>
+                    </v-data-table>
+                    <v-card-actions v-if="acces.length > 0">
+                      <v-btn small color="error" @click="suppTousAcces">
+                        Supprimer tous les accès
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card-text>
+    </v-card>
+  </div>
 </template>
+
+
+
 <script lang="ts">
 import Vue from "vue";
-import axios from "axios";
+import { HTTP } from "../utils/http-commons";
+
 export default Vue.extend({
   name: "ListeAcces",
   data() {
@@ -69,7 +84,7 @@ export default Vue.extend({
   },
   methods: {
     getAll() {
-      return axios.get(process.env.VUE_APP_ROOT_API +'/ip/' + this.getUserSiren);
+      return HTTP.get('/ln/ip/'+ this.getUserSiren);
     },
     /*get(id) {
       return axios.get(process.env.VUE_APP_ROOT_API +`/ip/${id}`);
@@ -144,8 +159,8 @@ export default Vue.extend({
         dateModification: acces.dateModification,
         typeAcces: acces.typeAcces,
         typeIp: acces.typeIp,
-        valeur: acces.valeur,
-        statut: acces.statut ? "Published" : "Pending",
+        valeur: acces.ip,
+        statut: acces.validee ? "Validée" : "En validation",
       };
     },
   },
