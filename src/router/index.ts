@@ -35,7 +35,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/password",
-    name: "password",
+    name: "Password",
     component: () => import("../views/Password.vue"),
     meta: {
       requiresAuth: true

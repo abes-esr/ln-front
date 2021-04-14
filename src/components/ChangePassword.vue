@@ -2,7 +2,7 @@
   <div>
     <v-card width="100%">
       <v-form ref="form" lazy-validation>
-        <v-card-title>Modifier mes informations</v-card-title>
+        <v-card-title>Modifier mon mot de passe</v-card-title>
         <v-card-text>
           <v-row>
             <v-col lg="12" md="12" xs="12">
@@ -85,8 +85,10 @@ export default Vue.extend({
       passwordRules: [
         v => !!v || "Champ obligatoire",
         v =>
-          /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(v) ||
-          "Le mot de passe doit contenir des lettres et des chiffres, et faire 8 caractères minimum"
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+            v
+          ) ||
+          "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial, et faire 8 caractères minimum"
       ]
     };
   },
@@ -95,18 +97,20 @@ export default Vue.extend({
       this.alert = false;
       this.error = "";
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
-        // this.sumbit();
-        console.log("");
+        this.submit();
     },
     submit(): void {
       this.buttonLoading = true;
-      HTTP.post("/changePassword")
+      HTTP.post("/ln/reinitialisationMotDePasse/updatePassword", {
+        oldPassword: this.oldPassword,
+        newPassword: this.newPassword
+      })
         .then(() => {
           this.$router.push({ name: "home" });
         })
         .catch(err => {
           this.buttonLoading = false;
-          this.error = err;
+          this.error = err.response.data;
           this.alert = true;
         });
     }

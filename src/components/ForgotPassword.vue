@@ -107,6 +107,7 @@ export default Vue.extend({
       sirenRadio: true,
       buttonLoading: false,
       alert: false,
+      alertOK: false,
       retourKo: false,
       message: ""
     };
@@ -133,7 +134,6 @@ export default Vue.extend({
             this.buttonLoading = false;
             this.message = response.data;
             this.alert = true;
-            //this.$router.push({ name: "home" });
           })
           .catch(err => {
             this.buttonLoading = false;
@@ -156,12 +156,11 @@ export default Vue.extend({
           )
           .then(response => {
             this.message = response.data;
-            //this.alertOk = true;
-            //this.$router.push({ name: "home" });
+            this.alert = true;
           })
           .catch(err => {
             this.buttonLoading = false;
-            //this.error = err.response.data;
+            this.message = err.response.data;
             this.alert = true;
           });
       }

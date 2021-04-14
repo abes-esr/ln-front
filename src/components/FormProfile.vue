@@ -178,8 +178,6 @@ export default Vue.extend({
       prenomContact: "",
       telephone: "",
       jsonResponse: {},
-      idContact: "",
-      idAbes: "",
       alert: false,
       error: "",
 
@@ -226,8 +224,6 @@ export default Vue.extend({
     fetchEtab(): void {
       HTTP.get("/ln/etablissement/" + this.userSiren)
         .then(result => {
-          this.idAbes = result.data.idAbes;
-          this.idContact = result.data.contact.id;
           this.mail = result.data.contact.mail;
           this.nomContact = result.data.contact.nom;
           this.prenomContact = result.data.contact.prenom;
@@ -258,17 +254,16 @@ export default Vue.extend({
         });
     },
     updateJsonObject(): void {
-      /*this.jsonResponse.mailContact = this.mail;
-      this.jsonResponse.nomContact = this.nomContact;
-      this.jsonResponse.prenomContact = this.prenomContact;
       this.jsonResponse.adresseContact = this.adresse;
       this.jsonResponse.boitePostaleContact = this.bp;
-      this.jsonResponse.codePostalContact = this.codePostal;
       this.jsonResponse.cedexContact = this.cedex;
-      this.jsonResponse.villeContact = this.ville;
+      this.jsonResponse.codePostalContact = this.codePostal;
+      this.jsonResponse.mailContact = this.mail;
+      this.jsonResponse.nomContact = this.nomContact;
+      this.jsonResponse.prenomContact = this.prenomContact;
+      this.jsonResponse.siren = this.userSiren;
       this.jsonResponse.telephoneContact = this.telephone;
-      this.jsonResponse.idContact = this.idContact;
-      this.jsonResponse.idAbes = this.idAbes;*/
+      this.jsonResponse.villeContact = this.ville;
     }
   }
 });
