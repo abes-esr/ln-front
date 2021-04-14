@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer
+      v-if="isLogged"
       v-model="drawer"
       bottom
       temporary
@@ -10,7 +11,10 @@
       <side-menu></side-menu>
     </v-navigation-drawer>
     <v-app-bar color="primary" app>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        v-if="isLogged"
+        @click="drawer = !drawer"
+      ></v-app-bar-nav-icon>
       <v-toolbar-title>Licences Nationales</v-toolbar-title>
     </v-app-bar>
     <v-main>
@@ -37,7 +41,8 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      darkTheme: "isDark"
+      darkTheme: "isDark",
+      isLogged: "isLoggedIn"
     })
   },
   mounted() {

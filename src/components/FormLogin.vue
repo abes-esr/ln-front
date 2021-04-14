@@ -96,7 +96,7 @@ export default Vue.extend({
         password: this.password
       })
         .then(() => {
-          this.$router.push({ name: "home" });
+          this.$router.push({ name: "Home" });
         })
         .catch(err => {
           this.buttonLoading = false;
