@@ -183,7 +183,7 @@ export default Vue.extend({
             this.buttonLoading = false;
             this.message = response.data;
             this.alert = true;
-            //this.$router.push({ name: "home" });
+            //this.$router.push({ name: "Home" });
           })
           .catch(err => {
             this.buttonLoading = false;
