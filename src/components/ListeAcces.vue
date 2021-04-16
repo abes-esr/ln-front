@@ -58,7 +58,7 @@ export default Vue.extend({
       title: "",
       headers: [
         { text: "Date de création", align: "start", value: "dateCreation", sortable: false },
-        { text: "Date de modification", value: "dateModif", sortable: false },
+        { text: "Date de modification", value: "dateModification", sortable: false },
         { text: "Type d'accès", value: "typeAcces", sortable: false },
         { text: "Type d'IP", value: "typeIp", sortable: false },
         { text: "Valeur", value: "valeur", sortable: false  },
