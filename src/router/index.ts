@@ -20,11 +20,11 @@ const routes: Array<RouteConfig> = [
     name: "Login",
     component: Login
   },
-  {
+  /*{
     path: "/creationCompte",
     name: "CreationCompte",
     component: () => import("../components/FormCreationCompte.vue")
-  },
+  },*/
   {
     path: "/profil",
     name: "Profil",
