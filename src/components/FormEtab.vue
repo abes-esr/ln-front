@@ -146,7 +146,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapActions } from "vuex";
+import {mapActions} from "vuex";
 
 export default Vue.extend({
   name: "FormEtab",
@@ -280,10 +280,6 @@ export default Vue.extend({
           villeContact: this.villeContact
         });
       }
-
-      /*      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        this.$emit("formEtab", {"nomEtab":this.nomEtab} )
-      }*/
     }
   },
   mounted() {

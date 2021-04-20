@@ -6,12 +6,13 @@
           <v-row>
             <v-col lg="12" md="12" xs="12">
               <v-row>
-                <v-col cols="2" />
+                <v-col cols="2"/>
                 <v-col cols="8">
                   <v-card-title>Fusion d'établissements</v-card-title>
                   <v-card width="100%">
                     <v-card-title
-                    >Siren des établissements à fusionner</v-card-title
+                    >Siren des établissements à fusionner
+                    </v-card-title
                     >
                     <v-card-text>
                       <v-text-field
@@ -28,10 +29,12 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-btn @click="increaseSirenNumber"
-                      >Ajouter un siren</v-btn
+                      >Ajouter un siren
+                      </v-btn
                       >
                       <v-btn @click="decreaseSirenNumber"
-                      >Supprimer un siren</v-btn
+                      >Supprimer un siren
+                      </v-btn
                       >
                     </v-card-actions>
                   </v-card>
@@ -59,11 +62,11 @@
 <script lang="ts">
 import FormEtab from "@/components/FormEtab.vue";
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
+import {HTTP} from "../utils/http-commons";
 
 export default Vue.extend({
   name: "FormFusionEtablissement",
-  components: { FormEtab },
+  components: {FormEtab},
   data() {
     return {
       sirenEtab: [],
@@ -85,7 +88,7 @@ export default Vue.extend({
           etablissementDTO: payload,
           sirenFusionnes: this.sirenEtab
         });
-        HTTP.post(process.env.VUE_APP_ROOT_API + "/ln/", {
+        HTTP.post(process.env.VUE_APP_ROOT_API + "ln/etablissement/fusion", {
           etablissementDTO: payload,
           sirenFusionnes: this.sirenEtab
         })
@@ -97,10 +100,10 @@ export default Vue.extend({
             });
       }
     },
-    increaseSirenNumber: function() {
+    increaseSirenNumber: function () {
       this.sirenNumber++;
     },
-    decreaseSirenNumber: function() {
+    decreaseSirenNumber: function () {
       this.sirenNumber--;
       this.sirenEtab.pop();
     }
