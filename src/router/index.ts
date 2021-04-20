@@ -47,6 +47,16 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/FormReinitialisationPass.vue")
   },
   {
+    path: "/fusionEtablissement",
+    name: "fusionEtablissement",
+    component: () => import("../components/FormFusionEtablissement.vue")
+  },
+  {
+    path: "/formEtab",
+    name: "FormEtab",
+    component: () => import("../components/FormEtab.vue")
+  },
+  {
     path: "*",
     /* component: NotFoundComponent, */
     redirect: "/"
