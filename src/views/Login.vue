@@ -9,11 +9,19 @@
           <forgot-password v-if="forgotPasswordVisible" />
         </transition>
         <transition name="fade">
-          <a
-            v-if="!forgotPasswordVisible"
-            @click="forgotPasswordVisible = !forgotPasswordVisible"
-            >Mot de passe ou identifiant oublié ?</a
-          >
+          <div>
+            <a
+              v-if="!forgotPasswordVisible"
+              @click="forgotPasswordVisible = !forgotPasswordVisible"
+              >Mot de passe ou identifiant oublié ?</a
+            >
+            <br />
+            <a
+              v-if="!forgotPasswordVisible"
+              v-on:click="$router.push({ name: 'CreationCompte' })"
+              >Créer un compte</a
+            >
+          </div>
         </transition>
         <transition name="fade">
           <a

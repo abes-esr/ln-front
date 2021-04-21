@@ -23,7 +23,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/creationCompte",
     name: "CreationCompte",
-    component: () => import("../components/FormCreationCompte.vue")
+    component: () => import("../views/CreationCompte.vue")
   },
   {
     path: "/profil",
