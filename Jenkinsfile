@@ -57,21 +57,12 @@ node {
                 throw new Exception("Variable ENV is null")
             } else {
                 ENV = params.ENV
-                echo "Target environnement =  ${ENV}"
+                echo "Target environnement =  ${ENV.toLowerCase()}"
             }
 
-            if (ENV == 'DEV') {
-                serverHostnames.add('hostname.server-frontAphyl-1-dev')
-                serverHostnames.add('hostname.server-frontAphyl-2-dev')
+            serverHostnames.add("hostname.server-frontAphyl-1-${ENV.toLowerCase()}")
+            serverHostnames.add("hostname.server-frontAphyl-2-${ENV.toLowerCase()}")
 
-            } else if (ENV == 'TEST') {
-                serverHostnames.add('hostname.server-frontAphyl-1-test')
-                serverHostnames.add('hostname.server-frontAphyl-2-test')
-
-            } else if (ENV == 'PROD') {
-                serverHostnames.add('hostname.server-frontAphyl-1-prod')
-                serverHostnames.add('hostname.server-frontAphyl-2-prod')
-            }
 
         } catch (e) {
             currentBuild.result = hudson.model.Result.NOT_BUILT.toString()
@@ -117,26 +108,16 @@ node {
             original = readFile ".env"
             newconfig = original
 
-            if (ENV == 'DEV') {
-                withCredentials([
-                  string(credentialsId: "url-api-ln-dev", variable: 'url')
-                ]) {
-                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
-                }
 
-            } else if (ENV == 'TEST') {
-                withCredentials([
-                  string(credentialsId: "url-api-ln-test", variable: 'url')
-                ]) {
-                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
-                }
-
-            } else if (ENV == 'PROD') {
-                withCredentials([
-                  string(credentialsId: "url-api-ln-prod", variable: 'url')
-                ]) {
-                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
-                }
+            withCredentials([
+              string(credentialsId: "url-api-ln-${ENV.toLowerCase()}", variable: 'url')
+            ]) {
+                newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
+            }
+            withCredentials([
+              string(credentialsId: "google-recaptcha-key-site", variable: 'cle')
+            ]) {
+              newconfig = newconfig.replaceAll("VUE_APP_RECAPTCHA_KEY_SITE=*", "VUE_APP_RECAPTCHA_KEY_SITE=${cle}")
             }
 
             writeFile file: ".env", text: "${newconfig}"
