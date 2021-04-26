@@ -21,11 +21,6 @@ const routes: Array<RouteConfig> = [
     component: Login
   },
   {
-    path: "/creationCompte",
-    name: "CreationCompte",
-    component: () => import("../views/CreationCompte.vue")
-  },
-  {
     path: "/profil",
     name: "Profil",
     component: () => import("../views/Profile.vue"),
@@ -55,6 +50,16 @@ const routes: Array<RouteConfig> = [
     path: "/formEtab",
     name: "FormEtab",
     component: () => import("../components/FormEtab.vue")
+  },
+  {
+    path: "/listeAcces",
+    name: "ListeAcces",
+    component: () => import("../components/ListeAcces.vue")
+  },
+  {
+    path: "/listeEtab",
+    name: "ListeEtab",
+    component: () => import("../components/ListeEtab.vue")
   },
   {
     path: "*",

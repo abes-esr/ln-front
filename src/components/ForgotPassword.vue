@@ -125,7 +125,7 @@ export default Vue.extend({
         axios
           .post(
             process.env.VUE_APP_ROOT_API +
-              "ln/reinitialisationMotDePasse/resetPassword",
+              "/ln/reinitialisationMotDePasse/resetPassword",
             {
               siren: this.siren
             }
@@ -149,12 +149,13 @@ export default Vue.extend({
         axios
           .post(
             process.env.VUE_APP_ROOT_API +
-              "ln/reinitialisationMotDePasse/resetPassword",
+              "/ln/reinitialisationMotDePasse/resetPassword",
             {
               email: this.mail
             }
           )
           .then(response => {
+            this.buttonLoading = false;
             this.message = response.data;
             this.alert = true;
           })
@@ -162,6 +163,7 @@ export default Vue.extend({
             this.buttonLoading = false;
             this.message = err.response.data;
             this.alert = true;
+            this.retourKo = true;
           });
       }
     }
