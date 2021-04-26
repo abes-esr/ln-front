@@ -20,11 +20,6 @@ const routes: Array<RouteConfig> = [
     name: "Login",
     component: Login
   },
-  /*{
-    path: "/creationCompte",
-    name: "CreationCompte",
-    component: () => import("../components/FormCreationCompte.vue")
-  },*/
   {
     path: "/profil",
     name: "Profil",
@@ -45,6 +40,16 @@ const routes: Array<RouteConfig> = [
     path: "/reinitialisationPass",
     name: "ReinitialisationPass",
     component: () => import("../components/FormReinitialisationPass.vue")
+  },
+  {
+    path: "/fusionEtablissement",
+    name: "fusionEtablissement",
+    component: () => import("../components/FormFusionEtablissement.vue")
+  },
+  {
+    path: "/formEtab",
+    name: "FormEtab",
+    component: () => import("../components/FormEtab.vue")
   },
   {
     path: "/listeAcces",
