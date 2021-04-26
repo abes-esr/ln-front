@@ -2,13 +2,16 @@
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
-
         <transition name="fade">
-          <form-login v-if="!forgotPasswordVisible && !formCreationCompteVisible" />
+          <form-login
+            v-if="!forgotPasswordVisible && !formCreationCompteVisible"
+          />
         </transition>
 
         <transition name="fade">
-          <forgot-password v-if="forgotPasswordVisible && !formCreationCompteVisible" />
+          <forgot-password
+            v-if="forgotPasswordVisible && !formCreationCompteVisible"
+          />
         </transition>
 
         <transition name="fade">
@@ -18,7 +21,7 @@
         <transition name="fade">
           <a
             v-if="!forgotPasswordVisible && !formCreationCompteVisible"
-            @click="forgotPasswordVisible = !forgotPasswordVisible "
+            @click="forgotPasswordVisible = !forgotPasswordVisible"
             >Mot de passe ou identifiant oublié ?</a
           >
         </transition>
@@ -32,19 +35,20 @@
 
         <transition name="fade">
           <a
-              v-if="!formCreationCompteVisible && !forgotPasswordVisible"
-              @click="formCreationCompteVisible = !formCreationCompteVisible"
-          ><br>Votre établissement n'a pas encore de compte ? Créer un compte</a
+            v-if="!formCreationCompteVisible && !forgotPasswordVisible"
+            @click="formCreationCompteVisible = !formCreationCompteVisible"
+            ><br />Votre établissement n'a pas encore de compte ? Créer un
+            compte</a
           >
         </transition>
         <transition name="fade">
           <a
-              v-if="formCreationCompteVisible"
-              @click="formCreationCompteVisible = !formCreationCompteVisible"
-          >Revenir au formulaire de connexion</a
+            v-if="formCreationCompteVisible"
+            @click="formCreationCompteVisible = !formCreationCompteVisible"
+            >Revenir au formulaire de connexion</a
           >
         </transition>
-          </v-col>
+      </v-col>
     </v-row>
   </v-container>
 </template>
