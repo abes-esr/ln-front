@@ -47,9 +47,9 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/FormFusionEtablissement.vue")
   },
   {
-    path: "/formEtab",
-    name: "FormEtab",
-    component: () => import("../components/FormEtab.vue")
+    path: "/scissionEtablissement",
+    name: "FormScissionEtablissement",
+    component: () => import("../components/FormScissionEtablissement.vue")
   },
   {
     path: "/listeAcces",
