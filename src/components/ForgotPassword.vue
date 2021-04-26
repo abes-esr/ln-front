@@ -71,7 +71,7 @@
               color="success"
               :loading="buttonLoading"
               x-large
-              @click="validate()"
+              @click="recaptcha()"
               >Envoyer</v-btn
             >
           </v-col>
@@ -92,6 +92,7 @@ export default Vue.extend({
   data() {
     return {
       siren: "" as string,
+      token: this.$recaptchaLoaded() as unknown,
       sirenRules: [
         (v: any) => !!v || "SIREN obligatoire",
         (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
@@ -113,6 +114,16 @@ export default Vue.extend({
     };
   },
   methods: {
+    async recaptcha() {
+      // (optional) Wait until recaptcha has been loaded.
+      await this.$recaptchaLoaded();
+
+      // Execute reCAPTCHA with action "forgotPassword".
+      this.token = await this.$recaptcha("forgotPassword");
+      console.log("token dans recaptcha() " + this.token);
+      // Do stuff with the received token.
+      this.validate();
+    },
     validate(): void {
       this.alert = false;
       this.message = "";
@@ -127,7 +138,8 @@ export default Vue.extend({
             process.env.VUE_APP_ROOT_API +
               "/ln/reinitialisationMotDePasse/resetPassword",
             {
-              siren: this.siren
+              siren: this.siren,
+              recaptcha: this.token
             }
           )
           .then(response => {
@@ -151,7 +163,8 @@ export default Vue.extend({
             process.env.VUE_APP_ROOT_API +
               "/ln/reinitialisationMotDePasse/resetPassword",
             {
-              email: this.mail
+              email: this.mail,
+              recaptcha: this.token
             }
           )
           .then(response => {
