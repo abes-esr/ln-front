@@ -62,6 +62,12 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/ListeEtab.vue")
   },
   {
+    path: "/creationCompte",
+    name: "CreationCompte",
+    component: () => import("../views/CreationCompte.vue")
+  },
+
+  {
     path: "*",
     /* component: NotFoundComponent, */
     redirect: "/"

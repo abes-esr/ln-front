@@ -3,48 +3,32 @@
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
         <transition name="fade">
-          <form-login
-            v-if="!forgotPasswordVisible && !formCreationCompteVisible"
-          />
+          <form-login v-if="!forgotPasswordVisible" />
         </transition>
 
         <transition name="fade">
-          <forgot-password
-            v-if="forgotPasswordVisible && !formCreationCompteVisible"
-          />
-        </transition>
-
-        <transition name="fade">
-          <form-creation-compte v-if="formCreationCompteVisible" />
+          <forgot-password v-if="forgotPasswordVisible" />
         </transition>
 
         <transition name="fade">
           <a
-            v-if="!forgotPasswordVisible && !formCreationCompteVisible"
+            v-if="!forgotPasswordVisible"
             @click="forgotPasswordVisible = !forgotPasswordVisible"
             >Mot de passe ou identifiant oublié ?</a
           >
         </transition>
+
+        <a
+          v-if="!forgotPasswordVisible"
+          @click="$router.push({ path: '/creationCompte' })"
+          ><br />Votre établissement n'a pas encore de compte ? Créer un
+          compte</a
+        >
+
         <transition name="fade">
           <a
             v-if="forgotPasswordVisible"
             @click="forgotPasswordVisible = !forgotPasswordVisible"
-            >Revenir au formulaire de connexion</a
-          >
-        </transition>
-
-        <transition name="fade">
-          <a
-            v-if="!formCreationCompteVisible && !forgotPasswordVisible"
-            @click="formCreationCompteVisible = !formCreationCompteVisible"
-            ><br />Votre établissement n'a pas encore de compte ? Créer un
-            compte</a
-          >
-        </transition>
-        <transition name="fade">
-          <a
-            v-if="formCreationCompteVisible"
-            @click="formCreationCompteVisible = !formCreationCompteVisible"
             >Revenir au formulaire de connexion</a
           >
         </transition>
@@ -57,19 +41,16 @@
 import Vue from "vue";
 import FormLogin from "../components/FormLogin.vue";
 import ForgotPassword from "../components/ForgotPassword.vue";
-import FormCreationCompte from "../components/FormCreationCompte.vue";
 
 export default Vue.extend({
   name: "Login",
   components: {
     FormLogin,
-    ForgotPassword,
-    FormCreationCompte
+    ForgotPassword
   },
   data() {
     return {
-      forgotPasswordVisible: false,
-      formCreationCompteVisible: false
+      forgotPasswordVisible: false
     };
   }
 });
