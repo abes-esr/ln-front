@@ -80,14 +80,14 @@ export default Vue.extend({
       ],
       bus: new Vue(),
       etablissementNumber: 2,
-      etablissementDTOS: []
+      etablissementDTOS: [] ,
     };
   },
   methods: {
     triggerChildremForm(): void {
       this.bus.$emit("submit");
     },
-    send(payload: object): void {
+    send(payload: never): void {
       this.etablissementDTOS.push(payload);
 
       if (this.etablissementDTOS.length == this.etablissementNumber) {
