@@ -271,7 +271,7 @@
 <script lang="ts">
 import Vue from "vue";
 import axios from "axios";
-import { mapActions} from "vuex";
+import { mapActions } from "vuex";
 
 export default Vue.extend({
   name: "FormCreationCompte",
@@ -426,15 +426,25 @@ export default Vue.extend({
       // Do stuff with the received token.
       this.validate();
     },
-    /* si on veut faire la verif du score sur le front et pas le back on peut faire comme ceci :
+    //si on veut faire la verif du score sur le front et pas le back on peut faire comme ceci :
     isHuman(token: any) {
       const endpoint = `${process.env.VUE_APP_RECAPTCHA_VERIFY_URL}?response=${token}&secret=${process.env.VUE_APP_RECAPTCHA_KEY_SITE}`;
-      console.log("requete axios = " + axios.post(endpoint)
-          .then(({data}) => data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD));
-      return axios.post(endpoint)
-          .then(({data}) => data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD);
-
-    },*/
+      console.log(
+        "requete axios = " +
+          axios
+            .post(endpoint)
+            .then(
+              ({ data }) =>
+                data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD
+            )
+      );
+      return axios
+        .post(endpoint)
+        .then(
+          ({ data }) =>
+            data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD
+        );
+    },
     validate(): void {
       this.alert = false;
       this.error = "";

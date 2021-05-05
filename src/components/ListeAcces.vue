@@ -30,9 +30,9 @@
                       <v-icon small class="mr-2" @click="modifierAcces(item.id)"
                         >mdi-pencil</v-icon
                       >
-                      <v-icon small class="mr-2" @click="analyserAcces(item.id)"
+                      <!--                      <v-icon small class="mr-2" @click="analyserAcces(item.id)"
                         >mdi-help-circle-outline</v-icon
-                      >
+                      >-->
                       <v-icon small @click="supprimerAcces(item.id)"
                         >mdi-delete</v-icon
                       >
@@ -129,6 +129,9 @@ export default Vue.extend({
         .catch(e => {
           console.log(e);
         });
+    },
+    modifierAcces(id) {
+      this.$router.push({ name: "ModifierAcces", params: { id: id } });
     },
     /* refreshList() {
       this.collecterAcces();
