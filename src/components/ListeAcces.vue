@@ -63,6 +63,7 @@ export default Vue.extend({
     return {
       acces: [],
       title: "",
+      id:"" as any,
       headers: [
         {
           text: "Date de création",
@@ -97,6 +98,7 @@ export default Vue.extend({
       this.$router.push("/profile");
     }*/
     this.collecterAcces();
+    this.id = this.getIdAcces(this.acces);
   },
   methods: {
     getAll() {
@@ -181,6 +183,11 @@ export default Vue.extend({
         valeur: acces.ip,
         statut: acces.validee ? "Validée" : "En validation"
       };
+    },
+    getIdAcces(acces) {
+      return {
+        id: acces.id
+      }
     }
   }
 });

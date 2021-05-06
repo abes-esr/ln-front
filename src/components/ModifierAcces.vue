@@ -44,7 +44,7 @@
                     label="Saisissez votre adresse ip"
                     placeholder="acces"
                     v-model="ip"
-                    :rules="ipRules"
+                    :rules=this.getIpRules()
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -107,14 +107,22 @@
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapGetters } from "vuex";
+import moment from 'moment';
+
 
 export default Vue.extend({
   name: "FormProfile",
   data() {
     return {
-      typeIp: "",
+      id:"",
       ip: "",
+      valide:"",
+      dateCreation:"",
+      dateModification:"",
+      typeAcces:"",
+      typeIp: "",
       commentaire: "",
+
       jsonResponse: {},
       alert: false,
       error: "",
@@ -126,17 +134,43 @@ export default Vue.extend({
       typeIpRules: [
         (v: never) => !!v || "Le type d'IP' est obligatoire"
       ],
-      ipRules: [
-        (v: never) => !!v || "L'IP' est obligatoire"
+      ipRules:"" as any,
+      ipV4Rules: [
+        (v: never) => !!v || "L'IP est obligatoire",
+        (v: never) =>
+            /^(25[0–5]|2[0–4][0–9]|[01]?[0–9][0–9]?).(25[0–5]|2[0–4][0–9]|[01]?[0–9][0–9]?).(25[0–5]|2[0–4][0–9]|[01]?[0–9][0–9]?).(25[0–5]|2[0–4][0–9]|[01]?[0–9][0–9]?)$/.test(
+                v
+            ) || "L'IP fournie n'est pas valide"
+      ],
+      ipV6Rules: [
+        (v: never) => !!v || "L'IP' est obligatoire",
+        (v: never) =>
+            /^((([0–9A-Fa-f]{1,4}:){7}[0–9A-Fa-f]{1,4})|(([0–9A-Fa-f]{1,4}:){6}:[0–9A-Fa-f]{1,4})|(([0–9A-Fa-f]{1,4}:){5}:([0–9A-Fa-f]{1,4}:)?[0–9A-Fa-f]{1,4})|(([0–9A-Fa-f]{1,4}:){4}:([0–9A-Fa-f]{1,4}:){0,2}[0–9A-Fa-f]{1,4})|(([0–9A-Fa-f]{1,4}:){3}:([0–9A-Fa-f]{1,4}:){0,3}[0–9A-Fa-f]{1,4})|(([0–9A-Fa-f]{1,4}:){2}:([0–9A-Fa-f]{1,4}:){0,4}[0–9A-Fa-f]{1,4})|(([0–9A-Fa-f]{1,4}:){6}((b((25[0–5])|(1d{2})|(2[0–4]d)|(d{1,2}))b).){3}(b((25[0–5])|(1d{2})|(2[0–4]d)|(d{1,2}))b))|(([0–9A-Fa-f]{1,4}:){0,5}:((b((25[0–5])|(1d{2})|(2[0–4]d)|(d{1,2}))b).){3}(b((25[0–5])|(1d{2})|(2[0–4]d)|(d{1,2}))b))|(::([0–9A-Fa-f]{1,4}:){0,5}((b((25[0–5])|(1d{2})|(2[0–4]d)|(d{1,2}))b).){3}(b((25[0–5])|(1d{2})|(2[0–4]d)|(d{1,2}))b))|([0–9A-Fa-f]{1,4}::([0–9A-Fa-f]{1,4}:){0,5}[0–9A-Fa-f]{1,4})|(::([0–9A-Fa-f]{1,4}:){0,6}[0–9A-Fa-f]{1,4})|(([0–9A-Fa-f]{1,4}:){1,7}:))$/.test(
+                v
+            ) || "L'IP fournie n'est pas valide"
       ],
       buttonLoading: false
     };
   },
   computed: mapGetters(["userSiren"]),
   mounted() {
+    //this.ip=this.getIp(id);
+    moment.locale('fr');
+    this.dateModification=moment().format('L');
+    this.dateModification+=" " + moment().format('LTS,MS');
+    console.log("dateModification = " + this.dateModification);
+    this.id=window.location.toString().slice(-1);
     this.fetchIp();
+    console.log(this.id);
+
+
   },
   methods: {
+    getIpRules() {
+      if(this.typeIp==="IPV4") return this.ipV4Rules
+      else return this.ipV6Rules
+
+    },
     validate(): void {
       this.error = "";
       this.alert = false;
@@ -146,10 +180,20 @@ export default Vue.extend({
       }
     },
     fetchIp(): void {
-      HTTP.get("/ln/ip/" + this.userSiren)
+      HTTP.post("/ln/ip/getIpEntity",
+          {
+                id: this.id,
+                siren:this.userSiren
+         })
+
         .then(result => {
-          this.typeIp = result.data.typeip;
-          this.ip = result.data.contact.ip;
+          this.id=result.data.id;
+          this.ip=result.data.ip;
+          this.valide=result.data.validee;
+          this.dateCreation=result.data.dateCreation;
+          this.dateModification=result.data.dateModification;
+          this.typeAcces=result.data.typeAcces;
+          this.typeIp=result.data.typeIp;
         })
         .catch(err => {
           this.alert = true;
@@ -183,7 +227,20 @@ export default Vue.extend({
       json.telephoneContact = this.telephone;
       json.villeContact = this.ville;
       this.jsonResponse = json;
+    },
+
+    getIp(id){
+      return HTTP.get(`/ln/ip/${id}`);
+    },
+    setDateModification(){
+      moment.locale('fr');
+      this.dateModification=moment().format('L');
+      this.dateModification+=" " + moment().format('LTS,MS');
+      console.log("dateModification = " + this.dateModification);
     }
+
+
+
   }
 });
 </script>
