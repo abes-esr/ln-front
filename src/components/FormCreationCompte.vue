@@ -427,7 +427,7 @@ export default Vue.extend({
       this.validate();
     },
     //si on veut faire la verif du score sur le front et pas le back on peut faire comme ceci :
-    isHuman(token: any) {
+    /*isHuman(token: any) {
       const endpoint = `${process.env.VUE_APP_RECAPTCHA_VERIFY_URL}?response=${token}&secret=${process.env.VUE_APP_RECAPTCHA_KEY_SITE}`;
       console.log(
         "requete axios = " +
@@ -444,7 +444,7 @@ export default Vue.extend({
           ({ data }) =>
             data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD
         );
-    },
+    },*/
     validate(): void {
       this.alert = false;
       this.error = "";

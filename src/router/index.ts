@@ -60,6 +60,14 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: "/ajouterAcces",
+    name: "ajouterAcces",
+    component: () => import("../components/AjouterAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/modifierAcces/:id",
     name: "ModifierAcces",
     component: () => import("../components/ModifierAcces.vue"),

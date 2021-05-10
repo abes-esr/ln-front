@@ -1,48 +1,55 @@
 <template>
   <div>
     <v-card width="100%">
-      <v-card-title>Modifier mes informations</v-card-title>
       <v-card-text>
         <v-row>
           <v-col lg="12" md="12" xs="12">
             <v-row>
-              <v-col cols="12" md="8">
-                <v-text-field
-                  v-model="valeur"
-                  label="Recherche par valeur"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" md="4">
-                <v-btn small @click="rechercheParValeur">
-                  Search
-                </v-btn>
-              </v-col>
               <v-col cols="12" sm="12">
                 <v-card class="mx-auto" tile>
                   <v-card-title>Liste des Accès</v-card-title>
-                  <v-data-table
-                    :headers="headers"
-                    :items="acces"
-                    disable-pagination
-                    :hide-default-footer="true"
-                  >
-                    <template v-slot:[`item.action`]="{ item }">
-                      <v-icon small class="mr-2" @click="modifierAcces(item.id)"
-                        >mdi-pencil</v-icon
+                  <v-row>
+                    <v-col cols="1" />
+                    <v-col cols="10">
+                      <v-data-table
+                        dense
+                        :headers="headers"
+                        :items="acces"
+                        class="elevation-1"
+                        :search="rechercher"
                       >
-                      <!--                      <v-icon small class="mr-2" @click="analyserAcces(item.id)"
-                        >mdi-help-circle-outline</v-icon
-                      >-->
-                      <v-icon small @click="supprimerAcces(item.id)"
-                        >mdi-delete</v-icon
+                        <template v-slot:top>
+                          <v-text-field
+                              v-model="rechercher"
+                              label="Chercher sur toutes les colonnes"
+                              class="mx-4"
+                          ></v-text-field>
+                        </template>
+                        <template v-slot:[`item.action`]="{ item }">
+                          <v-icon small class="mr-2" @click="modifierAcces(item.id)"
+                            >mdi-pencil</v-icon
+                          >
+                          <!--                      <v-icon small class="mr-2" @click="analyserAcces(item.id)"
+                            >mdi-help-circle-outline</v-icon
+                          >-->
+                          <v-icon small @click="supprimerAcces(item.id)"
+                            >mdi-delete</v-icon
+                          >
+                        </template>
+                      </v-data-table>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="1" />
+                    <v-col cols="10">
+                      <a @click="$router.push({ path: '/ajouterAcces' })"
+                      ><br />Ajouter une adresse IP</a
                       >
-                    </template>
-                  </v-data-table>
-                  <v-card-actions v-if="acces.length > 0">
-                    <v-btn small color="error" @click="suppTousAcces">
-                      Supprimer tous les accès
-                    </v-btn>
-                  </v-card-actions>
+                      <a @click="$router.push({ path: '/ajoutPlageAcces' })"
+                      ><br />Ajouter une plage d'adresses IP</a
+                      >
+                    </v-col>
+                  </v-row>
                 </v-card>
               </v-col>
             </v-row>
@@ -50,20 +57,30 @@
         </v-row>
       </v-card-text>
     </v-card>
+    <br />
+    <v-alert dense outlined :value="alert" type="error">
+      {{ error }}
+    </v-alert>
+    <v-alert dense outlined :value="notification!==''" type="success">
+      {{ notification }}
+    </v-alert>
+
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
+import {mapActions, mapGetters} from "vuex";
 
 export default Vue.extend({
   name: "ListeAcces",
   data() {
     return {
+      rechercher: '',
       acces: [],
       title: "",
-      id:"" as any,
+      id: "" as any,
       headers: [
         {
           text: "Date de création",
@@ -85,22 +102,22 @@ export default Vue.extend({
     };
   },
   computed: {
-    //siren:this.$store.state.user.siren as string,
-    /*loggedIn() {
-      return this.$store.state.user.isLoggedIn;
-    },*/
+    ...mapGetters(["notification"]),
+
     getUserSiren() {
       return this.$store.state.user.siren;
     }
   },
   mounted() {
-    /*if (this.loggedIn) {
-      this.$router.push("/profile");
-    }*/
     this.collecterAcces();
     this.id = this.getIdAcces(this.acces);
   },
+
   methods: {
+    ...mapActions({
+      setNotification: "setNotification"
+    }),
+
     getAll() {
       return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
@@ -187,9 +204,13 @@ export default Vue.extend({
     getIdAcces(acces) {
       return {
         id: acces.id
-      }
+      };
     }
+  },
+  destroyed() {
+    this.setNotification("");
   }
+
 });
 </script>
 <style>

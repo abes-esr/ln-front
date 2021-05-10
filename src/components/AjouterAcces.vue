@@ -1,13 +1,13 @@
 <template>
   <div>
     <v-card width="100%">
-      <v-form ref="formModifierAcces" lazy-validation>
+      <v-form ref="formAjouterAcces" lazy-validation>
         <v-row align="center" justify="center">
           <v-col lg="6" md="12" xs="12">
             <v-row>
               <v-col cols="1" />
               <v-col cols="10">
-                <v-card-title>Modifier mon ip</v-card-title>
+                <v-card-title>Ajouter des ips</v-card-title>
               </v-col>
             </v-row>
           </v-col>
@@ -112,18 +112,14 @@ import {mapActions, mapGetters} from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
-  name: "ModifierAcces",
+  name: "AjouterAcces",
   data() {
     return {
       id: "",
       ip: "" as string,
-      valide: "",
-      dateCreation: "",
-      dateModification: "",
-      typeAcces: "",
+      typeAcces: "ip",
       typeIp: "",
       commentaires: "",
-      jsonResponse: {},
       alert: false,
       error: "",
 
@@ -150,40 +146,11 @@ export default Vue.extend({
   computed: {
     ...mapGetters(["userSiren"])
   },
-  mounted() {
-    //this.ip=this.getIp(id);
-    moment.locale("fr");
-    this.dateModification = moment().format("L");
-    this.dateModification += " " + moment().format("LTS,MS");
-    console.log("dateModification = " + this.dateModification);
-    this.id = window.location.toString().slice(-1);
-    this.fetchIp();
-    console.log(this.id);
-  },
+
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
-    fetchIp(): void {
-      HTTP.post("/ln/ip/getIpEntity", {
-        id: this.id,
-        siren: this.userSiren
-      })
-        .then(result => {
-          this.id = result.data.id;
-          this.ip = result.data.ip;
-          this.valide = result.data.validee;
-          this.dateCreation = result.data.dateCreation;
-          this.dateModification = result.data.dateModification;
-          this.typeAcces = result.data.typeAcces;
-          this.typeIp = result.data.typeIp;
-          this.commentaires = result.data.commentaires;
-        })
-        .catch(err => {
-          this.alert = true;
-          this.error = err;
-        });
-    },
     getIpRules() {
       if (this.typeIp === "IPV4") {
         console.log(this.ipV4Rules);
@@ -200,7 +167,7 @@ export default Vue.extend({
       this.error = "";
       this.alert = false;
       if (
-        (this.$refs.formModifierAcces as Vue & {
+        (this.$refs.formAjouterAcces as Vue & {
           validate: () => boolean;
         }).validate()
       ) {
@@ -209,9 +176,14 @@ export default Vue.extend({
       }
     },
     submitAcces(): void {
-      this.updateJsonObject();
-      console.log(this.jsonResponse);
-      HTTP.post("/ln/ip/modification", this.jsonResponse)
+      HTTP.post("/ln/ip/ajout",
+          {
+            ip: this.ip,
+            typeAcces:this.typeAcces,
+            typeIp: this.typeIp,
+            commentaires:this.commentaires
+          }
+      )
           .then(response => {
             this.buttonLoading = false;
             console.log("notification = " + response.data);
@@ -224,30 +196,6 @@ export default Vue.extend({
             this.error = err.response.data;
             this.alert = true;
           });
-    },
-
-    updateJsonObject(): void {
-      const json: any = {};
-      json.id = this.id;
-      json.ip = this.ip;
-      json.validee = 0;
-      json.dateCreation = this.dateCreation;
-      //json.dateModification = this.setDateModification();
-      json.typeAcces = this.typeAcces;
-      json.typeIp = this.typeIp;
-      json.siren = this.userSiren;
-      json.commentaires = this.commentaires;
-      this.jsonResponse = json;
-    },
-
-    getIp(id) {
-      return HTTP.get(`/ln/ip/${id}`);
-    },
-    setDateModification() {
-      moment.locale("fr");
-      this.dateModification = moment().format("L");
-      this.dateModification += " " + moment().format("LTS,MS");
-      console.log("dateModification = " + this.dateModification);
     }
   }
 });
