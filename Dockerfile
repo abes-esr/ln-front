@@ -3,9 +3,10 @@ WORKDIR /applis
 COPY package*.json ./
 
 COPY . ./
-#COPY *.js ./
-#COPY src ./src
-#COPY public ./public
+ARG VUE_APP_ROOT_API
+ARG VUE_APP_RECAPTCHA_KEY_SITE
+ENV VUE_APP_ROOT_API=${VUE_APP_ROOT_API}
+ENV VUE_APP_RECAPTCHA_KEY_SITE=${VUE_APP_RECAPTCHA_KEY_SITE}
 RUN npm install
 RUN npm run build
 
