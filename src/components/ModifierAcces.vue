@@ -118,15 +118,13 @@ export default Vue.extend({
       id: "",
       ip: "" as string,
       valide: "",
-      dateCreation: "",
-      dateModification: "",
       typeAcces: "",
       typeIp: "",
       commentaires: "",
       jsonResponse: {},
       alert: false,
       error: "",
-
+      url:"",
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: never) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
@@ -151,11 +149,6 @@ export default Vue.extend({
     ...mapGetters(["userSiren"])
   },
   mounted() {
-    //this.ip=this.getIp(id);
-    moment.locale("fr");
-    this.dateModification = moment().format("L");
-    this.dateModification += " " + moment().format("LTS,MS");
-    console.log("dateModification = " + this.dateModification);
     this.id = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
     console.log("lastindex = " + window.location.href.substr(window.location.href.lastIndexOf('/') + 1));
     this.fetchIp();
@@ -174,8 +167,6 @@ export default Vue.extend({
           this.id = result.data.id;
           this.ip = result.data.ip;
           this.valide = result.data.validee;
-          this.dateCreation = result.data.dateCreation;
-          this.dateModification = result.data.dateModification;
           this.typeAcces = result.data.typeAcces;
           this.typeIp = result.data.typeIp;
           this.commentaires = result.data.commentaires;
@@ -212,7 +203,8 @@ export default Vue.extend({
     submitAcces(): void {
       this.updateJsonObject();
       console.log(this.jsonResponse);
-      HTTP.post("/ln/ip/modification", this.jsonResponse)
+      if(this.typeIp==="IPV4") this.url="/ln/ip/modifIpV4"; else this.url="/ln/ip/modifIpV6";
+      HTTP.post(this.url, this.jsonResponse)
         .then(response => {
           this.buttonLoading = false;
           console.log("notification = " + response.data);
@@ -232,24 +224,12 @@ export default Vue.extend({
       json.id = this.id;
       json.ip = this.ip;
       json.validee = 0;
-      json.dateCreation = this.dateCreation;
-      //json.dateModification = this.setDateModification();
       json.typeAcces = this.typeAcces;
       json.typeIp = this.typeIp;
       json.siren = this.userSiren;
       json.commentaires = this.commentaires;
       this.jsonResponse = json;
     },
-
-    getIp(id) {
-      return HTTP.get(`/ln/ip/${id}`);
-    },
-    setDateModification() {
-      moment.locale("fr");
-      this.dateModification = moment().format("L");
-      this.dateModification += " " + moment().format("LTS,MS");
-      console.log("dateModification = " + this.dateModification);
-    }
   }
 });
 </script>

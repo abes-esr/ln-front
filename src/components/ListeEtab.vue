@@ -143,7 +143,7 @@ export default Vue.extend({
         dateCreation: moment(etab.dateCreation).format("L") + " " + moment(etab.dateCreation).format("LTS,MS"),
         nomEtab:etab.name,
         typeEtab: etab.typeEtablissement,
-        statut: etab.valide ? "Validée" : "En validation"
+        statut: etab.valide ? "Validé" : "En validation"
       };
     },
     supprimerEtab(id): void {
