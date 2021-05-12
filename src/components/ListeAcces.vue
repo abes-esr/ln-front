@@ -20,13 +20,16 @@
                       >
                         <template v-slot:top>
                           <v-text-field
-                              v-model="rechercher"
-                              label="Chercher sur toutes les colonnes"
-                              class="mx-4"
+                            v-model="rechercher"
+                            label="Chercher sur toutes les colonnes"
+                            class="mx-4"
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.action`]="{ item }">
-                          <v-icon small class="mr-2" @click="modifierAcces(item.id)"
+                          <v-icon
+                            small
+                            class="mr-2"
+                            @click="modifierAcces(item.id)"
                             >mdi-pencil</v-icon
                           >
                           <!--                      <v-icon small class="mr-2" @click="analyserAcces(item.id)"
@@ -43,10 +46,10 @@
                     <v-col cols="1" />
                     <v-col cols="10">
                       <a @click="$router.push({ path: '/ajouterAcces' })"
-                      ><br />Ajouter une adresse IP</a
+                        ><br />Ajouter une adresse IP</a
                       >
                       <a @click="$router.push({ path: '/ajoutPlageAcces' })"
-                      ><br />Ajouter une plage d'adresses IP</a
+                        ><br />Ajouter une plage d'adresses IP</a
                       >
                     </v-col>
                   </v-row>
@@ -61,32 +64,35 @@
     <v-alert dense outlined :value="alert" type="error">
       {{ error }}
     </v-alert>
-    <v-alert dense outlined :value="notification!==''" type="success">
+    <v-alert dense outlined :value="notification !== ''" type="success">
       {{ notification }}
     </v-alert>
-
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
+import moment from "moment";
 
 export default Vue.extend({
   name: "ListeAcces",
   data() {
     return {
-      rechercher: '',
+      rechercher: "",
       acces: [],
       title: "",
       id: "" as any,
+      error: "",
+      alert: false,
+      formatOptions: { format: "MM-dd-yyyy", type: "date" },
       headers: [
         {
           text: "Date de création",
           align: "start",
           value: "dateCreation",
-          sortable: false
+          sortable: false,
         },
         {
           text: "Date de modification",
@@ -95,7 +101,7 @@ export default Vue.extend({
         },
         { text: "Type d'accès", value: "typeAcces", sortable: false },
         { text: "Type d'IP", value: "typeIp", sortable: false },
-        { text: "Valeur", value: "valeur", sortable: false },
+        { text: "Valeur", value: "ip", sortable: false },
         { text: "Statut", value: "statut", sortable: false },
         { text: "Action", value: "action", sortable: false }
       ]
@@ -109,6 +115,7 @@ export default Vue.extend({
     }
   },
   mounted() {
+    moment.locale("fr");
     this.collecterAcces();
     this.id = this.getIdAcces(this.acces);
   },
@@ -117,29 +124,15 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
-
+    getIdAcces(acces) {
+      return {
+        id: acces.id
+      };
+    },
     getAll() {
       return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
-    /*get(id) {
-      return axios.get(process.env.VUE_APP_ROOT_API +`/ip/${id}`);
-    },
-    create(data) {
-      return axios.post(process.env.VUE_APP_ROOT_API +"/ip", data);
-    },
-    update(id, data) {
-      return axios.put(process.env.VUE_APP_ROOT_API +`/ip/${id}`, data);
-    },
-    delete(id) {
-      return axios.delete(process.env.VUE_APP_ROOT_API +`/ip/${id}`);
-    },
-    deleteAll() {
-      return axios.delete(process.env.VUE_APP_ROOT_API +`/ip`);
-    },
-    findByValeur(valeur) {
-      return axios.get(process.env.VUE_APP_ROOT_API +`/ip?valeur=${valeur}`);
-    },*/
-    collecterAcces() {
+    collecterAcces():void {
       this.getAll()
         .then(response => {
           this.acces = response.data.map(this.affichageAcces);
@@ -149,68 +142,50 @@ export default Vue.extend({
           console.log(e);
         });
     },
-    modifierAcces(id) {
-      this.$router.push({ name: "ModifierAcces", params: { id: id } });
-    },
-    /* refreshList() {
-      this.collecterAcces();
-    },
-    suppTousAcces() {
-      this.deleteAll()
-          .then((response) => {
-            console.log(response.data);
-            this.refreshList();
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-    },
-    rechercheParValeur() {
-      this.findByValeur(this.valeur)
-          .then((response) => {
-            this.acces = response.data.map(this.affichageAcces);
-            console.log(response.data);
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-    },
-    modifierAcces(id) {
-      this.$router.push({ name: "acces-details", params: { id: id } });
-    },
-    analyserAcces(id) {
-      this.$router.push({ name: "acces-analyse", params: { id: id } });
-    },
-    supprimerAcces(id) {
-      this.delete(id)
-          .then(() => {
-            this.refreshList();
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-    },*/
     affichageAcces(acces) {
+
       return {
         id: acces.id,
-        dateCreation: acces.dateCreation,
-        dateModification: acces.dateModification,
+        dateCreation: moment(acces.dateCreation).format("L") + " " + moment(acces.dateCreation).format("LTS,MS"),
+        dateModification: this.getDateModification(acces),
         typeAcces: acces.typeAcces,
         typeIp: acces.typeIp,
-        valeur: acces.ip,
+        ip: acces.ip,
         statut: acces.validee ? "Validée" : "En validation"
       };
     },
-    getIdAcces(acces) {
-      return {
-        id: acces.id
-      };
+    getDateModification(acces) {
+      if(acces.dateModification===null)
+        return acces.dateModification
+      else return moment(acces.dateModification).format("L") + " " + moment(acces.dateModification).format("LTS,MS");
+    },
+    supprimerAcces(id): void {
+      console.log("id = " + id);
+      HTTP.post("/ln/ip/supprime", {
+        id: id,
+        siren: this.getUserSiren
+      })
+        .then(response => {
+          this.refreshList();
+          console.log("notification = " + response.data);
+          this.setNotification(response.data);
+          console.log("notification = " + this.$store.state.notification);
+        })
+        .catch(err => {
+          this.error = err.response.data;
+          this.alert = true;
+        });
+    },
+    refreshList():void {
+      this.collecterAcces();
+    },
+    modifierAcces(id) {
+      this.$router.push({ name: "ModifierAcces", params: { id: id } });
     }
   },
   destroyed() {
     this.setNotification("");
   }
-
 });
 </script>
 <style>
@@ -218,3 +193,4 @@ export default Vue.extend({
   max-width: 750px;
 }
 </style>
+

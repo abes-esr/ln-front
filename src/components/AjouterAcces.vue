@@ -108,7 +108,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
@@ -122,7 +122,7 @@ export default Vue.extend({
       commentaires: "",
       alert: false,
       error: "",
-
+      url:"",
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: never) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
@@ -172,30 +172,31 @@ export default Vue.extend({
         }).validate()
       ) {
         this.buttonLoading = true;
+        console.log(this.typeIp);
+        if(this.typeIp==="IPV4") this.url="/ln/ip/ajoutIpV4"; else this.url="/ln/ip/ajoutIpV6";
         this.submitAcces();
       }
     },
     submitAcces(): void {
-      HTTP.post("/ln/ip/ajout",
-          {
-            ip: this.ip,
-            typeAcces:this.typeAcces,
-            typeIp: this.typeIp,
-            commentaires:this.commentaires
-          }
-      )
-          .then(response => {
-            this.buttonLoading = false;
-            console.log("notification = " + response.data);
-            this.setNotification(response.data);
-            console.log("notification = " + this.$store.state.notification);
-            this.$router.push({ path: "/listeAcces" });
-          })
-          .catch(err => {
-            this.buttonLoading = false;
-            this.error = err.response.data;
-            this.alert = true;
-          });
+      HTTP.post(this.url, {
+        siren:this.userSiren,
+        ip: this.ip,
+        typeAcces: this.typeAcces,
+        typeIp: this.typeIp,
+        commentaires: this.commentaires
+      })
+        .then(response => {
+          this.buttonLoading = false;
+          console.log("notification = " + response.data);
+          this.setNotification(response.data);
+          console.log("notification = " + this.$store.state.notification);
+          this.$router.push({ path: "/listeAcces" });
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.error = err.response.data;
+          this.alert = true;
+        });
     }
   }
 });

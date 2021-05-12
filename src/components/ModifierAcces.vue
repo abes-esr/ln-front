@@ -108,7 +108,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
@@ -156,7 +156,8 @@ export default Vue.extend({
     this.dateModification = moment().format("L");
     this.dateModification += " " + moment().format("LTS,MS");
     console.log("dateModification = " + this.dateModification);
-    this.id = window.location.toString().slice(-1);
+    this.id = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+    console.log("lastindex = " + window.location.href.substr(window.location.href.lastIndexOf('/') + 1));
     this.fetchIp();
     console.log(this.id);
   },
@@ -212,18 +213,18 @@ export default Vue.extend({
       this.updateJsonObject();
       console.log(this.jsonResponse);
       HTTP.post("/ln/ip/modification", this.jsonResponse)
-          .then(response => {
-            this.buttonLoading = false;
-            console.log("notification = " + response.data);
-            this.setNotification(response.data);
-            console.log("notification = " + this.$store.state.notification);
-            this.$router.push({ path: "/listeAcces" });
-          })
-          .catch(err => {
-            this.buttonLoading = false;
-            this.error = err.response.data;
-            this.alert = true;
-          });
+        .then(response => {
+          this.buttonLoading = false;
+          console.log("notification = " + response.data);
+          this.setNotification(response.data);
+          console.log("notification = " + this.$store.state.notification);
+          this.$router.push({ path: "/listeAcces" });
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.error = err.response.data;
+          this.alert = true;
+        });
     },
 
     updateJsonObject(): void {
