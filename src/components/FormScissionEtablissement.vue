@@ -6,27 +6,31 @@
           <v-row>
             <v-col lg="12" md="12" xs="12">
               <v-row>
-                <v-col cols="2"/>
+                <v-col cols="2" />
                 <v-col cols="8">
                   <v-card-title>Scission d'établissement</v-card-title>
                   <v-card width="100%">
-                    <v-card-title>Siren de l'établissements à scinder</v-card-title>
+                    <v-card-title
+                      >Siren de l'établissements à scinder</v-card-title
+                    >
                     <v-card-text>
                       <v-text-field
-                          outlined
-                          label="SIREN"
-                          placeholder="SIREN"
-                          v-model="sirenEtab"
-                          :rules="sirenEtabRules"
-                          required
-                          @keyup.enter="validate()"
+                        outlined
+                        label="SIREN"
+                        placeholder="SIREN"
+                        v-model="sirenEtab"
+                        :rules="sirenEtabRules"
+                        required
+                        @keyup.enter="validate()"
                       ></v-text-field>
                     </v-card-text>
                   </v-card>
-                  <form-etab :bus="bus"
-                             v-on:formEtab="send"
-                             v-for="n in etablissementNumber"
-                             :key="n"></form-etab>
+                  <form-etab
+                    :bus="bus"
+                    v-on:formEtab="send"
+                    v-for="n in etablissementNumber"
+                    :key="n"
+                  ></form-etab>
                 </v-col>
               </v-row>
             </v-col>
@@ -40,11 +44,13 @@
           <v-row>
             <v-col cols="3"></v-col>
             <v-col>
-              <v-btn @click="increaseEtablissementNumber">Ajouter un etablissement
+              <v-btn @click="increaseEtablissementNumber"
+                >Ajouter un etablissement
               </v-btn>
             </v-col>
             <v-col>
-              <v-btn @click="decreaseEtablissementNumber">Supprimer un etablissement
+              <v-btn @click="decreaseEtablissementNumber"
+                >Supprimer un etablissement
               </v-btn>
             </v-col>
             <v-col cols="3"></v-col>
@@ -53,7 +59,7 @@
             <v-col cols="9"></v-col>
             <v-col>
               <v-btn @click="triggerChildremForm()" color="success"
-              >Valider
+                >Valider
               </v-btn>
             </v-col>
           </v-row>
@@ -66,11 +72,11 @@
 <script lang="ts">
 import FormEtab from "@/components/FormEtab.vue";
 import Vue from "vue";
-import {HTTP} from "../utils/http-commons";
+import { HTTP } from "../utils/http-commons";
 
 export default Vue.extend({
   name: "FormFusionEtablissement",
-  components: {FormEtab},
+  components: { FormEtab },
   data() {
     return {
       sirenEtab: "",
@@ -80,7 +86,7 @@ export default Vue.extend({
       ],
       bus: new Vue(),
       etablissementNumber: 2,
-      etablissementDTOS: [] ,
+      etablissementDTOS: []
     };
   },
   methods: {
@@ -96,23 +102,26 @@ export default Vue.extend({
             ancienSiren: this.sirenEtab,
             etablissementDTOS: this.etablissementDTOS
           });
-          HTTP.post(process.env.VUE_APP_ROOT_API + "ln/etablissement/division", {
-            ancienSiren: this.sirenEtab,
-            etablissementDTOS: this.etablissementDTOS
-          })
-              .then(res => {
-                res.status;
-              })
-              .catch(err => {
-                err.data();
-              });
+          HTTP.post(
+            process.env.VUE_APP_ROOT_API + "ln/etablissement/division",
+            {
+              ancienSiren: this.sirenEtab,
+              etablissementDTOS: this.etablissementDTOS
+            }
+          )
+            .then(res => {
+              res.status;
+            })
+            .catch(err => {
+              err.data();
+            });
         }
       }
     },
-    increaseEtablissementNumber: function () {
+    increaseEtablissementNumber: function() {
       this.etablissementNumber++;
     },
-    decreaseEtablissementNumber: function () {
+    decreaseEtablissementNumber: function() {
       this.etablissementNumber--;
     }
   }

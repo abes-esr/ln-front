@@ -271,7 +271,7 @@
 <script lang="ts">
 import Vue from "vue";
 import axios from "axios";
-import { mapActions} from "vuex";
+import { mapActions } from "vuex";
 
 export default Vue.extend({
   name: "FormCreationCompte",

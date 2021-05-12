@@ -41,6 +41,30 @@
           <v-list-item-title>Modifier mon mot de passe</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-list-item
+        v-on:click="
+          $router.push({ name: 'scissionEtablissement' }).catch(err => {})
+        "
+      >
+        <v-list-item-action>
+          <v-icon>mdi-set-split</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Scission établissements</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
+        v-on:click="
+          $router.push({ name: 'fusionEtablissement' }).catch(err => {})
+        "
+      >
+        <v-list-item-action>
+          <v-icon>mdi-set-merge</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Fusion établissements</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-list-item v-on:click="disconnect()">
         <v-list-item-action>
           <v-icon>mdi-logout</v-icon>
