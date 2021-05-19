@@ -34,7 +34,7 @@
                       label="Type d'IP"
                       :rules="typeIpRules"
                       v-on:change="clearIp()"
-                      @keyup.enter="validate()"
+                      @keyup.enter="buttonAjouterIp()"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -48,7 +48,7 @@
                       v-model="ip"
                       :rules="this.getIpRules()"
                       required
-                      @keyup.enter="validate()"
+                      @keyup.enter="buttonAjouterIp()"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -84,8 +84,8 @@
                   <v-card-actions>
                     <v-btn
                         color="orange"
-                        v-if="this.typeIp!='' && this.ip!=''"
-                        @click="ajouterIp">Ajouter l'ip saisie </v-btn>
+                        v-model="showButtonAjouterIp"
+                        @click="buttonAjouterIp()">Ajouter l'ip saisie </v-btn>
                   </v-card-actions>
                 </v-col>
               </v-row>
@@ -127,6 +127,7 @@
             <v-col cols="10"></v-col>
             <v-col>
               <v-btn
+                  v-if="arrayArrays.length>0"
                   color="success"
                   :loading="buttonLoading"
                   x-large
@@ -163,6 +164,7 @@ export default Vue.extend({
       commentaires: "",
       alertIp: true,
       alert: false,
+      showButtonAjouterIp: false,
       error: "",
       arrayAjouterIp: [] as any,
       arrayArrays: [] as any,
@@ -197,14 +199,14 @@ export default Vue.extend({
       setNotification: "setNotification"
     }),
     ajouterIp(): void {
-      this.arrayAjouterIp.userSiren=this.userSiren;
-      this.arrayAjouterIp.typeIp=this.typeIp;
-      this.arrayAjouterIp.ip=this.ip;
-      this.arrayAjouterIp.commentaires=this.commentaires;
+      this.arrayAjouterIp.userSiren = this.userSiren;
+      this.arrayAjouterIp.typeIp = this.typeIp;
+      this.arrayAjouterIp.ip = this.ip;
+      this.arrayAjouterIp.commentaires = this.commentaires;
       console.log(this.arrayAjouterIp)
       this.arrayArrays.push(this.arrayAjouterIp);
       console.log(this.arrayArrays.toString())
-      this.arrayAjouterIp=[];
+      this.arrayAjouterIp = [];
       this.typeIp = "";
       this.ip = "";
       this.commentaires = "";
@@ -223,27 +225,59 @@ export default Vue.extend({
     clearIp(): void {
       this.ip = "";
     },
-    suppIpFromArrayArrays(index) : void {
+    suppIpFromArrayArrays(index): void {
       this.arrayArrays.splice(index);
       console.log(this.arrayArrays.toString());
       console.log(this.arrayArrays.length);
     },
-    validate(): void {
+    buttonAjouterIp(): void {
       this.error = "";
       this.alert = false;
+      this.showButtonAjouterIp = false;
       if (
           (this.$refs.formAjouterAcces as Vue & {
             validate: () => boolean;
           }).validate()
       ) {
-        this.buttonLoading = true;
-        console.log(this.typeIp);
-        if (this.typeIp === "IPV4") this.url = "/ln/ip/ajoutIpV4";
-        else this.url = "/ln/ip/ajoutIpV6";
-        this.submitAcces();
+        this.showButtonAjouterIp = true;
+        this.ajouterIp();
       }
     },
-    submitAcces(): void {
+
+    validate(): void {
+      this.buttonLoading = true;
+      console.log(this.typeIp);
+      this.arrayArrays.forEach((value, index) => {
+        if (value.typeIp === "IPV4") this.url = "/ln/ip/ajoutIpV4";
+        else this.url = "/ln/ip/ajoutIpV6";
+        HTTP.post(this.url, {
+          siren: this.userSiren,
+          ip: value.ip,
+          typeAcces: this.typeAcces,
+          typeIp: value.typeIp,
+          commentaires: value.commentaires
+        })
+            .then(response => {
+              this.buttonLoading = false;
+              console.log("notification = " + response.data);
+              this.setNotification(response.data);
+              console.log("notification = " + this.$store.state.notification);
+              this.$router.push({path: "/listeAcces"});
+            })
+            .catch(err => {
+              this.buttonLoading = false;
+              this.error = err.response.data;
+              this.alert = true;
+            });
+      })
+    }
+  }
+});
+</script>
+
+
+
+    /*submitAcces(): void {
       HTTP.post(this.url, {
         siren: this.userSiren,
         ip: this.ip,
@@ -263,10 +297,9 @@ export default Vue.extend({
             this.error = err.response.data;
             this.alert = true;
           });
-    }
-  }
-});
-</script>
+    }*/
+
+
 
 <style scoped></style>
 //repeat a form vuejs

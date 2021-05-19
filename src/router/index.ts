@@ -67,14 +67,6 @@ const routes: Array<RouteConfig> = [
       requiresAuth: true
     }
   },
-  /*{
-    path: "/ajouterAcces2",
-    name: "ajouterAcces2",
-    component: () => import("../components/AjouterAcces2.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },*/
   {
     path: "/modifierAcces/:id",
     name: "ModifierAcces",
