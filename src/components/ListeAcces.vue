@@ -132,7 +132,8 @@ export default Vue.extend({
       return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
     collecterAcces(): void {
-      (this as any).getAll()
+      (this as any)
+        .getAll()
         .then(response => {
           (this as any).acces = response.data.map((this as any).affichageAcces);
           console.log(response.data);

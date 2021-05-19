@@ -28,13 +28,13 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-select
-                    outlined
-                    v-model="typeIp"
-                    :items="typesIp"
-                    label="Type d'IP"
-                    :rules="typeIpRules"
-                    v-on:change="clearIp()"
-                    required
+                      outlined
+                      v-model="typeIp"
+                      :items="typesIp"
+                      label="Type d'IP"
+                      :rules="typeIpRules"
+                      v-on:change="clearIp()"
+                      @keyup.enter="validate()"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -42,13 +42,13 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-text-field
-                    outlined
-                    label="Saisissez votre adresse ip"
-                    placeholder="acces"
-                    v-model="ip"
-                    :rules="this.getIpRules()"
-                    required
-                    @keyup.enter="validate()"
+                      outlined
+                      label="Saisissez votre adresse ip"
+                      placeholder="acces"
+                      v-model="ip"
+                      :rules="this.getIpRules()"
+                      required
+                      @keyup.enter="validate()"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -56,10 +56,10 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-alert
-                    border="top"
-                    colored-border
-                    type="info"
-                    elevation="2"
+                      border="top"
+                      colored-border
+                      type="info"
+                      elevation="2"
                   >
                     Si certaines des adresses renseignées ne font pas partie du
                     réseau RENATER, merci de nous en préciser la raison.
@@ -69,13 +69,54 @@
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
-                  <v-text-field
-                    outlined
-                    label="Commentaires"
-                    placeholder="Si certaines des adresses renseignées ne font pas partie du réseau RENATER, merci de nous en préciser la raison."
-                    v-model="commentaires"
-                    @keyup.enter="validate()"
-                  ></v-text-field>
+                  <v-textarea
+                      outlined
+                      auto-grow
+                      label="Commentaires"
+                      placeholder="Si certaines des adresses renseignées ne font pas partie du réseau RENATER, merci de nous en préciser la raison."
+                      v-model="commentaires"
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-card-actions>
+                    <v-btn
+                        color="orange"
+                        v-if="this.typeIp!='' && this.ip!=''"
+                        @click="ajouterIp">Ajouter l'ip saisie </v-btn>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-card-title
+                      v-if="arrayArrays.length>0"
+                  >Ips mémorisées avant envoi</v-card-title>
+                  <v-alert
+                      v-model="alertIp"
+                      border="left"
+                      color="yellow accent-1"
+                      icon="mdi-school"
+                      v-for="(value, index) in arrayArrays" v-bind:key="index"
+                  >
+                    <v-row align="center">
+                      <v-col class="grow">
+                        {{value.typeIp}}
+                        {{value.ip}}
+                        {{value.commentaires.substring(1,40)}}
+                      </v-col>
+                      <v-col class="shrink">
+                        <v-btn
+                            color="red"
+                            @click="suppIpFromArrayArrays(index)"
+                        >SUPPRIMER</v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-alert>
                 </v-col>
               </v-row>
             </v-col>
@@ -86,11 +127,11 @@
             <v-col cols="10"></v-col>
             <v-col>
               <v-btn
-                color="success"
-                :loading="buttonLoading"
-                x-large
-                @click="validate()"
-                >Envoyer</v-btn
+                  color="success"
+                  :loading="buttonLoading"
+                  x-large
+                  @click="validate()"
+              >Envoyer</v-btn
               >
             </v-col>
           </v-row>
@@ -112,33 +153,37 @@ import { mapActions, mapGetters } from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
-  name: "AjouterAcces",
+  name: "AjouterAcces2",
   data() {
     return {
       id: "",
-      ip: "" as string,
+      ip: "",
       typeAcces: "ip",
-      typeIp: "",
+      typeIp: "" as any,
       commentaires: "",
+      alertIp: true,
       alert: false,
       error: "",
+      arrayAjouterIp: [] as any,
+      arrayArrays: [] as any,
+      arrayIpNumber: 2,
       url: "",
       typesIp: ["IPV4", "IPV6"],
-      typeIpRules: [(v: never) => !!v || "Le type d'IP est obligatoire"],
+      typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
       ipV4Rules: [
-        (v: never) => !!v || "L'IP est obligatoire",
-        (v: never) =>
-          /\b((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\.)){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\b/.test(
-            v
-          ) || "L'IP fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
+        (v: any) => !!v || "L'IP est obligatoire",
+        (v: any) =>
+            /\b((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\.)){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\b/.test(
+                v
+            ) || "L'IP fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
       ],
       ipV6Rules: [
-        (v: never) => !!v || "L'IP est obligatoire",
-        (v: never) =>
-          /^\s*(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\s*$/.test(
-            v
-          ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
+        (v: any) => !!v || "L'IP est obligatoire",
+        (v: any) =>
+            /^\s*(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\s*$/.test(
+                v
+            ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
       ],
       buttonLoading: false
     };
@@ -151,6 +196,21 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+    ajouterIp(): void {
+      this.arrayAjouterIp.userSiren=this.userSiren;
+      this.arrayAjouterIp.typeIp=this.typeIp;
+      this.arrayAjouterIp.ip=this.ip;
+      this.arrayAjouterIp.commentaires=this.commentaires;
+      console.log(this.arrayAjouterIp)
+      this.arrayArrays.push(this.arrayAjouterIp);
+      console.log(this.arrayArrays.toString())
+      this.arrayAjouterIp=[];
+      this.typeIp = "";
+      this.ip = "";
+      this.commentaires = "";
+      console.log(this.arrayAjouterIp)
+      console.log(this.arrayArrays)
+    },
     getIpRules() {
       if (this.typeIp === "IPV4") {
         console.log(this.ipV4Rules);
@@ -163,13 +223,18 @@ export default Vue.extend({
     clearIp(): void {
       this.ip = "";
     },
+    suppIpFromArrayArrays(index) : void {
+      this.arrayArrays.splice(index);
+      console.log(this.arrayArrays.toString());
+      console.log(this.arrayArrays.length);
+    },
     validate(): void {
       this.error = "";
       this.alert = false;
       if (
-        (this.$refs.formAjouterAcces as Vue & {
-          validate: () => boolean;
-        }).validate()
+          (this.$refs.formAjouterAcces as Vue & {
+            validate: () => boolean;
+          }).validate()
       ) {
         this.buttonLoading = true;
         console.log(this.typeIp);
@@ -186,21 +251,23 @@ export default Vue.extend({
         typeIp: this.typeIp,
         commentaires: this.commentaires
       })
-        .then(response => {
-          this.buttonLoading = false;
-          console.log("notification = " + response.data);
-          this.setNotification(response.data);
-          console.log("notification = " + this.$store.state.notification);
-          this.$router.push({ path: "/listeAcces" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.error = err.response.data;
-          this.alert = true;
-        });
+          .then(response => {
+            this.buttonLoading = false;
+            console.log("notification = " + response.data);
+            this.setNotification(response.data);
+            console.log("notification = " + this.$store.state.notification);
+            this.$router.push({ path: "/listeAcces" });
+          })
+          .catch(err => {
+            this.buttonLoading = false;
+            this.error = err.response.data;
+            this.alert = true;
+          });
     }
   }
 });
 </script>
 
 <style scoped></style>
+//repeat a form vuejs
+//https://stackoverflow.com/questions/51133782/vuejs-add-the-same-form-multiple-times

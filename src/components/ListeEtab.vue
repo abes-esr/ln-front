@@ -131,7 +131,8 @@ export default Vue.extend({
       return HTTP.get("/ln/etablissement/getListEtab");
     },
     collecterEtab(): any {
-      (this as any).getAll()
+      (this as any)
+        .getAll()
         .then(response => {
           (this as any).etab = response.data.map((this as any).affichageEtab);
           console.log(response.data);
