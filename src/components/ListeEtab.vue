@@ -12,31 +12,34 @@
                     <v-col cols="1" />
                     <v-col cols="10">
                       <v-data-table
-                          dense
-                          :headers="headers"
-                          :items="etab"
-                          class="elevation-1"
-                          :search="rechercher"
+                        dense
+                        :headers="headers"
+                        :items="etab"
+                        class="elevation-1"
+                        :search="rechercher"
                       >
                         <template v-slot:top>
                           <v-text-field
-                              v-model="rechercher"
-                              label="Chercher sur toutes les colonnes"
-                              class="mx-4"
+                            v-model="rechercher"
+                            label="Chercher sur toutes les colonnes"
+                            class="mx-4"
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.action`]="{ item }">
                           <v-icon
-                              small
-                              class="mr-2"
-                              @click="modifierEtab(item.id)"
-                          >mdi-pencil</v-icon
+                            small
+                            class="mr-2"
+                            @click="modifierEtab(item.id)"
+                            >mdi-pencil</v-icon
                           >
-                          <v-icon small class="mr-2" @click="listAcces(item.siren)"
+                          <v-icon
+                            small
+                            class="mr-2"
+                            @click="listAcces(item.siren)"
                             >mdi-help-circle-outline</v-icon
                           >
                           <v-icon small @click="supprimerEtab(item.id)"
-                          >mdi-delete</v-icon
+                            >mdi-delete</v-icon
                           >
                         </template>
                       </v-data-table>
@@ -46,10 +49,10 @@
                     <v-col cols="1" />
                     <v-col cols="10">
                       <a @click="$router.push({ path: '/ajouterEtab' })"
-                      ><br />Ajouter un établissement</a
+                        ><br />Ajouter un établissement</a
                       >
                       <a @click="$router.push({ path: '/ajoutEditeur' })"
-                      ><br />Ajouter un éditeur</a
+                        ><br />Ajouter un éditeur</a
                       >
                     </v-col>
                   </v-row>
@@ -73,7 +76,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
@@ -81,8 +85,8 @@ export default Vue.extend({
   data() {
     return {
       rechercher: "",
-      etab: [],
-      title: "",
+      etab: [] as any,
+      title: "" as string,
       id: "" as any,
       error: "",
       alert: false,
@@ -91,7 +95,7 @@ export default Vue.extend({
           text: "Date de création",
           align: "start",
           value: "dateCreation",
-          sortable: false,
+          sortable: false
         },
 
         { text: "Etablissement", value: "nomEtab", sortable: false },
@@ -110,8 +114,8 @@ export default Vue.extend({
   },
   mounted() {
     moment.locale("fr");
-    this.collecterEtab();
-    this.id = this.getIdEtab(this.etab);
+    (this as any).collecterEtab();
+    (this as any).id = (this as any).getIdEtab((this as any).etab);
   },
 
   methods: {
@@ -123,25 +127,27 @@ export default Vue.extend({
         id: etab.id
       };
     },
-    getAll() {
+    getAll(): any {
       return HTTP.get("/ln/etablissement/getListEtab");
     },
-    collecterEtab():void {
-      this.getAll()
-          .then(response => {
-            this.etab = response.data.map(this.affichageEtab);
-            console.log(response.data);
-          })
-          .catch(e => {
-            console.log(e);
-          });
+    collecterEtab(): any {
+      (this as any).getAll()
+        .then(response => {
+          (this as any).etab = response.data.map((this as any).affichageEtab);
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
     },
     affichageEtab(etab) {
-
       return {
         id: etab.id,
-        dateCreation: moment(etab.dateCreation).format("L") + " " + moment(etab.dateCreation).format("LTS,MS"),
-        nomEtab:etab.name,
+        dateCreation:
+          moment(etab.dateCreation).format("L") +
+          " " +
+          moment(etab.dateCreation).format("LTS,MS"),
+        nomEtab: etab.name,
         typeEtab: etab.typeEtablissement,
         statut: etab.valide ? "Validé" : "En validation"
       };
@@ -152,26 +158,26 @@ export default Vue.extend({
         id: id,
         siren: this.getUserSiren
       })
-          .then(response => {
-            this.refreshList();
-            console.log("notification = " + response.data);
-            this.setNotification(response.data);
-            console.log("notification = " + this.$store.state.notification);
-          })
-          .catch(err => {
-            this.error = err.response.data;
-            this.alert = true;
-          });
+        .then(response => {
+          (this as any).refreshList();
+          console.log("notification = " + response.data);
+          (this as any).setNotification(response.data);
+          console.log("notification = " + this.$store.state.notification);
+        })
+        .catch(err => {
+          (this as any).error = err.response.data;
+          (this as any).alert = true;
+        });
     },
-    refreshList():void {
-      this.collecterEtab();
+    refreshList(): void {
+      (this as any).collecterEtab();
     },
     modifierAcces(id) {
       this.$router.push({ name: "ModifierEtab", params: { id: id } });
     }
   },
   destroyed() {
-    this.setNotification("");
+    (this as any).setNotification("");
   }
 });
 </script>
@@ -180,4 +186,3 @@ export default Vue.extend({
   max-width: 750px;
 }
 </style>
-

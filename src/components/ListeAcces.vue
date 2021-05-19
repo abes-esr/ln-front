@@ -86,13 +86,12 @@ export default Vue.extend({
       id: "" as any,
       error: "",
       alert: false,
-      formatOptions: { format: "MM-dd-yyyy", type: "date" },
       headers: [
         {
           text: "Date de création",
           align: "start",
           value: "dateCreation",
-          sortable: false,
+          sortable: false
         },
         {
           text: "Date de modification",
@@ -116,8 +115,8 @@ export default Vue.extend({
   },
   mounted() {
     moment.locale("fr");
-    this.collecterAcces();
-    this.id = this.getIdAcces(this.acces);
+    (this as any).collecterAcces();
+    (this as any).id = (this as any).getIdAcces((this as any).acces);
   },
 
   methods: {
@@ -132,10 +131,10 @@ export default Vue.extend({
     getAll() {
       return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
-    collecterAcces():void {
-      this.getAll()
+    collecterAcces(): void {
+      (this as any).getAll()
         .then(response => {
-          this.acces = response.data.map(this.affichageAcces);
+          (this as any).acces = response.data.map((this as any).affichageAcces);
           console.log(response.data);
         })
         .catch(e => {
@@ -143,11 +142,13 @@ export default Vue.extend({
         });
     },
     affichageAcces(acces) {
-
       return {
         id: acces.id,
-        dateCreation: moment(acces.dateCreation).format("L") + " " + moment(acces.dateCreation).format("LTS,MS"),
-        dateModification: this.getDateModification(acces),
+        dateCreation:
+          moment(acces.dateCreation).format("L") +
+          " " +
+          moment(acces.dateCreation).format("LTS,MS"),
+        dateModification: (this as any).getDateModification(acces),
         typeAcces: acces.typeAcces,
         typeIp: acces.typeIp,
         ip: acces.ip,
@@ -155,9 +156,13 @@ export default Vue.extend({
       };
     },
     getDateModification(acces) {
-      if(acces.dateModification===null)
-        return acces.dateModification
-      else return moment(acces.dateModification).format("L") + " " + moment(acces.dateModification).format("LTS,MS");
+      if (acces.dateModification === null) return acces.dateModification;
+      else
+        return (
+          moment(acces.dateModification).format("L") +
+          " " +
+          moment(acces.dateModification).format("LTS,MS")
+        );
     },
     supprimerAcces(id): void {
       console.log("id = " + id);
@@ -166,25 +171,25 @@ export default Vue.extend({
         siren: this.getUserSiren
       })
         .then(response => {
-          this.refreshList();
+          (this as any).refreshList();
           console.log("notification = " + response.data);
-          this.setNotification(response.data);
+          (this as any).setNotification(response.data);
           console.log("notification = " + this.$store.state.notification);
         })
         .catch(err => {
-          this.error = err.response.data;
-          this.alert = true;
+          (this as any).error = err.response.data;
+          (this as any).alert = true;
         });
     },
-    refreshList():void {
-      this.collecterAcces();
+    refreshList(): void {
+      (this as any).collecterAcces();
     },
     modifierAcces(id) {
       this.$router.push({ name: "ModifierAcces", params: { id: id } });
     }
   },
   destroyed() {
-    this.setNotification("");
+    (this as any).setNotification("");
   }
 });
 </script>
@@ -193,4 +198,3 @@ export default Vue.extend({
   max-width: 750px;
 }
 </style>
-
