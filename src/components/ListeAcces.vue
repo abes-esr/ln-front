@@ -132,12 +132,8 @@ export default Vue.extend({
       return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
     collecterAcces(): void {
-<<<<<<< HEAD
-      this.getAll()
-=======
       (this as any)
         .getAll()
->>>>>>> 269d63c53872f9ca1f60b57b41dc7a42568d51ea
         .then(response => {
           (this as any).acces = response.data.map((this as any).affichageAcces);
           console.log(response.data);
@@ -153,11 +149,7 @@ export default Vue.extend({
           moment(acces.dateCreation).format("L") +
           " " +
           moment(acces.dateCreation).format("LTS,MS"),
-<<<<<<< HEAD
-        dateModification: this.getDateModification(acces),
-=======
         dateModification: (this as any).getDateModification(acces),
->>>>>>> 269d63c53872f9ca1f60b57b41dc7a42568d51ea
         typeAcces: acces.typeAcces,
         typeIp: acces.typeIp,
         ip: acces.ip,
@@ -191,11 +183,7 @@ export default Vue.extend({
         });
     },
     refreshList(): void {
-<<<<<<< HEAD
-      this.collecterAcces();
-=======
       (this as any).collecterAcces();
->>>>>>> 269d63c53872f9ca1f60b57b41dc7a42568d51ea
     },
     modifierAcces(id) {
       this.$router.push({ name: "ModifierAcces", params: { id: id } });

@@ -38,7 +38,9 @@
                             @click="listAcces(item.siren)"
                             >mdi-help-circle-outline</v-icon
                           >
-                          <v-icon small @click="supprimerEtab(item.siren)"
+                          <v-icon
+                            small
+                            @click.stop="openDialogSuppression(item.siren)"
                             >mdi-delete</v-icon
                           >
                         </template>
@@ -70,6 +72,47 @@
     <v-alert dense outlined :value="notification !== ''" type="success">
       {{ notification }}
     </v-alert>
+
+    <!-- Popup de suppression -->
+    <div class="text-center">
+      <v-dialog v-model="dialog" width="500">
+        <v-card>
+          <v-card-title class="headline grey lighten-2">
+            Supprimer un établissement
+          </v-card-title>
+
+          <v-card-text>
+            Vous êtes sur le point de supprimer l'établissement :
+            {{ currentSirenToDelete }}. Êtes vous sûr ? Veuillez indiquer le
+            motif de la suppresion :
+            <v-textarea
+              outlined
+              label="Motif suppression"
+              v-model="motifSuppression"
+            ></v-textarea>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="dialog = false">
+              Annuler
+            </v-btn>
+            <v-btn
+              color="primary"
+              text
+              @click="
+                dialog = false;
+                supprimerEtab();
+              "
+            >
+              Valider
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
   </div>
 </template>
 
@@ -102,7 +145,10 @@ export default Vue.extend({
         { text: "Type d'établissement", value: "typeEtab", sortable: false },
         { text: "Statut", value: "statut", sortable: false },
         { text: "Action", value: "action", sortable: false }
-      ]
+      ],
+      dialog: false,
+      currentSirenToDelete: "",
+      motifSuppression: ""
     };
   },
   computed: {
@@ -154,9 +200,16 @@ export default Vue.extend({
         statut: etab.valide ? "Validé" : "En validation"
       };
     },
-    supprimerEtab(siren): void {
-      console.log(siren);
-      HTTP.delete("/ln/etablissement/suppression/" + siren)
+    openDialogSuppression(siren): void {
+      (this as any).dialog = true;
+      (this as any).currentSirenToDelete = siren;
+      //(this as any).supprimerEtab(siren);
+    },
+    supprimerEtab(): void {
+      HTTP.post(
+        "/ln/etablissement/suppression/" + (this as any).currentSirenToDelete,
+        { motif: (this as any).motifSuppression }
+      )
         .then(response => {
           (this as any).refreshList();
           console.log("notification = " + response.data);
@@ -166,6 +219,8 @@ export default Vue.extend({
           (this as any).error = err.response.data;
           (this as any).alert = true;
         });
+      (this as any).currentSirenToDelete = "";
+      (this as any).motifSuppression = "";
     },
     refreshList(): void {
       (this as any).collecterEtab();
