@@ -92,7 +92,7 @@ export default Vue.extend({
           text: "Date de création",
           align: "start",
           value: "dateCreation",
-          sortable: false,
+          sortable: false
         },
         {
           text: "Date de modification",
@@ -132,7 +132,7 @@ export default Vue.extend({
     getAll() {
       return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
-    collecterAcces():void {
+    collecterAcces(): void {
       this.getAll()
         .then(response => {
           this.acces = response.data.map(this.affichageAcces);
@@ -143,10 +143,12 @@ export default Vue.extend({
         });
     },
     affichageAcces(acces) {
-
       return {
         id: acces.id,
-        dateCreation: moment(acces.dateCreation).format("L") + " " + moment(acces.dateCreation).format("LTS,MS"),
+        dateCreation:
+          moment(acces.dateCreation).format("L") +
+          " " +
+          moment(acces.dateCreation).format("LTS,MS"),
         dateModification: this.getDateModification(acces),
         typeAcces: acces.typeAcces,
         typeIp: acces.typeIp,
@@ -155,9 +157,13 @@ export default Vue.extend({
       };
     },
     getDateModification(acces) {
-      if(acces.dateModification===null)
-        return acces.dateModification
-      else return moment(acces.dateModification).format("L") + " " + moment(acces.dateModification).format("LTS,MS");
+      if (acces.dateModification === null) return acces.dateModification;
+      else
+        return (
+          moment(acces.dateModification).format("L") +
+          " " +
+          moment(acces.dateModification).format("LTS,MS")
+        );
     },
     supprimerAcces(id): void {
       console.log("id = " + id);
@@ -176,7 +182,7 @@ export default Vue.extend({
           this.alert = true;
         });
     },
-    refreshList():void {
+    refreshList(): void {
       this.collecterAcces();
     },
     modifierAcces(id) {
@@ -193,4 +199,3 @@ export default Vue.extend({
   max-width: 750px;
 }
 </style>
-

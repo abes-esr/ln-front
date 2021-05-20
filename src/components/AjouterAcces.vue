@@ -122,7 +122,7 @@ export default Vue.extend({
       commentaires: "",
       alert: false,
       error: "",
-      url:"",
+      url: "",
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: never) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
@@ -173,13 +173,14 @@ export default Vue.extend({
       ) {
         this.buttonLoading = true;
         console.log(this.typeIp);
-        if(this.typeIp==="IPV4") this.url="/ln/ip/ajoutIpV4"; else this.url="/ln/ip/ajoutIpV6";
+        if (this.typeIp === "IPV4") this.url = "/ln/ip/ajoutIpV4";
+        else this.url = "/ln/ip/ajoutIpV6";
         this.submitAcces();
       }
     },
     submitAcces(): void {
       HTTP.post(this.url, {
-        siren:this.userSiren,
+        siren: this.userSiren,
         ip: this.ip,
         typeAcces: this.typeAcces,
         typeIp: this.typeIp,

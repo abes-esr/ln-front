@@ -124,7 +124,7 @@ export default Vue.extend({
       jsonResponse: {},
       alert: false,
       error: "",
-      url:"",
+      url: "",
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: never) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
@@ -149,8 +149,13 @@ export default Vue.extend({
     ...mapGetters(["userSiren"])
   },
   mounted() {
-    this.id = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-    console.log("lastindex = " + window.location.href.substr(window.location.href.lastIndexOf('/') + 1));
+    this.id = window.location.href.substr(
+      window.location.href.lastIndexOf("/") + 1
+    );
+    console.log(
+      "lastindex = " +
+        window.location.href.substr(window.location.href.lastIndexOf("/") + 1)
+    );
     this.fetchIp();
     console.log(this.id);
   },
@@ -203,7 +208,8 @@ export default Vue.extend({
     submitAcces(): void {
       this.updateJsonObject();
       console.log(this.jsonResponse);
-      if(this.typeIp==="IPV4") this.url="/ln/ip/modifIpV4"; else this.url="/ln/ip/modifIpV6";
+      if (this.typeIp === "IPV4") this.url = "/ln/ip/modifIpV4";
+      else this.url = "/ln/ip/modifIpV6";
       HTTP.post(this.url, this.jsonResponse)
         .then(response => {
           this.buttonLoading = false;
@@ -229,7 +235,7 @@ export default Vue.extend({
       json.siren = this.userSiren;
       json.commentaires = this.commentaires;
       this.jsonResponse = json;
-    },
+    }
   }
 });
 </script>
