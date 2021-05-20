@@ -76,7 +76,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
@@ -84,8 +85,8 @@ export default Vue.extend({
   data() {
     return {
       rechercher: "",
-      etab: [],
-      title: "",
+      etab: [] as any,
+      title: "" as string,
       id: "" as any,
       error: "",
       alert: false,
@@ -113,8 +114,8 @@ export default Vue.extend({
   },
   mounted() {
     moment.locale("fr");
-    this.collecterEtab();
-    this.id = this.getIdEtab(this.etab);
+    (this as any).collecterEtab();
+    (this as any).id = (this as any).getIdEtab((this as any).etab);
   },
 
   methods: {
@@ -126,13 +127,14 @@ export default Vue.extend({
         id: etab.id
       };
     },
-    getAll() {
+    getAll(): any {
       return HTTP.get("/ln/etablissement/getListEtab");
     },
-    collecterEtab(): void {
-      this.getAll()
+    collecterEtab(): any {
+      (this as any)
+        .getAll()
         .then(response => {
-          this.etab = response.data.map(this.affichageEtab);
+          (this as any).etab = response.data.map((this as any).affichageEtab);
           console.log(response.data);
         })
         .catch(e => {
@@ -156,24 +158,24 @@ export default Vue.extend({
       console.log(siren);
       HTTP.delete("/ln/etablissement/suppression/" + siren)
         .then(response => {
-          this.refreshList();
+          (this as any).refreshList();
           console.log("notification = " + response.data);
-          this.setNotification(response.data);
+          (this as any).setNotification(response.data);
         })
         .catch(err => {
-          this.error = err.response.data;
-          this.alert = true;
+          (this as any).error = err.response.data;
+          (this as any).alert = true;
         });
     },
     refreshList(): void {
-      this.collecterEtab();
+      (this as any).collecterEtab();
     },
     modifierAcces(id): void {
       this.$router.push({ name: "ModifierEtab", params: { id: id } });
     }
   },
   destroyed() {
-    this.setNotification("");
+    (this as any).setNotification("");
   }
 });
 </script>

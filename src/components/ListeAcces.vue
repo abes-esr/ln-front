@@ -86,7 +86,6 @@ export default Vue.extend({
       id: "" as any,
       error: "",
       alert: false,
-      formatOptions: { format: "MM-dd-yyyy", type: "date" },
       headers: [
         {
           text: "Date de création",
@@ -116,8 +115,8 @@ export default Vue.extend({
   },
   mounted() {
     moment.locale("fr");
-    this.collecterAcces();
-    this.id = this.getIdAcces(this.acces);
+    (this as any).collecterAcces();
+    (this as any).id = (this as any).getIdAcces((this as any).acces);
   },
 
   methods: {
@@ -133,9 +132,14 @@ export default Vue.extend({
       return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
     collecterAcces(): void {
+<<<<<<< HEAD
       this.getAll()
+=======
+      (this as any)
+        .getAll()
+>>>>>>> 269d63c53872f9ca1f60b57b41dc7a42568d51ea
         .then(response => {
-          this.acces = response.data.map(this.affichageAcces);
+          (this as any).acces = response.data.map((this as any).affichageAcces);
           console.log(response.data);
         })
         .catch(e => {
@@ -149,7 +153,11 @@ export default Vue.extend({
           moment(acces.dateCreation).format("L") +
           " " +
           moment(acces.dateCreation).format("LTS,MS"),
+<<<<<<< HEAD
         dateModification: this.getDateModification(acces),
+=======
+        dateModification: (this as any).getDateModification(acces),
+>>>>>>> 269d63c53872f9ca1f60b57b41dc7a42568d51ea
         typeAcces: acces.typeAcces,
         typeIp: acces.typeIp,
         ip: acces.ip,
@@ -172,25 +180,29 @@ export default Vue.extend({
         siren: this.getUserSiren
       })
         .then(response => {
-          this.refreshList();
+          (this as any).refreshList();
           console.log("notification = " + response.data);
-          this.setNotification(response.data);
+          (this as any).setNotification(response.data);
           console.log("notification = " + this.$store.state.notification);
         })
         .catch(err => {
-          this.error = err.response.data;
-          this.alert = true;
+          (this as any).error = err.response.data;
+          (this as any).alert = true;
         });
     },
     refreshList(): void {
+<<<<<<< HEAD
       this.collecterAcces();
+=======
+      (this as any).collecterAcces();
+>>>>>>> 269d63c53872f9ca1f60b57b41dc7a42568d51ea
     },
     modifierAcces(id) {
       this.$router.push({ name: "ModifierAcces", params: { id: id } });
     }
   },
   destroyed() {
-    this.setNotification("");
+    (this as any).setNotification("");
   }
 });
 </script>
