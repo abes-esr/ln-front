@@ -49,7 +49,7 @@ export default new Vuex.Store({
   actions: {
     login({ commit }, credentials) {
       return axios
-        .post(process.env.VUE_APP_ROOT_API + "/login", {
+        .post(process.env.VUE_APP_ROOT_API + "login", {
           login: credentials.siren,
           password: credentials.password
         })

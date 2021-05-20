@@ -54,7 +54,26 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeAcces",
     name: "ListeAcces",
-    component: () => import("../components/ListeAcces.vue")
+    component: () => import("../components/ListeAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/ajouterAcces",
+    name: "ajouterAcces",
+    component: () => import("../components/AjouterAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/modifierAcces/:id",
+    name: "ModifierAcces",
+    component: () => import("../components/ModifierAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/listeEtab",
