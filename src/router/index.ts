@@ -48,7 +48,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/scissionEtablissement",
-    name: "FormScissionEtablissement",
+    name: "scissionEtablissement",
     component: () => import("../components/FormScissionEtablissement.vue")
   },
   {
