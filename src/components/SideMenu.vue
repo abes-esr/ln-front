@@ -24,6 +24,16 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item
+        v-on:click="$router.push({ name: 'ListeEtab' }).catch(err => {})"
+      >
+        <v-list-item-action>
+          <v-icon>mdi-format-list-bulleted</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Etablissements</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         v-on:click="$router.push({ name: 'Profil' }).catch(err => {})"
       >
         <v-list-item-action>
