@@ -69,7 +69,7 @@
       </v-list-item>
       <v-list-item
         v-on:click="
-          $router.push({ name: 'listeEtab' }).catch(err => {})
+          $router.push({ name: 'ListeEtab' }).catch(err => {})
         "
       >
         <v-list-item-action>
