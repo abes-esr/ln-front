@@ -60,6 +60,18 @@
           $router.push({ name: 'fusionEtablissement' }).catch(err => {})
         "
       >
+      <v-list-item-action>
+          <v-icon>mdi-view-list</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Liste des établissements</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
+        v-on:click="
+          $router.push({ name: 'listeEtab' }).catch(err => {})
+        "
+      >
         <v-list-item-action>
           <v-icon>mdi-set-merge</v-icon>
         </v-list-item-action>
