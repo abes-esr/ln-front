@@ -7,7 +7,7 @@
             <v-row>
               <v-col cols="1" />
               <v-col cols="10">
-                <v-card-title>Ajout d'adresse IP</v-card-title>
+                <v-card-title>Ajout de plage d'adresses IP</v-card-title>
               </v-col>
             </v-row>
           </v-col>
@@ -19,8 +19,8 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-alert border="left" color="grey" dark>
-                    Vous pouvez directement insérer une adresse IP en effectuant
-                    un copier coller.
+                    Vous pouvez directement insérer une ou plusieurs adresses IP
+                    en effectuant un copier coller.
                   </v-alert>
                 </v-col>
               </v-row>
@@ -43,7 +43,7 @@
                 <v-col cols="10">
                   <v-text-field
                     outlined
-                    label="Saisissez votre adresse ip"
+                    label="Saisissez votre plage d'adresses IP"
                     placeholder="acces"
                     v-model="ip"
                     :rules="this.getIpRules()"
@@ -86,7 +86,7 @@
                       color="orange"
                       v-model="showButtonAjouterIp"
                       @click="buttonAjouterIp()"
-                      >Ajouter l'ip saisie
+                      >Ajouter la plage d'ips saisie
                     </v-btn>
                   </v-card-actions>
                 </v-col>
@@ -95,7 +95,7 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-card-title v-if="arrayArrays.length > 0"
-                    >Ips mémorisées avant envoi</v-card-title
+                    >Plages d'ips mémorisées avant envoi</v-card-title
                   >
                   <v-alert
                     v-model="alertIp"
@@ -160,7 +160,7 @@ export default Vue.extend({
     return {
       id: "",
       ip: "",
-      typeAcces: "ip",
+      typeAcces: "plage",
       typeIp: "" as any,
       commentaires: "",
       alertIp: true,
@@ -175,18 +175,18 @@ export default Vue.extend({
       typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
       ipV4Rules: [
-        (v: any) => !!v || "L'IP est obligatoire",
+        (v: any) => !!v || "La plage d'Ips est obligatoire",
         (v: any) =>
-          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/.test(
+          /^(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))?\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))?$/.test(
             v
-          ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/47959401
+          ) || "La plage d'Ips fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
       ],
       ipV6Rules: [
-        (v: any) => !!v || "L'IP est obligatoire",
+        (v: any) => !!v || "La plage d'Ips est obligatoire",
         (v: any) =>
-          /^\s*(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\s*$/.test(
+          /^\s*((([0-9a-fA-F]{1,4}:){6,6}[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}))s*$/.test(
             v
-          ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
+          ) || "La plage d'Ips fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
       ],
       buttonLoading: false
     };

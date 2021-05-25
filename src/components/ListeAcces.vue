@@ -48,7 +48,7 @@
                       <a @click="$router.push({ path: '/ajouterAcces' })"
                         ><br />Ajouter une adresse IP</a
                       >
-                      <a @click="$router.push({ path: '/ajoutPlageAcces' })"
+                      <a @click="$router.push({ path: '/ajouterPlageAcces' })"
                         ><br />Ajouter une plage d'adresses IP</a
                       >
                     </v-col>
