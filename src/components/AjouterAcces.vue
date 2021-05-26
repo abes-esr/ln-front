@@ -7,7 +7,7 @@
             <v-row>
               <v-col cols="1" />
               <v-col cols="10">
-                <v-card-title>Ajout d'adresse IP</v-card-title>
+                <v-card-title>{{ titleText }}</v-card-title>
               </v-col>
             </v-row>
           </v-col>
@@ -19,8 +19,7 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-alert border="left" color="grey" dark>
-                    Vous pouvez directement insérer une adresse IP en effectuant
-                    un copier coller.
+                    {{ alertText }}
                   </v-alert>
                 </v-col>
               </v-row>
@@ -43,7 +42,7 @@
                 <v-col cols="10">
                   <v-text-field
                     outlined
-                    label="Saisissez votre adresse ip"
+                    label="?"
                     placeholder="acces"
                     v-model="ip"
                     :rules="this.getIpRules()"
@@ -86,7 +85,7 @@
                       color="orange"
                       v-model="showButtonAjouterIp"
                       @click="buttonAjouterIp()"
-                      >Ajouter l'ip saisie
+                      >{{ buttonAjouterText }}
                     </v-btn>
                   </v-card-actions>
                 </v-col>
@@ -94,9 +93,9 @@
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
-                  <v-card-title v-if="arrayArrays.length > 0"
-                    >Ips mémorisées avant envoi</v-card-title
-                  >
+                  <v-card-title v-if="arrayArrays.length > 0">{{
+                    title2Text
+                  }}</v-card-title>
                   <v-alert
                     v-model="alertIp"
                     border="left"
@@ -155,12 +154,17 @@ import { mapActions, mapGetters } from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
-  name: "AjouterAcces2",
+  name: "AjouterAcces",
   data() {
     return {
+      titleText: "" as string,
+      alertText: "" as string,
+      labelIp: "" as string,
+      buttonAjouterText: "" as string,
+      title2Text: "" as string,
       id: "",
       ip: "",
-      typeAcces: "ip",
+      typeAcces: "" as any,
       typeIp: "" as any,
       commentaires: "",
       alertIp: true,
@@ -170,7 +174,10 @@ export default Vue.extend({
       arrayAjouterIp: [] as any,
       arrayArrays: [] as any,
       arrayIpNumber: 2,
-      url: "",
+      ipV4Url: "/ln/ip/ajoutIpV4" as any,
+      ipV6Url: "/ln/ip/ajoutIpV6" as any,
+      plageIpV4Url: "/ln/ip/ajoutPlageIpV4" as any,
+      plageIpV6Url: "/ln/ip/ajoutPlageIpV6" as any,
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
@@ -188,9 +195,30 @@ export default Vue.extend({
             v
           ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
       ],
+      plageIpV4Rules: [
+        (v: any) => !!v || "La plage d'Ips est obligatoire",
+        (v: any) =>
+          /^(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))$/.test(
+            v
+          ) || "La plage d'Ips fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
+      ],
+      plageIpV6Rules: [
+        (v: any) => !!v || "La plage d'Ips est obligatoire",
+        (v: any) =>
+          /^\s*((([0-9a-fA-F]{1,4}:){6,6}[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}))s*$/.test(
+            v
+          ) || "La plage d'Ips fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
+      ],
       buttonLoading: false
     };
   },
+  mounted() {
+    this.typeAcces = window.location.href.substr(
+      window.location.href.lastIndexOf("/") + 1
+    );
+    this.setText();
+  },
+
   computed: {
     ...mapGetters(["userSiren"])
   },
@@ -199,6 +227,23 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+    setText(): void {
+      if (this.typeAcces === "ip") {
+        this.titleText = "Ajout d'adresse IP";
+        this.alertText =
+          "Vous pouvez directement insérer une adresse IP en effectuant un copier coller.";
+        this.labelIp = "Saisissez votre adresse ip";
+        this.buttonAjouterText = "Ajouter l'ip saisie";
+        this.title2Text = "Ips mémorisées avant envoi";
+      } else {
+        this.titleText = "Ajout de plage d'adresses IP";
+        this.alertText =
+          "Vous pouvez directement insérer une ou plusieurs adresses IP en effectuant un copier coller.";
+        this.labelIp = "Saisissez votre plage d'adresses ip";
+        this.buttonAjouterText = "Ajouter la plage d'ips saisie";
+        this.title2Text = "Plages d'ips mémorisées avant envoi";
+      }
+    },
     ajouterIp(): void {
       this.arrayAjouterIp.userSiren = this.userSiren;
       this.arrayAjouterIp.typeIp = this.typeIp;
@@ -215,14 +260,20 @@ export default Vue.extend({
       console.log(this.arrayArrays);
     },
     getIpRules() {
-      if (this.typeIp === "IPV4") {
-        console.log(this.ipV4Rules);
-        return this.ipV4Rules;
-      } else {
-        console.log(this.ipV6Rules);
-        return this.ipV6Rules;
-      }
+      if (this.typeAcces === "ip") {
+        return this.typeIp === "IPV4" ? this.ipV4Rules : this.ipV6Rules;
+      } else
+        return this.typeIp === "IPV4"
+          ? this.plageIpV4Rules
+          : this.plageIpV6Rules;
     },
+    getUrl() {
+      if (this.typeAcces === "ip") {
+        return this.typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
+      } else
+        return this.typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
+    },
+
     clearIp(): void {
       this.ip = "";
     },

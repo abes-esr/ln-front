@@ -45,10 +45,10 @@
                   <v-row>
                     <v-col cols="1" />
                     <v-col cols="10">
-                      <a @click="$router.push({ path: '/ajouterAcces' })"
+                      <a @click="$router.push({ path: '/ajouterAcces/ip' })"
                         ><br />Ajouter une adresse IP</a
                       >
-                      <a @click="$router.push({ path: '/ajouterPlageAcces' })"
+                      <a @click="$router.push({ path: '/ajouterAcces/plage' })"
                         ><br />Ajouter une plage d'adresses IP</a
                       >
                     </v-col>
@@ -186,7 +186,10 @@ export default Vue.extend({
       (this as any).collecterAcces();
     },
     modifierAcces(id) {
-      this.$router.push({ name: "ModifierAcces", params: { id: id } });
+      if ((this as any).typeIp === "ip")
+        this.$router.push({ name: "ModifierAcces", params: { id: id } });
+      else
+        this.$router.push({ name: "ModifierPlageAcces", params: { id: id } });
     }
   },
   destroyed() {
