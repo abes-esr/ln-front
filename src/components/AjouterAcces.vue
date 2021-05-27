@@ -42,7 +42,7 @@
                 <v-col cols="10">
                   <v-text-field
                     outlined
-                    label="?"
+                    v-bind:label="this.labelIp"
                     placeholder="acces"
                     v-model="ip"
                     :rules="this.getIpRules()"
@@ -164,9 +164,9 @@ export default Vue.extend({
       title2Text: "" as string,
       id: "",
       ip: "",
-      typeAcces: "" as any,
-      typeIp: "" as any,
-      commentaires: "",
+      typeAcces: "" as string,
+      typeIp: "" as string,
+      commentaires: "" as string,
       alertIp: true,
       alert: false,
       showButtonAjouterIp: false,
@@ -174,10 +174,10 @@ export default Vue.extend({
       arrayAjouterIp: [] as any,
       arrayArrays: [] as any,
       arrayIpNumber: 2,
-      ipV4Url: "/ln/ip/ajoutIpV4" as any,
-      ipV6Url: "/ln/ip/ajoutIpV6" as any,
-      plageIpV4Url: "/ln/ip/ajoutPlageIpV4" as any,
-      plageIpV6Url: "/ln/ip/ajoutPlageIpV6" as any,
+      ipV4Url: "/ln/ip/ajoutIpV4" as string,
+      ipV6Url: "/ln/ip/ajoutIpV6" as string,
+      plageIpV4Url: "/ln/ip/ajoutPlageIpV4" as string,
+      plageIpV6Url: "/ln/ip/ajoutPlageIpV6" as string,
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
@@ -267,11 +267,10 @@ export default Vue.extend({
           ? this.plageIpV4Rules
           : this.plageIpV6Rules;
     },
-    getUrl() {
+    getUrl(typeIp) {
       if (this.typeAcces === "ip") {
-        return this.typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
-      } else
-        return this.typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
+        return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
+      } else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
     },
 
     clearIp(): void {
@@ -298,11 +297,9 @@ export default Vue.extend({
 
     validate(): void {
       this.buttonLoading = true;
-      console.log(this.typeIp);
       this.arrayArrays.forEach((value, index) => {
-        if (value.typeIp === "IPV4") this.url = "/ln/ip/ajoutIpV4";
-        else this.url = "/ln/ip/ajoutIpV6";
-        HTTP.post(this.url, {
+        console.log("this.getUrl() = " + this.getUrl(value.typeIp));
+        HTTP.post(this.getUrl(value.typeIp), {
           siren: this.userSiren,
           ip: value.ip,
           typeAcces: this.typeAcces,
