@@ -29,7 +29,7 @@
                           <v-icon
                             small
                             class="mr-2"
-                            @click="modifierAcces(item.id)"
+                            @click="modifierAcces(item.id, item.typeAcces)"
                             >mdi-pencil</v-icon
                           >
                           <!--                      <v-icon small class="mr-2" @click="analyserAcces(item.id)"
@@ -82,8 +82,8 @@ export default Vue.extend({
     return {
       rechercher: "",
       acces: [],
-      title: "",
-      id: "" as any,
+      title: "" as string,
+      id: "" as string,
       error: "",
       alert: false,
       headers: [
@@ -98,10 +98,22 @@ export default Vue.extend({
           value: "dateModification",
           sortable: false
         },
-        { text: "Type d'accès", value: "typeAcces", sortable: false },
-        { text: "Type d'IP", value: "typeIp", sortable: false },
-        { text: "Valeur", value: "ip", sortable: false },
-        { text: "Statut", value: "statut", sortable: false },
+        {
+          text: "Type d'accès" as any,
+          value: "typeAcces" as any,
+          sortable: false
+        },
+        {
+          text: "Type d'IP" as any,
+          value: "typeIp" as any,
+          sortable: false
+        },
+        { text: "Valeur" as any, value: "ip" as any, sortable: false },
+        {
+          text: "Statut" as any,
+          value: "statut" as any,
+          sortable: false
+        },
         { text: "Action", value: "action", sortable: false }
       ]
     };
@@ -185,11 +197,11 @@ export default Vue.extend({
     refreshList(): void {
       (this as any).collecterAcces();
     },
-    modifierAcces(id) {
-      if ((this as any).typeIp === "ip")
-        this.$router.push({ name: "ModifierAcces", params: { id: id } });
-      else
-        this.$router.push({ name: "ModifierPlageAcces", params: { id: id } });
+    modifierAcces(id, typeAcces) {
+      this.$router.push({
+        name: "ModifierAcces",
+        params: { id: id, typeAcces: typeAcces }
+      });
     }
   },
   destroyed() {
