@@ -54,13 +54,16 @@
     <v-alert dense outlined :value="alert" type="error">
       {{ error }}
     </v-alert>
+    <v-alert dense outlined :value="creationCompteEffectuee" type="success">
+      {{ notification }}
+    </v-alert>
   </div>
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default Vue.extend({
   name: "FormLogin",
@@ -81,7 +84,9 @@ export default Vue.extend({
   },
   methods: {
     ...mapActions({
-      loginAction: "login"
+      loginAction: "login",
+      setCreationCompteEffectueeFalse: "setCreationCompteEffectueeFalse",
+      setNotification: "setNotification"
     }),
     validate(): void {
       this.alert = false;
@@ -104,7 +109,12 @@ export default Vue.extend({
           this.alert = true;
         });
     }
-  }
+  },
+  destroyed() {
+    this.setNotification("");
+    this.setCreationCompteEffectueeFalse();
+  },
+  computed: mapGetters(["notification", "creationCompteEffectuee"])
 });
 </script>
 

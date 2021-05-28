@@ -14,7 +14,9 @@ export default new Vuex.Store({
       isLoggedIn: false,
       isAdmin: false
     },
-    darkTheme: false
+    darkTheme: false,
+    notification: "",
+    creationCompteEffectuee: false
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -33,6 +35,15 @@ export default new Vuex.Store({
     },
     SET_THEME(state) {
       state.darkTheme = !state.darkTheme;
+    },
+    SET_CREATION_COMPTE_TRUE(state) {
+      state.creationCompteEffectuee = true;
+    },
+    SET_CREATION_COMPTE_FALSE(state) {
+      state.creationCompteEffectuee = false;
+    },
+    SET_NOTIFICATION(state, notif) {
+      state.notification = notif;
     }
   },
   actions: {
@@ -51,6 +62,15 @@ export default new Vuex.Store({
     },
     changeTheme({ commit }) {
       commit("SET_THEME");
+    },
+    setCreationCompteEffectueeTrue({ commit }) {
+      commit("SET_CREATION_COMPTE_TRUE");
+    },
+    setCreationCompteEffectueeFalse({ commit }) {
+      commit("SET_CREATION_COMPTE_FALSE");
+    },
+    setNotification({ commit }, notif) {
+      commit("SET_NOTIFICATION", notif);
     }
   },
   getters: {
@@ -71,6 +91,12 @@ export default new Vuex.Store({
     },
     isDark: state => {
       return state.darkTheme;
+    },
+    notification: state => {
+      return state.notification;
+    },
+    creationCompteEffectuee: state => {
+      return state.creationCompteEffectuee;
     }
   },
   plugins: [createPersistedState()]

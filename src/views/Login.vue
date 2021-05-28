@@ -5,24 +5,26 @@
         <transition name="fade">
           <form-login v-if="!forgotPasswordVisible" />
         </transition>
+
         <transition name="fade">
           <forgot-password v-if="forgotPasswordVisible" />
         </transition>
+
         <transition name="fade">
-          <div>
-            <a
-              v-if="!forgotPasswordVisible"
-              @click="forgotPasswordVisible = !forgotPasswordVisible"
-              >Mot de passe ou identifiant oublié ?</a
-            >
-            <br />
-            <a
-              v-if="!forgotPasswordVisible"
-              v-on:click="$router.push({ name: 'CreationCompte' })"
-              >Créer un compte</a
-            >
-          </div>
+          <a
+            v-if="!forgotPasswordVisible"
+            @click="forgotPasswordVisible = !forgotPasswordVisible"
+            >Mot de passe ou identifiant oublié ?</a
+          >
         </transition>
+
+        <a
+          v-if="!forgotPasswordVisible"
+          @click="$router.push({ path: '/creationCompte' })"
+          ><br />Votre établissement n'a pas encore de compte ? Créer un
+          compte</a
+        >
+
         <transition name="fade">
           <a
             v-if="forgotPasswordVisible"

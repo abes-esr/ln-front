@@ -4,6 +4,15 @@
     <h1>Ceci n'est pas une page d'accueil.</h1>
     <small>C'est un placeholder</small>
     <br />
+    <v-card-title>Bienvenu siren = {{ siren }}</v-card-title>
+    <v-row>
+      <v-col cols="1" />
+      <v-col cols="10">
+        <v-alert dense outlined :value="alert" type="success">
+          {{ notification }}
+        </v-alert>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="1"></v-col>
       <v-col cols="10">
@@ -24,6 +33,9 @@ export default Vue.extend({
   name: "Home",
   data() {
     return {
+      siren: "",
+      alert: false,
+      notification: "",
       headers: [
         {
           text: "Dessert (100g serving)",
@@ -120,6 +132,13 @@ export default Vue.extend({
         }
       ]
     };
+  },
+  mounted() {
+    this.siren = this.$store.state.user.siren;
+    if (this.notification != "") {
+      this.notification = this.$store.state.user.notification;
+      this.alert = true;
+    }
   }
 });
 </script>

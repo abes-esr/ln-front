@@ -21,11 +21,6 @@ const routes: Array<RouteConfig> = [
     component: Login
   },
   {
-    path: "/creationCompte",
-    name: "CreationCompte",
-    component: () => import("../views/CreationCompte.vue")
-  },
-  {
     path: "/profil",
     name: "Profil",
     component: () => import("../views/Profile.vue"),
@@ -52,10 +47,45 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/FormFusionEtablissement.vue")
   },
   {
-    path: "/formEtab",
-    name: "FormEtab",
-    component: () => import("../components/FormEtab.vue")
+    path: "/scissionEtablissement",
+    name: "scissionEtablissement",
+    component: () => import("../components/FormScissionEtablissement.vue")
   },
+  {
+    path: "/listeAcces",
+    name: "ListeAcces",
+    component: () => import("../components/ListeAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/ajouterAcces",
+    name: "ajouterAcces",
+    component: () => import("../components/AjouterAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/modifierAcces/:id",
+    name: "ModifierAcces",
+    component: () => import("../components/ModifierAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/listeEtab",
+    name: "ListeEtab",
+    component: () => import("../components/ListeEtab.vue")
+  },
+  {
+    path: "/creationCompte",
+    name: "CreationCompte",
+    component: () => import("../views/CreationCompte.vue")
+  },
+
   {
     path: "*",
     /* component: NotFoundComponent, */

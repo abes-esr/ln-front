@@ -20,7 +20,7 @@
                     <v-text-field
                       outlined
                       :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      label="Mot de passe"
+                      label="Créez votre nouveau mot de passe"
                       placeholder="Mot de passe"
                       v-model="passContact"
                       :rules="passContactRules"
@@ -37,8 +37,8 @@
                     <v-text-field
                       outlined
                       :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      label="Confirmez votre mot de passe"
-                      placeholder="Confirmez votre mot de passe"
+                      label="Confirmez votre nouveau mot de passe [contrôle de conformité]"
+                      placeholder="Confirmation"
                       v-model="confirmPassContact"
                       :rules="
                         confirmPassContactRules.concat(confirmPassContactRule)
