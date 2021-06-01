@@ -2,7 +2,7 @@
   <div>
     <v-card width="100%">
       <v-form ref="formAjouterAcces" lazy-validation>
-        <v-row align="center" justify="center">
+        <v-row align="left" justify="left">
           <v-col lg="6" md="12" xs="12">
             <v-row>
               <v-col cols="1" />
@@ -90,6 +90,8 @@
                   </v-card-actions>
                 </v-col>
               </v-row>
+            </v-col>
+            <v-col lg="6" md="12" xs="12">
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
@@ -108,13 +110,23 @@
                       <v-col class="grow">
                         {{ value.typeIp }}
                         {{ value.ip }}
-                        {{ value.commentaires.substring(1, 40) }}
+                        {{ value.commentaires.substring(0, 40) }}
                       </v-col>
                       <v-col class="shrink">
                         <v-btn color="red" @click="suppIpFromArrayArrays(index)"
                           >SUPPRIMER</v-btn
                         >
                       </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-alert
+                        dense
+                        outlined
+                        :value="alertErrorIp"
+                        type="error"
+                      >
+                        {{ value.error }}
+                      </v-alert>
                     </v-row>
                   </v-alert>
                 </v-col>
@@ -169,6 +181,8 @@ export default Vue.extend({
       commentaires: "" as string,
       alertIp: true,
       alert: false,
+      alertErrorIp: false,
+      errorIp: "" as string,
       showButtonAjouterIp: false,
       error: "",
       arrayAjouterIp: [] as any,
@@ -244,6 +258,27 @@ export default Vue.extend({
         this.title2Text = "Plages d'ips mémorisées avant envoi";
       }
     },
+    /*testIp(index): void {
+      HTTP.post("/ln/ip/checkDoublonIp", {
+        siren: this.userSiren,
+        ip: this.ip,
+        typeAcces: this.typeAcces,
+        typeIp: this.typeIp,
+        commentaires: this.commentaires
+      })
+        .then(response => {
+          this.buttonLoading = false;
+          console.log("notification = " + response.data);
+          this.setNotification(response.data);
+          console.log("notification = " + this.$store.state.notification);
+          this.$router.push({ path: "/listeAcces" });
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.error = err.response.data;
+          this.alert = true;
+        });
+    },*/
     ajouterIp(): void {
       this.arrayAjouterIp.userSiren = this.userSiren;
       this.arrayAjouterIp.typeIp = this.typeIp;
@@ -316,7 +351,11 @@ export default Vue.extend({
           .catch(err => {
             this.buttonLoading = false;
             this.error = err.response.data;
-            this.alert = true;
+            console.log("err.response.data " + err.response.data);
+            this.errorIp = err.response.data;
+            value.error = err.response.data;
+            //this.arrayArrays.push(this.arrayAjouterIp);
+            this.alertErrorIp = true;
           });
       });
     }
