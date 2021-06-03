@@ -354,7 +354,6 @@ export default Vue.extend({
             console.log("err.response.data " + err.response.data);
             this.errorIp = err.response.data;
             value.error = err.response.data;
-            //this.arrayArrays.push(this.arrayAjouterIp);
             this.alertErrorIp = true;
           });
       });
@@ -362,15 +361,6 @@ export default Vue.extend({
   }
 });
 </script>
-
-/*submitAcces(): void { HTTP.post(this.url, { siren: this.userSiren, ip:
-this.ip, typeAcces: this.typeAcces, typeIp: this.typeIp, commentaires:
-this.commentaires }) .then(response => { this.buttonLoading = false;
-console.log("notification = " + response.data);
-this.setNotification(response.data); console.log("notification = " +
-this.$store.state.notification); this.$router.push({ path: "/listeAcces" }); })
-.catch(err => { this.buttonLoading = false; this.error = err.response.data;
-this.alert = true; }); }*/
 
 <style scoped></style>
 //repeat a form vuejs
