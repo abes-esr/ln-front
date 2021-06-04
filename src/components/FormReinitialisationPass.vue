@@ -22,6 +22,7 @@
                       :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                       label="Créez votre nouveau mot de passe"
                       placeholder="Mot de passe"
+                      :disabled="disabled == 1"
                       v-model="passContact"
                       :rules="passContactRules"
                       :type="show1 ? 'text' : 'password'"
@@ -39,6 +40,7 @@
                       :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                       label="Confirmez votre nouveau mot de passe [contrôle de conformité]"
                       placeholder="Confirmation"
+                      :disabled="disabled == 1"
                       v-model="confirmPassContact"
                       :rules="
                         confirmPassContactRules.concat(confirmPassContactRule)
@@ -77,8 +79,12 @@
                 <v-col cols="5">
                   <v-row justify="space-between">
                     <v-col>
-                      <v-btn x-large color="grey" @click="clear">
-                        Effacer</v-btn
+                      <v-btn
+                        x-large
+                        color="grey"
+                        @click="clear"
+                        :disabled="disabled == 1"
+                        >Effacer</v-btn
                       >
                     </v-col>
                     <v-col cols="1"></v-col>
@@ -86,6 +92,7 @@
                       <v-btn
                         color="success"
                         :loading="buttonLoading"
+                        :disabled="disabled == 1"
                         x-large
                         @click="recaptcha()"
                         >Envoyer</v-btn
@@ -111,6 +118,8 @@ export default Vue.extend({
   name: "FormReinitialisationPass",
   data() {
     return {
+      jwtToken: "" as string,
+      disabled: 0,
       show1: false,
       token: "" as unknown,
       tokenrecaptcha: this.$recaptchaLoaded() as unknown,
@@ -149,9 +158,36 @@ export default Vue.extend({
     }
     this.token = this.$route.query.token;
     console.log(this.token);
+    this.jwtToken = window.location.href.substr(
+      window.location.href.lastIndexOf("=") + 1
+    );
+    console.log(this.jwtToken);
+    this.tokenInvalide(this.token);
+    //if (this.message === "Token invalide")
+    //this.$router.push("/invalideTokenReinitialisationPass");
   },
 
   methods: {
+    tokenInvalide(token: unknown) {
+      axios
+        .post(
+          process.env.VUE_APP_ROOT_API +
+            "/ln/reinitialisationMotDePasse/verifTokenValide",
+          {
+            jwtToken: this.jwtToken
+          }
+        )
+        .then(response => {
+          this.buttonLoading = false;
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.message = err.response.data;
+          this.disabled = 1;
+          this.alert = true;
+          this.retourKo = true;
+        });
+    },
     async recaptcha() {
       // (optional) Wait until recaptcha has been loaded.
       await this.$recaptchaLoaded();
