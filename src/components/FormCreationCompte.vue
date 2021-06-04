@@ -22,7 +22,7 @@
               </v-row>
               <v-row>
                 <v-col cols="1" />
-                <v-col cols="10">
+                <v-col cols="8">
                   <v-text-field
                     outlined
                     label="SIREN"
@@ -30,8 +30,60 @@
                     v-model="sirenEtab"
                     :rules="sirenEtabRules"
                     required
+                    @input="checkSiren()"
                     @keyup.enter="validate()"
                   ></v-text-field>
+                </v-col>
+                <v-col>
+                  <!-- POPUP CONFIRMATION SIREN -->
+                  <v-dialog v-model="dialog" persistent max-width="450">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        :disabled="!dialogAvailable"
+                        rounded
+                        outlined
+                        v-bind="attrs"
+                        v-on="on"
+                        color="primary"
+                        >Valider</v-btn
+                      >
+                    </template>
+                    <v-card>
+                      <v-card-title class="headline">
+                        Votre SIREN est-il correct ?
+                      </v-card-title>
+                      <v-card-text
+                        >Le SIREN renseigné correspond à l'établissement suivant
+                        : <b>{{ checkSirenAPI }}</b></v-card-text
+                      >
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="green darken-1"
+                          text
+                          @click="dialog = false"
+                        >
+                          Non
+                        </v-btn>
+                        <v-btn
+                          color="green darken-1"
+                          text
+                          @click="dialog = false"
+                        >
+                          Oui
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                  <!-- FIN POPUP CONFIRMATION SIREN -->
+                </v-col>
+              </v-row>
+              <v-row style="margin-top: 0;">
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-chip class="ma-2" color="primary"
+                    >SIREN : {{ checkSirenAPI }}</v-chip
+                  >
                 </v-col>
               </v-row>
               <v-row>
@@ -385,9 +437,12 @@ export default Vue.extend({
       ],
       idAbes: "" as string,
       roleContact: "" as string,
+      checkSirenAPI: "En attente de vérification" as string,
       buttonLoading: false,
       alert: false,
-      error: ""
+      error: "",
+      dialog: false,
+      dialogAvailable: false
     };
   },
   computed: {
@@ -502,7 +557,31 @@ export default Vue.extend({
           this.alert = true;
         });
     },
-
+    checkSiren(): void {
+      this.checkSirenAPI = "Vérification du SIREN en cours...";
+      if (this.sirenEtab.length === 9) {
+        this.dialogAvailable = true;
+        axios
+          .get(
+            "https://entreprise.data.gouv.fr/api/sirene/v3/unites_legales/" +
+              this.sirenEtab
+          )
+          .then(result => {
+            this.checkSirenAPI = result.data.unite_legale.denomination;
+          })
+          .catch(err => {
+            if (err.response.status == 404) {
+              this.checkSirenAPI = "SIREN introuvable";
+            } else {
+              this.checkSirenAPI =
+                "Impossible de contacter le service de vérification du SRIEN";
+            }
+          });
+      } else {
+        this.dialogAvailable = false;
+      }
+      this.checkSirenAPI = "En attente de vérification";
+    },
     clear() {
       (this.$refs.formCreationCompte as HTMLFormElement).reset();
     }

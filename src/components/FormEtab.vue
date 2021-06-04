@@ -127,6 +127,7 @@
             placeholder="Mot de passe"
             v-model="passContact"
             :rules="passContactRules"
+            type="password"
             required
             @keyup.enter="validate()"
           ></v-text-field>
@@ -135,6 +136,7 @@
             label="Confirmez votre mot de passe"
             placeholder="Confirmez votre mot de passe"
             v-model="confirmPassContact"
+            type="password"
             required
             @keyup.enter="validate()"
           ></v-text-field>
