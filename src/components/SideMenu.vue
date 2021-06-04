@@ -13,12 +13,24 @@
           <v-list-item-title>Accueil</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item>
+      <v-list-item
+        v-on:click="$router.push({ name: 'ListeAcces' }).catch(err => {})"
+      >
         <v-list-item-action>
           <v-icon>mdi-ip-network</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Mes IPs</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
+        v-on:click="$router.push({ name: 'ListeEtab' }).catch(err => {})"
+      >
+        <v-list-item-action>
+          <v-icon>mdi-format-list-bulleted</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Etablissements</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item
@@ -39,6 +51,30 @@
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Modifier mon mot de passe</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
+        v-on:click="
+          $router.push({ name: 'scissionEtablissement' }).catch(err => {})
+        "
+      >
+        <v-list-item-action>
+          <v-icon>mdi-set-split</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Scission établissements</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
+        v-on:click="
+          $router.push({ name: 'fusionEtablissement' }).catch(err => {})
+        "
+      >
+        <v-list-item-action>
+          <v-icon>mdi-set-merge</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Fusion établissements</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item v-on:click="disconnect()">
