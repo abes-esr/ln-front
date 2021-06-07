@@ -2,12 +2,12 @@
   <div>
     <v-card width="100%">
       <v-form ref="formAjouterAcces" lazy-validation>
-        <v-row align="center" justify="center">
+        <v-row align="left" justify="left">
           <v-col lg="6" md="12" xs="12">
             <v-row>
               <v-col cols="1" />
               <v-col cols="10">
-                <v-card-title>Ajouter des ips</v-card-title>
+                <v-card-title>{{ titleText }}</v-card-title>
               </v-col>
             </v-row>
           </v-col>
@@ -19,8 +19,7 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-alert border="left" color="grey" dark>
-                    Vous pouvez directement insérer une adresse IP en effectuant
-                    un copier coller.
+                    {{ alertText }}
                   </v-alert>
                 </v-col>
               </v-row>
@@ -43,7 +42,7 @@
                 <v-col cols="10">
                   <v-text-field
                     outlined
-                    label="Saisissez votre adresse ip"
+                    v-bind:label="this.labelIp"
                     placeholder="acces"
                     v-model="ip"
                     :rules="this.getIpRules()"
@@ -86,17 +85,19 @@
                       color="orange"
                       v-model="showButtonAjouterIp"
                       @click="buttonAjouterIp()"
-                      >Ajouter l'ip saisie
+                      >{{ buttonAjouterText }}
                     </v-btn>
                   </v-card-actions>
                 </v-col>
               </v-row>
+            </v-col>
+            <v-col lg="6" md="12" xs="12">
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
-                  <v-card-title v-if="arrayArrays.length > 0"
-                    >Ips mémorisées avant envoi</v-card-title
-                  >
+                  <v-card-title v-if="arrayArrays.length > 0">{{
+                    title2Text
+                  }}</v-card-title>
                   <v-alert
                     v-model="alertIp"
                     border="left"
@@ -109,13 +110,23 @@
                       <v-col class="grow">
                         {{ value.typeIp }}
                         {{ value.ip }}
-                        {{ value.commentaires.substring(1, 40) }}
+                        {{ value.commentaires.substring(0, 40) }}
                       </v-col>
                       <v-col class="shrink">
                         <v-btn color="red" @click="suppIpFromArrayArrays(index)"
                           >SUPPRIMER</v-btn
                         >
                       </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-alert
+                        dense
+                        outlined
+                        :value="alertErrorIp"
+                        type="error"
+                      >
+                        {{ value.error }}
+                      </v-alert>
                     </v-row>
                   </v-alert>
                 </v-col>
@@ -155,31 +166,41 @@ import { mapActions, mapGetters } from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
-  name: "AjouterAcces2",
+  name: "AjouterAcces",
   data() {
     return {
+      titleText: "" as string,
+      alertText: "" as string,
+      labelIp: "" as string,
+      buttonAjouterText: "" as string,
+      title2Text: "" as string,
       id: "",
       ip: "",
-      typeAcces: "ip",
-      typeIp: "" as any,
-      commentaires: "",
+      typeAcces: "" as string,
+      typeIp: "" as string,
+      commentaires: "" as string,
       alertIp: true,
       alert: false,
+      alertErrorIp: false,
+      errorIp: "" as string,
       showButtonAjouterIp: false,
       error: "",
       arrayAjouterIp: [] as any,
       arrayArrays: [] as any,
       arrayIpNumber: 2,
-      url: "",
+      ipV4Url: "/ln/ip/ajoutIpV4" as string,
+      ipV6Url: "/ln/ip/ajoutIpV6" as string,
+      plageIpV4Url: "/ln/ip/ajoutPlageIpV4" as string,
+      plageIpV6Url: "/ln/ip/ajoutPlageIpV6" as string,
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
       ipV4Rules: [
         (v: any) => !!v || "L'IP est obligatoire",
         (v: any) =>
-          /\b((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\.)){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\b/.test(
+          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/.test(
             v
-          ) || "L'IP fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
+          ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/47959401
       ],
       ipV6Rules: [
         (v: any) => !!v || "L'IP est obligatoire",
@@ -188,9 +209,30 @@ export default Vue.extend({
             v
           ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
       ],
+      plageIpV4Rules: [
+        (v: any) => !!v || "La plage d'Ips est obligatoire",
+        (v: any) =>
+          /^(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))$/.test(
+            v
+          ) || "La plage d'Ips fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
+      ],
+      plageIpV6Rules: [
+        (v: any) => !!v || "La plage d'Ips est obligatoire",
+        (v: any) =>
+          /^\s*((([0-9a-fA-F]{1,4}:){6,6}[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}))s*$/.test(
+            v
+          ) || "La plage d'Ips fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
+      ],
       buttonLoading: false
     };
   },
+  mounted() {
+    this.typeAcces = window.location.href.substr(
+      window.location.href.lastIndexOf("/") + 1
+    );
+    this.setText();
+  },
+
   computed: {
     ...mapGetters(["userSiren"])
   },
@@ -199,6 +241,44 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+    setText(): void {
+      if (this.typeAcces === "ip") {
+        this.titleText = "Ajout d'adresse IP";
+        this.alertText =
+          "Vous pouvez directement insérer une adresse IP en effectuant un copier coller.";
+        this.labelIp = "Saisissez votre adresse ip";
+        this.buttonAjouterText = "Ajouter l'ip saisie";
+        this.title2Text = "Ips mémorisées avant envoi";
+      } else {
+        this.titleText = "Ajout de plage d'adresses IP";
+        this.alertText =
+          "Vous pouvez directement insérer une ou plusieurs adresses IP en effectuant un copier coller.";
+        this.labelIp = "Saisissez votre plage d'adresses ip";
+        this.buttonAjouterText = "Ajouter la plage d'ips saisie";
+        this.title2Text = "Plages d'ips mémorisées avant envoi";
+      }
+    },
+    /*testIp(index): void {
+      HTTP.post("/ln/ip/checkDoublonIp", {
+        siren: this.userSiren,
+        ip: this.ip,
+        typeAcces: this.typeAcces,
+        typeIp: this.typeIp,
+        commentaires: this.commentaires
+      })
+        .then(response => {
+          this.buttonLoading = false;
+          console.log("notification = " + response.data);
+          this.setNotification(response.data);
+          console.log("notification = " + this.$store.state.notification);
+          this.$router.push({ path: "/listeAcces" });
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.error = err.response.data;
+          this.alert = true;
+        });
+    },*/
     ajouterIp(): void {
       this.arrayAjouterIp.userSiren = this.userSiren;
       this.arrayAjouterIp.typeIp = this.typeIp;
@@ -215,22 +295,29 @@ export default Vue.extend({
       console.log(this.arrayArrays);
     },
     getIpRules() {
-      if (this.typeIp === "IPV4") {
-        console.log(this.ipV4Rules);
-        return this.ipV4Rules;
-      } else {
-        console.log(this.ipV6Rules);
-        return this.ipV6Rules;
-      }
+      if (this.typeAcces === "ip") {
+        return this.typeIp === "IPV4" ? this.ipV4Rules : this.ipV6Rules;
+      } else
+        return this.typeIp === "IPV4"
+          ? this.plageIpV4Rules
+          : this.plageIpV6Rules;
     },
+    getUrl(typeIp) {
+      if (this.typeAcces === "ip") {
+        return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
+      } else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
+    },
+
     clearIp(): void {
       this.ip = "";
     },
-    suppIpFromArrayArrays(index): void {
-      this.arrayArrays.splice(index);
+
+    suppIpFromArrayArrays: function(index) {
+      this.arrayArrays.splice(index, 1);
       console.log(this.arrayArrays.toString());
       console.log(this.arrayArrays.length);
     },
+
     buttonAjouterIp(): void {
       this.error = "";
       this.alert = false;
@@ -247,11 +334,9 @@ export default Vue.extend({
 
     validate(): void {
       this.buttonLoading = true;
-      console.log(this.typeIp);
       this.arrayArrays.forEach((value, index) => {
-        if (value.typeIp === "IPV4") this.url = "/ln/ip/ajoutIpV4";
-        else this.url = "/ln/ip/ajoutIpV6";
-        HTTP.post(this.url, {
+        console.log("this.getUrl() = " + this.getUrl(value.typeIp));
+        HTTP.post(this.getUrl(value.typeIp), {
           siren: this.userSiren,
           ip: value.ip,
           typeAcces: this.typeAcces,
@@ -268,22 +353,16 @@ export default Vue.extend({
           .catch(err => {
             this.buttonLoading = false;
             this.error = err.response.data;
-            this.alert = true;
+            console.log("err.response.data " + err.response.data);
+            this.errorIp = err.response.data;
+            value.error = err.response.data;
+            this.alertErrorIp = true;
           });
       });
     }
   }
 });
 </script>
-
-/*submitAcces(): void { HTTP.post(this.url, { siren: this.userSiren, ip:
-this.ip, typeAcces: this.typeAcces, typeIp: this.typeIp, commentaires:
-this.commentaires }) .then(response => { this.buttonLoading = false;
-console.log("notification = " + response.data);
-this.setNotification(response.data); console.log("notification = " +
-this.$store.state.notification); this.$router.push({ path: "/listeAcces" }); })
-.catch(err => { this.buttonLoading = false; this.error = err.response.data;
-this.alert = true; }); }*/
 
 <style scoped></style>
 //repeat a form vuejs

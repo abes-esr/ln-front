@@ -60,7 +60,7 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: "/ajouterAcces",
+    path: "/ajouterAcces/ip",
     name: "ajouterAcces",
     component: () => import("../components/AjouterAcces.vue"),
     meta: {
@@ -68,7 +68,15 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: "/modifierAcces/:id",
+    path: "/ajouterAcces/plage",
+    name: "ajouterAcces",
+    component: () => import("../components/AjouterAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/modifierAcces/:id&:typeAcces",
     name: "ModifierAcces",
     component: () => import("../components/ModifierAcces.vue"),
     meta: {
