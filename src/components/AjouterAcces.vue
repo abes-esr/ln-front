@@ -311,11 +311,13 @@ export default Vue.extend({
     clearIp(): void {
       this.ip = "";
     },
-    suppIpFromArrayArrays(index): void {
-      this.arrayArrays.splice(index);
+
+    suppIpFromArrayArrays: function(index) {
+      this.arrayArrays.splice(index, 1);
       console.log(this.arrayArrays.toString());
       console.log(this.arrayArrays.length);
     },
+
     buttonAjouterIp(): void {
       this.error = "";
       this.alert = false;
