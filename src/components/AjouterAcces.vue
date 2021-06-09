@@ -37,20 +37,43 @@
                   ></v-select>
                 </v-col>
               </v-row>
-              <v-row>
+              <!--              <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-text-field
                     outlined
                     v-bind:label="this.labelIp"
-                    placeholder="acces"
+                    v-bind:placeholder="acces"
                     v-model="ip"
                     :rules="this.getIpRules()"
                     required
                     @keyup.enter="buttonAjouterIp()"
                   ></v-text-field>
                 </v-col>
+              </v-row>-->
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-alert
+                    v-for="(value, index) in ipSegments"
+                    v-bind:key="index"
+                  >
+                    <v-text-field
+                      minlenght="3"
+                      maxlenght="3"
+                      :rules="ipSegmentRules"
+                      v-bind:label="value"
+                      v-bind:placeholder="value"
+                      v-on:keyup.enter="
+                        $event.target.nextElementSibling.focus()
+                      "
+                      filled
+                      required
+                    ></v-text-field>
+                  </v-alert>
+                </v-col>
               </v-row>
+
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
@@ -169,6 +192,10 @@ export default Vue.extend({
   name: "AjouterAcces",
   data() {
     return {
+      ipSegments: ["192", "168", "122", "130"] as any,
+      ipSegment: "" as any,
+      valid: false,
+      active: false,
       titleText: "" as string,
       alertText: "" as string,
       labelIp: "" as string,
@@ -195,6 +222,12 @@ export default Vue.extend({
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
+      ipSegmentRules: [
+        (v: any) => !!v || "Le segment d'IP est obligatoire",
+        (v: any) =>
+          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))$/.test(v) ||
+          "Le segment d'IP fourni n'est pas valide" // cf https://stackoverflow.com/a/47959401
+      ],
       ipV4Rules: [
         (v: any) => !!v || "L'IP est obligatoire",
         (v: any) =>
@@ -231,6 +264,11 @@ export default Vue.extend({
       window.location.href.lastIndexOf("/") + 1
     );
     this.setText();
+    /*this.ipSegments[0] = "192";
+    this.ipSegments[1] = "168";
+    this.ipSegments[2] = "152";
+    this.ipSegments[3] = "130";
+    console.log(this.ipSegments);*/
   },
 
   computed: {
@@ -241,6 +279,13 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+
+    /*assertMaxChars: function(index, $event) {
+      if (this.ipSegments[index].length >= 3) {
+        $event.target.nextElementSibling.focus();
+      }
+    },*/
+
     setText(): void {
       if (this.typeAcces === "ip") {
         this.titleText = "Ajout d'adresse IP";
