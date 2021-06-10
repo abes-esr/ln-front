@@ -340,18 +340,19 @@ export default Vue.extend({
 
       switch (index) {
         case 0:
-          return "192";
+          this.ipSegment = "ipSegmentsRef[1]";
+          break;
         case 1:
-          return "168";
+          this.ipSegment = "ipSegmentsRef[2]";
+          break;
         case 2:
-          return "0";
-        case 3:
-          return "1";
+          this.ipSegment = "ipSegmentsRef[3]";
+          break;
       }
 
       //this.$refs["ipSegmentsRef"].focus(); //focus on string not possible
       //(this.ipSegments2[index + 1] as HTMLElement).focus();
-      setTimeout(() => this.$refs.ipSegmentsRef[2].$refs.input.focus(), 100);
+      setTimeout(() => this.$refs[this.ipSegment].$refs.input.focus(), 100);
       //this.$refs["ipSegmentsRef[2]"].$refs.input.focus();
     },
 
