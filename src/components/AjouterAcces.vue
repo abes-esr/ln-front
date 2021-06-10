@@ -51,28 +51,53 @@
                   ></v-text-field>
                 </v-col>
               </v-row>-->
+
               <v-row>
                 <v-col cols="1" />
-                <v-col cols="10">
-                  <v-alert
-                    v-for="(value, index) in ipSegments"
-                    v-bind:key="index"
-                  >
-                    <v-text-field
-                      minlenght="3"
-                      maxlenght="3"
-                      :rules="ipSegmentRules"
-                      v-bind:label="value"
-                      v-bind:placeholder="value"
-                      v-on:keyup.enter="
-                        $event.target.nextElementSibling.focus()
-                      "
-                      filled
-                      required
-                    ></v-text-field>
-                  </v-alert>
-                </v-col>
+                <v-alert
+                  v-for="(value, index) in ipSegments2"
+                  v-bind:key="index"
+                >
+                  <v-row>
+                    <v-col cols="9">
+                      <v-text-field
+                        minlenght="3"
+                        maxlenght="3"
+                        :rules="ipSegmentRules"
+                        v-bind:label="value"
+                        v-bind:placeholder="value"
+                        @input="handleActivationInput($event)"
+                        filled
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-alert>
               </v-row>
+
+              <v-row>
+                <v-col cols="1" />
+                <v-text-field
+                  v-for="(value, index) in ipSegments2"
+                  :key="index"
+                  :data-length="value.length"
+                  :data-index="index"
+                  :rules="ipSegmentRules"
+                  :ref="`v-text-field-${index}`"
+                  v-bind:label="value.value"
+                  v-bind:placeholder="value.value"
+                  v-model="value.value"
+                  @click="clearIpSegment(index)"
+                  :v-if="value.length <= 3"
+                  :v-else="focusNext"
+                  @input="handleActivationInput($event)"
+                  filled
+                  required
+                ></v-text-field>
+              </v-row>
+              <div class="activationkey">
+                Activation Key: {{ activationKey }}
+              </div>
 
               <v-row>
                 <v-col cols="1" />
@@ -192,6 +217,12 @@ export default Vue.extend({
   name: "AjouterAcces",
   data() {
     return {
+      ipSegments2: [
+        { length: 3, value: "192" },
+        { length: 4, value: ".120" },
+        { length: 4, value: ".130" },
+        { length: 4, value: ".140" }
+      ],
       ipSegments: ["192", "168", "122", "130"] as any,
       ipSegment: "" as any,
       valid: false,
@@ -272,13 +303,59 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters(["userSiren"])
+    ...mapGetters(["userSiren"]),
+    activationKey() {
+      let value = "";
+      for (const field of this.ipSegments2) {
+        value += field.value;
+      }
+      return value;
+    }
   },
 
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
+    focusNext(e) {
+      const inputs = Array.from(
+        e.target.form.querySelectorAll('v-text-field[class="text"]')
+      );
+      const index = inputs.indexOf(e.target);
+
+      if (index < inputs.length) {
+        inputs[index + 1].focus();
+      }
+    },
+    handleActivationInput(e) {
+      // Grab input's value
+      const value: any = e.target.value;
+      // Grab data-index value
+      const index = parseInt(e.target.dataset.index);
+      // Grab data-length value
+      const maxlength = e.target.dataset.length;
+
+      if (this.ipSegments2[index].value.length > maxlength) {
+        e.preventDefault();
+        this.ipSegments2[index].value = value.slice(0, 3);
+        try {
+          this.$refs[`v-text-field-${parseInt(index + 1)}`][0].focus();
+        } catch (e) {
+          console.log(e);
+        }
+        return;
+      }
+
+      // Shift focus to next input field if max length reached
+      if (value.length >= maxlength) {
+        if (typeof this.activationKeyFields[index + 1] == "undefined") {
+          e.preventDefault();
+          return;
+        }
+        this.$refs[`v-text-field-${parseInt(index + 1)}`][0].focus();
+        e.preventDefault();
+      }
+    },
 
     /*assertMaxChars: function(index, $event) {
       if (this.ipSegments[index].length >= 3) {
@@ -353,8 +430,8 @@ export default Vue.extend({
       } else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
     },
 
-    clearIp(): void {
-      this.ip = "";
+    clearIpSegment(index): void {
+      this.ipSegments2[index].value = "";
     },
 
     suppIpFromArrayArrays: function(index) {
@@ -409,6 +486,20 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+input[type="text"] {
+  padding: 10px;
+  margin-right: 7px;
+  max-width: 120px;
+}
+
+.activationkey {
+  padding: 10px;
+  border: 1px dashed #45673a;
+  font-weight: bold;
+  color: darken(#45673a, 50%);
+  margin-top: 20px;
+}
+</style>
 //repeat a form vuejs
 //https://stackoverflow.com/questions/51133782/vuejs-add-the-same-form-multiple-times
