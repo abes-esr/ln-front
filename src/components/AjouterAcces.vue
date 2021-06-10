@@ -83,17 +83,17 @@
                   :data-length="value.length"
                   :data-index="index"
                   :rules="ipSegmentRules"
-                  :ref="`v-text-field-${index}`"
-                  v-bind:label="value.value"
-                  v-bind:placeholder="value.value"
+                  :ref="`ipSegmentsRef[${index}]`"
+                  :label="getLabelSegmentsIp(index)"
+                  :placeholder="getLabelSegmentsIp(index)"
                   v-model="value.value"
+                  :v-if="ipSegmentMaxLengthOk(value.value)"
+                  :v-else="moveToNextIpSegment(index)"
                   @click="clearIpSegment(index)"
-                  :v-if="value.length <= 3"
-                  :v-else="focusNext"
-                  @input="handleActivationInput($event)"
                   filled
                   required
-                ></v-text-field>
+                >
+                </v-text-field>
               </v-row>
               <div class="activationkey">
                 Activation Key: {{ activationKey }}
@@ -218,11 +218,12 @@ export default Vue.extend({
   data() {
     return {
       ipSegments2: [
-        { length: 3, value: "192" },
-        { length: 4, value: ".120" },
-        { length: 4, value: ".130" },
-        { length: 4, value: ".140" }
+        { length: 3, value: "19" },
+        { length: 4, value: ".12" },
+        { length: 4, value: ".13" },
+        { length: 4, value: ".14" }
       ],
+      ipSeparator: ["****", "****", ".", ""] as any,
       ipSegments: ["192", "168", "122", "130"] as any,
       ipSegment: "" as any,
       valid: false,
@@ -317,15 +318,47 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
-    focusNext(e) {
-      const inputs = Array.from(
-        e.target.form.querySelectorAll('v-text-field[class="text"]')
-      );
-      const index = inputs.indexOf(e.target);
-
-      if (index < inputs.length) {
-        inputs[index + 1].focus();
+    ipSegmentMaxLengthOk(value) {
+      console.log("length = " + value.length);
+      return value.length <= 3;
+    },
+    getLabelSegmentsIp(index) {
+      switch (index) {
+        case 0:
+          return "192";
+        case 1:
+          return ".168";
+        case 2:
+          return ".136";
+        case 3:
+          return ".120";
       }
+    },
+    moveToNextIpSegment(index) {
+      console.log("moveToNextIpSegment index =" + index);
+      console.log(this.$refs);
+
+      switch (index) {
+        case 0:
+          return "192";
+        case 1:
+          return "168";
+        case 2:
+          return "0";
+        case 3:
+          return "1";
+      }
+
+      //this.$refs["ipSegmentsRef"].focus(); //focus on string not possible
+      //(this.ipSegments2[index + 1] as HTMLElement).focus();
+      setTimeout(() => this.$refs.ipSegmentsRef[2].$refs.input.focus(), 100);
+      //this.$refs["ipSegmentsRef[2]"].$refs.input.focus();
+    },
+
+    focusNext(index) {
+      console.log("index =" + index);
+      document.getElementById("ipSegments2");
+      (this.ipSegments2[index + 1] as HTMLElement).focus();
     },
     handleActivationInput(e) {
       // Grab input's value
@@ -339,7 +372,7 @@ export default Vue.extend({
         e.preventDefault();
         this.ipSegments2[index].value = value.slice(0, 3);
         try {
-          this.$refs[`v-text-field-${parseInt(index + 1)}`][0].focus();
+          this.$refs[`ipSegments2-${parseInt(index + 1)}`][0].focus();
         } catch (e) {
           console.log(e);
         }
@@ -348,11 +381,11 @@ export default Vue.extend({
 
       // Shift focus to next input field if max length reached
       if (value.length >= maxlength) {
-        if (typeof this.activationKeyFields[index + 1] == "undefined") {
+        if (typeof this.ipSegments2[index + 1] == "undefined") {
           e.preventDefault();
           return;
         }
-        this.$refs[`v-text-field-${parseInt(index + 1)}`][0].focus();
+        this.$refs[`ipSegments2-${parseInt(index + 1)}`][0].focus();
         e.preventDefault();
       }
     },
@@ -431,7 +464,8 @@ export default Vue.extend({
     },
 
     clearIpSegment(index): void {
-      this.ipSegments2[index].value = "";
+      if (index === 0) this.ipSegments2[index].value = "";
+      else this.ipSegments2[index].value = ".";
     },
 
     suppIpFromArrayArrays: function(index) {
