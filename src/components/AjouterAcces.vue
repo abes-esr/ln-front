@@ -82,14 +82,13 @@
                   :key="index"
                   :data-length="value.length"
                   :data-index="index"
-                  :rules="ipSegmentRules"
-                  :ref="`ipSegmentsRef[${index}]`"
+                  :rules="ipSegmentsRules"
+                  ref="ipSegments2"
                   :label="getLabelSegmentsIp(index)"
                   :placeholder="getLabelSegmentsIp(index)"
                   v-model="value.value"
-                  :v-if="ipSegmentMaxLengthOk(value.value)"
-                  :v-else="moveToNextIpSegment(index)"
                   @click="clearIpSegment(index)"
+                  @input="toggle(index)"
                   filled
                   required
                 >
@@ -218,13 +217,14 @@ export default Vue.extend({
   data() {
     return {
       ipSegments2: [
-        { length: 3, value: "19" },
-        { length: 4, value: ".12" },
-        { length: 4, value: ".13" },
-        { length: 4, value: ".14" }
+        { length: 3, value: "192." },
+        { length: 4, value: "168." },
+        { length: 4, value: "136." },
+        { length: 4, value: "120" }
       ],
+      ipSeg: "" as string,
       ipSeparator: ["****", "****", ".", ""] as any,
-      ipSegments: ["192", "168", "122", "130"] as any,
+      ipSegments: ["192.", "168.", "136.", "120"] as any,
       ipSegment: "" as any,
       valid: false,
       active: false,
@@ -254,10 +254,17 @@ export default Vue.extend({
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
-      ipSegmentRules: [
+      ipSegmentsRules: [
         (v: any) => !!v || "Le segment d'IP est obligatoire",
         (v: any) =>
+          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.)$/.test(v) ||
           /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))$/.test(v) ||
+          "Le segment d'IP fourni n'est pas valide" // cf https://stackoverflow.com/a/47959401
+      ],
+      ipSegments4Rules: [
+        (v: any) => !!v || "Le segment d'IP est obligatoire",
+        (v: any) =>
+          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.)$/.test(v) ||
           "Le segment d'IP fourni n'est pas valide" // cf https://stackoverflow.com/a/47959401
       ],
       ipV4Rules: [
@@ -296,106 +303,82 @@ export default Vue.extend({
       window.location.href.lastIndexOf("/") + 1
     );
     this.setText();
-    /*this.ipSegments[0] = "192";
-    this.ipSegments[1] = "168";
-    this.ipSegments[2] = "152";
-    this.ipSegments[3] = "130";
-    console.log(this.ipSegments);*/
+    console.log(this.$refs);
   },
 
   computed: {
-    ...mapGetters(["userSiren"]),
-    activationKey() {
+    ...mapGetters(["userSiren"])
+
+    /*activationKey() {
       let value = "";
       for (const field of this.ipSegments2) {
         value += field.value;
       }
       return value;
-    }
+    },*/
   },
 
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
-    ipSegmentMaxLengthOk(value) {
-      console.log("length = " + value.length);
-      return value.length <= 3;
+    toggle(index) {
+      (this as any).$refs["ipSegments2"].forEach((value, index) => {
+        console.log("ipSegments2 = " + index);
+        console.log(
+          "ipSegments2[0] = " + (this as any).$refs["ipSegments2"][index].value
+        );
+        console.log(
+          "ipSegments2[" +
+            index +
+            "] = " +
+            (this as any).$refs["ipSegments2"][index].value.length
+        );
+        console.log(
+          "ipSegments2[" + index + "] = " + this.ipSegments2[index].value.length
+        );
+      });
+      /*if ((this as any).$refs["ipSegments2"][index].value.length >= 3) {
+        (this as any).$refs["ipSegments2"][index + 1].focus();
+      }*/
+      if (this.ipSegments2[index].value.length > 2) {
+        if (index !== 3) this.ipSegments2[index].value += ".";
+        this.clearIpSegment(index + 1);
+        (this as any).$refs["ipSegments2"][index + 1].focus();
+      }
+    },
+    clearIpSegment(index): void {
+      this.ipSegments2[index].value = "";
+      if (
+        this.ipSegments2[index - 1].value.length <= 3 &&
+        this.containsPoint(index - 1) == false
+      )
+        this.ipSegments2[index - 1].value += ".";
+
+      console.log(
+        "this.ipSegments2[index - 1].value.toString().includes(.) = " +
+          this.ipSegments2[index - 1].value.toString().includes(".")
+      );
+    },
+    containsPoint(index) {
+      console.log(
+        "this.ipSegments2[index - 1].value.toString().includes(.) = " +
+          this.ipSegments2[index - 1].value.toString().includes(".")
+      );
+      return this.ipSegments2[index - 1].value.toString().includes(".");
     },
     getLabelSegmentsIp(index) {
       switch (index) {
         case 0:
-          return "192";
+          return "192.";
         case 1:
-          return ".168";
+          return "168.";
         case 2:
-          return ".136";
+          return "136.";
         case 3:
-          return ".120";
+          return "120";
       }
     },
-    moveToNextIpSegment(index) {
-      console.log("moveToNextIpSegment index =" + index);
-      console.log(this.$refs);
-
-      switch (index) {
-        case 0:
-          this.ipSegment = "ipSegmentsRef[1]";
-          break;
-        case 1:
-          this.ipSegment = "ipSegmentsRef[2]";
-          break;
-        case 2:
-          this.ipSegment = "ipSegmentsRef[3]";
-          break;
-      }
-
-      //this.$refs["ipSegmentsRef"].focus(); //focus on string not possible
-      //(this.ipSegments2[index + 1] as HTMLElement).focus();
-      setTimeout(() => this.$refs[this.ipSegment].$refs.input.focus(), 100);
-      //this.$refs["ipSegmentsRef[2]"].$refs.input.focus();
-    },
-
-    focusNext(index) {
-      console.log("index =" + index);
-      document.getElementById("ipSegments2");
-      (this.ipSegments2[index + 1] as HTMLElement).focus();
-    },
-    handleActivationInput(e) {
-      // Grab input's value
-      const value: any = e.target.value;
-      // Grab data-index value
-      const index = parseInt(e.target.dataset.index);
-      // Grab data-length value
-      const maxlength = e.target.dataset.length;
-
-      if (this.ipSegments2[index].value.length > maxlength) {
-        e.preventDefault();
-        this.ipSegments2[index].value = value.slice(0, 3);
-        try {
-          this.$refs[`ipSegments2-${parseInt(index + 1)}`][0].focus();
-        } catch (e) {
-          console.log(e);
-        }
-        return;
-      }
-
-      // Shift focus to next input field if max length reached
-      if (value.length >= maxlength) {
-        if (typeof this.ipSegments2[index + 1] == "undefined") {
-          e.preventDefault();
-          return;
-        }
-        this.$refs[`ipSegments2-${parseInt(index + 1)}`][0].focus();
-        e.preventDefault();
-      }
-    },
-
-    /*assertMaxChars: function(index, $event) {
-      if (this.ipSegments[index].length >= 3) {
-        $event.target.nextElementSibling.focus();
-      }
-    },*/
 
     setText(): void {
       if (this.typeAcces === "ip") {
@@ -462,11 +445,6 @@ export default Vue.extend({
       if (this.typeAcces === "ip") {
         return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
       } else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
-    },
-
-    clearIpSegment(index): void {
-      if (index === 0) this.ipSegments2[index].value = "";
-      else this.ipSegments2[index].value = ".";
     },
 
     suppIpFromArrayArrays: function(index) {
