@@ -54,49 +54,64 @@
 
               <v-row>
                 <v-col cols="1" />
-                <v-alert
-                  v-for="(value, index) in ipSegments2"
-                  v-bind:key="index"
-                >
-                  <v-row>
-                    <v-col cols="9">
-                      <v-text-field
-                        minlenght="3"
-                        maxlenght="3"
-                        :rules="ipSegmentRules"
-                        v-bind:label="value"
-                        v-bind:placeholder="value"
-                        @input="handleActivationInput($event)"
-                        filled
-                        required
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-alert>
-              </v-row>
+                <v-col cols="10">
+                  <v-alert outlined v-bind:label="this.labelIp">
+                    <v-row> <v-col cols="1"/></v-row>
+                    <v-row v-if="this.typeIp === 'IPV4'">
+                      <v-col
+                        cols="3"
+                        v-for="(value, index) in ipv4Segments"
+                        :key="index"
+                      >
+                        <v-text-field
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="ipv4SegmentsRules"
+                          ref="ipv4Segments"
+                          :label="getLabelSegmentsIpv4(index)"
+                          :placeholder="getLabelSegmentsIpv4(index)"
+                          v-model="value.value"
+                          suffix="."
+                          @click="clearIpv4Segment(index)"
+                          @input="nextIpv4Segment(index)"
+                          dense
+                          required
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
 
-              <v-row>
-                <v-col cols="1" />
-                <v-text-field
-                  v-for="(value, index) in ipSegments2"
-                  :key="index"
-                  :data-length="value.length"
-                  :data-index="index"
-                  :rules="ipSegmentsRules"
-                  ref="ipSegments2"
-                  :label="getLabelSegmentsIp(index)"
-                  :placeholder="getLabelSegmentsIp(index)"
-                  v-model="value.value"
-                  @click="clearIpSegment(index)"
-                  @input="toggle(index)"
-                  filled
-                  required
-                >
-                </v-text-field>
+                    <v-row v-else>
+                      <v-col
+                        cols="1,5"
+                        v-for="(value, index) in ipv6Segments"
+                        :key="index"
+                      >
+                        <v-text-field
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="ipv6SegmentsRules"
+                          ref="ipv6Segments"
+                          :label="getLabelSegmentsIpv6(index)"
+                          :placeholder="getLabelSegmentsIpv6(index)"
+                          v-model="value.value"
+                          suffix=":"
+                          @click="clearIpv6Segment(index)"
+                          @input="nextIpv6Segment(index)"
+                          dense
+                          required
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-alert v-if="this.typeIp === 'IPV4'"
+                      >Résultat: {{ resultatIpv4 }}</v-alert
+                    >
+
+                    <v-alert v-else>Résultat: {{ resultatIpv6 }}</v-alert>
+                  </v-alert>
+                </v-col>
               </v-row>
-              <div class="activationkey">
-                Activation Key: {{ activationKey }}
-              </div>
 
               <v-row>
                 <v-col cols="1" />
@@ -216,18 +231,23 @@ export default Vue.extend({
   name: "AjouterAcces",
   data() {
     return {
-      ipSegments2: [
-        { length: 3, value: "192." },
-        { length: 4, value: "168." },
-        { length: 4, value: "136." },
+      ipv4Segments: [
+        { length: 4, value: "192" },
+        { length: 4, value: "168" },
+        { length: 4, value: "136" },
         { length: 4, value: "120" }
       ],
-      ipSeg: "" as string,
-      ipSeparator: ["****", "****", ".", ""] as any,
-      ipSegments: ["192.", "168.", "136.", "120"] as any,
-      ipSegment: "" as any,
-      valid: false,
-      active: false,
+      ipv6Segments: [
+        { length: 5, value: "1924" },
+        { length: 5, value: "1685" },
+        { length: 5, value: "1368" },
+        { length: 5, value: "1200" },
+        { length: 5, value: "1924" },
+        { length: 5, value: "1685" },
+        { length: 5, value: "1368" },
+        { length: 5, value: "1200" }
+      ],
+
       titleText: "" as string,
       alertText: "" as string,
       labelIp: "" as string,
@@ -254,14 +274,20 @@ export default Vue.extend({
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       ipRules: "" as any,
-      ipSegmentsRules: [
+      ipv4SegmentsRules: [
         (v: any) => !!v || "Le segment d'IP est obligatoire",
         (v: any) =>
           /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.)$/.test(v) ||
           /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))$/.test(v) ||
           "Le segment d'IP fourni n'est pas valide" // cf https://stackoverflow.com/a/47959401
       ],
-      ipSegments4Rules: [
+      ipv6SegmentsRule: [
+        { length: 3, value: "192." },
+        { length: 4, value: "168." },
+        { length: 4, value: "136." },
+        { length: 4, value: "120" }
+      ],
+      ipv6SegmentsRules: [
         (v: any) => !!v || "Le segment d'IP est obligatoire",
         (v: any) =>
           /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.)$/.test(v) ||
@@ -302,72 +328,104 @@ export default Vue.extend({
     this.typeAcces = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
     );
+    this.typeIp = "IPV4";
     this.setText();
     console.log(this.$refs);
   },
 
   computed: {
-    ...mapGetters(["userSiren"])
+    ...mapGetters(["userSiren"]),
 
-    /*activationKey() {
+    resultatIpv4() {
       let value = "";
-      for (const field of this.ipSegments2) {
-        value += field.value;
+      for (const field of this.ipv4Segments) {
+        value += field.value + ".";
       }
-      return value;
-    },*/
+      return value.substr(0, value.lastIndexOf("."));
+    },
+    resultatIpv6() {
+      let value = "";
+      for (const field of this.ipv6Segments) {
+        value += field.value + ":";
+      }
+      return value.substr(0, value.lastIndexOf("."));
+    }
   },
 
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
-    toggle(index) {
-      (this as any).$refs["ipSegments2"].forEach((value, index) => {
-        console.log("ipSegments2 = " + index);
+    nextIpv4Segment(index) {
+      (this as any).$refs["ipv4Segments"].forEach((value, index) => {
+        console.log("ipv4Segments = " + index);
         console.log(
-          "ipSegments2[0] = " + (this as any).$refs["ipSegments2"][index].value
+          "ipv4Segments[0] = " +
+            (this as any).$refs["ipv4Segments"][index].value
         );
         console.log(
-          "ipSegments2[" +
+          "ipv4Segments[" +
             index +
             "] = " +
-            (this as any).$refs["ipSegments2"][index].value.length
+            (this as any).$refs["ipv4Segments"][index].value.length
         );
         console.log(
-          "ipSegments2[" + index + "] = " + this.ipSegments2[index].value.length
+          "ipv4Segments[" +
+            index +
+            "] = " +
+            this.ipv4Segments[index].value.length
         );
       });
-      /*if ((this as any).$refs["ipSegments2"][index].value.length >= 3) {
-        (this as any).$refs["ipSegments2"][index + 1].focus();
+      /*if ((this as any).$refs["ipv4Segments"][index].value.length >= 3) {
+        (this as any).$refs["ipv4Segments"][index + 1].focus();
       }*/
-      if (this.ipSegments2[index].value.length > 2) {
-        if (index !== 3) this.ipSegments2[index].value += ".";
-        this.clearIpSegment(index + 1);
-        (this as any).$refs["ipSegments2"][index + 1].focus();
+      if (this.ipv4Segments[index].value.length > 2) {
+        //if (index !== 3) this.ipv4Segments[index].value += ".";
+        this.clearIpv4Segment(index + 1);
+        (this as any).$refs["ipv4Segments"][index + 1].focus();
       }
     },
-    clearIpSegment(index): void {
-      this.ipSegments2[index].value = "";
-      if (
-        this.ipSegments2[index - 1].value.length <= 3 &&
-        this.containsPoint(index - 1) == false
+    nextIpv6Segment(index) {
+      if (this.ipv6Segments[index].value.length >= 4) {
+        if (index !== 7) this.ipv6Segments[index].value += ":";
+        this.clearIpv6Segment(index + 1);
+        (this as any).$refs["ipv6Segments"][index + 1].focus();
+      }
+    },
+    clearIpv4Segment(index): void {
+      this.ipv4Segments[index].value = "";
+      /*if (
+        this.ipv4Segments[index - 1].value.length <= 3 &&
+        this.containsPoint(index - 1) === false
       )
-        this.ipSegments2[index - 1].value += ".";
+        this.ipv4Segments[index - 1].value += ".";*/
 
       console.log(
-        "this.ipSegments2[index - 1].value.toString().includes(.) = " +
-          this.ipSegments2[index - 1].value.toString().includes(".")
+        "this.ipv4Segments[index - 1].value.toString().includes(.) = " +
+          this.ipv4Segments[index - 1].value.toString().includes(".")
+      );
+    },
+    clearIpv6Segment(index): void {
+      this.ipv6Segments[index].value = "";
+      if (
+        this.ipv6Segments[index - 1].value.length <= 3 &&
+        this.containsPoint(index - 1) === false
+      )
+        this.ipv6Segments[index - 1].value += ".";
+
+      console.log(
+        "this.ipv6Segments[index - 1].value.toString().includes(:) = " +
+          this.ipv6Segments[index - 1].value.toString().includes(":")
       );
     },
     containsPoint(index) {
       console.log(
-        "this.ipSegments2[index - 1].value.toString().includes(.) = " +
-          this.ipSegments2[index - 1].value.toString().includes(".")
+        "this.ipv4Segments[index - 1].value.toString().includes(.) = " +
+          this.ipv4Segments[index - 1].value.toString().includes(".")
       );
-      return this.ipSegments2[index - 1].value.toString().includes(".");
+      return this.ipv4Segments[index - 1].value.toString().includes(".");
     },
-    getLabelSegmentsIp(index) {
+    getLabelSegmentsIpv4(index) {
       switch (index) {
         case 0:
           return "192.";
@@ -377,6 +435,26 @@ export default Vue.extend({
           return "136.";
         case 3:
           return "120";
+      }
+    },
+    getLabelSegmentsIpv6(index) {
+      switch (index) {
+        case 0:
+          return "1924:";
+        case 1:
+          return "1685:";
+        case 2:
+          return "1368:";
+        case 3:
+          return "1200:";
+        case 4:
+          return "1924:";
+        case 5:
+          return "1685:";
+        case 6:
+          return "1368:";
+        case 7:
+          return "1200";
       }
     },
 
