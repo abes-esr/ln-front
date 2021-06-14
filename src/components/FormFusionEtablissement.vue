@@ -45,6 +45,7 @@
           <v-row>
             <v-col cols="9"></v-col>
             <v-col>
+              <v-btn @click="clear()">Annuler </v-btn>
               <v-btn @click="triggerChildremForm()" color="success"
                 >Valider
               </v-btn>
@@ -96,6 +97,9 @@ export default Vue.extend({
             err.data();
           });
       }
+    },
+    clear(): void {
+      this.bus.$emit("clear");
     },
     increaseSirenNumber: function() {
       this.sirenNumber++;

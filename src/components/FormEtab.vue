@@ -282,10 +282,14 @@ export default Vue.extend({
           villeContact: this.villeContact
         });
       }
+    },
+    clear(): void {
+      (this.$refs.form as HTMLFormElement).reset();
     }
   },
   mounted() {
     this.bus.$on("submit", this.validAndSend);
+    this.bus.$on("clear", this.clear);
   }
 });
 </script>
