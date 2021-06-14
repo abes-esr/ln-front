@@ -222,7 +222,7 @@ export default Vue.extend({
       }
     },
     fetchEtab(): void {
-      HTTP.get("/ln/etablissement/" + this.userSiren)
+      HTTP.get("/ln/etablissement/getInfoEtab")
         .then(result => {
           this.mail = result.data.contact.mail;
           this.nomContact = result.data.contact.nom;
