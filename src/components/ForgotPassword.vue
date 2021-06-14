@@ -156,27 +156,26 @@ export default Vue.extend({
         if (
           (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
         )
-          console.log;
-        axios
-          .post(
-            process.env.VUE_APP_ROOT_API +
-              "/ln/reinitialisationMotDePasse/resetPassword",
-            {
-              email: this.mail,
-              recaptcha: this.token
-            }
-          )
-          .then(response => {
-            this.buttonLoading = false;
-            this.message = response.data;
-            this.alert = true;
-          })
-          .catch(err => {
-            this.buttonLoading = false;
-            this.message = err.response.data;
-            this.alert = true;
-            this.retourKo = true;
-          });
+          axios
+            .post(
+              process.env.VUE_APP_ROOT_API +
+                "/ln/reinitialisationMotDePasse/resetPassword",
+              {
+                email: this.mail,
+                recaptcha: this.token
+              }
+            )
+            .then(response => {
+              this.buttonLoading = false;
+              this.message = response.data;
+              this.alert = true;
+            })
+            .catch(err => {
+              this.buttonLoading = false;
+              this.message = err.response.data;
+              this.alert = true;
+              this.retourKo = true;
+            });
       }
     }
   }

@@ -46,7 +46,10 @@
             <v-col cols="9"></v-col>
             <v-col>
               <v-btn @click="clear()">Annuler </v-btn>
-              <v-btn @click="triggerChildremForm()" color="success"
+              <v-btn
+                @click="triggerChildremForm()"
+                :loading="buttonLoading"
+                color="success"
                 >Valider
               </v-btn>
             </v-col>
@@ -54,6 +57,13 @@
         </v-card-actions>
       </v-form>
     </v-card>
+    <br />
+    <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
+      {{ message }}
+    </v-alert>
+    <v-alert v-else dense outlined :value="alert" type="success">
+      {{ message }}
+    </v-alert>
   </div>
 </template>
 
@@ -73,7 +83,12 @@ export default Vue.extend({
         (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
       ],
       bus: new Vue(),
-      sirenNumber: 2
+      sirenNumber: 2,
+      buttonLoading: false,
+      alert: false,
+      alertOK: false,
+      retourKo: false,
+      message: ""
     };
   },
   methods: {
@@ -81,6 +96,7 @@ export default Vue.extend({
       this.bus.$emit("submit");
     },
     send(payload: object): void {
+      this.buttonLoading = true;
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
         console.log({
           etablissementDTO: payload,
@@ -90,11 +106,18 @@ export default Vue.extend({
           etablissementDTO: payload,
           sirenFusionnes: this.sirenEtab
         })
-          .then(res => {
-            res.status;
+          .then(response => {
+            this.alert = true;
+            this.buttonLoading = false;
+            this.message = response.data;
+            this.alert = true;
+            this.clear();
           })
           .catch(err => {
-            err.data();
+            this.buttonLoading = false;
+            this.message = err.response.data;
+            this.alert = true;
+            this.retourKo = true;
           });
       }
     },

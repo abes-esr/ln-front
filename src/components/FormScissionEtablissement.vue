@@ -59,7 +59,10 @@
             <v-col cols="9"></v-col>
             <v-col>
               <v-btn @click="clear()">Annuler </v-btn>
-              <v-btn @click="triggerChildremForm()" color="success"
+              <v-btn
+                @click="triggerChildremForm()"
+                :loading="buttonLoading"
+                color="success"
                 >Valider
               </v-btn>
             </v-col>
@@ -67,6 +70,13 @@
         </v-card-actions>
       </v-form>
     </v-card>
+    <br />
+    <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
+      {{ message }}
+    </v-alert>
+    <v-alert v-else dense outlined :value="alert" type="success">
+      {{ message }}
+    </v-alert>
   </div>
 </template>
 
@@ -87,7 +97,12 @@ export default Vue.extend({
       ],
       bus: new Vue(),
       etablissementNumber: 2,
-      etablissementDTOS: []
+      etablissementDTOS: [],
+      buttonLoading: false,
+      alert: false,
+      alertOK: false,
+      retourKo: false,
+      message: ""
     };
   },
   methods: {
@@ -95,6 +110,7 @@ export default Vue.extend({
       this.bus.$emit("submit");
     },
     send(payload: never): void {
+      this.buttonLoading = true;
       this.etablissementDTOS.push(payload);
 
       if (this.etablissementDTOS.length == this.etablissementNumber) {
@@ -103,6 +119,10 @@ export default Vue.extend({
             ancienSiren: this.sirenEtab,
             etablissementDTOS: this.etablissementDTOS
           });
+
+          this.alert = false;
+          this.message = "";
+          this.retourKo = false;
           HTTP.post(
             process.env.VUE_APP_ROOT_API + "ln/etablissement/division",
             {
@@ -110,11 +130,18 @@ export default Vue.extend({
               etablissementDTOS: this.etablissementDTOS
             }
           )
-            .then(res => {
-              res.status;
+            .then(response => {
+              this.alert = true;
+              this.buttonLoading = false;
+              this.message = response.data;
+              this.alert = true;
+              this.clear();
             })
             .catch(err => {
-              err.data();
+              this.buttonLoading = false;
+              this.message = err.response.data;
+              this.alert = true;
+              this.retourKo = true;
             });
         }
       }
