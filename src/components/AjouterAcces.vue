@@ -72,7 +72,7 @@
                           :placeholder="getLabelSegmentsIpv4(index)"
                           v-model="value.value"
                           suffix="."
-                          @click="clearIpv4Segment(index)"
+                          @click="clearIpSegment(index, ipv4Segments)"
                           @input="nextIpv4Segment(index)"
                           dense
                           required
@@ -96,7 +96,7 @@
                           :placeholder="getLabelSegmentsIpv6(index)"
                           v-model="value.value"
                           suffix=":"
-                          @click="clearIpv6Segment(index)"
+                          @click="clearIpSegment(index, ipv6Segments)"
                           @input="nextIpv6Segment(index)"
                           dense
                           required
@@ -104,11 +104,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-alert v-if="this.typeIp === 'IPV4'"
-                      >Résultat: {{ resultatIpv4 }}</v-alert
-                    >
-
-                    <v-alert v-else>Résultat: {{ resultatIpv6 }}</v-alert>
+                    <v-alert>Résultat: {{ resultatIp }}</v-alert>
                   </v-alert>
                 </v-col>
               </v-row>
@@ -336,17 +332,16 @@ export default Vue.extend({
   computed: {
     ...mapGetters(["userSiren"]),
 
-    resultatIpv4() {
+    resultatIp() {
       let value = "";
-      for (const field of this.ipv4Segments) {
-        value += field.value + ".";
-      }
-      return value.substr(0, value.lastIndexOf("."));
-    },
-    resultatIpv6() {
-      let value = "";
-      for (const field of this.ipv6Segments) {
-        value += field.value + ":";
+      if (this.typeIp === "IPV4") {
+        for (const field of this.ipv4Segments) {
+          value += field.value + ".";
+        }
+      } else {
+        for (const field of this.ipv6Segments) {
+          value += field.value + ":";
+        }
       }
       return value.substr(0, value.lastIndexOf("."));
     }
@@ -381,42 +376,22 @@ export default Vue.extend({
       }*/
       if (this.ipv4Segments[index].value.length > 2) {
         //if (index !== 3) this.ipv4Segments[index].value += ".";
-        this.clearIpv4Segment(index + 1);
+        this.clearIpSegment(index + 1, this.ipv4Segments);
         (this as any).$refs["ipv4Segments"][index + 1].focus();
       }
     },
     nextIpv6Segment(index) {
       if (this.ipv6Segments[index].value.length >= 4) {
-        if (index !== 7) this.ipv6Segments[index].value += ":";
-        this.clearIpv6Segment(index + 1);
+        //if (index !== 7) this.ipv6Segments[index].value += ":";
+        this.clearIpSegment(index + 1, this.ipv6Segments);
         (this as any).$refs["ipv6Segments"][index + 1].focus();
       }
     },
-    clearIpv4Segment(index): void {
-      this.ipv4Segments[index].value = "";
-      /*if (
-        this.ipv4Segments[index - 1].value.length <= 3 &&
-        this.containsPoint(index - 1) === false
-      )
-        this.ipv4Segments[index - 1].value += ".";*/
-
-      console.log(
-        "this.ipv4Segments[index - 1].value.toString().includes(.) = " +
-          this.ipv4Segments[index - 1].value.toString().includes(".")
-      );
+    clearIpSegment(index, array): void {
+      array[index].value = "";
     },
     clearIpv6Segment(index): void {
       this.ipv6Segments[index].value = "";
-      if (
-        this.ipv6Segments[index - 1].value.length <= 3 &&
-        this.containsPoint(index - 1) === false
-      )
-        this.ipv6Segments[index - 1].value += ".";
-
-      console.log(
-        "this.ipv6Segments[index - 1].value.toString().includes(:) = " +
-          this.ipv6Segments[index - 1].value.toString().includes(":")
-      );
     },
     containsPoint(index) {
       console.log(
