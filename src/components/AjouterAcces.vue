@@ -32,7 +32,7 @@
                     :items="typesIp"
                     label="Type d'IP"
                     :rules="typeIpRules"
-                    v-on:change="clearIp()"
+                    v-on:change="reinitialisationIpSegments()"
                     @keyup.enter="buttonAjouterIp()"
                   ></v-select>
                 </v-col>
@@ -55,7 +55,10 @@
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
-                  <v-alert outlined v-bind:label="this.labelIp">
+                  <v-alert outlined>
+                    <v-alert text dense color="teal" border="left">
+                      {{ this.labelIp }}
+                    </v-alert>
                     <v-row> <v-col cols="1"/></v-row>
                     <v-row v-if="this.typeIp === 'IPV4'">
                       <v-col
@@ -104,7 +107,20 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
-                    <v-alert>Résultat: {{ resultatIp }}</v-alert>
+                    <v-row>
+                      <v-col cols="1" />
+                      <v-col cols="10">
+                        <v-text-field
+                          outlined
+                          v-bind:label="this.labelIpResultat"
+                          v-model="this.ip"
+                          :rules="this.getIpRules()"
+                          readonly
+                          @keyup.enter="buttonAjouterIp()"
+                          >Résultat: {{ resultatIp }}</v-text-field
+                        >
+                      </v-col>
+                    </v-row>
                   </v-alert>
                 </v-col>
               </v-row>
@@ -247,6 +263,7 @@ export default Vue.extend({
       titleText: "" as string,
       alertText: "" as string,
       labelIp: "" as string,
+      labelIpResultat: "" as string,
       buttonAjouterText: "" as string,
       title2Text: "" as string,
       id: "",
@@ -334,16 +351,23 @@ export default Vue.extend({
 
     resultatIp() {
       let value = "";
+      console.log("this.typeIp =" + this.typeIp);
       if (this.typeIp === "IPV4") {
         for (const field of this.ipv4Segments) {
           value += field.value + ".";
         }
+        value = value.substr(0, value.lastIndexOf("."));
       } else {
+        console.log("dans le else");
+        this.reinitialisationIpSegments();
         for (const field of this.ipv6Segments) {
           value += field.value + ":";
         }
+        value = value.substr(0, value.lastIndexOf(":"));
       }
-      return value.substr(0, value.lastIndexOf("."));
+      (this as any).ip = value;
+      console.log("this.ip = " + this.ip);
+      return value;
     }
   },
 
@@ -351,6 +375,24 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+    reinitialisationIpSegments() {
+      this.ipv4Segments = [
+        { length: 4, value: "192" },
+        { length: 4, value: "168" },
+        { length: 4, value: "136" },
+        { length: 4, value: "120" }
+      ];
+      this.ipv6Segments = [
+        { length: 5, value: "1924" },
+        { length: 5, value: "1685" },
+        { length: 5, value: "1368" },
+        { length: 5, value: "1200" },
+        { length: 5, value: "1924" },
+        { length: 5, value: "1685" },
+        { length: 5, value: "1368" },
+        { length: 5, value: "1200" }
+      ];
+    },
     nextIpv4Segment(index) {
       (this as any).$refs["ipv4Segments"].forEach((value, index) => {
         console.log("ipv4Segments = " + index);
@@ -438,14 +480,18 @@ export default Vue.extend({
         this.titleText = "Ajout d'adresse IP";
         this.alertText =
           "Vous pouvez directement insérer une adresse IP en effectuant un copier coller.";
-        this.labelIp = "Saisissez votre adresse ip";
+        this.labelIp =
+          "Saisissez votre adresse ip. L'ip ci-dessous figure à titre d'exemple.";
+        this.labelIpResultat = "Ip fournie";
         this.buttonAjouterText = "Ajouter l'ip saisie";
         this.title2Text = "Ips mémorisées avant envoi";
       } else {
         this.titleText = "Ajout de plage d'adresses IP";
         this.alertText =
           "Vous pouvez directement insérer une ou plusieurs adresses IP en effectuant un copier coller.";
-        this.labelIp = "Saisissez votre plage d'adresses ip";
+        this.labelIp =
+          "Saisissez votre plage d'adresse ip. La plage d'adresse ip ci-dessous figure à titre d'exemple.";
+        this.labelIpResultat = "Plage d'adresses ip fournie";
         this.buttonAjouterText = "Ajouter la plage d'ips saisie";
         this.title2Text = "Plages d'ips mémorisées avant envoi";
       }
