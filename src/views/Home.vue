@@ -24,13 +24,17 @@
         ></v-data-table>
       </v-col>
     </v-row>
+    <who-is ip="194.254.227.25"></who-is>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import WhoIs from "../components/WhoIs.vue";
+
 export default Vue.extend({
   name: "Home",
+  components: { WhoIs },
   data() {
     return {
       siren: "",

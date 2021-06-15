@@ -39,17 +39,26 @@ const routes: Array<RouteConfig> = [
   {
     path: "/reinitialisationPass",
     name: "ReinitialisationPass",
-    component: () => import("../components/FormReinitialisationPass.vue")
+    component: () => import("../components/FormReinitialisationPass.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/fusionEtablissement",
     name: "fusionEtablissement",
-    component: () => import("../components/FormFusionEtablissement.vue")
+    component: () => import("../components/FormFusionEtablissement.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/scissionEtablissement",
     name: "scissionEtablissement",
-    component: () => import("../components/FormScissionEtablissement.vue")
+    component: () => import("../components/FormScissionEtablissement.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/listeAcces",
@@ -86,7 +95,10 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeEtab",
     name: "ListeEtab",
-    component: () => import("../components/ListeEtab.vue")
+    component: () => import("../components/ListeEtab.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/creationCompte",
