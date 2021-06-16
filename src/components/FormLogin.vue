@@ -25,10 +25,12 @@
                 outlined
                 label="Mot de passe"
                 placeholder="Mot de passe"
-                type="password"
+                :type="show ? 'text' : 'password'"
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="password"
                 :rules="passwordRules"
                 required
+                @click:append="show = !show"
                 @keyup.enter="validate()"
               ></v-text-field>
             </v-col>
@@ -79,7 +81,8 @@ export default Vue.extend({
       password: "" as string,
       buttonLoading: false,
       alert: false,
-      error: ""
+      error: "",
+      show: false
     };
   },
   methods: {
