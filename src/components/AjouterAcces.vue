@@ -52,7 +52,7 @@
                 </v-col>
               </v-row>-->
 
-              <v-row>
+              <v-row v-if="this.typeAcces === 'ip'">
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-alert outlined>
@@ -118,6 +118,113 @@
                           readonly
                           @keyup.enter="buttonAjouterIp()"
                           >Résultat: {{ resultatIp }}</v-text-field
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-alert>
+                </v-col>
+              </v-row>
+
+              <v-row v-else>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-alert outlined>
+                    <v-alert text dense color="teal" border="left">
+                      {{ this.labelIp }}
+                    </v-alert>
+                    <v-row> <v-col cols="1"/></v-row>
+                    <v-row v-if="this.typeIp === 'IPV4'">
+                      <v-col
+                        cols="2"
+                        v-for="(value, index) in ipv4SegmentsPlage"
+                        :key="index"
+                      >
+                        <v-text-field
+                          v-if="index === 2 || index === 4"
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="ipv4SegmentsRules"
+                          ref="ipv4Segments"
+                          :label="getLabelSegmentsIpv4(index)"
+                          :placeholder="getLabelSegmentsIpv4(index)"
+                          v-model="value.value"
+                          suffix="-"
+                          @click="clearIpSegment(index, ipv4SegmentsPlage)"
+                          @input="nextIpv4Segment(index)"
+                          dense
+                          required
+                        >
+                        </v-text-field>
+                        <v-text-field
+                          v-else
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="ipv4SegmentsRules"
+                          ref="ipv4Segments"
+                          :label="getLabelSegmentsIpv4(index)"
+                          :placeholder="getLabelSegmentsIpv4(index)"
+                          v-model="value.value"
+                          suffix="."
+                          @click="clearIpSegment(index, ipv4SegmentsPlage)"
+                          @input="nextIpv4Segment(index)"
+                          dense
+                          required
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row v-else>
+                      <v-col
+                        cols="1,5"
+                        v-for="(value, index) in ipv6SegmentsPlage"
+                        :key="index"
+                      >
+                        <v-text-field
+                          v-if="index === 6 || index === 8"
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="ipv6SegmentsRules"
+                          ref="ipv6Segments"
+                          :label="getLabelSegmentsIpv6(index)"
+                          :placeholder="getLabelSegmentsIpv6(index)"
+                          v-model="value.value"
+                          suffix="-"
+                          @click="clearIpSegment(index, ipv6SegmentsPlage)"
+                          @input="nextIpv6Segment(index)"
+                          dense
+                          required
+                        >
+                        </v-text-field>
+                        <v-text-field
+                          v-else
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="ipv6SegmentsRules"
+                          ref="ipv6Segments"
+                          :label="getLabelSegmentsIpv6(index)"
+                          :placeholder="getLabelSegmentsIpv6(index)"
+                          v-model="value.value"
+                          suffix=":"
+                          @click="clearIpSegment(index, ipv6SegmentsPlage)"
+                          @input="nextIpv6Segment(index)"
+                          dense
+                          required
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="1" />
+                      <v-col cols="10">
+                        <v-text-field
+                          outlined
+                          v-bind:label="this.labelIpResultat"
+                          v-model="this.ip"
+                          :rules="this.getIpRules()"
+                          readonly
+                          @keyup.enter="buttonAjouterIp()"
+                          >{{ resultatPlageIp }}</v-text-field
                         >
                       </v-col>
                     </v-row>
@@ -244,22 +351,42 @@ export default Vue.extend({
   data() {
     return {
       ipv4Segments: [
-        { length: 4, value: "192" },
-        { length: 4, value: "168" },
-        { length: 4, value: "136" },
-        { length: 4, value: "120" }
+        { length: 3, value: "192" },
+        { length: 3, value: "168" },
+        { length: 3, value: "136" },
+        { length: 3, value: "120" }
       ],
       ipv6Segments: [
-        { length: 5, value: "1924" },
-        { length: 5, value: "1685" },
-        { length: 5, value: "1368" },
-        { length: 5, value: "1200" },
-        { length: 5, value: "1924" },
-        { length: 5, value: "1685" },
-        { length: 5, value: "1368" },
-        { length: 5, value: "1200" }
+        { length: 5, value: "5800" },
+        { length: 5, value: "10C3" },
+        { length: 5, value: "E3C3" },
+        { length: 5, value: "F1AA" },
+        { length: 5, value: "48E3" },
+        { length: 5, value: "D923" },
+        { length: 5, value: "D494" },
+        { length: 5, value: "AAFF" }
       ],
-
+      ipv4SegmentsPlage: [
+        { length: 3, value: "192" },
+        { length: 3, value: "168" },
+        { length: 3, value: "136" },
+        { length: 3, value: "120" },
+        { length: 3, value: "136" },
+        { length: 3, value: "120" }
+      ],
+      ipv6SegmentsPlage: [
+        { length: 5, value: "5800" },
+        { length: 5, value: "10C3" },
+        { length: 5, value: "E3C3" },
+        { length: 5, value: "F1AA" },
+        { length: 5, value: "48E3" },
+        { length: 5, value: "D923" },
+        { length: 5, value: "D494" },
+        { length: 5, value: "AAFF" },
+        { length: 5, value: "D494" },
+        { length: 5, value: "AAFF" }
+      ],
+      resultatPlage: "" as string,
       titleText: "" as string,
       alertText: "" as string,
       labelIp: "" as string,
@@ -290,21 +417,14 @@ export default Vue.extend({
       ipv4SegmentsRules: [
         (v: any) => !!v || "Le segment d'IP est obligatoire",
         (v: any) =>
-          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.)$/.test(v) ||
           /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))$/.test(v) ||
           "Le segment d'IP fourni n'est pas valide" // cf https://stackoverflow.com/a/47959401
-      ],
-      ipv6SegmentsRule: [
-        { length: 3, value: "192." },
-        { length: 4, value: "168." },
-        { length: 4, value: "136." },
-        { length: 4, value: "120" }
       ],
       ipv6SegmentsRules: [
         (v: any) => !!v || "Le segment d'IP est obligatoire",
         (v: any) =>
-          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.)$/.test(v) ||
-          "Le segment d'IP fourni n'est pas valide" // cf https://stackoverflow.com/a/47959401
+          /^\s*([0-9a-fA-F]{1,4})$/.test(v) ||
+          "Le segment d'IP fourni n'est pas valide"
       ],
       ipV4Rules: [
         (v: any) => !!v || "L'IP est obligatoire",
@@ -359,7 +479,7 @@ export default Vue.extend({
         value = value.substr(0, value.lastIndexOf("."));
       } else {
         console.log("dans le else");
-        this.reinitialisationIpSegments();
+        //this.reinitialisationIpSegments();
         for (const field of this.ipv6Segments) {
           value += field.value + ":";
         }
@@ -368,6 +488,28 @@ export default Vue.extend({
       (this as any).ip = value;
       console.log("this.ip = " + this.ip);
       return value;
+    },
+    resultatPlageIp() {
+      let valeur = "";
+      console.log("this.typeIp =" + this.typeIp);
+      if (this.typeIp === "IPV4") {
+        this.ipv4SegmentsPlage.forEach((value, index) => {
+          console.log("value.value = " + value.value);
+          if (index === 2 || index === 4) valeur += value.value + "-";
+          else valeur += value.value + ".";
+        });
+        valeur = valeur.substr(0, valeur.lastIndexOf("."));
+      } else {
+        console.log("dans le else");
+        this.ipv6SegmentsPlage.forEach((value, index) => {
+          if (index === 6 || index === 8) valeur += value.value + "-";
+          else valeur += value.value + ":";
+        });
+        valeur = valeur.substr(0, valeur.lastIndexOf(":"));
+      }
+      (this as any).ip = valeur;
+      console.log("this.ip = " + this.ip);
+      return valeur;
     }
   },
 
@@ -376,22 +518,45 @@ export default Vue.extend({
       setNotification: "setNotification"
     }),
     reinitialisationIpSegments() {
-      this.ipv4Segments = [
-        { length: 4, value: "192" },
-        { length: 4, value: "168" },
-        { length: 4, value: "136" },
-        { length: 4, value: "120" }
-      ];
-      this.ipv6Segments = [
-        { length: 5, value: "1924" },
-        { length: 5, value: "1685" },
-        { length: 5, value: "1368" },
-        { length: 5, value: "1200" },
-        { length: 5, value: "1924" },
-        { length: 5, value: "1685" },
-        { length: 5, value: "1368" },
-        { length: 5, value: "1200" }
-      ];
+      if (this.typeAcces === "ip") {
+        this.ipv4Segments = [
+          { length: 4, value: "192" },
+          { length: 4, value: "168" },
+          { length: 4, value: "136" },
+          { length: 4, value: "120" }
+        ];
+        this.ipv6Segments = [
+          { length: 5, value: "5800" },
+          { length: 5, value: "10C3" },
+          { length: 5, value: "E3C3" },
+          { length: 5, value: "F1AA" },
+          { length: 5, value: "48E3" },
+          { length: 5, value: "D923" },
+          { length: 5, value: "D494" },
+          { length: 5, value: "AAFF" }
+        ];
+      } else {
+        this.ipv4SegmentsPlage = [
+          { length: 4, value: "192" },
+          { length: 4, value: "168" },
+          { length: 4, value: "136" },
+          { length: 4, value: "120" },
+          { length: 4, value: "136" },
+          { length: 4, value: "120" }
+        ];
+        this.ipv6SegmentsPlage = [
+          { length: 5, value: "5800" },
+          { length: 5, value: "10C3" },
+          { length: 5, value: "E3C3" },
+          { length: 5, value: "F1AA" },
+          { length: 5, value: "48E3" },
+          { length: 5, value: "D923" },
+          { length: 5, value: "D494" },
+          { length: 5, value: "AAFF" },
+          { length: 5, value: "D494" },
+          { length: 5, value: "AAFF" }
+        ];
+      }
     },
     nextIpv4Segment(index) {
       (this as any).$refs["ipv4Segments"].forEach((value, index) => {
@@ -413,35 +578,24 @@ export default Vue.extend({
             this.ipv4Segments[index].value.length
         );
       });
-      /*if ((this as any).$refs["ipv4Segments"][index].value.length >= 3) {
-        (this as any).$refs["ipv4Segments"][index + 1].focus();
-      }*/
+
       if (this.ipv4Segments[index].value.length > 2) {
-        //if (index !== 3) this.ipv4Segments[index].value += ".";
         this.clearIpSegment(index + 1, this.ipv4Segments);
         (this as any).$refs["ipv4Segments"][index + 1].focus();
       }
     },
     nextIpv6Segment(index) {
       if (this.ipv6Segments[index].value.length >= 4) {
-        //if (index !== 7) this.ipv6Segments[index].value += ":";
         this.clearIpSegment(index + 1, this.ipv6Segments);
         (this as any).$refs["ipv6Segments"][index + 1].focus();
       }
     },
     clearIpSegment(index, array): void {
+      console.log("clear = ");
       array[index].value = "";
+      console.log("array[index].value = " + array[index].value);
     },
-    clearIpv6Segment(index): void {
-      this.ipv6Segments[index].value = "";
-    },
-    containsPoint(index) {
-      console.log(
-        "this.ipv4Segments[index - 1].value.toString().includes(.) = " +
-          this.ipv4Segments[index - 1].value.toString().includes(".")
-      );
-      return this.ipv4Segments[index - 1].value.toString().includes(".");
-    },
+
     getLabelSegmentsIpv4(index) {
       switch (index) {
         case 0:
@@ -449,29 +603,41 @@ export default Vue.extend({
         case 1:
           return "168.";
         case 2:
-          return "136.";
+          if (this.typeAcces === "ip") return "136.";
+          else return "136-";
         case 3:
+          return "120.";
+        case 4:
+          if (this.typeAcces === "ip") return "136.";
+          else return "136-";
+        case 5:
           return "120";
       }
     },
     getLabelSegmentsIpv6(index) {
       switch (index) {
         case 0:
-          return "1924:";
+          return "5800:";
         case 1:
-          return "1685:";
+          return "10C3:";
         case 2:
-          return "1368:";
+          return "E3C3:";
         case 3:
-          return "1200:";
+          return "F1AA:";
         case 4:
-          return "1924:";
+          return "48E3:";
         case 5:
-          return "1685:";
+          return "D923:";
         case 6:
-          return "1368:";
+          if (this.typeAcces === "ip") return "D494:";
+          else return "D494-";
         case 7:
-          return "1200";
+          return "AAFF:";
+        case 8:
+          if (this.typeAcces === "ip") return "D494:";
+          else return "D494-";
+        case 9:
+          return "AAFF";
       }
     },
 
