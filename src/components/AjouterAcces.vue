@@ -76,7 +76,9 @@
                           v-model="value.value"
                           suffix="."
                           @click="clearIpSegment(index, ipv4Segments)"
-                          @input="nextIpv4Segment(index)"
+                          @input="
+                            nextSegment(index, ipv4Segments, 'ipv4Segments')
+                          "
                           dense
                           required
                         >
@@ -100,7 +102,9 @@
                           v-model="value.value"
                           suffix=":"
                           @click="clearIpSegment(index, ipv6Segments)"
-                          @input="nextIpv6Segment(index)"
+                          @input="
+                            nextSegment(index, ipv6Segments, 'ipv6Segments')
+                          "
                           dense
                           required
                         >
@@ -140,33 +144,22 @@
                         :key="index"
                       >
                         <v-text-field
-                          v-if="index === 2 || index === 4"
                           :data-length="value.length"
                           :data-index="index"
                           :rules="ipv4SegmentsRules"
-                          ref="ipv4Segments"
+                          ref="ipv4SegmentsPlage"
                           :label="getLabelSegmentsIpv4(index)"
                           :placeholder="getLabelSegmentsIpv4(index)"
                           v-model="value.value"
-                          suffix="-"
+                          v-bind:suffix="getSuffix(index)"
                           @click="clearIpSegment(index, ipv4SegmentsPlage)"
-                          @input="nextIpv4Segment(index)"
-                          dense
-                          required
-                        >
-                        </v-text-field>
-                        <v-text-field
-                          v-else
-                          :data-length="value.length"
-                          :data-index="index"
-                          :rules="ipv4SegmentsRules"
-                          ref="ipv4Segments"
-                          :label="getLabelSegmentsIpv4(index)"
-                          :placeholder="getLabelSegmentsIpv4(index)"
-                          v-model="value.value"
-                          suffix="."
-                          @click="clearIpSegment(index, ipv4SegmentsPlage)"
-                          @input="nextIpv4Segment(index)"
+                          @input="
+                            nextSegment(
+                              index,
+                              ipv4SegmentsPlage,
+                              'ipv4SegmentsPlage'
+                            )
+                          "
                           dense
                           required
                         >
@@ -181,33 +174,22 @@
                         :key="index"
                       >
                         <v-text-field
-                          v-if="index === 6 || index === 8"
                           :data-length="value.length"
                           :data-index="index"
                           :rules="ipv6SegmentsRules"
-                          ref="ipv6Segments"
+                          ref="ipv6SegmentsPlage"
                           :label="getLabelSegmentsIpv6(index)"
                           :placeholder="getLabelSegmentsIpv6(index)"
                           v-model="value.value"
-                          suffix="-"
+                          v-bind:suffix="getSuffix(index)"
                           @click="clearIpSegment(index, ipv6SegmentsPlage)"
-                          @input="nextIpv6Segment(index)"
-                          dense
-                          required
-                        >
-                        </v-text-field>
-                        <v-text-field
-                          v-else
-                          :data-length="value.length"
-                          :data-index="index"
-                          :rules="ipv6SegmentsRules"
-                          ref="ipv6Segments"
-                          :label="getLabelSegmentsIpv6(index)"
-                          :placeholder="getLabelSegmentsIpv6(index)"
-                          v-model="value.value"
-                          suffix=":"
-                          @click="clearIpSegment(index, ipv6SegmentsPlage)"
-                          @input="nextIpv6Segment(index)"
+                          @input="
+                            nextSegment(
+                              index,
+                              ipv6SegmentsPlage,
+                              'ipv6SegmentsPlage'
+                            )
+                          "
                           dense
                           required
                         >
@@ -350,6 +332,7 @@ export default Vue.extend({
   name: "AjouterAcces",
   data() {
     return {
+      suffix: "" as string,
       ipv4Segments: [
         { length: 3, value: "192" },
         { length: 3, value: "168" },
@@ -517,6 +500,18 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+    getSuffix(index) {
+      console.log("getSuffix");
+      if (this.typeIp === "IPV4") {
+        console.log("IPV4 index = " + index);
+        if (index === 2 || index === 4) return "-";
+        else return ".";
+      } else {
+        console.log("IPV6 index = " + index);
+        if (index === 6 || index === 8) return "-";
+        else return ":";
+      }
+    },
     reinitialisationIpSegments() {
       if (this.typeAcces === "ip") {
         this.ipv4Segments = [
@@ -558,36 +553,17 @@ export default Vue.extend({
         ];
       }
     },
-    nextIpv4Segment(index) {
-      (this as any).$refs["ipv4Segments"].forEach((value, index) => {
-        console.log("ipv4Segments = " + index);
-        console.log(
-          "ipv4Segments[0] = " +
-            (this as any).$refs["ipv4Segments"][index].value
-        );
-        console.log(
-          "ipv4Segments[" +
-            index +
-            "] = " +
-            (this as any).$refs["ipv4Segments"][index].value.length
-        );
-        console.log(
-          "ipv4Segments[" +
-            index +
-            "] = " +
-            this.ipv4Segments[index].value.length
-        );
-      });
-
-      if (this.ipv4Segments[index].value.length > 2) {
-        this.clearIpSegment(index + 1, this.ipv4Segments);
-        (this as any).$refs["ipv4Segments"][index + 1].focus();
-      }
-    },
-    nextIpv6Segment(index) {
-      if (this.ipv6Segments[index].value.length >= 4) {
-        this.clearIpSegment(index + 1, this.ipv6Segments);
-        (this as any).$refs["ipv6Segments"][index + 1].focus();
+    nextSegment(index, array, refArray) {
+      if (this.typeIp === "IPV4") {
+        if (array[index].value.length > 2) {
+          this.clearIpSegment(index + 1, array);
+          (this as any).$refs[refArray][index + 1].focus();
+        }
+      } else {
+        if (array[index].value.length >= 4) {
+          this.clearIpSegment(index + 1, array);
+          (this as any).$refs[refArray][index + 1].focus();
+        }
       }
     },
     clearIpSegment(index, array): void {
@@ -716,6 +692,7 @@ export default Vue.extend({
       this.arrayArrays.splice(index, 1);
       console.log(this.arrayArrays.toString());
       console.log(this.arrayArrays.length);
+      this.alertErrorIp = false;
     },
 
     buttonAjouterIp(): void {
@@ -729,6 +706,7 @@ export default Vue.extend({
       ) {
         this.showButtonAjouterIp = true;
         this.ajouterIp();
+        this.typeIp = "IPV4";
       }
     },
 
