@@ -37,7 +37,7 @@
                   ></v-select>
                 </v-col>
               </v-row>
-              <v-row>
+              <!--              <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-text-field
@@ -50,7 +50,8 @@
                     @keyup.enter="validate()"
                   ></v-text-field>
                 </v-col>
-              </v-row>
+              </v-row>-->
+
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">

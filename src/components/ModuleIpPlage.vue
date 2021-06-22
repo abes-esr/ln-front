@@ -1,5 +1,18 @@
 <template>
   <div>
+    <v-row>
+      <v-col cols="1" />
+      <v-col cols="10">
+        <v-text-field
+          outlined
+          label="J'utilise le copier-coller"
+          placeholder="Copier-Coller ici votre adresse ip"
+          v-model="this.ipPasted"
+          @click="clearIpPasted()"
+          @paste="onPaste"
+        ></v-text-field>
+      </v-col>
+    </v-row>
     <v-row v-if="this.typeAcces === 'ip'">
       <v-col cols="1" />
       <v-col cols="10">
@@ -23,6 +36,7 @@
                 @input="nextSegment(index, ipv4Segments, 'ipv4Segments')"
                 dense
                 required
+                @paste="onPaste"
               >
               </v-text-field>
             </v-col>
@@ -159,6 +173,9 @@ export default Vue.extend({
   data() {
     return {
       suffix: "" as string,
+      ipPasted: "" as string,
+      ipPastedTemp: "" as string,
+      ipPastedArray: ["", "", "", "", "", "", "", "", "", ""],
       ipv4Segments: [
         { length: 3, value: "192" },
         { length: 3, value: "168" },
@@ -263,6 +280,12 @@ export default Vue.extend({
       "eventReinitialisationIpSegments",
       onchangeTypeIpHandler
     );
+    const onchangeIpHandler = ip => {
+      this.ip = ip;
+      this.ipPasted = this.ip;
+      console.log(`ip =  ` + ip);
+    };
+    IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
   },
 
   computed: {
@@ -309,14 +332,17 @@ export default Vue.extend({
       }
       (this as any).ip = valeur;
       console.log("this.ip = " + this.ip);
+      IpChangeEvent.$emit("ipChangeEvent", this.ip);
       return valeur;
     }
   },
+  watch: {},
 
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
+
     getSuffix(index) {
       console.log("getSuffix");
       if (this.typeIp === "IPV4") {
@@ -328,6 +354,31 @@ export default Vue.extend({
         if (index === 6 || index === 8) return "-";
         else return ":";
       }
+    },
+    onPaste(evt) {
+      this.ipPasted = evt.clipboardData.getData("text");
+      this.ipPastedTemp = this.ipPasted;
+      console.log("this.pasted = " + this.ipPasted);
+      this.ipPastedTemp = this.ipPastedTemp.replaceAll(/[: . -]/g, "+");
+      console.log("this.pasted = " + this.ipPasted);
+      this.ipPastedArray = this.ipPastedTemp.split("+");
+      if (this.typeAcces === "ip") {
+        if (this.typeIp === "IPV4")
+          this.pasteSegment(this.ipPastedArray, this.ipv4Segments);
+        else this.pasteSegment(this.ipPastedArray, this.ipv6Segments);
+      } else {
+        if (this.typeIp === "IPV4")
+          this.pasteSegment(this.ipPastedArray, this.ipv4SegmentsPlage);
+        else this.pasteSegment(this.ipPastedArray, this.ipv6SegmentsPlage);
+      }
+    },
+    pasteSegment(ipPastedArray, array) {
+      array.forEach((value, index) => {
+        this.clearIpSegment(index, array);
+      });
+      ipPastedArray.forEach((value, index) => {
+        array[index].value = ipPastedArray[index].valueOf();
+      });
     },
     reinitialisationIpSegments() {
       if (this.typeAcces === "ip") {
@@ -369,6 +420,7 @@ export default Vue.extend({
           { length: 5, value: "AAFF" }
         ];
       }
+      this.clearIpPasted();
     },
     nextSegment(index, array, refArray) {
       if (this.typeIp === "IPV4") {
@@ -382,6 +434,9 @@ export default Vue.extend({
           (this as any).$refs[refArray][index + 1].focus();
         }
       }
+    },
+    clearIpPasted(): void {
+      this.ipPasted = "";
     },
     clearIpSegment(index, array): void {
       console.log("clear = ");

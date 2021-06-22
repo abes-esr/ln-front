@@ -164,8 +164,6 @@ export default Vue.extend({
     return {
       titleText: "" as string,
       alertText: "" as string,
-      labelIp: "" as string,
-      labelIpResultat: "" as string,
       buttonAjouterText: "" as string,
       title2Text: "" as string,
       id: "",
@@ -247,6 +245,7 @@ export default Vue.extend({
       console.log(this.arrayAjouterIp);
       console.log(this.arrayArrays);
     },
+
     getUrl(typeIp) {
       if (this.typeAcces === "ip") {
         return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
@@ -259,6 +258,7 @@ export default Vue.extend({
       console.log(this.arrayArrays.length);
       this.alertErrorIp = false;
     },
+
     eventReinitialisationIpSegments: function(evt) {
       TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
     },
@@ -275,6 +275,7 @@ export default Vue.extend({
         this.showButtonAjouterIp = true;
         this.ajouterIp();
         this.typeIp = "IPV4";
+        this.eventReinitialisationIpSegments("eventReinitialisationIpSegments");
       }
     },
 
