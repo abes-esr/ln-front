@@ -2,7 +2,7 @@
   <div>
     <v-card width="100%">
       <v-form ref="formAjouterAcces" lazy-validation>
-        <v-row align="left" justify="left">
+        <v-row>
           <v-col lg="6" md="12" xs="12">
             <v-row>
               <v-col cols="1" />
