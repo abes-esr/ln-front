@@ -5,6 +5,7 @@
       <v-col cols="10">
         <v-text-field
           outlined
+          ref="ipPasted"
           label="J'utilise le copier-coller"
           placeholder="Copier-Coller ici votre adresse ip"
           v-model="this.ipPasted"
@@ -163,8 +164,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapActions, mapGetters } from "vuex";
-import AjouterAcces2 from "@/components/AjouterAcces2.vue";
-import { TypeIpChangeEvent } from "@/main";
+import { GetTypeIpFromModifierAccesEvent, TypeIpChangeEvent } from "@/main";
 import { IpChangeEvent } from "@/main";
 
 export default Vue.extend({
@@ -172,6 +172,8 @@ export default Vue.extend({
 
   data() {
     return {
+      typeIpTemp: "" as string,
+      modeEditIp: false,
       suffix: "" as string,
       ipPasted: "" as string,
       ipPastedTemp: "" as string,
@@ -264,10 +266,30 @@ export default Vue.extend({
     };
   },
   mounted() {
+    console.log("debut mounted ModuleIpPlage");
+
     this.typeAcces = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
     );
+    console.log("1 - this.typeAcces = " + this.typeAcces);
+    if (this.typeAcces.includes("&"))
+      this.typeAcces = window.location.href.substr(
+        window.location.href.lastIndexOf("&") + 1
+      );
+    console.log("2 - this.typeAcces = " + this.typeAcces);
 
+    if (this.typeIp === "") {
+      const getTypeIpHandler = typeIp => {
+        this.typeIp = typeIp;
+        console.log(`typeIp =  ` + this.typeIp);
+        //this.reinitialisationIpSegments();
+      };
+      GetTypeIpFromModifierAccesEvent.$on(
+        "getTypeIpFromModifierAccesEvent",
+        getTypeIpHandler
+      );
+      console.log("3 - this.typeIp = " + this.typeIp);
+    }
     this.setText();
     console.log(this.$refs);
 
@@ -280,12 +302,6 @@ export default Vue.extend({
       "eventReinitialisationIpSegments",
       onchangeTypeIpHandler
     );
-    const onchangeIpHandler = ip => {
-      this.ip = ip;
-      this.ipPasted = this.ip;
-      console.log(`ip =  ` + ip);
-    };
-    IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
   },
 
   computed: {
@@ -355,6 +371,7 @@ export default Vue.extend({
         else return ":";
       }
     },
+
     onPaste(evt) {
       this.ipPasted = evt.clipboardData.getData("text");
       this.ipPastedTemp = this.ipPasted;
@@ -378,6 +395,9 @@ export default Vue.extend({
       });
       ipPastedArray.forEach((value, index) => {
         array[index].value = ipPastedArray[index].valueOf();
+        console.log(
+          "ipPastedArray[index].valueOf() = " + ipPastedArray[index].valueOf()
+        );
       });
     },
     reinitialisationIpSegments() {
