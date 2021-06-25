@@ -35,8 +35,8 @@
                           <v-icon
                             small
                             class="mr-2"
-                            @click="listAcces(item.siren)"
-                            >mdi-help-circle-outline</v-icon
+                            @click="listeAcces(item.siren)"
+                            >mdi-ip-network</v-icon
                           >
                           <v-icon
                             small
@@ -122,6 +122,7 @@ import { HTTP } from "../utils/http-commons";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import moment from "moment";
+import { ListeAccesEvent, TypeIpChangeEvent } from "@/main";
 
 export default Vue.extend({
   name: "ListeEtab",
@@ -199,6 +200,13 @@ export default Vue.extend({
         typeEtab: etab.typeEtablissement,
         statut: etab.valide ? "Validé" : "En validation"
       };
+    },
+    listeAcces(siren): void {
+      ListeAccesEvent.$emit("listeAccesEvent", siren);
+      this.$router.push({
+        name: "ListeAcces",
+        params: { siren: siren }
+      });
     },
     openDialogSuppression(siren): void {
       (this as any).dialog = true;

@@ -75,17 +75,19 @@ import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions, mapGetters } from "vuex";
 import moment from "moment";
+import { IpChangeEvent, ListeAccesEvent } from "@/main";
 
 export default Vue.extend({
   name: "ListeAcces",
   data() {
     return {
       rechercher: "",
-      acces: [],
+      acces: [] as any,
       title: "" as string,
       id: "" as string,
       error: "",
       alert: false,
+      sirenEtabSiAdmin: "" as string,
       headers: [
         {
           text: "Date de création",
@@ -123,12 +125,35 @@ export default Vue.extend({
 
     getUserSiren() {
       return this.$store.state.user.siren;
+    },
+    isAdmin() {
+      console.log("role = " + this.$store.state.user.isAdmin);
+      return this.$store.state.user.isAdmin;
     }
   },
   mounted() {
     moment.locale("fr");
+    const onlisteAccesEventHandler = siren => {
+      (this as any).sirenEtabSiAdmin = siren;
+      console.log(
+        `Event Handler sirenEtabSiAdmin =  ` + (this as any).sirenEtabSiAdmin
+      );
+    };
+    ListeAccesEvent.$on("listeAccesEvent", onlisteAccesEventHandler);
     (this as any).collecterAcces();
     (this as any).id = (this as any).getIdAcces((this as any).acces);
+
+    if (this.isAdmin === "true") {
+      console.log("getAll - isAdmin");
+      console.log(
+        "(this as any).sirenEtabSiAdmin = " + (this as any).sirenEtabSiAdmin
+      );
+      return HTTP.get("/ln/ip/ipsEtab/" + (this as any).sirenEtabSiAdmin);
+    } else {
+      console.log("getAll - pas Admin");
+      console.log("this.getUserSiren = " + this.getUserSiren);
+      return HTTP.get("/ln/ip/" + this.getUserSiren);
+    }
   },
 
   methods: {
@@ -141,7 +166,17 @@ export default Vue.extend({
       };
     },
     getAll() {
-      return HTTP.get("/ln/ip/" + this.getUserSiren);
+      if (this.isAdmin === "true") {
+        console.log("getAll - isAdmin");
+        console.log(
+          "(this as any).sirenEtabSiAdmin = " + (this as any).sirenEtabSiAdmin
+        );
+        return HTTP.get("/ln/ip/ipsEtab/" + (this as any).sirenEtabSiAdmin);
+      } else {
+        console.log("getAll - pas Admin");
+        console.log("this.getUserSiren = " + this.getUserSiren);
+        return HTTP.get("/ln/ip/" + this.getUserSiren);
+      }
     },
     collecterAcces(): void {
       (this as any)
