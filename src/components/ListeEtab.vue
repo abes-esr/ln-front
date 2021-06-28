@@ -167,7 +167,8 @@ export default Vue.extend({
 
   methods: {
     ...mapActions({
-      setNotification: "setNotification"
+      setNotification: "setNotification",
+      setSirenEtabSiAdmin: "setSirenEtabSiAdmin"
     }),
     getIdEtab(etab) {
       return {
@@ -202,10 +203,9 @@ export default Vue.extend({
       };
     },
     listeAcces(siren): void {
-      ListeAccesEvent.$emit("listeAccesEvent", siren);
+      (this as any).setSirenEtabSiAdmin(siren);
       this.$router.push({
-        name: "ListeAcces",
-        params: { siren: siren }
+        name: "ListeAcces"
       });
     },
     openDialogSuppression(siren): void {

@@ -32,9 +32,13 @@
                             @click="modifierAcces(item.id, item.typeAcces)"
                             >mdi-pencil</v-icon
                           >
-                          <!--                      <v-icon small class="mr-2" @click="analyserAcces(item.id)"
+                          <v-icon
+                            small
+                            class="mr-2"
+                            v-if="isAdmin === 'true'"
+                            @click="analyserAcces(item.id)"
                             >mdi-help-circle-outline</v-icon
-                          >-->
+                          >
                           <v-icon small @click="supprimerAcces(item.id)"
                             >mdi-delete</v-icon
                           >
@@ -87,7 +91,6 @@ export default Vue.extend({
       id: "" as string,
       error: "",
       alert: false,
-      sirenEtabSiAdmin: "" as string,
       headers: [
         {
           text: "Date de création",
@@ -121,39 +124,20 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...mapGetters(["notification"]),
+    ...mapGetters(["notification", "sirenEtabSiAdmin"]),
 
     getUserSiren() {
       return this.$store.state.user.siren;
     },
     isAdmin() {
-      console.log("role = " + this.$store.state.user.isAdmin);
+      console.log("isAdmin = " + this.$store.state.user.isAdmin);
       return this.$store.state.user.isAdmin;
     }
   },
   mounted() {
     moment.locale("fr");
-    const onlisteAccesEventHandler = siren => {
-      (this as any).sirenEtabSiAdmin = siren;
-      console.log(
-        `Event Handler sirenEtabSiAdmin =  ` + (this as any).sirenEtabSiAdmin
-      );
-    };
-    ListeAccesEvent.$on("listeAccesEvent", onlisteAccesEventHandler);
     (this as any).collecterAcces();
     (this as any).id = (this as any).getIdAcces((this as any).acces);
-
-    if (this.isAdmin === "true") {
-      console.log("getAll - isAdmin");
-      console.log(
-        "(this as any).sirenEtabSiAdmin = " + (this as any).sirenEtabSiAdmin
-      );
-      return HTTP.get("/ln/ip/ipsEtab/" + (this as any).sirenEtabSiAdmin);
-    } else {
-      console.log("getAll - pas Admin");
-      console.log("this.getUserSiren = " + this.getUserSiren);
-      return HTTP.get("/ln/ip/" + this.getUserSiren);
-    }
   },
 
   methods: {
@@ -166,17 +150,9 @@ export default Vue.extend({
       };
     },
     getAll() {
-      if (this.isAdmin === "true") {
-        console.log("getAll - isAdmin");
-        console.log(
-          "(this as any).sirenEtabSiAdmin = " + (this as any).sirenEtabSiAdmin
-        );
-        return HTTP.get("/ln/ip/ipsEtab/" + (this as any).sirenEtabSiAdmin);
-      } else {
-        console.log("getAll - pas Admin");
-        console.log("this.getUserSiren = " + this.getUserSiren);
-        return HTTP.get("/ln/ip/" + this.getUserSiren);
-      }
+      if (this.isAdmin === "true")
+        return HTTP.get("/ln/ip/ipsEtab/" + this.sirenEtabSiAdmin);
+      else return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
     collecterAcces(): void {
       (this as any)
@@ -190,6 +166,7 @@ export default Vue.extend({
         });
     },
     affichageAcces(acces) {
+      console.log("debut affichage acces");
       return {
         id: acces.id,
         dateCreation:
@@ -212,6 +189,7 @@ export default Vue.extend({
           moment(acces.dateModification).format("LTS,MS")
         );
     },
+    analyserAcces
     supprimerAcces(id): void {
       console.log("id = " + id);
       HTTP.post("/ln/ip/supprime", {
