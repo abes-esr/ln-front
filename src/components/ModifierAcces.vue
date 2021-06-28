@@ -27,12 +27,13 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-select
+                    ref="ipType"
                     outlined
                     v-model="typeIp"
                     :items="typesIp"
                     label="Type d'IP"
                     :rules="typeIpRules"
-                    v-on:change="clearIp()"
+                    v-on:change="eventReinitialisationIpSegments()"
                     required
                   ></v-select>
                 </v-col>
@@ -44,13 +45,14 @@
                     outlined
                     v-bind:label="this.labelIp"
                     placeholder="acces"
-                    v-model="ip"
-                    :rules="this.getIpRules()"
-                    required
-                    @keyup.enter="validate()"
+                    v-model="ipToModify"
+                    disabled
                   ></v-text-field>
                 </v-col>
               </v-row>
+
+              <module-ip-plage></module-ip-plage>
+
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
@@ -104,17 +106,22 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions, mapGetters } from "vuex";
-import moment from "moment";
+import ModuleIpPlage from "@/components/ModuleIpPlage.vue";
+import {
+  GetTypeIpFromModifierAccesEvent,
+  IpChangeEvent,
+  TypeIpChangeEvent
+} from "@/main";
 
 export default Vue.extend({
   name: "ModifierAcces",
+  components: { ModuleIpPlage },
   data() {
     return {
-      params: "" as any,
+      ipToModify: "" as string,
       titleText: "" as string,
       alertText: "" as string,
       labelIp: "" as string,
@@ -133,35 +140,6 @@ export default Vue.extend({
       plageIpV6Url: "/ln/ip/modifPlageIpV6" as string,
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: never) => !!v || "Le type d'IP est obligatoire"],
-      ipRules: "" as any,
-      ipV4Rules: [
-        (v: never) => !!v || "L'IP est obligatoire",
-        (v: never) =>
-          /\b((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\.)){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\b/.test(
-            v
-          ) || "L'IP fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
-      ],
-      ipV6Rules: [
-        (v: never) => !!v || "L'IP est obligatoire",
-        (v: never) =>
-          /^\s*(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\s*$/.test(
-            v
-          ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
-      ],
-      plageIpV4Rules: [
-        (v: any) => !!v || "La plage d'Ips est obligatoire",
-        (v: any) =>
-          /^(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))$/.test(
-            v
-          ) || "La plage d'Ips fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
-      ],
-      plageIpV6Rules: [
-        (v: any) => !!v || "La plage d'Ips est obligatoire",
-        (v: any) =>
-          /^\s*((([0-9a-fA-F]{1,4}:){6,6}[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}))s*$/.test(
-            v
-          ) || "La plage d'Ips fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
-      ],
       buttonLoading: false
     };
   },
@@ -180,23 +158,32 @@ export default Vue.extend({
     console.log("this.id = " + this.id);
     console.log("this.typeAcces = " + this.typeAcces);
     this.fetchIp();
+
     console.log(this.id);
+    const onchangeIpHandler = ip => {
+      this.ip = ip;
+      console.log(`ip =  ` + ip);
+    };
+    IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
   },
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
+    eventReinitialisationIpSegments: function(evt) {
+      TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
+    },
     setText(): void {
       if (this.typeAcces === "ip") {
         this.titleText = "Modifier mon ip";
         this.alertText =
           "Vous pouvez directement insérer une adresse IP en effectuant un copier coller.";
-        this.labelIp = "Saisissez votre adresse ip";
+        this.labelIp = "Adresse ip que vous souhaitez modifier";
       } else {
         this.titleText = "Modifier ma plage d'adresses IP";
         this.alertText =
           "Vous pouvez directement insérer une ou plusieurs adresses IP en effectuant un copier coller.";
-        this.labelIp = "Saisissez votre plage d'adresses ip";
+        this.labelIp = "Plage d'adresses ip que vous souhaitez modifier";
       }
     },
     fetchIp(): void {
@@ -207,32 +194,25 @@ export default Vue.extend({
       })
         .then(result => {
           this.id = result.data.id;
-          this.ip = result.data.ip;
+          this.ipToModify = result.data.ip;
           this.valide = result.data.validee;
           this.typeAcces = result.data.typeAcces;
           this.typeIp = result.data.typeIp;
           this.commentaires = result.data.commentaires;
+          GetTypeIpFromModifierAccesEvent.$emit(
+            "getTypeIpFromModifierAccesEvent",
+            this.typeIp
+          );
         })
         .catch(err => {
           this.alert = true;
           this.error = err;
         });
     },
-    getIpRules() {
-      if (this.typeAcces === "ip") {
-        return this.typeIp === "IPV4" ? this.ipV4Rules : this.ipV6Rules;
-      } else
-        return this.typeIp === "IPV4"
-          ? this.plageIpV4Rules
-          : this.plageIpV6Rules;
-    },
     getUrl(typeIp) {
       if (this.typeAcces === "ip") {
         return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
       } else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
-    },
-    clearIp(): void {
-      this.ip = "";
     },
     validate(): void {
       this.error = "";

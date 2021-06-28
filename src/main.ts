@@ -15,3 +15,8 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount("#app");
+
+export const TypeIpChangeEvent = new Vue();
+export const IpChangeEvent = new Vue();
+export const EditIpEvent = new Vue();
+export const GetTypeIpFromModifierAccesEvent = new Vue();
