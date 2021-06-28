@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card witdh="100%">
+    <v-card witdh="100%" outlined>
       <v-card-title>Mot de passe oublié</v-card-title>
       <v-card-subtitle
         >Remplissez un des deux champs ci-dessous</v-card-subtitle

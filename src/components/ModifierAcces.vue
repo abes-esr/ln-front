@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card width="100%">
+    <v-card width="100%" outlined>
       <v-form ref="formModifierAcces" lazy-validation>
         <v-row align="center" justify="center">
           <v-col lg="6" md="12" xs="12">

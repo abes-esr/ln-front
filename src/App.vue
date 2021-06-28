@@ -1,16 +1,9 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="drawer"
-      bottom
-      temporary
-      disable-resize-watcher
-      app
-    >
+    <v-navigation-drawer app clipped permanent hide-overlay stateless flat>
       <side-menu></side-menu>
     </v-navigation-drawer>
-    <v-app-bar color="primary" app>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar color="primary" clipped-left app flat>
       <v-toolbar-title
         id="titleBar"
         v-on:click="$router.push({ name: 'Home' }).catch(err => {})"
@@ -33,9 +26,6 @@ import { mapGetters } from "vuex";
 
 export default Vue.extend({
   name: "App",
-  data: () => ({
-    drawer: false
-  }),
   components: {
     SideMenu
   },
@@ -53,7 +43,7 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped>
+<style>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
@@ -63,5 +53,10 @@ export default Vue.extend({
 }
 #titleBar {
   cursor: pointer;
+}
+.v-navigation-drawer__content {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

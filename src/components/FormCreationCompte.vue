@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card witdh="100%">
+    <v-card witdh="100%" outlined>
       <v-form ref="formCreationCompte" lazy-validation>
         <v-card-title>Création d'un compte institutionnel</v-card-title>
         <v-card-text>

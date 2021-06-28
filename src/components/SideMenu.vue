@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list dense nav>
+    <v-list dense rounded color="transparent">
       <v-list-item v-on:click="saveTheme()">
         <v-switch v-model="$vuetify.theme.dark" inset></v-switch>
         <v-list-item-title>Thème sombre</v-list-item-title>

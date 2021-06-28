@@ -1,69 +1,48 @@
 <template>
   <div>
-    <v-card width="100%">
-      <v-card-text>
-        <v-row>
-          <v-col lg="12" md="12" xs="12">
-            <v-row>
-              <v-col cols="12" sm="12">
-                <v-card class="mx-auto" tile>
-                  <v-card-title>Liste des Etablissements</v-card-title>
-                  <v-row>
-                    <v-col cols="1" />
-                    <v-col cols="10">
-                      <v-data-table
-                        dense
-                        :headers="headers"
-                        :items="etab"
-                        class="elevation-1"
-                        :search="rechercher"
-                      >
-                        <template v-slot:top>
-                          <v-text-field
-                            v-model="rechercher"
-                            label="Chercher sur toutes les colonnes"
-                            class="mx-4"
-                          ></v-text-field>
-                        </template>
-                        <template v-slot:[`item.action`]="{ item }">
-                          <v-icon
-                            small
-                            class="mr-2"
-                            @click="modifierEtab(item.id)"
-                            >mdi-pencil</v-icon
-                          >
-                          <v-icon
-                            small
-                            class="mr-2"
-                            @click="listAcces(item.siren)"
-                            >mdi-help-circle-outline</v-icon
-                          >
-                          <v-icon
-                            small
-                            @click.stop="openDialogSuppression(item.siren)"
-                            >mdi-delete</v-icon
-                          >
-                        </template>
-                      </v-data-table>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="1" />
-                    <v-col cols="10">
-                      <a @click="$router.push({ path: '/ajouterEtab' })"
-                        ><br />Ajouter un établissement</a
-                      >
-                      <a @click="$router.push({ path: '/ajoutEditeur' })"
-                        ><br />Ajouter un éditeur</a
-                      >
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
+    <v-card width="100%" outlined>
+      <v-card-title>Liste des Etablissements</v-card-title>
+      <v-row>
+        <v-col cols="1" />
+        <v-col cols="10">
+          <v-data-table
+            dense
+            :headers="headers"
+            :items="etab"
+            :search="rechercher"
+          >
+            <template v-slot:top>
+              <v-text-field
+                v-model="rechercher"
+                label="Chercher sur toutes les colonnes"
+                class="mx-4"
+              ></v-text-field>
+            </template>
+            <template v-slot:[`item.action`]="{ item }">
+              <v-icon small class="mr-2" @click="modifierEtab(item.id)"
+                >mdi-pencil</v-icon
+              >
+              <v-icon small class="mr-2" @click="listAcces(item.siren)"
+                >mdi-help-circle-outline</v-icon
+              >
+              <v-icon small @click.stop="openDialogSuppression(item.siren)"
+                >mdi-delete</v-icon
+              >
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="1" />
+        <v-col cols="10">
+          <a @click="$router.push({ path: '/ajouterEtab' })"
+            ><br />Ajouter un établissement</a
+          >
+          <a @click="$router.push({ path: '/ajoutEditeur' })"
+            ><br />Ajouter un éditeur</a
+          >
+        </v-col>
+      </v-row>
     </v-card>
     <br />
     <v-alert dense outlined :value="alert" type="error">
@@ -234,8 +213,3 @@ export default Vue.extend({
   }
 });
 </script>
-<style>
-.list {
-  max-width: 750px;
-}
-</style>

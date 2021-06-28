@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card witdh="100%">
+    <v-card witdh="100%" outlined>
       <v-form ref="form" lazy-validation>
         <v-card-title>Connexion</v-card-title>
         <v-card-text>

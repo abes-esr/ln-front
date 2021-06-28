@@ -3,7 +3,7 @@
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
         <div>
-          <v-card witdh="100%">
+          <v-card witdh="100%" outlined>
             <v-form ref="formReinitialisationPass" lazy-validation>
               <v-card-title
                 >Réinitialisation de votre mot de passe</v-card-title
