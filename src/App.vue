@@ -1,9 +1,21 @@
 <template>
   <v-app>
-    <v-navigation-drawer app clipped permanent hide-overlay stateless flat>
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      clipped
+      :permanent="!$vuetify.breakpoint.xsOnly"
+      hide-overlay
+      flat
+      width="180"
+    >
       <side-menu></side-menu>
     </v-navigation-drawer>
     <v-app-bar color="primary" clipped-left app flat>
+      <v-app-bar-nav-icon
+        v-if="$vuetify.breakpoint.xsOnly"
+        @click="drawer = !drawer"
+      ></v-app-bar-nav-icon>
       <v-toolbar-title
         id="titleBar"
         v-on:click="$router.push({ name: 'Home' }).catch(err => {})"
@@ -26,6 +38,9 @@ import { mapGetters } from "vuex";
 
 export default Vue.extend({
   name: "App",
+  data: () => ({
+    drawer: true
+  }),
   components: {
     SideMenu
   },
