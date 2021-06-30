@@ -12,19 +12,56 @@
                     <v-col cols="1" />
                     <v-col cols="10">
                       <v-data-table
-                        dense
+                        id="mytable"
                         :headers="headers"
-                        :items="acces"
+                        :items="filteredAccesByStatut"
+                        :items-per-page="10"
                         class="elevation-1"
                         :search="rechercher"
                       >
-                        <template v-slot:top>
-                          <v-text-field
-                            v-model="rechercher"
-                            label="Chercher sur toutes les colonnes"
-                            class="mx-4"
-                          ></v-text-field>
+                        <template v-slot:header.statut="{ header }">
+                          {{ header.text }}
+                          <v-menu offset-y :close-on-content-click="false">
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn icon v-bind="attrs" v-on="on">
+                                <v-icon small :color="statut ? 'primary' : ''">
+                                  mdi-filter
+                                </v-icon>
+                              </v-btn>
+                            </template>
+                            <div style="background-color: white; width: 280px">
+                              <v-text-field
+                                v-model="statut"
+                                class="pa-4"
+                                type="text"
+                                label="Entrez le statut"
+                              ></v-text-field>
+                              <v-btn
+                                @click="statut = ''"
+                                small
+                                text
+                                color="primary"
+                                class="ml-2 mb-2"
+                                >Effacer</v-btn
+                              >
+                            </div>
+                          </v-menu>
                         </template>
+                        <template v-slot:top>
+                          <v-row>
+                            <v-col cols="12" sm="6"></v-col>
+                            <v-col cols="12" sm="6">
+                              <v-text-field
+                                v-model="rechercher"
+                                label="Chercher sur toutes les colonnes"
+                                class="mx-4"
+                                prepend-inner-icon="mdi-magnify"
+                                outlined
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </template>
+
                         <template v-slot:[`item.action`]="{ item }">
                           <v-icon
                             small
@@ -47,13 +84,19 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="1" />
-                    <v-col cols="10">
-                      <a @click="$router.push({ path: '/ajouterAcces/ip' })"
-                        ><br />Ajouter une adresse IP</a
-                      >
-                      <a @click="$router.push({ path: '/ajouterAcces/plage' })"
-                        ><br />Ajouter une plage d'adresses IP</a
+                    <v-col cols="12" sm="7"></v-col>
+                    <v-col cols="12" sm="2">
+                      <v-btn
+                        @click="$router.push({ path: '/ajouterAcces/ip' })"
+                        color="warning"
+                        >Ajouter une adresse IP</v-btn
+                      ></v-col
+                    >
+                    <v-col cols="12" sm="3">
+                      <v-btn
+                        @click="$router.push({ path: '/ajouterAcces/plage' })"
+                        color="warning"
+                        >Ajouter une plage d'adresses IP</v-btn
                       >
                     </v-col>
                   </v-row>
@@ -79,16 +122,17 @@ import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions, mapGetters } from "vuex";
 import moment from "moment";
-import { IpChangeEvent, ListeAccesEvent } from "@/main";
+import { IpChangeEvent } from "@/main";
 
 export default Vue.extend({
-  name: "ListeAcces",
+  name: "ListeAcces2",
   data() {
     return {
+      statut: "",
       rechercher: "",
       acces: [] as any,
       title: "" as string,
-      id: "" as string,
+      id: "" as any,
       error: "",
       alert: false,
       headers: [
@@ -96,58 +140,88 @@ export default Vue.extend({
           text: "Date de création",
           align: "start",
           value: "dateCreation",
-          sortable: false
+          sortable: true
         },
         {
           text: "Date de modification",
           value: "dateModification",
-          sortable: false
+          sortable: true
         },
         {
-          text: "Type d'accès" as any,
-          value: "typeAcces" as any,
-          sortable: false
+          text: "Type d'accès",
+          value: "typeAcces",
+          sortable: true
         },
         {
-          text: "Type d'IP" as any,
-          value: "typeIp" as any,
-          sortable: false
+          text: "Type d'IP",
+          value: "typeIp",
+          sortable: true
         },
-        { text: "Valeur" as any, value: "ip" as any, sortable: false },
-        {
-          text: "Statut" as any,
-          value: "statut" as any,
-          sortable: false
-        },
+        { text: "Valeur", value: "ip", sortable: true },
+        { text: "Statut", value: "statut", sortable: true },
         { text: "Action", value: "action", sortable: false }
       ]
     };
   },
   computed: {
-    ...mapGetters(["notification", "sirenEtabSiAdmin"]),
-
+    //...mapGetters(["notification", "sirenEtabSiAdmin"]),
+    notification() {
+      return this.$store.state.notification;
+    },
+    sirenEtabSiAdmin() {
+      return this.$store.state.sirenEtabSiAdmin;
+    },
     getUserSiren() {
       return this.$store.state.user.siren;
     },
     isAdmin() {
       console.log("isAdmin = " + this.$store.state.user.isAdmin);
       return this.$store.state.user.isAdmin;
+    },
+    // pour éviter l'erreur this.qch doesn not exist on ...
+    // declarer le type returné par la fonction computed
+    filteredAccesByStatut(): string {
+      const conditions = [] as any;
+      if (this.statut) {
+        conditions.push(this.filterStatut);
+      }
+      if (conditions.length > 0) {
+        return this.acces.filter(acces => {
+          return conditions.every(condition => {
+            return condition(acces);
+          });
+        });
+      }
+      return this.acces;
     }
   },
   mounted() {
     moment.locale("fr");
-    (this as any).collecterAcces();
-    (this as any).id = (this as any).getIdAcces((this as any).acces);
+    this.collecterAcces();
+    this.id = this.getIdAcces(this.acces);
   },
-
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
-    getIdAcces(acces) {
+    getIdAcces(acces): any {
       return {
         id: acces.id
       };
+    },
+    filterStatut(statutRecherche) {
+      return (
+        statutRecherche.statut
+          .toString()
+          .substring(0, 1)
+          .toLowerCase()
+          .includes(this.statut) ||
+        statutRecherche.statut
+          .toString()
+          .substring(0, 1)
+          .toUpperCase()
+          .includes(this.statut)
+      );
     },
     getAll() {
       if (this.isAdmin === "true")
@@ -155,10 +229,9 @@ export default Vue.extend({
       else return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
     collecterAcces(): void {
-      (this as any)
-        .getAll()
+      this.getAll()
         .then(response => {
-          (this as any).acces = response.data.map((this as any).affichageAcces);
+          this.acces = response.data.map(this.affichageAcces);
           console.log(response.data);
         })
         .catch(e => {
@@ -169,11 +242,8 @@ export default Vue.extend({
       console.log("debut affichage acces");
       return {
         id: acces.id,
-        dateCreation:
-          moment(acces.dateCreation).format("L") +
-          " " +
-          moment(acces.dateCreation).format("LTS,MS"),
-        dateModification: (this as any).getDateModification(acces),
+        dateCreation: moment(acces.dateCreation).format("L"),
+        dateModification: this.getDateModification(acces),
         typeAcces: acces.typeAcces,
         typeIp: acces.typeIp,
         ip: acces.ip,
@@ -182,14 +252,9 @@ export default Vue.extend({
     },
     getDateModification(acces) {
       if (acces.dateModification === null) return acces.dateModification;
-      else
-        return (
-          moment(acces.dateModification).format("L") +
-          " " +
-          moment(acces.dateModification).format("LTS,MS")
-        );
+      else return moment(acces.dateModification).format("L");
     },
-    analyserAcces
+
     supprimerAcces(id): void {
       console.log("id = " + id);
       HTTP.post("/ln/ip/supprime", {
@@ -197,18 +262,18 @@ export default Vue.extend({
         siren: this.getUserSiren
       })
         .then(response => {
-          (this as any).refreshList();
+          this.refreshList();
           console.log("notification = " + response.data);
-          (this as any).setNotification(response.data);
+          this.setNotification(response.data);
           console.log("notification = " + this.$store.state.notification);
         })
         .catch(err => {
-          (this as any).error = err.response.data;
-          (this as any).alert = true;
+          this.error = err.response.data;
+          this.alert = true;
         });
     },
     refreshList(): void {
-      (this as any).collecterAcces();
+      this.collecterAcces();
     },
     modifierAcces(id, typeAcces) {
       this.$router.push({
@@ -218,12 +283,15 @@ export default Vue.extend({
     }
   },
   destroyed() {
-    (this as any).setNotification("");
+    this.setNotification("");
   }
 });
 </script>
 <style>
 .list {
   max-width: 750px;
+}
+#mytable table thead {
+  background: aquamarine;
 }
 </style>

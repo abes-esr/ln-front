@@ -16,7 +16,8 @@ export default new Vuex.Store({
     },
     darkTheme: false,
     notification: "",
-    creationCompteEffectuee: false
+    creationCompteEffectuee: false,
+    sirenEtabSiAdmin: ""
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -44,12 +45,15 @@ export default new Vuex.Store({
     },
     SET_NOTIFICATION(state, notif) {
       state.notification = notif;
+    },
+    SET_SIRENETABSIADMIN(state, sirenEtabSiAdmin) {
+      state.sirenEtabSiAdmin = sirenEtabSiAdmin;
     }
   },
   actions: {
     login({ commit }, credentials) {
       return axios
-        .post(process.env.VUE_APP_ROOT_API + "login", {
+        .post(process.env.VUE_APP_ROOT_API + "/login", {
           login: credentials.siren,
           password: credentials.password
         })
@@ -71,6 +75,9 @@ export default new Vuex.Store({
     },
     setNotification({ commit }, notif) {
       commit("SET_NOTIFICATION", notif);
+    },
+    setSirenEtabSiAdmin({ commit }, sirenEtabSiAdmin) {
+      commit("SET_SIRENETABSIADMIN", sirenEtabSiAdmin);
     }
   },
   getters: {
@@ -97,6 +104,9 @@ export default new Vuex.Store({
     },
     creationCompteEffectuee: state => {
       return state.creationCompteEffectuee;
+    },
+    sirenEtabSiAdmin: state => {
+      return state.sirenEtabSiAdmin;
     }
   },
   plugins: [createPersistedState()]

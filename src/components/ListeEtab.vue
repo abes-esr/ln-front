@@ -122,7 +122,6 @@ import { HTTP } from "../utils/http-commons";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import moment from "moment";
-import { ListeAccesEvent, TypeIpChangeEvent } from "@/main";
 
 export default Vue.extend({
   name: "ListeEtab",
@@ -139,12 +138,13 @@ export default Vue.extend({
           text: "Date de création",
           align: "start",
           value: "dateCreation",
-          sortable: false
+          sortable: true
         },
-        { text: "SIREN", value: "siren", sortable: false },
-        { text: "Etablissement", value: "nomEtab", sortable: false },
-        { text: "Type d'établissement", value: "typeEtab", sortable: false },
-        { text: "Statut", value: "statut", sortable: false },
+        { text: "ID Abes", value: "idAbes", sortable: true },
+        { text: "SIREN", value: "siren", sortable: true },
+        { text: "Etablissement", value: "nomEtab", sortable: true },
+        { text: "Type d'établissement", value: "typeEtab", sortable: true },
+        { text: "Statut", value: "statut", sortable: true },
         { text: "Action", value: "action", sortable: false }
       ],
       dialog: false,
@@ -192,10 +192,8 @@ export default Vue.extend({
     affichageEtab(etab) {
       return {
         id: etab.id,
-        dateCreation:
-          moment(etab.dateCreation).format("L") +
-          " " +
-          moment(etab.dateCreation).format("LTS,MS"),
+        dateCreation: moment(etab.dateCreation).format("L"),
+        idAbes: etab.idAbes,
         siren: etab.siren,
         nomEtab: etab.name,
         typeEtab: etab.typeEtablissement,
