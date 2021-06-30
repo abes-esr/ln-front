@@ -125,7 +125,7 @@ import moment from "moment";
 import { IpChangeEvent } from "@/main";
 
 export default Vue.extend({
-  name: "ListeAcces2",
+  name: "ListeAcces",
   data() {
     return {
       statut: "",
