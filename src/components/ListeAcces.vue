@@ -1,51 +1,112 @@
 <template>
   <div>
-    <v-card width="100%" outlined>
-      <v-card-title>Liste des Accès</v-card-title>
-      <v-row>
-        <v-col cols="1" />
-        <v-col cols="10">
-          <v-data-table
-            dense
-            :headers="headers"
-            :items="acces"
-            :search="rechercher"
-          >
-            <template v-slot:top>
-              <v-text-field
-                v-model="rechercher"
-                label="Chercher sur toutes les colonnes"
-                class="mx-4"
-              ></v-text-field>
-            </template>
-            <template v-slot:[`item.action`]="{ item }">
-              <v-icon
-                small
-                class="mr-2"
-                @click="modifierAcces(item.id, item.typeAcces)"
-                >mdi-pencil</v-icon
-              >
-              <!--                      <v-icon small class="mr-2" @click="analyserAcces(item.id)"
-                            >mdi-help-circle-outline</v-icon
-                          >-->
-              <v-icon small @click="supprimerAcces(item.id)">mdi-delete</v-icon>
-            </template>
-          </v-data-table>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="1" />
-        <v-col cols="10">
-          <a @click="$router.push({ path: '/ajouterAcces/ip' })"
-            ><br />Ajouter une adresse IP</a
-          >
-          <a @click="$router.push({ path: '/ajouterAcces/plage' })"
-            ><br />Ajouter une plage d'adresses IP</a
-          >
-        </v-col>
-      </v-row>
-    </v-card>
+    <v-card width="100%">
+      <v-card-text>
+        <v-row>
+          <v-col lg="12" md="12" xs="12">
+            <v-row>
+              <v-col cols="12" sm="12">
+                <v-card class="mx-auto" tile>
+                  <v-card-title>Liste des Accès</v-card-title>
+                  <v-row>
+                    <v-col cols="1" />
+                    <v-col cols="10">
+                      <v-data-table
+                        id="mytable"
+                        :headers="headers"
+                        :items="filteredAccesByStatut"
+                        :items-per-page="10"
+                        class="elevation-1"
+                        :search="rechercher"
+                      >
+                        <template v-slot:header.statut="{ header }">
+                          {{ header.text }}
+                          <v-menu offset-y :close-on-content-click="false">
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn icon v-bind="attrs" v-on="on">
+                                <v-icon small :color="statut ? 'primary' : ''">
+                                  mdi-filter
+                                </v-icon>
+                              </v-btn>
+                            </template>
+                            <div style="background-color: white; width: 280px">
+                              <v-text-field
+                                v-model="statut"
+                                class="pa-4"
+                                type="text"
+                                label="Entrez le statut"
+                              ></v-text-field>
+                              <v-btn
+                                @click="statut = ''"
+                                small
+                                text
+                                color="primary"
+                                class="ml-2 mb-2"
+                                >Effacer</v-btn
+                              >
+                            </div>
+                          </v-menu>
+                        </template>
+                        <template v-slot:top>
+                          <v-row>
+                            <v-col cols="12" sm="6"></v-col>
+                            <v-col cols="12" sm="6">
+                              <v-text-field
+                                v-model="rechercher"
+                                label="Chercher sur toutes les colonnes"
+                                class="mx-4"
+                                prepend-inner-icon="mdi-magnify"
+                                outlined
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </template>
 
+                        <template v-slot:[`item.action`]="{ item }">
+                          <v-icon
+                            small
+                            class="mr-2"
+                            @click="modifierAcces(item.id, item.typeAcces)"
+                            >mdi-pencil</v-icon
+                          >
+                          <v-icon
+                            small
+                            class="mr-2"
+                            v-if="isAdmin === 'true'"
+                            @click="analyserAcces(item.id)"
+                            >mdi-help-circle-outline</v-icon
+                          >
+                          <v-icon small @click="supprimerAcces(item.id)"
+                            >mdi-delete</v-icon
+                          >
+                        </template>
+                      </v-data-table>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="7"></v-col>
+                    <v-col cols="12" sm="2">
+                      <v-btn
+                        @click="$router.push({ path: '/ajouterAcces/ip' })"
+                        color="warning"
+                        >Ajouter une adresse IP</v-btn
+                      ></v-col
+                    >
+                    <v-col cols="12" sm="3">
+                      <v-btn
+                        @click="$router.push({ path: '/ajouterAcces/plage' })"
+                        color="warning"
+                        >Ajouter une plage d'adresses IP</v-btn
+                      >
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
     <br />
     <v-alert dense outlined :value="alert" type="error">
       {{ error }}
@@ -59,17 +120,18 @@
 <script lang="ts">
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import moment from "moment";
 
 export default Vue.extend({
   name: "ListeAcces",
   data() {
     return {
+      statut: "",
       rechercher: "",
-      acces: [],
+      acces: [] as any,
       title: "" as string,
-      id: "" as string,
+      id: "" as any,
       error: "",
       alert: false,
       headers: [
@@ -77,63 +139,97 @@ export default Vue.extend({
           text: "Date de création",
           align: "start",
           value: "dateCreation",
-          sortable: false
+          sortable: true
         },
         {
           text: "Date de modification",
           value: "dateModification",
-          sortable: false
+          sortable: true
         },
         {
-          text: "Type d'accès" as any,
-          value: "typeAcces" as any,
-          sortable: false
+          text: "Type d'accès",
+          value: "typeAcces",
+          sortable: true
         },
         {
-          text: "Type d'IP" as any,
-          value: "typeIp" as any,
-          sortable: false
+          text: "Type d'IP",
+          value: "typeIp",
+          sortable: true
         },
-        { text: "Valeur" as any, value: "ip" as any, sortable: false },
-        {
-          text: "Statut" as any,
-          value: "statut" as any,
-          sortable: false
-        },
+        { text: "Valeur", value: "ip", sortable: true },
+        { text: "Statut", value: "statut", sortable: true },
         { text: "Action", value: "action", sortable: false }
       ]
     };
   },
   computed: {
-    ...mapGetters(["notification"]),
-
+    notification() {
+      return this.$store.state.notification;
+    },
+    sirenEtabSiAdmin() {
+      return this.$store.state.sirenEtabSiAdmin;
+    },
     getUserSiren() {
       return this.$store.state.user.siren;
+    },
+    isAdmin() {
+      console.log("isAdmin = " + this.$store.state.user.isAdmin);
+      return this.$store.state.user.isAdmin;
+    },
+    // pour éviter l'erreur this.qch doesn not exist on ...
+    // declarer le type returné par la fonction computed
+    filteredAccesByStatut(): string {
+      const conditions = [] as any;
+      if (this.statut) {
+        conditions.push(this.filterStatut);
+      }
+      if (conditions.length > 0) {
+        return this.acces.filter(acces => {
+          return conditions.every(condition => {
+            return condition(acces);
+          });
+        });
+      }
+      return this.acces;
     }
   },
   mounted() {
     moment.locale("fr");
-    (this as any).collecterAcces();
-    (this as any).id = (this as any).getIdAcces((this as any).acces);
+    this.collecterAcces();
+    this.id = this.getIdAcces(this.acces);
   },
-
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
-    getIdAcces(acces) {
+    getIdAcces(acces): any {
       return {
         id: acces.id
       };
     },
+    filterStatut(statutRecherche) {
+      return (
+        statutRecherche.statut
+          .toString()
+          .substring(0, 1)
+          .toLowerCase()
+          .includes(this.statut) ||
+        statutRecherche.statut
+          .toString()
+          .substring(0, 1)
+          .toUpperCase()
+          .includes(this.statut)
+      );
+    },
     getAll() {
-      return HTTP.get("/ln/ip/" + this.getUserSiren);
+      if (this.isAdmin === "true")
+        return HTTP.get("/ln/ip/ipsEtab/" + this.sirenEtabSiAdmin);
+      else return HTTP.get("/ln/ip/" + this.getUserSiren);
     },
     collecterAcces(): void {
-      (this as any)
-        .getAll()
+      this.getAll()
         .then(response => {
-          (this as any).acces = response.data.map((this as any).affichageAcces);
+          this.acces = response.data.map(this.affichageAcces);
           console.log(response.data);
         })
         .catch(e => {
@@ -141,13 +237,11 @@ export default Vue.extend({
         });
     },
     affichageAcces(acces) {
+      console.log("debut affichage acces");
       return {
         id: acces.id,
-        dateCreation:
-          moment(acces.dateCreation).format("L") +
-          " " +
-          moment(acces.dateCreation).format("LTS,MS"),
-        dateModification: (this as any).getDateModification(acces),
+        dateCreation: moment(acces.dateCreation).format("L"),
+        dateModification: this.getDateModification(acces),
         typeAcces: acces.typeAcces,
         typeIp: acces.typeIp,
         ip: acces.ip,
@@ -156,13 +250,9 @@ export default Vue.extend({
     },
     getDateModification(acces) {
       if (acces.dateModification === null) return acces.dateModification;
-      else
-        return (
-          moment(acces.dateModification).format("L") +
-          " " +
-          moment(acces.dateModification).format("LTS,MS")
-        );
+      else return moment(acces.dateModification).format("L");
     },
+
     supprimerAcces(id): void {
       console.log("id = " + id);
       HTTP.post("/ln/ip/supprime", {
@@ -170,18 +260,18 @@ export default Vue.extend({
         siren: this.getUserSiren
       })
         .then(response => {
-          (this as any).refreshList();
+          this.refreshList();
           console.log("notification = " + response.data);
-          (this as any).setNotification(response.data);
+          this.setNotification(response.data);
           console.log("notification = " + this.$store.state.notification);
         })
         .catch(err => {
-          (this as any).error = err.response.data;
-          (this as any).alert = true;
+          this.error = err.response.data;
+          this.alert = true;
         });
     },
     refreshList(): void {
-      (this as any).collecterAcces();
+      this.collecterAcces();
     },
     modifierAcces(id, typeAcces) {
       this.$router.push({
@@ -191,12 +281,15 @@ export default Vue.extend({
     }
   },
   destroyed() {
-    (this as any).setNotification("");
+    this.setNotification("");
   }
 });
 </script>
 <style>
 .list {
   max-width: 750px;
+}
+#mytable table thead {
+  background: aquamarine;
 }
 </style>
