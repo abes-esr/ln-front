@@ -18,5 +18,4 @@ new Vue({
 
 export const TypeIpChangeEvent = new Vue();
 export const IpChangeEvent = new Vue();
-export const EditIpEvent = new Vue();
 export const GetTypeIpFromModifierAccesEvent = new Vue();
