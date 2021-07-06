@@ -1,92 +1,96 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="1" />
-      <v-col cols="10">
-        <v-select
-          ref="ipType"
-          outlined
-          v-model="typeIp"
-          :items="typesIp"
-          label="Type d'IP"
-          :rules="typeIpRules"
-          v-on:change="eventReinitialisationIpSegments()"
-          @keyup.enter="buttonAjouterIp()"
-          required
-        ></v-select>
-      </v-col>
-    </v-row>
+    <v-card>
+      <v-form ref="formModuleIpPlage" lazy-validation>
+        <v-row>
+          <v-col cols="1" />
+          <v-col cols="10">
+            <v-select
+              ref="ipType"
+              outlined
+              v-model="typeIp"
+              :items="typesIp"
+              label="Type d'IP"
+              :rules="typeIpRules"
+              v-on:change="eventReinitialisationIpSegments()"
+              @keyup.enter="validate()"
+              required
+            ></v-select>
+          </v-col>
+        </v-row>
 
-    <module-segments-ip-plage></module-segments-ip-plage>
+        <module-segments-ip-plage></module-segments-ip-plage>
 
-    <v-row>
-      <v-col cols="1" />
-      <v-col cols="10">
-        <v-alert border="top" colored-border type="info" elevation="2">
-          Si certaines des adresses renseignées ne font pas partie du réseau
-          RENATER, merci de nous en préciser la raison.
+        <v-row>
+          <v-col cols="1" />
+          <v-col cols="10">
+            <v-alert border="top" colored-border type="info" elevation="2">
+              Si certaines des adresses renseignées ne font pas partie du réseau
+              RENATER, merci de nous en préciser la raison.
+            </v-alert>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="1" />
+          <v-col cols="10">
+            <v-textarea
+              outlined
+              auto-grow
+              label="Commentaires"
+              placeholder="Si certaines des adresses renseignées ne font pas partie du réseau RENATER, merci de nous en préciser la raison."
+              v-model="commentaires"
+            ></v-textarea>
+          </v-col>
+        </v-row>
+
+        <v-alert
+          v-model="alertIp"
+          border="left"
+          color="yellow accent-1"
+          icon="mdi-school"
+          v-for="(value, index) in arrayArrays"
+          v-bind:key="index"
+        >
+          <v-row align="center">
+            <v-col class="grow">
+              {{ value.typeIp }}
+              {{ value.ip }}
+              {{ value.commentaires.substring(0, 40) }}
+            </v-col>
+            <v-col class="shrink">
+              <v-btn color="red" @click="suppIpFromArrayArrays(index)"
+                >SUPPRIMER</v-btn
+              >
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-alert dense outlined :value="alertErrorIp" type="error">
+              {{ value.error }}
+            </v-alert>
+          </v-row>
         </v-alert>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="1" />
-      <v-col cols="10">
-        <v-textarea
-          outlined
-          auto-grow
-          label="Commentaires"
-          placeholder="Si certaines des adresses renseignées ne font pas partie du réseau RENATER, merci de nous en préciser la raison."
-          v-model="commentaires"
-        ></v-textarea>
-      </v-col>
-    </v-row>
 
-    <v-alert
-      v-model="alertIp"
-      border="left"
-      color="yellow accent-1"
-      icon="mdi-school"
-      v-for="(value, index) in arrayArrays"
-      v-bind:key="index"
-    >
-      <v-row align="center">
-        <v-col class="grow">
-          {{ value.typeIp }}
-          {{ value.ip }}
-          {{ value.commentaires.substring(0, 40) }}
-        </v-col>
-        <v-col class="shrink">
-          <v-btn color="red" @click="suppIpFromArrayArrays(index)"
-            >SUPPRIMER</v-btn
-          >
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-alert dense outlined :value="alertErrorIp" type="error">
-          {{ value.error }}
+        <!--    <v-card-actions>
+          <v-row>
+            <v-col cols="10"></v-col>
+            <v-col>
+              <v-btn
+                v-if="arrayArrays.length > 0"
+                color="success"
+                :loading="buttonLoading"
+                x-large
+                @click="validate()"
+                >Envoyer</v-btn
+              >
+            </v-col>
+          </v-row>
+        </v-card-actions>-->
+        <br />
+        <v-alert dense outlined :value="alert" type="error">
+          {{ error }}
         </v-alert>
-      </v-row>
-    </v-alert>
-
-    <v-card-actions>
-      <v-row>
-        <v-col cols="10"></v-col>
-        <v-col>
-          <v-btn
-            v-if="arrayArrays.length > 0"
-            color="success"
-            :loading="buttonLoading"
-            x-large
-            @click="validate()"
-            >Envoyer</v-btn
-          >
-        </v-col>
-      </v-row>
-    </v-card-actions>
-    <br />
-    <v-alert dense outlined :value="alert" type="error">
-      {{ error }}
-    </v-alert>
+      </v-form>
+    </v-card>
   </div>
 </template>
 
@@ -94,7 +98,7 @@
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions, mapGetters } from "vuex";
-import { TypeIpChangeEvent } from "@/main";
+import { AjouterAccesSubmitEvent, TypeIpChangeEvent } from "@/main";
 import { IpChangeEvent } from "@/main";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
 
@@ -104,7 +108,6 @@ export default Vue.extend({
   data() {
     return {
       moduleIpPlageNumber: 2,
-      busIpPlage: new Vue(),
       titleText: "" as string,
       alertText: "" as string,
       buttonAjouterText: "" as string,
@@ -127,6 +130,7 @@ export default Vue.extend({
       buttonLoading: false
     };
   },
+
   mounted() {
     this.typeAcces = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
@@ -141,8 +145,11 @@ export default Vue.extend({
       console.log(`ip =  ` + ip);
     };
     IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
-  },
 
+    AjouterAccesSubmitEvent.$on("ajouterAccesSubmitEvent", this.ajouterIp);
+    AjouterAccesSubmitEvent.$on("clear", this.clear);
+    //this.busIpPlage.$on("clear", this.clear);
+  },
   computed: {
     sirenEtabSiAdmin() {
       return this.$store.state.sirenEtabSiAdmin;
@@ -179,22 +186,38 @@ export default Vue.extend({
     },
 
     ajouterIp(): void {
-      this.arrayAjouterIp.userSiren = this.getUserSiren;
+      console.log("Validation");
+      /*this.arrayAjouterIp.userSiren = this.getUserSiren;
       this.arrayAjouterIp.typeIp = this.typeIp;
       this.arrayAjouterIp.ip = this.ip;
       this.arrayAjouterIp.commentaires = this.commentaires;
       console.log(this.arrayAjouterIp);
       this.arrayArrays.push(this.arrayAjouterIp);
-      console.log(this.arrayArrays.toString());
+      console.log(this.arrayArrays.toString());*/
+      console.log("v - " + this.typeIp);
+      console.log("v - " + this.ip);
+      console.log("v - " + this.commentaires);
+      if (
+        (this.$refs.formModuleIpPlage as Vue & {
+          validate: () => boolean;
+        }).validate()
+      ) {
+        this.$emit("formModuleIpSentEvent", {
+          userSiren: this.getUserSiren,
+          typeIp: this.typeIp,
+          ip: this.ip,
+          commentaires: this.commentaires
+        });
+      }
+    },
+    clear() {
       this.arrayAjouterIp = [];
       this.typeIp = "";
       this.ip = "";
       this.commentaires = "";
-      console.log(this.arrayAjouterIp);
-      console.log(this.arrayArrays);
     },
 
-    getUrl(typeIp) {
+    /*getUrl(typeIp) {
       if (this.typeAcces === "ip") {
         if (this.isAdmin === "true") {
           return typeIp === "IPV4" ? this.adminIpV4Url : this.adminIpV6Url;
@@ -206,7 +229,7 @@ export default Vue.extend({
             : this.adminPlageIpV6Url;
         else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
       }
-    },
+    },*/
 
     suppIpFromArrayArrays: function(index) {
       this.arrayArrays.splice(index, 1);
@@ -233,9 +256,9 @@ export default Vue.extend({
         this.typeIp = "IPV4";
         this.eventReinitialisationIpSegments("eventReinitialisationIpSegments");
       }
-    },
+    }
 
-    validate(): void {
+    /*validate(): void {
       this.buttonLoading = true;
       this.arrayArrays.forEach((value, index) => {
         console.log("this.getUrl() = " + this.getUrl(value.typeIp));
@@ -262,7 +285,7 @@ export default Vue.extend({
             this.alertErrorIp = true;
           });
       });
-    }
+    }*/
   }
 });
 </script>

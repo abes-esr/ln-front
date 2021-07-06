@@ -295,7 +295,7 @@ export default Vue.extend({
     const onchangeTypeIpHandler = typeIp => {
       this.typeIp = typeIp;
       console.log(`typeIp =  ` + typeIp);
-      this.reinitialisationIpSegments();
+      //this.reinitialisationIpSegments();
     };
     TypeIpChangeEvent.$on(
       "eventReinitialisationIpSegments",

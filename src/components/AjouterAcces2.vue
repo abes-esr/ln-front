@@ -25,8 +25,7 @@
               </v-row>
 
               <module-ip-plage2
-                :bus="busIpPlage"
-                v-on:module-ip-plage2="send"
+                v-on:formModuleIpSentEvent="validate"
                 v-for="n in moduleIpPlageNumber"
                 :key="n"
               >
@@ -58,7 +57,7 @@
                   <v-col>
                     <v-btn @click="clear()">Annuler </v-btn>
                     <v-btn
-                      @click="triggerChildrenForm()"
+                      @click="enclencherAjouterAccesModuleIpPlage()"
                       :loading="buttonLoading"
                       color="success"
                       >Valider
@@ -67,7 +66,7 @@
                 </v-row>
               </v-card-actions>
 
-              <v-card-actions>
+              <!--              <v-card-actions>
                 <v-row>
                   <v-col cols="10"></v-col>
                   <v-col>
@@ -81,7 +80,7 @@
                     >
                   </v-col>
                 </v-row>
-              </v-card-actions>
+              </v-card-actions>-->
             </v-col>
           </v-row>
         </v-card-text>
@@ -98,7 +97,7 @@
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions, mapGetters } from "vuex";
-import { TypeIpChangeEvent } from "@/main";
+import { AjouterAccesSubmitEvent, TypeIpChangeEvent } from "@/main";
 import { IpChangeEvent } from "@/main";
 import ModuleIpPlage2 from "@/components/ModuleIpPlage2.vue";
 
@@ -108,7 +107,6 @@ export default Vue.extend({
   data() {
     return {
       moduleIpPlageNumber: 2,
-      busIpPlage: new Vue(),
       titleText: "" as string,
       alertText: "" as string,
       buttonAjouterText: "" as string,
@@ -174,6 +172,12 @@ export default Vue.extend({
       setNotification: "setNotification"
     }),
 
+    enclencherAjouterAccesModuleIpPlage(): void {
+      console.log("debut enclencherAjouterAccesModuleIpPlage");
+      AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
+      AjouterAccesSubmitEvent.$emit("clear");
+    },
+
     setText(): void {
       if (this.typeAcces === "ip") {
         this.titleText = "Ajout d'adresse IP";
@@ -225,14 +229,18 @@ export default Vue.extend({
         }).validate()
       ) {
         this.showButtonAjouterIp = true;
-        this.ajouterIp();
+        //this.ajouterIp();
         this.typeIp = "IPV4";
         this.eventReinitialisationIpSegments("eventReinitialisationIpSegments");
       }
     },
 
-    validate(): void {
+    validate(payloadFromModuleIpPlage): void {
+      console.log("debut validate");
+
       this.buttonLoading = true;
+      this.arrayAjouterIp.push(payloadFromModuleIpPlage);
+      this.arrayArrays.push(payloadFromModuleIpPlage);
       this.arrayArrays.forEach((value, index) => {
         console.log("this.getUrl() = " + this.getUrl(value.typeIp));
         HTTP.post(this.getUrl(value.typeIp), {
