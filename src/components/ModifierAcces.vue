@@ -144,7 +144,19 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...mapGetters(["userSiren"])
+    //...mapGetters(["userSiren"]),
+
+    sirenEtabSiAdmin() {
+      return this.$store.state.sirenEtabSiAdmin;
+    },
+    getUserSiren() {
+      if (this.isAdmin === "true") return this.$store.state.user.siren;
+      else return this.$store.state.sirenEtabSiAdmin;
+    },
+    isAdmin() {
+      console.log("isAdmin = " + this.$store.state.user.isAdmin);
+      return this.$store.state.user.isAdmin;
+    }
   },
   mounted() {
     this.id = window.location.href.substring(
@@ -190,7 +202,7 @@ export default Vue.extend({
       console.log("id = " + this.id);
       HTTP.post("/ln/ip/getIpEntity", {
         id: this.id,
-        siren: this.userSiren
+        siren: this.getUserSiren
       })
         .then(result => {
           this.id = result.data.id;
@@ -251,7 +263,7 @@ export default Vue.extend({
       json.validee = 0;
       json.typeAcces = this.typeAcces;
       json.typeIp = this.typeIp;
-      json.siren = this.userSiren;
+      json.siren = this.getUserSiren;
       json.commentaires = this.commentaires;
       this.jsonResponse = json;
     }

@@ -184,6 +184,10 @@ export default Vue.extend({
       ipV6Url: "/ln/ip/ajoutIpV6" as string,
       plageIpV4Url: "/ln/ip/ajoutPlageIpV4" as string,
       plageIpV6Url: "/ln/ip/ajoutPlageIpV6" as string,
+      adminIpV4Url: "/ln/ip/adminAjoutIpV4" as string,
+      adminIpV6Url: "/ln/ip/adminAjoutIpV6" as string,
+      adminPlageIpV4Url: "/ln/ip/adminAjoutPlageIpV4" as string,
+      adminPlageIpV6Url: "/ln/ip/adminAjoutPlageIpV6" as string,
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       buttonLoading: false
@@ -206,7 +210,18 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters(["userSiren"])
+    //...mapGetters(["userSiren"])
+    sirenEtabSiAdmin() {
+      return this.$store.state.sirenEtabSiAdmin;
+    },
+    getUserSiren() {
+      if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
+      else return this.$store.state.user.siren;
+    },
+    isAdmin() {
+      console.log("isAdmin = " + this.$store.state.user.isAdmin);
+      return this.$store.state.user.isAdmin;
+    }
   },
 
   methods: {
@@ -231,7 +246,7 @@ export default Vue.extend({
     },
 
     ajouterIp(): void {
-      this.arrayAjouterIp.userSiren = this.userSiren;
+      this.arrayAjouterIp.userSiren = this.getUserSiren;
       this.arrayAjouterIp.typeIp = this.typeIp;
       this.arrayAjouterIp.ip = this.ip;
       this.arrayAjouterIp.commentaires = this.commentaires;
@@ -248,8 +263,16 @@ export default Vue.extend({
 
     getUrl(typeIp) {
       if (this.typeAcces === "ip") {
-        return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
-      } else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
+        if (this.isAdmin === "true") {
+          return typeIp === "IPV4" ? this.adminIpV4Url : this.adminIpV6Url;
+        } else return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
+      } else {
+        if (this.isAdmin === "true")
+          return typeIp === "IPV4"
+            ? this.adminPlageIpV4Url
+            : this.adminPlageIpV6Url;
+        else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
+      }
     },
 
     suppIpFromArrayArrays: function(index) {
@@ -284,7 +307,7 @@ export default Vue.extend({
       this.arrayArrays.forEach((value, index) => {
         console.log("this.getUrl() = " + this.getUrl(value.typeIp));
         HTTP.post(this.getUrl(value.typeIp), {
-          siren: this.userSiren,
+          siren: this.getUserSiren,
           ip: value.ip,
           typeAcces: this.typeAcces,
           typeIp: value.typeIp,

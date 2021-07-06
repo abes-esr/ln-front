@@ -51,6 +51,22 @@
         </v-row>
         <v-row v-else></v-row>
 
+        <v-row v-if="this.isAdmin === 'true'">
+          <v-list-item
+            v-on:click="
+              $router.push({ name: 'ListeEditeurs' }).catch(err => {})
+            "
+          >
+            <v-list-item-action>
+              <v-icon>mdi-format-list-bulleted</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Editeurs</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-row>
+        <v-row v-else></v-row>
+
         <v-row>
           <v-list-item
             v-on:click="$router.push({ name: 'Profil' }).catch(err => {})"

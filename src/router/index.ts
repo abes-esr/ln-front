@@ -93,6 +93,11 @@ const routes: Array<RouteConfig> = [
     name: "CreationCompte",
     component: () => import("../views/CreationCompte.vue")
   },
+  {
+    path: "/listeEditeurs",
+    name: "ListeEditeurs",
+    component: () => import("../components/ListeEditeurs.vue")
+  },
 
   {
     path: "*",
