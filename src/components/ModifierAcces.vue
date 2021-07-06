@@ -138,20 +138,22 @@ export default Vue.extend({
       ipV6Url: "/ln/ip/modifIpV6" as string,
       plageIpV4Url: "/ln/ip/modifPlageIpV4" as string,
       plageIpV6Url: "/ln/ip/modifPlageIpV6" as string,
+      adminIpV4Url: "/ln/ip/adminModifIpV4" as string,
+      adminIpV6Url: "/ln/ip/adminModifIpV6" as string,
+      adminPlageIpV4Url: "/ln/ip/adminModifPlageIpV4" as string,
+      adminPlageIpV6Url: "/ln/ip/adminModifPlageIpV6" as string,
       typesIp: ["IPV4", "IPV6"],
       typeIpRules: [(v: never) => !!v || "Le type d'IP est obligatoire"],
       buttonLoading: false
     };
   },
   computed: {
-    //...mapGetters(["userSiren"]),
-
     sirenEtabSiAdmin() {
       return this.$store.state.sirenEtabSiAdmin;
     },
     getUserSiren() {
-      if (this.isAdmin === "true") return this.$store.state.user.siren;
-      else return this.$store.state.sirenEtabSiAdmin;
+      if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
+      else return this.$store.state.user.siren;
     },
     isAdmin() {
       console.log("isAdmin = " + this.$store.state.user.isAdmin);
@@ -200,9 +202,10 @@ export default Vue.extend({
     },
     fetchIp(): void {
       console.log("id = " + this.id);
+      console.log("siren = " + this.getUserSiren);
       HTTP.post("/ln/ip/getIpEntity", {
         id: this.id,
-        siren: this.getUserSiren
+        siren: this.$store.state.user.siren
       })
         .then(result => {
           this.id = result.data.id;
@@ -223,8 +226,16 @@ export default Vue.extend({
     },
     getUrl(typeIp) {
       if (this.typeAcces === "ip") {
-        return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
-      } else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
+        if (this.isAdmin === "true") {
+          return typeIp === "IPV4" ? this.adminIpV4Url : this.adminIpV6Url;
+        } else return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
+      } else {
+        if (this.isAdmin === "true")
+          return typeIp === "IPV4"
+            ? this.adminPlageIpV4Url
+            : this.adminPlageIpV6Url;
+        else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
+      }
     },
     validate(): void {
       this.error = "";
