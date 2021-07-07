@@ -116,12 +116,12 @@ export default Vue.extend({
       id: "",
       ip: "",
       typeAcces: "" as string,
-      typeIp: "" as string,
+      //typeIp: "" as string,
       alertIp: true,
       alert: false,
       alertErrorIp: false,
       errorIp: "" as string,
-      showButtonAjouterIp: false,
+      //showButtonAjouterIp: false,
       error: "",
       arrayAjouterIp: [] as any,
       arrayArrays: [] as any,
@@ -133,8 +133,8 @@ export default Vue.extend({
       adminIpV6Url: "/ln/ip/adminAjoutIpV6" as string,
       adminPlageIpV4Url: "/ln/ip/adminAjoutPlageIpV4" as string,
       adminPlageIpV6Url: "/ln/ip/adminAjoutPlageIpV6" as string,
-      typesIp: ["IPV4", "IPV6"],
-      typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
+      //typesIp: ["IPV4", "IPV6"],
+      //typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       buttonLoading: false
     };
   },
@@ -146,11 +146,11 @@ export default Vue.extend({
     this.setText();
     console.log(this.$refs);
 
-    const onchangeIpHandler = ip => {
+    /*const onchangeIpHandler = ip => {
       this.ip = ip;
       console.log(`ip =  ` + ip);
     };
-    IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
+    IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);*/
   },
 
   computed: {
@@ -215,7 +215,7 @@ export default Vue.extend({
       this.alertErrorIp = false;
     },
 
-    eventReinitialisationIpSegments: function(evt) {
+    /*eventReinitialisationIpSegments: function(evt) {
       TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
     },
 
@@ -233,7 +233,7 @@ export default Vue.extend({
         this.typeIp = "IPV4";
         this.eventReinitialisationIpSegments("eventReinitialisationIpSegments");
       }
-    },
+    },*/
 
     validate(payloadFromModuleIpPlage): void {
       console.log("debut validate");

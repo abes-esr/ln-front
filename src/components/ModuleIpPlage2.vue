@@ -132,11 +132,16 @@ export default Vue.extend({
   },
 
   mounted() {
+    console.log("debut mounted ModuleIpPlage");
     this.typeAcces = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
     );
+    //On initialise typeIp à IPV4
+    console.log("1 - On initialise typeIp à IPV4");
     this.typeIp = "IPV4";
+    console.log("2 - On envoie typeIp à ModuleSegmentIpPlage");
     TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
+
     this.setText();
     console.log(this.$refs);
 

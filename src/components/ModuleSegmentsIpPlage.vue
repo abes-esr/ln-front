@@ -265,36 +265,41 @@ export default Vue.extend({
     };
   },
   mounted() {
-    console.log("debut mounted ModuleIpPlage");
+    console.log("debut mounted ModuleSegmentsIpPlage");
 
     this.typeAcces = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
     );
     console.log("1 - this.typeAcces = " + this.typeAcces);
+
+    //code pour ModifierAcces/////////////////
     if (this.typeAcces.includes("&"))
       this.typeAcces = window.location.href.substr(
         window.location.href.lastIndexOf("&") + 1
       );
-    console.log("2 - this.typeAcces = " + this.typeAcces);
+    console.log("2 - this.typeAcces pour la modifIp= " + this.typeAcces);
 
     if (this.typeIp === "") {
       const getTypeIpHandler = typeIp => {
         this.typeIp = typeIp;
-        console.log(`typeIp =  ` + this.typeIp);
+        console.log("3 - this.typeIp pour la modifIp= " + this.typeIp);
         //this.reinitialisationIpSegments();
       };
       GetTypeIpFromModifierAccesEvent.$on(
         "getTypeIpFromModifierAccesEvent",
         getTypeIpHandler
       );
-      console.log("3 - this.typeIp = " + this.typeIp);
+      console.log(
+        "4 - this.typeIp pour la modifIp après event= " + this.typeIp
+      );
     }
+    //////////////////////////////////////////////
     this.setText();
     console.log(this.$refs);
 
     const onchangeTypeIpHandler = typeIp => {
       this.typeIp = typeIp;
-      console.log(`typeIp =  ` + typeIp);
+      console.log("5 - mounted typeIp =  " + typeIp);
       //this.reinitialisationIpSegments();
     };
     TypeIpChangeEvent.$on(

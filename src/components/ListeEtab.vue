@@ -15,7 +15,7 @@
                         dense
                         :headers="headers"
                         :items="filteredEtabByStatut"
-                        :items-per-page="10"
+                        :items-per-page="30"
                         class="elevation-1"
                         :search="rechercher"
                         id="mytable"
@@ -31,20 +31,14 @@
                               </v-btn>
                             </template>
                             <div style="background-color: white; width: 280px">
-                              <v-text-field
-                                v-model="statut"
-                                class="pa-4"
-                                type="text"
-                                label="Entrez le statut"
-                              ></v-text-field>
-                              <v-btn
-                                @click="statut = ''"
-                                small
-                                text
-                                color="primary"
-                                class="ml-2 mb-2"
-                                >Effacer</v-btn
-                              >
+                              <v-card-actions
+                                ><v-select
+                                  v-model="statut"
+                                  label="Selectionnez le statut"
+                                  outlined
+                                  :items="selectStatut"
+                                ></v-select
+                              ></v-card-actions>
                             </div>
                           </v-menu>
                         </template>
@@ -170,6 +164,7 @@ export default Vue.extend({
   data() {
     return {
       statut: "",
+      selectStatut: ["Nouveau", "En validation", "Validé", "Aucune IP"],
       rechercher: "",
       etab: [] as any,
       title: "" as string,
@@ -203,7 +198,9 @@ export default Vue.extend({
       return this.$store.state.user.siren;
     },
     filteredEtabByStatut(): string {
+      console.log("debut filteredEtabByStatut");
       const conditions = [] as any;
+      console.log("this.statut = " + this.statut);
       if (this.statut) {
         conditions.push(this.filterStatut);
       }
@@ -216,6 +213,12 @@ export default Vue.extend({
       }
       return this.etab;
     }
+
+    /* filteredEtabByStatut(): string {
+      return this.etab.filter(i => {
+        return !this.statut || i.type === this.statut;
+      });
+    }*/
   },
   mounted() {
     moment.locale("fr");
@@ -234,18 +237,7 @@ export default Vue.extend({
       };
     },
     filterStatut(statutRecherche) {
-      return (
-        statutRecherche.statut
-          .toString()
-          .substring(0, 1)
-          .toLowerCase()
-          .includes(this.statut) ||
-        statutRecherche.statut
-          .toString()
-          .substring(0, 1)
-          .toUpperCase()
-          .includes(this.statut)
-      );
+      return statutRecherche.statut.toString().includes(this.statut);
     },
     getAll(): any {
       return HTTP.get("/ln/etablissement/getListEtab");

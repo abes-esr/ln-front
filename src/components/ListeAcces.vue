@@ -15,7 +15,7 @@
                         id="mytable"
                         :headers="headers"
                         :items="filteredAccesByStatut"
-                        :items-per-page="10"
+                        :items-per-page="30"
                         class="elevation-1"
                         :search="rechercher"
                       >
@@ -30,20 +30,14 @@
                               </v-btn>
                             </template>
                             <div style="background-color: white; width: 280px">
-                              <v-text-field
-                                v-model="statut"
-                                class="pa-4"
-                                type="text"
-                                label="Entrez le statut"
-                              ></v-text-field>
-                              <v-btn
-                                @click="statut = ''"
-                                small
-                                text
-                                color="primary"
-                                class="ml-2 mb-2"
-                                >Effacer</v-btn
-                              >
+                              <v-card-actions
+                                ><v-select
+                                  v-model="statut"
+                                  label="Selectionnez le statut"
+                                  outlined
+                                  :items="selectStatut"
+                                ></v-select
+                              ></v-card-actions>
                             </div>
                           </v-menu>
                         </template>
@@ -87,14 +81,14 @@
                     <v-col cols="12" sm="7"></v-col>
                     <v-col cols="12" sm="2">
                       <v-btn
-                        @click="$router.push({ path: '/ajouterAcces/ip' })"
+                        @click="$router.push({ path: '/ajouterAcces2/ip' })"
                         color="warning"
                         >Ajouter une adresse IP</v-btn
                       ></v-col
                     >
                     <v-col cols="12" sm="3">
                       <v-btn
-                        @click="$router.push({ path: '/ajouterAcces/plage' })"
+                        @click="$router.push({ path: '/ajouterAcces2/plage' })"
                         color="warning"
                         >Ajouter une plage d'adresses IP</v-btn
                       >
@@ -128,6 +122,7 @@ export default Vue.extend({
   data() {
     return {
       statut: "",
+      selectStatut: ["En validation", "Validée"],
       rechercher: "",
       acces: [] as any,
       title: "" as string,
@@ -208,18 +203,7 @@ export default Vue.extend({
       };
     },
     filterStatut(statutRecherche) {
-      return (
-        statutRecherche.statut
-          .toString()
-          .substring(0, 1)
-          .toLowerCase()
-          .includes(this.statut) ||
-        statutRecherche.statut
-          .toString()
-          .substring(0, 1)
-          .toUpperCase()
-          .includes(this.statut)
-      );
+      return statutRecherche.statut.toString().includes(this.statut);
     },
     getAll() {
       if (this.isAdmin === "true")
