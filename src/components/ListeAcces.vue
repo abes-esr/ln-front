@@ -236,12 +236,19 @@ export default Vue.extend({
       if (acces.dateModification === null) return acces.dateModification;
       else return moment(acces.dateModification).format("L");
     },
-
+    getUrlSuppressionIp() {
+      if (this.isAdmin === "true") return "/ln/ip/supprimeByAdmin";
+      else return "/ln/ip/supprime";
+    },
+    getSirenSuppressionIp() {
+      if (this.isAdmin === "true") return this.sirenEtabSiAdmin;
+      else return this.getUserSiren;
+    },
     supprimerAcces(id): void {
       console.log("id = " + id);
-      HTTP.post("/ln/ip/supprime", {
+      HTTP.post(this.getUrlSuppressionIp(), {
         id: id,
-        siren: this.getUserSiren
+        siren: this.getSirenSuppressionIp()
       })
         .then(response => {
           this.refreshList();
