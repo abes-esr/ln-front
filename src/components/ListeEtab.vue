@@ -42,6 +42,9 @@
                             </div>
                           </v-menu>
                         </template>
+                        <template>
+                          <td>{{ derniereDateModificationIp2 }}</td>
+                        </template>
                         <template v-slot:top>
                           <v-row>
                             <v-col cols="12" sm="6"></v-col>
@@ -158,6 +161,7 @@ import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions } from "vuex";
 import moment from "moment";
+import { AxiosPromise } from "axios";
 
 export default Vue.extend({
   name: "ListeEtab",
@@ -167,10 +171,13 @@ export default Vue.extend({
       selectStatut: ["Nouveau", "En validation", "Validé", "Aucune IP"],
       rechercher: "",
       etab: [] as any,
+      etabSiren: [] as any,
+      etabSiren2: [] as any,
       title: "" as string,
       id: "" as any,
       error: "",
       alert: false,
+      derniereDateModificationIp2: "" as string,
       headers: [
         {
           text: "Date de création",
@@ -182,6 +189,11 @@ export default Vue.extend({
         { text: "SIREN", value: "siren", sortable: true },
         { text: "Etablissement", value: "nomEtab", sortable: true },
         { text: "Type d'établissement", value: "typeEtab", sortable: true },
+        {
+          text: "Dernière date de modification",
+          value: "derniereDateModificationIp",
+          sortable: true
+        },
         { text: "Statut", value: "statut", sortable: true },
         { text: "Action", value: "action", sortable: false }
       ],
@@ -213,6 +225,47 @@ export default Vue.extend({
       }
       return this.etab;
     }
+    /*getDerniereDateModificationIp(): string {
+      console.log("debut getDerniereDateModificationIp()");
+      HTTP.post(
+        "/ln/etablissement/getDerniereDateModificationIp/" + this.etab.siren
+      )
+        .then(response => {
+          this.derniereDateModificationIp2 = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      return this.derniereDateModificationIp2;
+    }*/
+
+    /* setDerniereDateModificationIp(): string {
+      //this.derniereDateModificationIp2 = this.getDerniereDateModificationIp(this.etab.siren);
+      return this.getDerniereDateModificationIp(this.etab.siren);
+    }*/
+    /*calculDerniereDateModif(): string {
+      console.log("debut calculDerniereDateModif");
+      //this.getEtabSirenArray()
+      this.getAll()
+        .then(response => {
+          this.etabSiren = response.data;
+          this.etabSiren2.push(this.etabSiren.siren2);
+          console.log("etabSiren = " + response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      console.log("suite1 calculDerniereDateModif");
+      this.etabSiren.forEach((value, index) => {
+        console.log("value = " + value + "index = " + index);
+        console.log("suite calculDerniereDateModif");
+        this.derniereDateModificationIp2 = this.getDerniereDateModificationIp(
+          value.siren
+        );
+      });
+      return this.derniereDateModificationIp2;
+    }*/
 
     /* filteredEtabByStatut(): string {
       return this.etab.filter(i => {
@@ -222,7 +275,15 @@ export default Vue.extend({
   },
   mounted() {
     moment.locale("fr");
+    /*console.log(
+      "this.getDerniereDateModificationIp() = " +
+        this.getDerniereDateModificationIp(this.getUserSiren)
+    );*/
+    //this.getDerniereDateModificationIp();
+    //this.calculDerniereDateModif();
     this.collecterEtab();
+    //this.getDerniereDateModificationIp2();
+    //this.getDerniereDateModificationIp();
     this.id = this.getIdEtab(this.etab);
   },
 
@@ -239,6 +300,50 @@ export default Vue.extend({
     filterStatut(statutRecherche) {
       return statutRecherche.statut.toString().includes(this.statut);
     },
+    /*getDerniereDateModificationIp2(etab, siren) {
+      console.log("debut getDerniereDateModificationIp2()" + siren);
+      HTTP.post("/ln/etablissement/getDerniereDateModificationIp/" + siren)
+        .then(response => {
+          this.derniereDateModificationIp2 =
+            response.data.derniereDateModificationIp;
+          console.log(response.data.derniereDateModificationIp);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      return this.affichageEtabSuite(etab, this.derniereDateModificationIp2);
+    },*/
+    /*calculDerniereDateModif(): string {
+      console.log("debut calculDerniereDateModif");
+      //this.getEtabSirenArray()
+      this.getAll()
+        .then(response => {
+          this.etabSiren = response.data.map(this.getTableauSiren);
+          this.etabSiren2.push(this.etabSiren.siren2);
+          console.log("etabSiren = " + response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      console.log("suite1 calculDerniereDateModif");
+      this.etabSiren.forEach((value, index) => {
+        console.log("value = " + value + "index = " + index);
+        console.log("suite calculDerniereDateModif");
+        this.derniereDateModificationIp2 = this.getDerniereDateModificationIp(
+          value.siren
+        );
+      });
+      return this.derniereDateModificationIp2;
+    },
+    getTableauSiren(etabSiren) {
+      return {
+        siren2: etabSiren.siren
+      };
+    },*/
+
+    getEtabSirenArray(): any {
+      return HTTP.get("/ln/etablissement/getEtabSirenArray");
+    },
     getAll(): any {
       return HTTP.get("/ln/etablissement/getListEtab");
     },
@@ -252,6 +357,26 @@ export default Vue.extend({
           console.log(e);
         });
     },
+    /*affichageEtab(etab) {
+      console.log("affichageEtab: etab.siren  = " + etab.siren);
+      this.getDerniereDateModificationIp2(etab, etab.siren);
+      console.log("affichageEtab ips2:  " + this.derniereDateModificationIp2);
+    },
+    affichageEtabSuite(etab, derniereDateModifIp) {
+      return {
+        id: etab.id,
+        dateCreation: moment(etab.dateCreation).format("L"),
+        idAbes: etab.idAbes,
+        siren: etab.siren,
+        nomEtab: etab.name,
+        /!*derniereDateModificationIp: this.getDerniereDateModificationIp(
+          etab.siren
+        ),*!/
+        derniereDateModificationIp: derniereDateModifIp,
+        typeEtab: etab.typeEtablissement,
+        statut: etab.valide ? "Validé" : "En validation"
+      };
+    },*/
     affichageEtab(etab) {
       return {
         id: etab.id,
@@ -259,10 +384,12 @@ export default Vue.extend({
         idAbes: etab.idAbes,
         siren: etab.siren,
         nomEtab: etab.name,
+        derniereDateModificationIp: etab.derniereDateModificationIp,
         typeEtab: etab.typeEtablissement,
         statut: etab.valide ? "Validé" : "En validation"
       };
     },
+
     listeAcces(siren): void {
       this.setSirenEtabSiAdmin(siren);
       this.$router.push({
