@@ -3,7 +3,13 @@
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
         <div>
-          <v-card witdh="100%" outlined>
+          <v-card v-if="this.tokenExpired === 'true'">
+            <v-card-title>Réinitialisation de votre mot de passe</v-card-title>
+            <v-alert dense outlined type="error">
+              Votre lien est invalide
+            </v-alert>
+          </v-card>
+          <v-card witdh="100%" outlined v-else>
             <v-form ref="formReinitialisationPass" lazy-validation>
               <v-card-title
                 >Réinitialisation de votre mot de passe</v-card-title
@@ -122,6 +128,7 @@ export default Vue.extend({
       disabled: 0,
       show1: false,
       token: "" as unknown,
+      tokenExpired: "initialisation",
       tokenrecaptcha: this.$recaptchaLoaded() as unknown,
       passContact: "" as string,
       passContactRules: [
@@ -147,7 +154,6 @@ export default Vue.extend({
         this.confirmPassContact === this.passContact ||
         "Le mot de passe de confirmation n'est pas valide";
     },
-
     loggedIn() {
       return this.$store.state.user.isLoggedIn;
     }
@@ -172,7 +178,7 @@ export default Vue.extend({
       axios
         .post(
           process.env.VUE_APP_ROOT_API +
-            "/ln/reinitialisationMotDePasse/verifTokenValide",
+            "ln/reinitialisationMotDePasse/verifTokenValide",
           {
             jwtToken: this.jwtToken
           }
@@ -181,12 +187,9 @@ export default Vue.extend({
           this.buttonLoading = false;
         })
         .catch(err => {
-          this.buttonLoading = false;
-          this.message = err.response.data;
-          this.disabled = 1;
-          this.alert = true;
-          this.retourKo = true;
+          this.tokenExpired = "true";
         });
+      return this.tokenExpired;
     },
     async recaptcha() {
       // (optional) Wait until recaptcha has been loaded.
@@ -219,7 +222,7 @@ export default Vue.extend({
       axios
         .post(
           process.env.VUE_APP_ROOT_API +
-            "/ln/reinitialisationMotDePasse/enregistrerPassword",
+            "ln/reinitialisationMotDePasse/enregistrerPassword",
           {
             motDePasse: this.passContact,
             recaptcha: this.tokenrecaptcha,
