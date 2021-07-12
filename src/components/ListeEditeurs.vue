@@ -7,15 +7,15 @@
             <v-row>
               <v-col cols="12" sm="12">
                 <v-card class="mx-auto" tile>
-                  <v-card-title>Liste des Etablissements</v-card-title>
+                  <v-card-title>Liste des Editeurs</v-card-title>
                   <v-row>
                     <v-col cols="1" />
                     <v-col cols="10">
                       <v-data-table
                         dense
                         :headers="headers"
-                        :items="filteredEtabByStatut"
-                        :items-per-page="30"
+                        :items="filteredEditeurByStatut"
+                        :items-per-page="10"
                         class="elevation-1"
                         :search="rechercher"
                         id="mytable"
@@ -31,14 +31,20 @@
                               </v-btn>
                             </template>
                             <div style="background-color: white; width: 280px">
-                              <v-card-actions
-                                ><v-select
-                                  v-model="statut"
-                                  label="Selectionnez le statut"
-                                  outlined
-                                  :items="selectStatut"
-                                ></v-select
-                              ></v-card-actions>
+                              <v-text-field
+                                v-model="statut"
+                                class="pa-4"
+                                type="text"
+                                label="Entrez le statut"
+                              ></v-text-field>
+                              <v-btn
+                                @click="statut = ''"
+                                small
+                                text
+                                color="primary"
+                                class="ml-2 mb-2"
+                                >Effacer</v-btn
+                              >
                             </div>
                           </v-menu>
                         </template>
@@ -60,18 +66,12 @@
                           <v-icon
                             small
                             class="mr-2"
-                            @click="modifierEtab(item.id)"
+                            @click="modifierEditeur(item.id)"
                             >mdi-pencil</v-icon
                           >
                           <v-icon
                             small
-                            class="mr-2"
-                            @click="listeAcces(item.siren)"
-                            >mdi-ip-network</v-icon
-                          >
-                          <v-icon
-                            small
-                            @click.stop="openDialogSuppression(item.siren)"
+                            @click.stop="openDialogSuppression(item.id)"
                             >mdi-delete</v-icon
                           >
                         </template>
@@ -81,17 +81,17 @@
                   <v-row>
                     <v-col cols="12" sm="7"></v-col>
                     <v-col cols="12" sm="2">
-                      <v-btn
+                      <!--                      <v-btn
                         @click="$router.push({ path: '/ajouterEtab' })"
                         color="warning"
                         ><br />Ajouter un établissement</v-btn
-                      >
+                      >-->
                     </v-col>
                     <v-col cols="12" sm="3">
                       <v-btn
-                        @click="$router.push({ path: '/ajoutEditeur' })"
+                        @click="$router.push({ path: '/nouvelEditeur' })"
                         color="warning"
-                        ><br />Ajouter un éditeur</v-btn
+                        ><br />Nouvel éditeur</v-btn
                       >
                     </v-col>
                   </v-row>
@@ -110,18 +110,18 @@
       {{ notification }}
     </v-alert>
 
-    <!-- Popup de suppression -->
+    &lt;!&ndash; Popup de suppression &ndash;&gt;
     <div class="text-center">
       <v-dialog v-model="dialog" width="500">
         <v-card>
           <v-card-title class="headline grey lighten-2">
-            Supprimer un établissement
+            Supprimer un éditeur
           </v-card-title>
 
           <v-card-text>
-            Vous êtes sur le point de supprimer l'établissement :
-            {{ currentSirenToDelete }}. Êtes vous sûr ? Veuillez indiquer le
-            motif de la suppresion :
+            Vous êtes sur le point de supprimer l'éditeur :
+            {{ currentIdToDelete }}. Êtes vous sûr ? Veuillez indiquer le motif
+            de la suppression :
             <v-textarea
               outlined
               label="Motif suppression"
@@ -141,7 +141,7 @@
               text
               @click="
                 dialog = false;
-                supprimerEtab();
+                supprimerEditeur();
               "
             >
               Valider
@@ -158,21 +158,18 @@ import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions } from "vuex";
 import moment from "moment";
-import { AxiosPromise } from "axios";
 
 export default Vue.extend({
-  name: "ListeEtab",
+  name: "ListeEditeurs",
   data() {
     return {
       statut: "",
-      selectStatut: ["Nouveau", "En validation", "Validé", "Aucune IP"],
       rechercher: "",
-      etab: [] as any,
+      editeur: [] as any,
       title: "" as string,
       id: "" as any,
       error: "",
       alert: false,
-      derniereDateModificationIpTemp: "" as string,
       headers: [
         {
           text: "Date de création",
@@ -180,20 +177,12 @@ export default Vue.extend({
           value: "dateCreation",
           sortable: true
         },
-        { text: "ID Abes", value: "idAbes", sortable: true },
-        { text: "SIREN", value: "siren", sortable: true },
-        { text: "Etablissement", value: "nomEtab", sortable: true },
-        { text: "Type d'établissement", value: "typeEtab", sortable: true },
-        {
-          text: "Dernière date de modification",
-          value: "derniereDateModificationIp",
-          sortable: true
-        },
+        { text: "Editeur", value: "nomEditeur", sortable: true },
         { text: "Statut", value: "statut", sortable: true },
         { text: "Action", value: "action", sortable: false }
       ],
       dialog: false,
-      currentSirenToDelete: "",
+      currentIdToDelete: "",
       motifSuppression: ""
     };
   },
@@ -204,27 +193,25 @@ export default Vue.extend({
     getUserSiren() {
       return this.$store.state.user.siren;
     },
-    filteredEtabByStatut(): string {
-      console.log("debut filteredEtabByStatut");
+    filteredEditeurByStatut(): string {
       const conditions = [] as any;
-      console.log("this.statut = " + this.statut);
       if (this.statut) {
         conditions.push(this.filterStatut);
       }
       if (conditions.length > 0) {
-        return this.etab.filter(acces => {
+        return this.editeur.filter(editeur => {
           return conditions.every(condition => {
-            return condition(acces);
+            return condition(editeur);
           });
         });
       }
-      return this.etab;
+      return this.editeur;
     }
   },
   mounted() {
     moment.locale("fr");
-    this.collecterEtab();
-    this.id = this.getIdEtab(this.etab);
+    this.collecterEditeurs();
+    this.id = this.getIdEditeur(this.editeur);
   },
 
   methods: {
@@ -232,61 +219,58 @@ export default Vue.extend({
       setNotification: "setNotification",
       setSirenEtabSiAdmin: "setSirenEtabSiAdmin"
     }),
-    getIdEtab(etab) {
+    getIdEditeur(editeur) {
       return {
-        id: etab.id
+        id: editeur.id
       };
     },
     filterStatut(statutRecherche) {
-      return statutRecherche.statut.toString().includes(this.statut);
+      return (
+        statutRecherche.statut
+          .toString()
+          .substring(0, 1)
+          .toLowerCase()
+          .includes(this.statut) ||
+        statutRecherche.statut
+          .toString()
+          .substring(0, 1)
+          .toUpperCase()
+          .includes(this.statut)
+      );
     },
     getAll(): any {
-      return HTTP.get("ln/etablissement/getListEtab");
+      return HTTP.get("/ln/editeur/getListEditeurs");
     },
-    collecterEtab(): any {
+    collecterEditeurs(): any {
       this.getAll()
         .then(response => {
-          this.etab = response.data.map(this.affichageEtab);
+          this.editeur = response.data.map(this.affichageEditeurs);
           console.log(response.data);
         })
         .catch(e => {
           console.log(e);
         });
     },
-
-    affichageEtab(etab) {
-      if (
-        moment(etab.derniereDateModificationIp).format("L") !== "Invalid date"
-      )
-        this.derniereDateModificationIpTemp = moment(
-          etab.derniereDateModificationIp
-        ).format("L");
-      else this.derniereDateModificationIpTemp = "";
+    affichageEditeurs(editeur) {
       return {
-        id: etab.id,
-        dateCreation: moment(etab.dateCreation).format("L"),
-        idAbes: etab.idAbes,
-        siren: etab.siren,
-        nomEtab: etab.nomEtab,
-        derniereDateModificationIp: this.derniereDateModificationIpTemp,
-        typeEtab: etab.typeEtab,
-        statut: etab.valide ? "Validé" : "En validation"
+        id: editeur.id,
+        dateCreation: moment(editeur.dateCreation).format("L"),
+        nomEditeur: editeur.nomEditeur,
+        statut: editeur.valide ? "Validé" : "En validation"
       };
     },
-
     listeAcces(siren): void {
       this.setSirenEtabSiAdmin(siren);
       this.$router.push({
         name: "ListeAcces"
       });
     },
-    openDialogSuppression(siren): void {
+    openDialogSuppression(id): void {
       this.dialog = true;
-      this.currentSirenToDelete = siren;
-      //(this as any).supprimerEtab(siren);
+      this.currentIdToDelete = id;
     },
-    supprimerEtab(): void {
-      HTTP.post("ln/etablissement/suppression/" + this.currentSirenToDelete, {
+    supprimerEditeur(): void {
+      HTTP.post("/ln/editeur/suppression/" + this.currentIdToDelete, {
         motif: this.motifSuppression
       })
         .then(response => {
@@ -298,14 +282,14 @@ export default Vue.extend({
           this.error = err.response.data;
           this.alert = true;
         });
-      this.currentSirenToDelete = "";
+      this.currentIdToDelete = "";
       this.motifSuppression = "";
     },
     refreshList(): void {
-      this.collecterEtab();
+      this.collecterEditeurs();
     },
-    modifierAcces(id): void {
-      this.$router.push({ name: "ModifierEtab", params: { id: id } });
+    modifierEditeur(id): void {
+      this.$router.push({ name: "ModifierEditeur", params: { id: id } });
     }
   },
   destroyed() {
