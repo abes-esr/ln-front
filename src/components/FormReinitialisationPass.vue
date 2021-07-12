@@ -4,9 +4,12 @@
       <v-col lg="5" md="8" xs="10">
         <div>
           <v-card v-if="this.tokenExpired === 'true'">
-            <v-card-title>Réinitialisation de votre mot de passe</v-card-title>
             <v-alert dense outlined type="error">
-              Votre lien est invalide
+              La durée de validité de ce lien est dépassée. Mot de passe oublié
+              :
+              <router-link :to="{ path: 'forgotPassword' }"
+                >cliquez ici</router-link
+              >
             </v-alert>
           </v-card>
           <v-card witdh="100%" outlined v-else>
