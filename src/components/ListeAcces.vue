@@ -81,14 +81,14 @@
                     <v-col cols="12" sm="7"></v-col>
                     <v-col cols="12" sm="2">
                       <v-btn
-                        @click="$router.push({ path: '/ajouterAcces2/ip' })"
+                        @click="$router.push({ path: '/ajouterAcces/ip' })"
                         color="warning"
                         >Ajouter une adresse IP</v-btn
                       ></v-col
                     >
                     <v-col cols="12" sm="3">
                       <v-btn
-                        @click="$router.push({ path: '/ajouterAcces2/plage' })"
+                        @click="$router.push({ path: '/ajouterAcces/plage' })"
                         color="warning"
                         >Ajouter une plage d'adresses IP</v-btn
                       >
@@ -207,8 +207,8 @@ export default Vue.extend({
     },
     getAll() {
       if (this.isAdmin === "true")
-        return HTTP.get("/ln/ip/ipsEtab/" + this.sirenEtabSiAdmin);
-      else return HTTP.get("/ln/ip/" + this.getUserSiren);
+        return HTTP.get("ln/ip/ipsEtab/" + this.sirenEtabSiAdmin);
+      else return HTTP.get("ln/ip/" + this.getUserSiren);
     },
     collecterAcces(): void {
       this.getAll()
@@ -237,8 +237,8 @@ export default Vue.extend({
       else return moment(acces.dateModification).format("L");
     },
     getUrlSuppressionIp() {
-      if (this.isAdmin === "true") return "/ln/ip/supprimeByAdmin";
-      else return "/ln/ip/supprime";
+      if (this.isAdmin === "true") return "ln/ip/supprimeByAdmin";
+      else return "ln/ip/supprime";
     },
     getSirenSuppressionIp() {
       if (this.isAdmin === "true") return this.sirenEtabSiAdmin;

@@ -3,7 +3,7 @@
     <v-card width="100%" outlined>
       <v-form ref="formAjouterAcces" lazy-validation>
         <v-row>
-          <v-col lg="6" md="12" xs="12">
+          <v-col lg="12" md="12" xs="12">
             <v-row>
               <v-col cols="1" />
               <v-col cols="10">
@@ -14,7 +14,7 @@
         </v-row>
         <v-card-text>
           <v-row align="center" justify="center">
-            <v-col lg="6" md="12" xs="12">
+            <v-col lg="9" md="12" xs="12">
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
@@ -23,124 +23,69 @@
                   </v-alert>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-select
-                    ref="ipType"
-                    outlined
-                    v-model="typeIp"
-                    :items="typesIp"
-                    label="Type d'IP"
-                    :rules="typeIpRules"
-                    v-on:change="eventReinitialisationIpSegments()"
-                    @keyup.enter="buttonAjouterIp()"
-                    required
-                  ></v-select>
-                </v-col>
-              </v-row>
 
-              <module-ip-plage></module-ip-plage>
+              <module-segments-ip-plage
+                v-on:formModuleSegmentsIpPlageEvent="validate"
+                v-for="n in moduleSegmentsIpPlageNumber"
+                :key="n"
+              >
+              </module-segments-ip-plage>
 
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-alert
-                    border="top"
-                    colored-border
-                    type="info"
-                    elevation="2"
+              <v-card-actions class="v-card__actions">
+                <v-row>
+                  <v-col cols="3"></v-col>
+                  <v-main
+                    >Nombre d'Ip ou Plage ip:
+                    {{ moduleSegmentsIpPlageNumber }}</v-main
                   >
-                    Si certaines des adresses renseignées ne font pas partie du
-                    réseau RENATER, merci de nous en préciser la raison.
-                  </v-alert>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-textarea
-                    outlined
-                    auto-grow
-                    label="Commentaires"
-                    placeholder="Si certaines des adresses renseignées ne font pas partie du réseau RENATER, merci de nous en préciser la raison."
-                    v-model="commentaires"
-                  ></v-textarea>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-card-actions>
-                    <v-btn
-                      color="orange"
-                      v-model="showButtonAjouterIp"
-                      @click="buttonAjouterIp()"
-                      >{{ buttonAjouterText }}
+                </v-row>
+                <v-row>
+                  <v-col cols="3"></v-col>
+                  <v-col>
+                    <v-btn @click="increaseModuleIpPlageNumber"
+                      >{{ buttonAjouterIpPlage }}
                     </v-btn>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col lg="6" md="12" xs="12">
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-card-title v-if="arrayArrays.length > 0">{{
-                    title2Text
-                  }}</v-card-title>
-                  <v-alert
-                    v-model="alertIp"
-                    border="left"
-                    color="yellow accent-1"
-                    icon="mdi-school"
-                    v-for="(value, index) in arrayArrays"
-                    v-bind:key="index"
-                  >
-                    <v-row align="center">
-                      <v-col class="grow">
-                        {{ value.typeIp }}
-                        {{ value.ip }}
-                        {{ value.commentaires.substring(0, 40) }}
-                      </v-col>
-                      <v-col class="shrink">
-                        <v-btn color="red" @click="suppIpFromArrayArrays(index)"
-                          >SUPPRIMER</v-btn
-                        >
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-alert
-                        dense
-                        outlined
-                        :value="alertErrorIp"
-                        type="error"
-                      >
-                        {{ value.error }}
-                      </v-alert>
-                    </v-row>
-                  </v-alert>
-                </v-col>
-              </v-row>
+                  </v-col>
+                  <v-col>
+                    <v-btn @click="decreaseModuleIpPlageNumber"
+                      >{{ buttonSupprimerIpPlage }}
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="3"></v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="9"></v-col>
+                  <v-col>
+                    <v-btn @click="clear()">Annuler </v-btn>
+                    <v-btn
+                      @click="enclencherAjouterAccesModuleIpPlage()"
+                      :loading="buttonLoading"
+                      color="success"
+                      >Valider
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card-actions>
+
+              <!--              <v-card-actions>
+                <v-row>
+                  <v-col cols="10"></v-col>
+                  <v-col>
+                    <v-btn
+                      v-if="arrayArrays.length > 0"
+                      color="success"
+                      :loading="buttonLoading"
+                      x-large
+                      @click="validate()"
+                      >Envoyer</v-btn
+                    >
+                  </v-col>
+                </v-row>
+              </v-card-actions>-->
             </v-col>
           </v-row>
         </v-card-text>
-        <v-card-actions>
-          <v-row>
-            <v-col cols="10"></v-col>
-            <v-col>
-              <v-btn
-                v-if="arrayArrays.length > 0"
-                color="success"
-                :loading="buttonLoading"
-                x-large
-                @click="validate()"
-                >Envoyer</v-btn
-              >
-            </v-col>
-          </v-row>
-        </v-card-actions></v-form
-      >
+      </v-form>
     </v-card>
     <br />
     <v-alert dense outlined :value="alert" type="error">
@@ -153,33 +98,34 @@
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions, mapGetters } from "vuex";
-import ModuleIpPlage from "@/components/ModuleIpPlage.vue";
-import { TypeIpChangeEvent } from "@/main";
+import { AjouterAccesSubmitEvent, TypeIpChangeEvent } from "@/main";
 import { IpChangeEvent } from "@/main";
+import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
 
 export default Vue.extend({
-  name: "AjouterAcces",
-  components: { ModuleIpPlage },
+  name: "AjouterAcces2",
+  components: { ModuleSegmentsIpPlage },
   data() {
     return {
+      moduleSegmentsIpPlageNumber: 2,
       titleText: "" as string,
       alertText: "" as string,
       buttonAjouterText: "" as string,
       title2Text: "" as string,
+      buttonAjouterIpPlage: "" as string,
+      buttonSupprimerIpPlage: "" as string,
       id: "",
       ip: "",
       typeAcces: "" as string,
-      typeIp: "" as string,
-      commentaires: "" as string,
+      //typeIp: "" as string,
       alertIp: true,
       alert: false,
       alertErrorIp: false,
       errorIp: "" as string,
-      showButtonAjouterIp: false,
+      //showButtonAjouterIp: false,
       error: "",
       arrayAjouterIp: [] as any,
       arrayArrays: [] as any,
-      arrayIpNumber: 2,
       ipV4Url: "/ln/ip/ajoutIpV4" as string,
       ipV6Url: "/ln/ip/ajoutIpV6" as string,
       plageIpV4Url: "/ln/ip/ajoutPlageIpV4" as string,
@@ -188,8 +134,8 @@ export default Vue.extend({
       adminIpV6Url: "/ln/ip/adminAjoutIpV6" as string,
       adminPlageIpV4Url: "/ln/ip/adminAjoutPlageIpV4" as string,
       adminPlageIpV6Url: "/ln/ip/adminAjoutPlageIpV6" as string,
-      typesIp: ["IPV4", "IPV6"],
-      typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
+      //typesIp: ["IPV4", "IPV6"],
+      //typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
       buttonLoading: false
     };
   },
@@ -197,20 +143,18 @@ export default Vue.extend({
     this.typeAcces = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
     );
-    this.typeIp = "IPV4";
-    TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
+
     this.setText();
     console.log(this.$refs);
 
-    const onchangeIpHandler = ip => {
+    /*const onchangeIpHandler = ip => {
       this.ip = ip;
       console.log(`ip =  ` + ip);
     };
-    IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
+    IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);*/
   },
 
   computed: {
-    //...mapGetters(["userSiren"])
     sirenEtabSiAdmin() {
       return this.$store.state.sirenEtabSiAdmin;
     },
@@ -229,36 +173,26 @@ export default Vue.extend({
       setNotification: "setNotification"
     }),
 
+    enclencherAjouterAccesModuleIpPlage(): void {
+      console.log("debut enclencherAjouterAccesModuleIpPlage");
+      AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
+      AjouterAccesSubmitEvent.$emit("clear");
+    },
+
     setText(): void {
       if (this.typeAcces === "ip") {
         this.titleText = "Ajout d'adresse IP";
         this.alertText =
           "Vous pouvez directement insérer une adresse IP en effectuant un copier coller.";
-        this.buttonAjouterText = "Ajouter l'ip saisie";
-        this.title2Text = "Ips mémorisées avant envoi";
+        this.buttonAjouterIpPlage = "Ajouter une adresse ip";
+        this.buttonSupprimerIpPlage = "Supprimer une adresse ip";
       } else {
         this.titleText = "Ajout de plage d'adresses IP";
         this.alertText =
           "Vous pouvez directement insérer une ou plusieurs adresses IP en effectuant un copier coller.";
-        this.buttonAjouterText = "Ajouter la plage d'ips saisie";
-        this.title2Text = "Plages d'ips mémorisées avant envoi";
+        this.buttonAjouterIpPlage = "Ajouter une plage d'adresse ip";
+        this.buttonSupprimerIpPlage = "Supprimer une adresse ip";
       }
-    },
-
-    ajouterIp(): void {
-      this.arrayAjouterIp.userSiren = this.getUserSiren;
-      this.arrayAjouterIp.typeIp = this.typeIp;
-      this.arrayAjouterIp.ip = this.ip;
-      this.arrayAjouterIp.commentaires = this.commentaires;
-      console.log(this.arrayAjouterIp);
-      this.arrayArrays.push(this.arrayAjouterIp);
-      console.log(this.arrayArrays.toString());
-      this.arrayAjouterIp = [];
-      this.typeIp = "";
-      this.ip = "";
-      this.commentaires = "";
-      console.log(this.arrayAjouterIp);
-      console.log(this.arrayArrays);
     },
 
     getUrl(typeIp) {
@@ -282,7 +216,7 @@ export default Vue.extend({
       this.alertErrorIp = false;
     },
 
-    eventReinitialisationIpSegments: function(evt) {
+    /*eventReinitialisationIpSegments: function(evt) {
       TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
     },
 
@@ -296,14 +230,18 @@ export default Vue.extend({
         }).validate()
       ) {
         this.showButtonAjouterIp = true;
-        this.ajouterIp();
+        //this.ajouterIp();
         this.typeIp = "IPV4";
         this.eventReinitialisationIpSegments("eventReinitialisationIpSegments");
       }
-    },
+    },*/
 
-    validate(): void {
+    validate(payloadFromModuleSegmentsIpPlage): void {
+      console.log("debut validate");
+
       this.buttonLoading = true;
+      this.arrayAjouterIp.push(payloadFromModuleSegmentsIpPlage);
+      this.arrayArrays.push(payloadFromModuleSegmentsIpPlage);
       this.arrayArrays.forEach((value, index) => {
         console.log("this.getUrl() = " + this.getUrl(value.typeIp));
         HTTP.post(this.getUrl(value.typeIp), {
@@ -329,11 +267,25 @@ export default Vue.extend({
             this.alertErrorIp = true;
           });
       });
+    },
+    increaseModuleIpPlageNumber: function() {
+      this.moduleSegmentsIpPlageNumber++;
+    },
+    decreaseModuleIpPlageNumber: function() {
+      this.moduleSegmentsIpPlageNumber--;
+      //this.moduleIpPlageNumber.pop();
+    },
+    clear() {
+      this.arrayAjouterIp = [];
     }
   }
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.v-card__actions {
+  display: block;
+}
+</style>
 //repeat a form vuejs
 //https://stackoverflow.com/questions/51133782/vuejs-add-the-same-form-multiple-times

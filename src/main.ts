@@ -20,3 +20,4 @@ export const TypeIpChangeEvent = new Vue();
 export const IpChangeEvent = new Vue();
 export const GetTypeIpFromModifierAccesEvent = new Vue();
 export const AjouterAccesSubmitEvent = new Vue();
+export const formModuleSegmentsIpPlageEvent = new Vue();

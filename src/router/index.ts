@@ -60,16 +60,16 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: "/ajouterAcces/ip",
-    name: "ajouterAcces",
+    path: "/ajouterAcces2/ip",
+    name: "ajouterAcces2",
     component: () => import("../components/AjouterAcces.vue"),
     meta: {
       requiresAuth: true
     }
   },
   {
-    path: "/ajouterAcces/plage",
-    name: "ajouterAcces",
+    path: "/ajouterAcces2/plage",
+    name: "ajouterAcces2",
     component: () => import("../components/AjouterAcces.vue"),
     meta: {
       requiresAuth: true
@@ -87,6 +87,11 @@ const routes: Array<RouteConfig> = [
     path: "/listeEtab",
     name: "ListeEtab",
     component: () => import("../components/ListeEtab.vue")
+  },
+  {
+    path: "/forgotPassword",
+    name: "ForgotPassword",
+    component: () => import("../components/ForgotPassword.vue")
   },
   {
     path: "/creationCompte",

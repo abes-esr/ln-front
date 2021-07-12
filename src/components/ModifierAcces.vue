@@ -51,7 +51,7 @@
                 </v-col>
               </v-row>
 
-              <module-ip-plage></module-ip-plage>
+              <module-segments-ip-plage></module-segments-ip-plage>
 
               <v-row>
                 <v-col cols="1" />
@@ -109,7 +109,7 @@
 import Vue from "vue";
 import { HTTP } from "../utils/http-commons";
 import { mapActions, mapGetters } from "vuex";
-import ModuleIpPlage from "@/components/ModuleIpPlage.vue";
+import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
 import {
   GetTypeIpFromModifierAccesEvent,
   IpChangeEvent,
@@ -118,7 +118,7 @@ import {
 
 export default Vue.extend({
   name: "ModifierAcces",
-  components: { ModuleIpPlage },
+  components: { ModuleSegmentsIpPlage },
   data() {
     return {
       ipToModify: "" as string,
