@@ -3,6 +3,19 @@
     <v-card>
       <v-form ref="formModuleSegmentsIpPlage" lazy-validation>
         <v-card-text>
+          <v-row v-if="(modeEditIp = true)">
+            <v-col cols="1" />
+            <v-col cols="10">
+              <v-text-field
+                outlined
+                v-bind:label="this.labelIp"
+                placeholder="acces"
+                v-model="ipToModify"
+                disabled
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row v-else></v-row>
           <v-row>
             <v-col cols="1" />
             <v-col cols="10">
@@ -251,12 +264,16 @@ import {
   TypeIpChangeEvent
 } from "@/main";
 import { IpChangeEvent } from "@/main";
+import { HTTP } from "../utils/http-commons";
 
 export default Vue.extend({
   name: "ModuleSegmentsIpPlage",
 
   data() {
     return {
+      id: "",
+      ipToModify: "" as string,
+      valide: "",
       typeIpTemp: "" as string,
       modeEditIp: false,
       suffix: "" as string,
@@ -361,12 +378,13 @@ export default Vue.extend({
     console.log("1 - this.typeAcces = " + this.typeAcces);
 
     //code pour ModifierAcces/////////////////
-    if (this.typeAcces.includes("&"))
+    if (this.typeAcces.includes("&")) {
+      this.modeEditIp = true;
       this.typeAcces = window.location.href.substr(
         window.location.href.lastIndexOf("&") + 1
       );
-    console.log("2 - this.typeAcces pour la modifIp= " + this.typeAcces);
-
+      console.log("2 - this.typeAcces pour la modifIp= " + this.typeAcces);
+    }
     if (this.typeIp === "" && window.location.href.includes("&")) {
       const getTypeIpHandler = typeIp => {
         this.typeIp = typeIp;
@@ -380,6 +398,14 @@ export default Vue.extend({
       console.log(
         "4 - this.typeIp pour la modifIp après event= " + this.typeIp
       );
+      this.id = window.location.href.substring(
+        window.location.href.lastIndexOf("/") + 1,
+        window.location.href.lastIndexOf("&")
+      );
+      this.typeAcces = window.location.href.substr(
+        window.location.href.lastIndexOf("&") + 1
+      );
+      this.fetchIp();
     } //else this.typeIp = "IPV4";
     //////////////////////////////////////////////
     this.setText();
@@ -399,8 +425,18 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters(["userSiren"]),
-
+    //...mapGetters(["userSiren"]),
+    sirenEtabSiAdmin() {
+      return this.$store.state.sirenEtabSiAdmin;
+    },
+    getUserSiren() {
+      if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
+      else return this.$store.state.user.siren;
+    },
+    isAdmin() {
+      console.log("isAdmin = " + this.$store.state.user.isAdmin);
+      return this.$store.state.user.isAdmin;
+    },
     resultatIp() {
       let value = "";
       console.log("this.typeIp =" + this.typeIp);
@@ -452,6 +488,31 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+    /////////////////////pour la modification)
+    fetchIp(): void {
+      console.log("id = " + this.id);
+      console.log("siren = " + this.getUserSiren);
+      HTTP.post("/ln/ip/getIpEntity", {
+        id: this.id,
+        siren: this.$store.state.user.siren
+      })
+        .then(result => {
+          this.id = result.data.id;
+          this.ipToModify = result.data.ip;
+          this.valide = result.data.validee;
+          this.typeAcces = result.data.typeAcces;
+          this.typeIp = result.data.typeIp;
+          this.commentaires = result.data.commentaires;
+          GetTypeIpFromModifierAccesEvent.$emit(
+            "getTypeIpFromModifierAccesEvent",
+            this.typeIp
+          );
+        })
+        .catch(err => {
+          this.alert = true;
+          this.error = err;
+        });
+    },
 
     getSuffix(index) {
       console.log("getSuffix");

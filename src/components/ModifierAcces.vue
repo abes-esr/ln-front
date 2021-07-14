@@ -3,7 +3,7 @@
     <v-card width="100%" outlined>
       <v-form ref="formModifierAcces" lazy-validation>
         <v-row align="center" justify="center">
-          <v-col lg="6" md="12" xs="12">
+          <v-col lg="12" md="12" xs="12">
             <v-row>
               <v-col cols="1" />
               <v-col cols="10">
@@ -12,18 +12,18 @@
             </v-row>
           </v-col>
         </v-row>
-        <v-card-text>
-          <v-row align="center" justify="center">
-            <v-col lg="6" md="12" xs="12">
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-alert border="left" color="grey" dark>
-                    {{ alertText }}
-                  </v-alert>
-                </v-col>
-              </v-row>
-              <v-row>
+
+        <v-row align="center" justify="center">
+          <v-col lg="9" md="12" xs="12">
+            <v-row>
+              <v-col cols="1" />
+              <v-col cols="10">
+                <v-alert border="left" color="grey" dark>
+                  {{ alertText }}
+                </v-alert>
+              </v-col>
+            </v-row>
+            <!--              <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-select
@@ -37,23 +37,26 @@
                     required
                   ></v-select>
                 </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-text-field
-                    outlined
-                    v-bind:label="this.labelIp"
-                    placeholder="acces"
-                    v-model="ipToModify"
-                    disabled
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+              </v-row>-->
+            <v-row>
+              <v-col cols="1" />
+              <v-col cols="10">
+                <v-text-field
+                  outlined
+                  v-bind:label="this.labelIp"
+                  placeholder="acces"
+                  v-model="ipToModify"
+                  disabled
+                ></v-text-field>
+              </v-col>
+            </v-row>
 
-              <module-segments-ip-plage></module-segments-ip-plage>
+            <module-segments-ip-plage
+              v-on:formModuleSegmentsIpPlageEvent="validate"
+            >
+            </module-segments-ip-plage>
 
-              <v-row>
+            <!--              <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
                   <v-alert
@@ -78,10 +81,10 @@
                     v-model="commentaires"
                   ></v-textarea>
                 </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-card-text>
+              </v-row>-->
+          </v-col>
+        </v-row>
+
         <v-card-actions>
           <v-row>
             <v-col cols="10"></v-col>
@@ -90,7 +93,7 @@
                 color="success"
                 :loading="buttonLoading"
                 x-large
-                @click="validate()"
+                @click="enclencherAjouterIpModuleSegmentsIpPlage()"
                 >Envoyer</v-btn
               >
             </v-col>
@@ -111,6 +114,7 @@ import { HTTP } from "../utils/http-commons";
 import { mapActions, mapGetters } from "vuex";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
 import {
+  AjouterAccesSubmitEvent,
   GetTypeIpFromModifierAccesEvent,
   IpChangeEvent,
   TypeIpChangeEvent
@@ -184,6 +188,11 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+    enclencherAjouterIpModuleSegmentsIpPlage(): void {
+      console.log("debut enclencherAjouterAccesModuleIpPlage");
+      AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
+      AjouterAccesSubmitEvent.$emit("clear");
+    },
     eventReinitialisationIpSegments: function(evt) {
       TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
     },
