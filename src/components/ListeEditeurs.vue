@@ -14,7 +14,7 @@
                       <v-data-table
                         dense
                         :headers="headers"
-                        :items="filteredEditeurByStatut"
+                        :items="getEditeurs"
                         :items-per-page="10"
                         class="elevation-1"
                         :search="rechercher"
@@ -22,31 +22,6 @@
                       >
                         <template v-slot:header.statut="{ header }">
                           {{ header.text }}
-                          <v-menu offset-y :close-on-content-click="false">
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-btn icon v-bind="attrs" v-on="on">
-                                <v-icon small :color="statut ? 'primary' : ''">
-                                  mdi-filter
-                                </v-icon>
-                              </v-btn>
-                            </template>
-                            <div style="background-color: white; width: 280px">
-                              <v-text-field
-                                v-model="statut"
-                                class="pa-4"
-                                type="text"
-                                label="Entrez le statut"
-                              ></v-text-field>
-                              <v-btn
-                                @click="statut = ''"
-                                small
-                                text
-                                color="primary"
-                                class="ml-2 mb-2"
-                                >Effacer</v-btn
-                              >
-                            </div>
-                          </v-menu>
                         </template>
                         <template v-slot:top>
                           <v-row>
@@ -69,7 +44,7 @@
                             @click="modifierEditeur(item.id)"
                             >mdi-pencil</v-icon
                           >
-                          <v-icon small @click.stop="supprimerEditeur(item.id)"
+                          <v-icon small @click="supprimerEditeur(item.id)"
                             >mdi-delete</v-icon
                           >
                         </template>
@@ -120,7 +95,6 @@ export default Vue.extend({
   name: "ListeEditeurs",
   data() {
     return {
-      statut: "",
       rechercher: "",
       editeur: [] as any,
       title: "" as string,
@@ -135,12 +109,8 @@ export default Vue.extend({
           sortable: true
         },
         { text: "Editeur", value: "nomEditeur", sortable: true },
-        { text: "Statut", value: "statut", sortable: true },
         { text: "Action", value: "action", sortable: false }
-      ],
-      dialog: false,
-      currentIdToDelete: "",
-      motifSuppression: ""
+      ]
     };
   },
   computed: {
@@ -150,18 +120,7 @@ export default Vue.extend({
     getUserSiren() {
       return this.$store.state.user.siren;
     },
-    filteredEditeurByStatut(): string {
-      const conditions = [] as any;
-      if (this.statut) {
-        conditions.push(this.filterStatut);
-      }
-      if (conditions.length > 0) {
-        return this.editeur.filter(editeur => {
-          return conditions.every(condition => {
-            return condition(editeur);
-          });
-        });
-      }
+    getEditeurs(): string {
       return this.editeur;
     }
   },
@@ -181,20 +140,6 @@ export default Vue.extend({
         id: editeur.id
       };
     },
-    filterStatut(statutRecherche) {
-      return (
-        statutRecherche.statut
-          .toString()
-          .substring(0, 1)
-          .toLowerCase()
-          .includes(this.statut) ||
-        statutRecherche.statut
-          .toString()
-          .substring(0, 1)
-          .toUpperCase()
-          .includes(this.statut)
-      );
-    },
     getAll(): any {
       return HTTP.get("/ln/editeur/getListEditeurs");
     },
@@ -212,8 +157,7 @@ export default Vue.extend({
       return {
         id: editeur.id,
         dateCreation: moment(editeur.dateCreation).format("L"),
-        nomEditeur: editeur.nomEditeur,
-        statut: editeur.valide ? "Validé" : "En validation"
+        nomEditeur: editeur.nomEditeur
       };
     },
     listeAcces(siren): void {
@@ -222,14 +166,8 @@ export default Vue.extend({
         name: "ListeAcces"
       });
     },
-    openDialogSuppression(id): void {
-      this.dialog = true;
-      this.currentIdToDelete = id;
-    },
-    supprimerEditeur(): void {
-      HTTP.post("/ln/editeur/suppression/" + this.currentIdToDelete, {
-        motif: this.motifSuppression
-      })
+    supprimerEditeur(id): void {
+      HTTP.post("/ln/editeur/suppression", { id: id })
         .then(response => {
           this.refreshList();
           console.log("notification = " + response.data);
@@ -239,8 +177,6 @@ export default Vue.extend({
           this.error = err.response.data;
           this.alert = true;
         });
-      this.currentIdToDelete = "";
-      this.motifSuppression = "";
     },
     refreshList(): void {
       this.collecterEditeurs();

@@ -312,9 +312,6 @@ export default Vue.extend({
     );
     console.log("this.id = " + this.id);
     this.fetchEditeur();
-    if (this.loggedIn) {
-      this.$router.push("/profile");
-    }
   },
 
   methods: {
