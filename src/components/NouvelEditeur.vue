@@ -38,8 +38,6 @@
                     label="Identifiant éditeur"
                     placeholder="Identifiant éditeur"
                     v-model="identifiantEditeur"
-                    :rules="identifiantEditeur"
-                    @keyup.enter="validate()"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -97,7 +95,9 @@
                 <v-col cols="10">
                   <module-contact-commercial
                     :bus="bus"
-                    v-on:moduleContactCommercial="send"
+                    v-on:moduleContactCommercial="
+                      remplirListeContactCommercialFromModule
+                    "
                     v-for="n in moduleContactCommercialNumber"
                     :key="n"
                   ></module-contact-commercial>
@@ -135,7 +135,9 @@
                 <v-col cols="10">
                   <module-contact-technique
                     :bus="bus"
-                    v-on:moduleContactTechnique="send"
+                    v-on:moduleContactTechnique="
+                      remplirListeContactTechniqueFromModule
+                    "
                     v-for="n in moduleContactTechniqueNumber"
                     :key="n"
                   ></module-contact-technique>
@@ -177,7 +179,7 @@
             <v-col>
               <v-btn @click="clear()">Annuler </v-btn>
               <v-btn
-                @click="triggerChildremForm()"
+                @click="validate()"
                 :loading="buttonLoading"
                 color="success"
                 >Valider
@@ -219,11 +221,12 @@ export default Vue.extend({
           "Le nom de l'éditeur fourni n'est pas valide"
       ],
       identifiantEditeur: "" as string,
-      identifiantEditeurRules: [
-        (v: any) =>
-          /^[0-9]*$/.test(v) ||
+      /*identifiantEditeurRules: [
+        (v: never) => !!v || "L'identifiant de l'éditeur est obligatoire",
+        (v: never) =>
+          /^[0-9]$/.test(v) ||
           "L'identifiant éditeur est uniquement composé de chiffres"
-      ],
+      ],*/
       typesEtab: [
         "EPIC/EPST",
         "Ecoles d'ingénieurs",
@@ -251,8 +254,8 @@ export default Vue.extend({
       bus: new Vue(),
       moduleContactCommercialNumber: 1,
       moduleContactTechniqueNumber: 1,
-      contactCommercialDTOS: [],
-      contactTechniqueDTOS: [],
+      listeContactCommercialEditeurDTO: [],
+      listeContactTechniqueEditeurDTO: [],
       buttonLoading: false,
       alert: false,
       error: ""
@@ -284,6 +287,12 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
+    remplirListeContactTechniqueFromModule(payload: never): void {
+      this.listeContactTechniqueEditeurDTO.push(payload);
+    },
+    remplirListeContactCommercialFromModule(payload: never): void {
+      this.listeContactCommercialEditeurDTO.push(payload);
+    },
     triggerChildremForm(): void {
       this.bus.$emit("submit");
     },
@@ -326,8 +335,11 @@ export default Vue.extend({
         .post(process.env.VUE_APP_ROOT_API + "ln/editeur/creationEditeur", {
           nomEditeur: this.nomEditeur,
           identifiantEditeur: this.identifiantEditeur,
-          selectedTypesEtab: this.selectedTypesEtab,
-          adresseEditeur: this.adresseEditeur
+          groupesEtabRelies: this.selectedTypesEtab,
+          adresseEditeur: this.adresseEditeur,
+          listeContactCommercialEditeurDTO: this
+            .listeContactCommercialEditeurDTO,
+          listeContactTechniqueEditeurDTO: this.listeContactTechniqueEditeurDTO
         })
         .then(response => {
           this.buttonLoading = false;
