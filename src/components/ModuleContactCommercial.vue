@@ -36,6 +36,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { AjouterContactsEditeurEvent } from "@/main";
 
 export default Vue.extend({
   name: "ModuleContactCommercial",
@@ -66,12 +67,11 @@ export default Vue.extend({
       ]
     };
   },
-  props: ["bus"],
   methods: {
     validAndSend(): void {
       console.log("Validation");
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        this.$emit("moduleContactCommercial", {
+        this.$emit("FormModuleContactCommercialEvent", {
           nomContactCommercial: this.nomContactCommercial,
           prenomContactCommercial: this.prenomContactCommercial,
           mailContactCommercial: this.emailContactCommercial
@@ -79,12 +79,17 @@ export default Vue.extend({
       }
     },
     clear(): void {
-      (this.$refs.form as HTMLFormElement).reset();
+      //(this.$refs.form as HTMLFormElement).reset();
     }
   },
   mounted() {
-    this.bus.$on("submit", this.validAndSend);
-    this.bus.$on("clear", this.clear);
+    AjouterContactsEditeurEvent.$on(
+      "ajouterContactsEditeurEvent",
+      this.validAndSend
+    );
+    AjouterContactsEditeurEvent.$on("clear", this.clear);
+    /*this.bus.$on("submit", this.validAndSend);
+    this.bus.$on("clear", this.clear);*/
   }
 });
 </script>

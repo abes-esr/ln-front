@@ -25,7 +25,7 @@
               </v-row>
 
               <module-segments-ip-plage
-                v-on:formModuleSegmentsIpPlageEvent="validate"
+                v-on:FormModuleSegmentsIpPlageEvent="validate"
                 v-for="n in moduleSegmentsIpPlageNumber"
                 :key="n"
               >
@@ -58,7 +58,7 @@
                   <v-col>
                     <v-btn @click="clear()">Annuler </v-btn>
                     <v-btn
-                      @click="enclencherAjouterAccesModuleIpPlage()"
+                      @click="enclencherAjouterIpModuleSegmentsIpPlage()"
                       :loading="buttonLoading"
                       color="success"
                       >Valider
@@ -173,7 +173,7 @@ export default Vue.extend({
       setNotification: "setNotification"
     }),
 
-    enclencherAjouterAccesModuleIpPlage(): void {
+    enclencherAjouterIpModuleSegmentsIpPlage(): void {
       console.log("debut enclencherAjouterAccesModuleIpPlage");
       AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
       AjouterAccesSubmitEvent.$emit("clear");

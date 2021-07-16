@@ -699,7 +699,7 @@ export default Vue.extend({
           validate: () => boolean;
         }).validate()
       ) {
-        this.$emit("formModuleSegmentsIpPlageEvent", {
+        this.$emit("FormModuleSegmentsIpPlageEvent", {
           //userSiren: this.getUserSiren,
           typeIp: this.typeIp,
           ip: this.ip,

@@ -94,8 +94,7 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <module-contact-commercial
-                    :bus="bus"
-                    v-on:moduleContactCommercial="
+                    v-on:FormModuleContactCommercialEvent="
                       remplirListeContactCommercialFromModule
                     "
                     v-for="n in moduleContactCommercialNumber"
@@ -134,8 +133,7 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <module-contact-technique
-                    :bus="bus"
-                    v-on:moduleContactTechnique="
+                    v-on:FormModuleContactTechniqueEvent="
                       remplirListeContactTechniqueFromModule
                     "
                     v-for="n in moduleContactTechniqueNumber"
@@ -179,7 +177,7 @@
             <v-col>
               <v-btn @click="clear()">Annuler </v-btn>
               <v-btn
-                @click="validate()"
+                @click="enclencherAjouterContactsEditeur()"
                 :loading="buttonLoading"
                 color="success"
                 >Valider
@@ -190,22 +188,19 @@
       </v-form>
     </v-card>
     <br />
-    <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
-      {{ message }}
-    </v-alert>
-    <v-alert v-else dense outlined :value="alert" type="success">
-      {{ message }}
+    <v-alert dense outlined :value="alert" type="error">
+      {{ error }}
     </v-alert>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import axios from "axios";
+import { HTTP } from "../utils/http-commons";
 import { mapActions } from "vuex";
-import FormEtab from "@/components/FormEtab.vue";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
+import { AjouterContactsEditeurEvent } from "@/main";
 
 export default Vue.extend({
   name: "NouvelEditeur",
@@ -251,7 +246,6 @@ export default Vue.extend({
           /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
           "L'adresse postale fournie n'est pas valide"
       ],
-      bus: new Vue(),
       moduleContactCommercialNumber: 1,
       moduleContactTechniqueNumber: 1,
       listeContactCommercialEditeurDTO: [],
@@ -287,14 +281,19 @@ export default Vue.extend({
     ...mapActions({
       setNotification: "setNotification"
     }),
-    remplirListeContactTechniqueFromModule(payload: never): void {
-      this.listeContactTechniqueEditeurDTO.push(payload);
-    },
     remplirListeContactCommercialFromModule(payload: never): void {
+      console.log("remplirListeContactCommercialFromModule");
       this.listeContactCommercialEditeurDTO.push(payload);
     },
-    triggerChildremForm(): void {
-      this.bus.$emit("submit");
+    remplirListeContactTechniqueFromModule(payload: never): void {
+      console.log("remplirListeContactTechniqueFromModule");
+      this.listeContactTechniqueEditeurDTO.push(payload);
+      this.send();
+    },
+    enclencherAjouterContactsEditeur(): void {
+      console.log("debut enclencherAjouterContactsEditeur");
+      AjouterContactsEditeurEvent.$emit("ajouterContactsEditeurEvent");
+      AjouterContactsEditeurEvent.$emit("clear");
     },
     increaseModuleContactCommercialNumber: function() {
       this.moduleContactCommercialNumber++;
@@ -317,7 +316,57 @@ export default Vue.extend({
         }
       });
     },
-    validate(): void {
+    send() {
+      this.buttonLoading = true;
+
+      if (
+        this.listeContactCommercialEditeurDTO.length ==
+          this.moduleContactCommercialNumber &&
+        this.listeContactTechniqueEditeurDTO.length ==
+          this.moduleContactTechniqueNumber
+      ) {
+        if (
+          (this.$refs.formNouvelEditeur as Vue & {
+            validate: () => boolean;
+          }).validate()
+        ) {
+          console.log({
+            listeContactCommercialEditeurDTO: this
+              .listeContactCommercialEditeurDTO
+          });
+
+          this.alert = false;
+
+          HTTP.post(
+            process.env.VUE_APP_ROOT_API + "ln/editeur/creationEditeur",
+            {
+              nomEditeur: this.nomEditeur,
+              identifiantEditeur: this.identifiantEditeur,
+              groupesEtabRelies: this.selectedTypesEtab,
+              adresseEditeur: this.adresseEditeur,
+              listeContactCommercialEditeurDTO: this
+                .listeContactCommercialEditeurDTO,
+              listeContactTechniqueEditeurDTO: this
+                .listeContactTechniqueEditeurDTO
+            }
+          )
+            .then(response => {
+              this.alert = true;
+              this.buttonLoading = false;
+              this.setNotification(response.data);
+              console.log("notification = " + this.$store.state.notification);
+              this.$router.push({ path: "/listeEditeurs" });
+            })
+            .catch(err => {
+              this.buttonLoading = false;
+              this.error = err.response.data;
+              this.alert = true;
+            });
+        }
+      }
+    },
+
+    /*validate(): void {
       this.alert = false;
       this.error = "";
 
@@ -353,7 +402,7 @@ export default Vue.extend({
           this.error = err.response.data;
           this.alert = true;
         });
-    },
+    },*/
     clear() {
       (this.$refs.formNouvelEditeur as HTMLFormElement).reset();
     }
