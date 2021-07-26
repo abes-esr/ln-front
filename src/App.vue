@@ -18,10 +18,19 @@
       flat
       height="80px"
       id="appBar"
-      src="@/assets/fond_barre.svg"
+      src="@/assets/graphe-couleur-appli-ln.png"
+      extended
+      extension-height="30"
     >
       <template v-slot:img="{ props }">
-        <v-img v-bind="props" width="500px" style="margin-left: 80%"></v-img>
+        <v-img
+          v-bind="props"
+          width="500px"
+          style="margin-left: 80%; height: 80%"
+        ></v-img>
+      </template>
+      <template v-slot:extension>
+        <div id="blueBar"></div>
       </template>
       <v-app-bar-nav-icon
         v-if="$vuetify.breakpoint.xsOnly"
@@ -94,10 +103,22 @@ export default Vue.extend({
     rgba(97, 142, 186, 1) 100%
   );
 }
+#blueBar {
+  width: 100%;
+  height: 100%;
+  background-color: #252c61;
+}
 .v-navigation-drawer__content {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+}
+.v-toolbar__extension {
+  padding: 0 !important;
+  padding-top: 8px !important;
+  margin: 0;
+  z-index: 0;
+  position: static !important;
 }
 h1 {
   color: #478dcb;
