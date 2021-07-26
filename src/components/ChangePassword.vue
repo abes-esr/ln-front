@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "FormLogin",
@@ -101,7 +101,7 @@ export default Vue.extend({
     },
     submit(): void {
       this.buttonLoading = true;
-      HTTP.post("/ln/reinitialisationMotDePasse/updatePassword", {
+      AxiosApi.changePassword({
         oldPassword: this.oldPassword,
         newPassword: this.newPassword
       })

@@ -161,8 +161,8 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
 import { mapGetters } from "vuex";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "FormProfile",
@@ -222,7 +222,7 @@ export default Vue.extend({
       }
     },
     fetchEtab(): void {
-      HTTP.get("/ln/etablissement/getInfoEtab")
+      AxiosApi.getInfosEtab()
         .then(result => {
           this.mail = result.data.contact.mail;
           this.nomContact = result.data.contact.nom;
@@ -242,7 +242,7 @@ export default Vue.extend({
     submitProfil(): void {
       this.updateJsonObject();
       console.log(this.jsonResponse);
-      HTTP.post("/ln/etablissement/modification", this.jsonResponse)
+      AxiosApi.updateProfile(this.jsonResponse)
         .then(() => {
           this.buttonLoading = false;
           this.$router.push({ name: "Home" });

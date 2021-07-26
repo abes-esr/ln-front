@@ -196,7 +196,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
+import { AxiosApi } from "../utils/AxiosApi";
 import { mapActions } from "vuex";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
@@ -337,19 +337,16 @@ export default Vue.extend({
 
           this.alert = false;
 
-          HTTP.post(
-            process.env.VUE_APP_ROOT_API + "ln/editeur/creationEditeur",
-            {
-              nomEditeur: this.nomEditeur,
-              identifiantEditeur: this.identifiantEditeur,
-              groupesEtabRelies: this.selectedTypesEtab,
-              adresseEditeur: this.adresseEditeur,
-              listeContactCommercialEditeurDTO: this
-                .listeContactCommercialEditeurDTO,
-              listeContactTechniqueEditeurDTO: this
-                .listeContactTechniqueEditeurDTO
-            }
-          )
+          AxiosApi.createEditeur({
+            nomEditeur: this.nomEditeur,
+            identifiantEditeur: this.identifiantEditeur,
+            groupesEtabRelies: this.selectedTypesEtab,
+            adresseEditeur: this.adresseEditeur,
+            listeContactCommercialEditeurDTO: this
+              .listeContactCommercialEditeurDTO,
+            listeContactTechniqueEditeurDTO: this
+              .listeContactTechniqueEditeurDTO
+          })
             .then(response => {
               this.alert = true;
               this.buttonLoading = false;

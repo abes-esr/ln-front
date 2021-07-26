@@ -84,7 +84,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import axios from "axios";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "ForgotPassword",
@@ -131,40 +131,29 @@ export default Vue.extend({
         if (
           (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
         )
-          console.log;
-        axios
-          .post(
-            process.env.VUE_APP_ROOT_API +
-              "/ln/reinitialisationMotDePasse/resetPassword",
-            {
-              siren: this.siren,
-              recaptcha: this.token
-            }
-          )
-          .then(response => {
-            this.buttonLoading = false;
-            this.message = response.data;
-            this.alert = true;
+          AxiosApi.resetPassword({
+            siren: this.siren,
+            recaptcha: this.token
           })
-          .catch(err => {
-            this.buttonLoading = false;
-            this.message = err.response.data;
-            this.alert = true;
-            this.retourKo = true;
-          });
+            .then(response => {
+              this.buttonLoading = false;
+              this.message = response.data;
+              this.alert = true;
+            })
+            .catch(err => {
+              this.buttonLoading = false;
+              this.message = err.response.data;
+              this.alert = true;
+              this.retourKo = true;
+            });
       } else {
         if (
           (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
         )
-          axios
-            .post(
-              process.env.VUE_APP_ROOT_API +
-                "/ln/reinitialisationMotDePasse/resetPassword",
-              {
-                email: this.mail,
-                recaptcha: this.token
-              }
-            )
+          AxiosApi.resetPassword({
+            email: this.mail,
+            recaptcha: this.token
+          })
             .then(response => {
               this.buttonLoading = false;
               this.message = response.data;

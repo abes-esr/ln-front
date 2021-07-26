@@ -257,14 +257,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import {
   AjouterAccesSubmitEvent,
   GetTypeIpFromModifierAccesEvent,
   TypeIpChangeEvent
 } from "@/main";
 import { IpChangeEvent } from "@/main";
-import { HTTP } from "../utils/http-commons";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "ModuleSegmentsIpPlage",
@@ -492,7 +492,7 @@ export default Vue.extend({
     fetchIp(): void {
       console.log("id = " + this.id);
       console.log("siren = " + this.getUserSiren);
-      HTTP.post("/ln/ip/getIpEntity", {
+      AxiosApi.getIPInfos({
         id: this.id,
         siren: this.$store.state.user.siren
       })

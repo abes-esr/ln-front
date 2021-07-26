@@ -324,6 +324,7 @@
 import Vue from "vue";
 import axios from "axios";
 import { mapActions } from "vuex";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "FormCreationCompte",
@@ -517,28 +518,24 @@ export default Vue.extend({
     },
     creationCompte(): void {
       this.buttonLoading = true;
-      axios
-        .post(
-          process.env.VUE_APP_ROOT_API + "/ln/etablissement/creationCompte",
-          {
-            nom: this.nomEtab,
-            siren: this.sirenEtab,
-            typeEtablissement: this.typeEtab,
-            idAbes: this.idAbes,
-            nomContact: this.nomContact,
-            prenomContact: this.prenomContact,
-            adresseContact: this.adresseContact,
-            boitePostaleContact: this.boitePostaleContact,
-            codePostalContact: this.codePostalContact,
-            villeContact: this.villeContact,
-            cedexContact: this.cedexContact,
-            telephoneContact: this.telContact,
-            mailContact: this.emailContact,
-            motDePasse: this.passContact,
-            roleContact: this.roleContact,
-            recaptcha: this.token
-          }
-        )
+      AxiosApi.creationCompte({
+        nom: this.nomEtab,
+        siren: this.sirenEtab,
+        typeEtablissement: this.typeEtab,
+        idAbes: this.idAbes,
+        nomContact: this.nomContact,
+        prenomContact: this.prenomContact,
+        adresseContact: this.adresseContact,
+        boitePostaleContact: this.boitePostaleContact,
+        codePostalContact: this.codePostalContact,
+        villeContact: this.villeContact,
+        cedexContact: this.cedexContact,
+        telephoneContact: this.telContact,
+        mailContact: this.emailContact,
+        motDePasse: this.passContact,
+        roleContact: this.roleContact,
+        recaptcha: this.token
+      })
         .then(response => {
           this.buttonLoading = false;
           console.log("notification = " + response.data);
