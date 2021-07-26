@@ -87,7 +87,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 import { mapActions } from "vuex";
 import moment from "moment";
 
@@ -141,7 +141,7 @@ export default Vue.extend({
       };
     },
     getAll(): any {
-      return AxiosApi.getEditeurs();
+      return LicencesNationalesApiService.getEditeurs();
     },
     collecterEditeurs(): any {
       this.getAll()
@@ -167,7 +167,7 @@ export default Vue.extend({
       });
     },
     supprimerEditeur(id): void {
-      AxiosApi.deleteEditeur({ id: id })
+      LicencesNationalesApiService.deleteEditeur({ id: id })
         .then(response => {
           this.refreshList();
           console.log("notification = " + response.data);

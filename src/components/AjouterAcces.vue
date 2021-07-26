@@ -99,7 +99,8 @@ import Vue from "vue";
 import { mapActions } from "vuex";
 import { AjouterAccesSubmitEvent } from "@/main";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
 
 export default Vue.extend({
   name: "AjouterAcces2",
@@ -144,7 +145,7 @@ export default Vue.extend({
     );
 
     this.setText();
-    console.log(this.$refs);
+    Logger.info(this.$refs);
 
     /*const onchangeIpHandler = ip => {
       this.ip = ip;
@@ -243,7 +244,7 @@ export default Vue.extend({
       this.arrayArrays.push(payloadFromModuleSegmentsIpPlage);
       this.arrayArrays.forEach((value, index) => {
         console.log("this.getUrl() = " + this.getUrl(value.typeIp));
-        AxiosApi.ajouterAcces(this.getUrl(value.typeIp), {
+        LicencesNationalesApiService.ajouterAcces(this.getUrl(value.typeIp), {
           siren: this.getUserSiren,
           ip: value.ip,
           typeAcces: this.typeAcces,

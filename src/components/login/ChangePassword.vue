@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "FormLogin",
@@ -101,7 +101,7 @@ export default Vue.extend({
     },
     submit(): void {
       this.buttonLoading = true;
-      AxiosApi.changePassword({
+      LicencesNationalesApiService.changePassword({
         oldPassword: this.oldPassword,
         newPassword: this.newPassword
       })

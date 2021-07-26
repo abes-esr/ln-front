@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import FormCreationCompte from "../components/FormCreationCompte.vue";
+import FormCreationCompte from "../components/login/FormCreationCompte.vue";
 
 export default Vue.extend({
   name: "CreationCompte",

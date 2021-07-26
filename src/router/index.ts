@@ -39,7 +39,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/reinitialisationPass",
     name: "ReinitialisationPass",
-    component: () => import("../components/FormReinitialisationPass.vue")
+    component: () => import("../components/login/FormReinitialisationPass.vue")
   },
   {
     path: "/fusionEtablissement",
@@ -59,6 +59,7 @@ const routes: Array<RouteConfig> = [
       requiresAuth: true
     }
   },
+  //TODO faire un composant générique pour la route /ajouterAccess
   {
     path: "/ajouterAcces2/ip",
     name: "ajouterAcces2",
@@ -91,7 +92,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/forgotPassword",
     name: "ForgotPassword",
-    component: () => import("../components/ForgotPassword.vue")
+    component: () => import("../components/login/ForgotPassword.vue")
   },
   {
     path: "/creationCompte",

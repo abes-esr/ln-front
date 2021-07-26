@@ -110,7 +110,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 import { mapActions } from "vuex";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
 import {
@@ -212,7 +212,7 @@ export default Vue.extend({
     fetchIp(): void {
       console.log("id = " + this.id);
       console.log("siren = " + this.getUserSiren);
-      AxiosApi.getIPInfos({
+      LicencesNationalesApiService.getIPInfos({
         id: this.id,
         siren: this.$store.state.user.siren
       })
@@ -261,7 +261,7 @@ export default Vue.extend({
     submitAcces(): void {
       this.updateJsonObject();
       console.log(this.jsonResponse);
-      AxiosApi.addIP(this.getUrl(this.typeIp), this.jsonResponse)
+      LicencesNationalesApiService.addIP(this.getUrl(this.typeIp), this.jsonResponse)
         .then(response => {
           this.buttonLoading = false;
           console.log("notification = " + response.data);

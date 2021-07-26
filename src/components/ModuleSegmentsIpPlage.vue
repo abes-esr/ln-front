@@ -264,7 +264,7 @@ import {
   TypeIpChangeEvent
 } from "@/main";
 import { IpChangeEvent } from "@/main";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "ModuleSegmentsIpPlage",
@@ -492,7 +492,7 @@ export default Vue.extend({
     fetchIp(): void {
       console.log("id = " + this.id);
       console.log("siren = " + this.getUserSiren);
-      AxiosApi.getIPInfos({
+      LicencesNationalesApiService.getIPInfos({
         id: this.id,
         siren: this.$store.state.user.siren
       })

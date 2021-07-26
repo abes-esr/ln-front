@@ -83,7 +83,7 @@
 <script lang="ts">
 import FormEtab from "@/components/FormEtab.vue";
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "FormFusionEtablissement",
@@ -123,7 +123,7 @@ export default Vue.extend({
           this.alert = false;
           this.message = "";
           this.retourKo = false;
-          AxiosApi.scission({
+          LicencesNationalesApiService.scission({
             ancienSiren: this.sirenEtab,
             etablissementDTOS: this.etablissementDTOS
           })

@@ -157,7 +157,7 @@
 import Vue from "vue";
 import { mapActions } from "vuex";
 import moment from "moment";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "ListeEtab",
@@ -240,7 +240,7 @@ export default Vue.extend({
       return statutRecherche.statut.toString().includes(this.statut);
     },
     getAll(): any {
-      return AxiosApi.listeEtab();
+      return LicencesNationalesApiService.listeEtab();
     },
     collecterEtab(): any {
       this.getAll()
@@ -285,7 +285,7 @@ export default Vue.extend({
       //(this as any).supprimerEtab(siren);
     },
     supprimerEtab(): void {
-      AxiosApi.deleteEtab(this.currentSirenToDelete, {
+      LicencesNationalesApiService.deleteEtab(this.currentSirenToDelete, {
         motif: this.motifSuppression
       })
         .then(response => {

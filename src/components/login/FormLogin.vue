@@ -8,13 +8,14 @@
             <v-col cols="1" />
             <v-col cols="10">
               <v-text-field
+                ref="login"
                 outlined
                 label="SIREN"
                 placeholder="SIREN"
                 v-model="siren"
                 :rules="loginRules"
                 required
-                @keyup.enter="validate()"
+                @keyup="validate()"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -22,6 +23,7 @@
             <v-col cols="1" />
             <v-col cols="10">
               <v-text-field
+                ref="password"
                 outlined
                 label="Mot de passe"
                 placeholder="Mot de passe"
@@ -31,7 +33,7 @@
                 :rules="passwordRules"
                 required
                 @click:append="show = !show"
-                @keyup.enter="validate()"
+                @keyup="validate()"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -43,8 +45,9 @@
               <v-btn
                 color="success"
                 :loading="buttonLoading"
+                :disabled="!isValid"
                 x-large
-                @click="validate()"
+                @click="login()"
                 >Envoyer</v-btn
               >
             </v-col>
@@ -64,8 +67,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapActions } from "vuex";
-import { mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
+import {HttpRequestError} from "@/exception/HttpRequestError";
+import {Logger} from "@/utils/Logger";
 
 export default Vue.extend({
   name: "FormLogin",
@@ -80,6 +84,7 @@ export default Vue.extend({
       passwordRules: [(v: any) => !!v || "Mot de passe obligatoire"],
       password: "" as string,
       buttonLoading: false,
+      isValid: false,
       alert: false,
       error: "",
       show: false
@@ -94,28 +99,32 @@ export default Vue.extend({
     validate(): void {
       this.alert = false;
       this.error = "";
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
-        this.login();
+
+      if (this.$refs.login.valid && this.$refs.password.valid) {
+        this.isValid = true;
+      } else {
+        this.isValid = false;
+      }
     },
     login(): void {
       this.buttonLoading = true;
       this.loginAction({
-        siren: this.siren,
+        login: this.siren,
         password: this.password
       })
         .then(() => {
           this.$router.push({ name: "Home" });
         })
         .catch(err => {
+          Logger.error(err.message);
+          if (err instanceof HttpRequestError) {
+            Logger.debug("Erreur API : " + err.debugMessage);
+          }
           this.buttonLoading = false;
-          this.error = err.response.data;
+          this.error = err.message;
           this.alert = true;
         });
     }
-  },
-  destroyed() {
-    this.setNotification("");
-    this.setCreationCompteEffectueeFalse();
   },
   computed: mapGetters(["notification", "creationCompteEffectuee"])
 });

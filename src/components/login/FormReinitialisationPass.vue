@@ -121,7 +121,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "FormReinitialisationPass",
@@ -178,7 +178,7 @@ export default Vue.extend({
 
   methods: {
     tokenInvalide() {
-      AxiosApi.checkToken({
+      LicencesNationalesApiService.checkToken({
         jwtToken: this.jwtToken
       })
         .then(() => {
@@ -217,7 +217,7 @@ export default Vue.extend({
     },
     reinitialisationPass(): void {
       this.buttonLoading = true;
-      AxiosApi.saveNewPassword({
+      LicencesNationalesApiService.saveNewPassword({
         motDePasse: this.passContact,
         recaptcha: this.tokenrecaptcha,
         token: this.token

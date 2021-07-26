@@ -113,7 +113,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 import { mapActions } from "vuex";
 import moment from "moment";
 
@@ -207,8 +207,8 @@ export default Vue.extend({
     },
     getAll() {
       if (this.isAdmin === "true")
-        return AxiosApi.getListIPEtab(this.sirenEtabSiAdmin);
-      else return AxiosApi.getListIP(this.getUserSiren);
+        return LicencesNationalesApiService.getListIPEtab(this.sirenEtabSiAdmin);
+      else return LicencesNationalesApiService.getListIP(this.getUserSiren);
     },
     collecterAcces(): void {
       this.getAll()
@@ -246,7 +246,7 @@ export default Vue.extend({
     },
     supprimerAcces(id): void {
       console.log("id = " + id);
-      AxiosApi.deleteIP(this.getUrlSuppressionIp(), {
+      LicencesNationalesApiService.deleteIP(this.getUrlSuppressionIp(), {
         id: id,
         siren: this.getSirenSuppressionIp()
       })

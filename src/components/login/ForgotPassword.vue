@@ -84,7 +84,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "ForgotPassword",
@@ -131,7 +131,7 @@ export default Vue.extend({
         if (
           (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
         )
-          AxiosApi.resetPassword({
+          LicencesNationalesApiService.resetPassword({
             siren: this.siren,
             recaptcha: this.token
           })
@@ -150,7 +150,7 @@ export default Vue.extend({
         if (
           (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
         )
-          AxiosApi.resetPassword({
+          LicencesNationalesApiService.resetPassword({
             email: this.mail,
             recaptcha: this.token
           })

@@ -39,8 +39,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import FormLogin from "../components/FormLogin.vue";
-import ForgotPassword from "../components/ForgotPassword.vue";
+import FormLogin from "../components/login/FormLogin.vue";
+import ForgotPassword from "../components/login/ForgotPassword.vue";
 
 export default Vue.extend({
   name: "Login",

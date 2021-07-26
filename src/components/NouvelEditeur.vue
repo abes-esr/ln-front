@@ -196,7 +196,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 import { mapActions } from "vuex";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
@@ -337,7 +337,7 @@ export default Vue.extend({
 
           this.alert = false;
 
-          AxiosApi.createEditeur({
+          LicencesNationalesApiService.createEditeur({
             nomEditeur: this.nomEditeur,
             identifiantEditeur: this.identifiantEditeur,
             groupesEtabRelies: this.selectedTypesEtab,

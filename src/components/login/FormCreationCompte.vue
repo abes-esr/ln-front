@@ -322,9 +322,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import axios from "axios";
-import { mapActions } from "vuex";
-import { AxiosApi } from "../utils/AxiosApi";
+import {mapActions} from "vuex";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
+import {HttpRequestError} from "@/exception/HttpRequestError";
+import {serviceGouv} from "@/service/data.gouv/DataGouvApiService";
+import {SirenNotFoundError} from "@/service/data.gouv/SirenNotFoundError";
 
 export default Vue.extend({
   name: "FormCreationCompte",
@@ -518,7 +521,7 @@ export default Vue.extend({
     },
     creationCompte(): void {
       this.buttonLoading = true;
-      AxiosApi.creationCompte({
+      serviceLn.creationCompte({
         nom: this.nomEtab,
         siren: this.sirenEtab,
         typeEtablissement: this.typeEtab,
@@ -538,40 +541,47 @@ export default Vue.extend({
       })
         .then(response => {
           this.buttonLoading = false;
-          console.log("notification = " + response.data);
+          Logger.debug("notification = " + response.data);
           this.setNotification(response.data);
           this.setCreationCompteEffectueeTrue();
-          console.log("notification = " + this.$store.state.notification);
-          console.log(
+          Logger.debug("notification = " + this.$store.state.notification);
+          Logger.debug(
             "creationCompteEffectuee = " +
               this.$store.state.creationCompteEffectuee
           );
           this.$router.push({ path: "/login" });
         })
         .catch(err => {
+          Logger.error(err.message);
+          if (err instanceof HttpRequestError) {
+            Logger.debug("Erreur API : " + err.debugMessage);
+          }
+
           this.buttonLoading = false;
-          this.error = err.response.data;
+          this.error = err.message;
           this.alert = true;
         });
     },
+    /**
+     * Fonction de vérification du numéro SIREN
+     */
     checkSiren(): void {
       this.checkSirenAPI = "Vérification du SIREN en cours...";
       if (this.sirenEtab.length === 9) {
         this.dialogAvailable = true;
-        axios
-          .get(
-            "https://entreprise.data.gouv.fr/api/sirene/v3/unites_legales/" +
-              this.sirenEtab
-          )
+        serviceGouv.checkSiren(this.sirenEtab)
           .then(result => {
-            this.checkSirenAPI = result.data.unite_legale.denomination;
+            this.checkSirenAPI = result;
           })
           .catch(err => {
-            if (err.response.status == 404) {
+            if (err instanceof HttpRequestError) {
+              this.checkSirenAPI =
+                  "Impossible de contacter le service de vérification du numéro SIREN";
+            } else if (err instanceof SirenNotFoundError) {
               this.checkSirenAPI = "SIREN introuvable";
             } else {
               this.checkSirenAPI =
-                "Impossible de contacter le service de vérification du SRIEN";
+                  "Erreur interne : "+err.message;
             }
           });
       } else {

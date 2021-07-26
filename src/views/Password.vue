@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import ChangePassword from "@/components/ChangePassword.vue";
+import ChangePassword from "@/components/login/ChangePassword.vue";
 import Vue from "vue";
 
 export default Vue.extend({

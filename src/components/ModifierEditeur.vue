@@ -194,7 +194,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapActions } from "vuex";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "ModifierEditeur",
@@ -321,7 +321,7 @@ export default Vue.extend({
 
     fetchEditeur(): void {
       console.log("id = " + this.id);
-      AxiosApi.fetchEditeur({
+      LicencesNationalesApiService.fetchEditeur({
         id: this.id,
         siren: this.$store.state.user.siren
       })
@@ -362,7 +362,7 @@ export default Vue.extend({
     submitEditeur(): void {
       this.updateJsonObject();
       console.log(this.jsonResponse);
-      AxiosApi.updateEditeur(this.jsonResponse)
+      LicencesNationalesApiService.updateEditeur(this.jsonResponse)
         .then(response => {
           this.buttonLoading = false;
           console.log("notification = " + response.data);

@@ -162,7 +162,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import { mapGetters } from "vuex";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "FormProfile",
@@ -222,7 +222,7 @@ export default Vue.extend({
       }
     },
     fetchEtab(): void {
-      AxiosApi.getInfosEtab()
+      LicencesNationalesApiService.getInfosEtab()
         .then(result => {
           this.mail = result.data.contact.mail;
           this.nomContact = result.data.contact.nom;
@@ -242,7 +242,7 @@ export default Vue.extend({
     submitProfil(): void {
       this.updateJsonObject();
       console.log(this.jsonResponse);
-      AxiosApi.updateProfile(this.jsonResponse)
+      LicencesNationalesApiService.updateProfile(this.jsonResponse)
         .then(() => {
           this.buttonLoading = false;
           this.$router.push({ name: "Home" });

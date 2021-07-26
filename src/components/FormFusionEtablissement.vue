@@ -70,7 +70,7 @@
 <script lang="ts">
 import FormEtab from "@/components/FormEtab.vue";
 import Vue from "vue";
-import { AxiosApi } from "../utils/AxiosApi";
+import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
 
 export default Vue.extend({
   name: "FormFusionEtablissement",
@@ -102,7 +102,7 @@ export default Vue.extend({
           etablissementDTO: payload,
           sirenFusionnes: this.sirenEtab
         });
-        AxiosApi.fusion({
+        LicencesNationalesApiService.fusion({
           etablissementDTO: payload,
           sirenFusionnes: this.sirenEtab
         })
