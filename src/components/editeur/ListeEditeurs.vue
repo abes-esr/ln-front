@@ -86,109 +86,100 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
-import { mapActions } from "vuex";
+import {Component, Vue} from "vue-property-decorator";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
+import {Logger} from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "ListeEditeurs",
-  data() {
-    return {
-      rechercher: "",
-      editeur: [] as any,
-      title: "" as string,
-      id: "" as any,
-      error: "",
-      alert: false,
-      headers: [
-        {
-          text: "Date de création",
-          align: "start",
-          value: "dateCreation",
-          sortable: true
-        },
-        { text: "Editeur", value: "nomEditeur", sortable: true },
-        { text: "Action", value: "action", sortable: false }
-      ]
-    };
-  },
-  computed: {
-    notification() {
-      return this.$store.state.notification;
+@Component
+export default class ListeEditeurs extends Vue {
+  rechercher: string = "";
+  editeur: string = "";
+  title: string = "";
+  id: string = "";
+  error: string = "";
+  alert: boolean = false;
+  headers: Array<any> = [
+    {
+      text: "Date de création",
+      align: "start",
+      value: "dateCreation",
+      sortable: true
     },
-    getUserSiren() {
-      return this.$store.state.user.siren;
-    },
-    getEditeurs(): string {
-      return this.editeur;
-    }
-  },
+    { text: "Editeur", value: "nomEditeur", sortable: true },
+    { text: "Action", value: "action", sortable: false }
+  ];
+
+  get notification() {
+    return this.$store.state.notification;
+  }
+  get getUserSiren() {
+    return this.$store.state.user.siren;
+  }
+  get getEditeurs(): string {
+    return this.editeur;
+  }
+
   mounted() {
     moment.locale("fr");
     this.collecterEditeurs();
     this.id = this.getIdEditeur(this.editeur);
-  },
-
-  methods: {
-    ...mapActions({
-      setNotification: "setNotification",
-      setSirenEtabSiAdmin: "setSirenEtabSiAdmin"
-    }),
-    getIdEditeur(editeur) {
-      return {
-        id: editeur.id
-      };
-    },
-    getAll(): any {
-      return LicencesNationalesApiService.getEditeurs();
-    },
-    collecterEditeurs(): any {
-      this.getAll()
-        .then(response => {
-          this.editeur = response.data.map(this.affichageEditeurs);
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-    affichageEditeurs(editeur) {
-      return {
-        id: editeur.id,
-        dateCreation: moment(editeur.dateCreation).format("L"),
-        nomEditeur: editeur.nomEditeur
-      };
-    },
-    listeAcces(siren): void {
-      this.setSirenEtabSiAdmin(siren);
-      this.$router.push({
-        name: "ListeAcces"
-      });
-    },
-    supprimerEditeur(id): void {
-      LicencesNationalesApiService.deleteEditeur({ id: id })
-        .then(response => {
-          this.refreshList();
-          console.log("notification = " + response.data);
-          this.setNotification(response.data);
-        })
-        .catch(err => {
-          this.error = err.response.data;
-          this.alert = true;
-        });
-    },
-    refreshList(): void {
-      this.collecterEditeurs();
-    },
-    modifierEditeur(id): void {
-      this.$router.push({ name: "ModifierEditeur", params: { id: id } });
-    }
-  },
-  destroyed() {
-    this.setNotification("");
   }
-});
+
+  getIdEditeur(editeur): string {
+    return editeur.id;
+  }
+  getAll(): any {
+    return serviceLn.getEditeurs(this.$store.state.user.token);
+  }
+  collecterEditeurs(): any {
+    this.getAll()
+      .then(response => {
+        this.editeur = response.data.map(this.affichageEditeurs);
+        Logger.debug(response.data);
+      })
+      .catch(e => {
+        Logger.error(e);
+      });
+  }
+  affichageEditeurs(editeur) {
+    return {
+      id: editeur.id,
+      dateCreation: moment(editeur.dateCreation).format("L"),
+      nomEditeur: editeur.nomEditeur
+    };
+  }
+  listeAcces(siren): void {
+    this.$store.dispatch('setSirenEtabSiAdmin', siren).catch((err) => {
+      Logger.error(err);
+    });
+    this.$router.push({
+      name: "ListeAcces"
+    });
+  }
+  supprimerEditeur(id): void {
+    serviceLn
+      .deleteEditeur(this.$store.state.user.token, { id: id })
+      .then(response => {
+        this.refreshList();
+        Logger.debug("notification = " + response.data);
+        this.$store.dispatch('setNotification', response.data).catch((err) => {
+          Logger.error(err);
+        });
+      })
+      .catch(err => {
+        this.error = err.response.data;
+        this.alert = true;
+      });
+  }
+  refreshList(): void {
+    this.collecterEditeurs();
+  }
+
+  modifierEditeur(id): void {
+    this.$router.push({ name: "ModifierEditeur", params: { id: id } });
+  }
+}
 </script>
 <style>
 .list {

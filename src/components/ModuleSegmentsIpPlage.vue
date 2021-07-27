@@ -261,10 +261,11 @@ import { mapActions } from "vuex";
 import {
   AjouterAccesSubmitEvent,
   GetTypeIpFromModifierAccesEvent,
+  IpChangeEvent,
   TypeIpChangeEvent
 } from "@/main";
-import { IpChangeEvent } from "@/main";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
+import { serviceLn } from "../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
 
 export default Vue.extend({
   name: "ModuleSegmentsIpPlage",
@@ -370,12 +371,12 @@ export default Vue.extend({
     };
   },
   mounted() {
-    console.log("debut mounted ModuleSegmentsIpPlage");
+    Logger.debug("debut mounted ModuleSegmentsIpPlage");
 
     this.typeAcces = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
     );
-    console.log("1 - this.typeAcces = " + this.typeAcces);
+    Logger.debug("1 - this.typeAcces = " + this.typeAcces);
 
     //code pour ModifierAcces/////////////////
     if (this.typeAcces.includes("&")) {
@@ -383,19 +384,19 @@ export default Vue.extend({
       this.typeAcces = window.location.href.substr(
         window.location.href.lastIndexOf("&") + 1
       );
-      console.log("2 - this.typeAcces pour la modifIp= " + this.typeAcces);
+      Logger.debug("2 - this.typeAcces pour la modifIp= " + this.typeAcces);
     }
     if (this.typeIp === "" && window.location.href.includes("&")) {
       const getTypeIpHandler = typeIp => {
         this.typeIp = typeIp;
-        console.log("3 - this.typeIp pour la modifIp= " + this.typeIp);
+        Logger.debug("3 - this.typeIp pour la modifIp= " + this.typeIp);
         //this.reinitialisationIpSegments();
       };
       GetTypeIpFromModifierAccesEvent.$on(
         "getTypeIpFromModifierAccesEvent",
         getTypeIpHandler
       );
-      console.log(
+      Logger.debug(
         "4 - this.typeIp pour la modifIp après event= " + this.typeIp
       );
       this.id = window.location.href.substring(
@@ -409,11 +410,11 @@ export default Vue.extend({
     } //else this.typeIp = "IPV4";
     //////////////////////////////////////////////
     this.setText();
-    console.log(this.$refs);
+    Logger.debug(JSON.stringify(this.$refs));
 
     const onchangeTypeIpHandler = typeIp => {
       this.typeIp = typeIp;
-      console.log("5 - mounted typeIp =  " + typeIp);
+      Logger.debug("5 - mounted typeIp =  " + typeIp);
       //this.reinitialisationIpSegments();
     };
     TypeIpChangeEvent.$on(
@@ -434,19 +435,19 @@ export default Vue.extend({
       else return this.$store.state.user.siren;
     },
     isAdmin() {
-      console.log("isAdmin = " + this.$store.state.user.isAdmin);
+      Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
       return this.$store.state.user.isAdmin;
     },
     resultatIp() {
       let value = "";
-      console.log("this.typeIp =" + this.typeIp);
+      Logger.debug("this.typeIp =" + this.typeIp);
       if (this.typeIp === "IPV4") {
         for (const field of this.ipv4Segments) {
           value += field.value + ".";
         }
         value = value.substr(0, value.lastIndexOf("."));
       } else {
-        console.log("dans le else");
+        Logger.debug("dans le else");
         //this.reinitialisationIpSegments();
         for (const field of this.ipv6Segments) {
           value += field.value + ":";
@@ -454,22 +455,22 @@ export default Vue.extend({
         value = value.substr(0, value.lastIndexOf(":"));
       }
       (this as any).ip = value;
-      console.log("this.ip = " + this.ip);
+      Logger.debug("this.ip = " + this.ip);
       IpChangeEvent.$emit("ipChangeEvent", this.ip);
       return value;
     },
     resultatPlageIp() {
       let valeur = "";
-      console.log("this.typeIp =" + this.typeIp);
+      Logger.debug("this.typeIp =" + this.typeIp);
       if (this.typeIp === "IPV4") {
         this.ipv4SegmentsPlage.forEach((value, index) => {
-          console.log("value.value = " + value.value);
+          Logger.debug("value.value = " + value.value);
           if (index === 2 || index === 4) valeur += value.value + "-";
           else valeur += value.value + ".";
         });
         valeur = valeur.substr(0, valeur.lastIndexOf("."));
       } else {
-        console.log("dans le else");
+        Logger.debug("dans le else");
         this.ipv6SegmentsPlage.forEach((value, index) => {
           if (index === 6 || index === 8) valeur += value.value + "-";
           else valeur += value.value + ":";
@@ -477,7 +478,7 @@ export default Vue.extend({
         valeur = valeur.substr(0, valeur.lastIndexOf(":"));
       }
       (this as any).ip = valeur;
-      console.log("this.ip = " + this.ip);
+      Logger.debug("this.ip = " + this.ip);
       IpChangeEvent.$emit("ipChangeEvent", this.ip);
       return valeur;
     }
@@ -490,12 +491,13 @@ export default Vue.extend({
     }),
     /////////////////////pour la modification)
     fetchIp(): void {
-      console.log("id = " + this.id);
-      console.log("siren = " + this.getUserSiren);
-      LicencesNationalesApiService.getIPInfos({
-        id: this.id,
-        siren: this.$store.state.user.siren
-      })
+      Logger.debug("id = " + this.id);
+      Logger.debug("siren = " + this.getUserSiren);
+      serviceLn
+        .getIPInfos(this.$store.state.user.token, {
+          id: this.id,
+          siren: this.$store.state.user.siren
+        })
         .then(result => {
           this.id = result.data.id;
           this.ipToModify = result.data.ip;
@@ -515,13 +517,13 @@ export default Vue.extend({
     },
 
     getSuffix(index) {
-      console.log("getSuffix");
+      Logger.debug("getSuffix");
       if (this.typeIp === "IPV4") {
-        console.log("IPV4 index = " + index);
+        Logger.debug("IPV4 index = " + index);
         if (index === 2 || index === 4) return "-";
         else return ".";
       } else {
-        console.log("IPV6 index = " + index);
+        Logger.debug("IPV6 index = " + index);
         if (index === 6 || index === 8) return "-";
         else return ":";
       }
@@ -530,9 +532,9 @@ export default Vue.extend({
     onPaste(evt) {
       this.ipPasted = evt.clipboardData.getData("text");
       this.ipPastedTemp = this.ipPasted;
-      console.log("this.pasted = " + this.ipPasted);
+      Logger.debug("this.pasted = " + this.ipPasted);
       this.ipPastedTemp = this.ipPastedTemp.replaceAll(/[: . -]/g, "+");
-      console.log("this.pasted = " + this.ipPasted);
+      Logger.debug("this.pasted = " + this.ipPasted);
       this.ipPastedArray = this.ipPastedTemp.split("+");
       if (this.typeAcces === "ip") {
         if (this.typeIp === "IPV4")
@@ -550,7 +552,7 @@ export default Vue.extend({
       });
       ipPastedArray.forEach((value, index) => {
         array[index].value = ipPastedArray[index].valueOf();
-        console.log(
+        Logger.debug(
           "ipPastedArray[index].valueOf() = " + ipPastedArray[index].valueOf()
         );
       });
@@ -614,9 +616,9 @@ export default Vue.extend({
       this.ipPasted = "";
     },
     clearIpSegment(index, array): void {
-      console.log("clear = ");
+      Logger.debug("clear = ");
       array[index].value = "";
-      console.log("array[index].value = " + array[index].value);
+      Logger.debug("array[index].value = " + array[index].value);
     },
 
     getLabelSegmentsIpv4(index) {
@@ -683,17 +685,17 @@ export default Vue.extend({
           : this.plageIpV6Rules;
     },
     ajouterIp(): void {
-      console.log("Validation");
+      Logger.debug("Validation");
       /*this.arrayAjouterIp.userSiren = this.getUserSiren;
       this.arrayAjouterIp.typeIp = this.typeIp;
       this.arrayAjouterIp.ip = this.ip;
       this.arrayAjouterIp.commentaires = this.commentaires;
-      console.log(this.arrayAjouterIp);
+      Logger.debug(this.arrayAjouterIp);
       this.arrayArrays.push(this.arrayAjouterIp);
-      console.log(this.arrayArrays.toString());*/
-      console.log("v - " + this.typeIp);
-      console.log("v - " + this.ip);
-      console.log("v - " + this.commentaires);
+      Logger.debug(this.arrayArrays.toString());*/
+      Logger.debug("v - " + this.typeIp);
+      Logger.debug("v - " + this.ip);
+      Logger.debug("v - " + this.commentaires);
       if (
         (this.$refs.formModuleSegmentsIpPlage as Vue & {
           validate: () => boolean;

@@ -1,6 +1,6 @@
 import Vue from "vue";
 import store from "../store/index";
-import VueRouter, { RouteConfig } from "vue-router";
+import VueRouter, {RouteConfig} from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 
@@ -44,12 +44,14 @@ const routes: Array<RouteConfig> = [
   {
     path: "/fusionEtablissement",
     name: "fusionEtablissement",
-    component: () => import("../components/FormFusionEtablissement.vue")
+    component: () =>
+      import("../components/etablissement/FormFusionEtablissement.vue")
   },
   {
     path: "/scissionEtablissement",
     name: "scissionEtablissement",
-    component: () => import("../components/FormScissionEtablissement.vue")
+    component: () =>
+      import("../components/etablissement/FormScissionEtablissement.vue")
   },
   {
     path: "/listeAcces",
@@ -87,7 +89,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeEtab",
     name: "ListeEtab",
-    component: () => import("../components/ListeEtab.vue")
+    component: () => import("../components/etablissement/ListeEtab.vue")
   },
   {
     path: "/forgotPassword",
@@ -102,7 +104,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeEditeurs",
     name: "ListeEditeurs",
-    component: () => import("../components/ListeEditeurs.vue")
+    component: () => import("../components/editeur/ListeEditeurs.vue")
   },
 
   {

@@ -66,68 +66,63 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import {mapActions, mapGetters} from "vuex";
+import {Component, Vue} from "vue-property-decorator";
 import {HttpRequestError} from "@/exception/HttpRequestError";
 import {Logger} from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "FormLogin",
-  data() {
-    return {
-      siren: "" as string,
-      loginRules: [
-        (v: any) => !!v || "SIREN obligatoire",
-        (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-      ],
+@Component
+export default class FormLogin extends Vue {
+  siren: string = "";
+  loginRules = [
+    (v: string) => !!v || "SIREN obligatoire",
+    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
+  ];
+  passwordRules = [(v: string) => !!v || "Mot de passe obligatoire"];
+  password: string = "";
+  buttonLoading: boolean = false;
+  isValid: boolean = false;
+  alert: boolean = false;
+  error: string = "";
+  notification: string = "";
+  show: boolean = false;
+  creationCompteEffectuee: boolean = false;
 
-      passwordRules: [(v: any) => !!v || "Mot de passe obligatoire"],
-      password: "" as string,
-      buttonLoading: false,
-      isValid: false,
-      alert: false,
-      error: "",
-      show: false
-    };
-  },
-  methods: {
-    ...mapActions({
-      loginAction: "login",
-      setCreationCompteEffectueeFalse: "setCreationCompteEffectueeFalse",
-      setNotification: "setNotification"
-    }),
-    validate(): void {
-      this.alert = false;
-      this.error = "";
+  validate(): void {
+    this.alert = false;
+    this.error = "";
 
-      if (this.$refs.login.valid && this.$refs.password.valid) {
-        this.isValid = true;
-      } else {
-        this.isValid = false;
-      }
-    },
-    login(): void {
-      this.buttonLoading = true;
-      this.loginAction({
+    if (
+      (this.$refs.login as Vue & { valid: () => boolean }).valid &&
+      (this.$refs.password as Vue & { valid: () => boolean }).valid
+    ) {
+      this.isValid = true;
+    } else {
+      this.isValid = false;
+    }
+  }
+
+  login(): void {
+    this.buttonLoading = true;
+
+    this.$store
+      .dispatch("login", {
         login: this.siren,
         password: this.password
       })
-        .then(() => {
-          this.$router.push({ name: "Home" });
-        })
-        .catch(err => {
-          Logger.error(err.message);
-          if (err instanceof HttpRequestError) {
-            Logger.debug("Erreur API : " + err.debugMessage);
-          }
-          this.buttonLoading = false;
-          this.error = err.message;
-          this.alert = true;
-        });
-    }
-  },
-  computed: mapGetters(["notification", "creationCompteEffectuee"])
-});
+      .then(() => {
+        this.$router.push({ name: "Home" });
+      })
+      .catch(err => {
+        Logger.error(err.message);
+        if (err instanceof HttpRequestError) {
+          Logger.debug("Erreur API : " + err.debugMessage);
+        }
+        this.buttonLoading = false;
+        this.error = err.message;
+        this.alert = true;
+      });
+  }
+}
 </script>
 
 <style scoped></style>

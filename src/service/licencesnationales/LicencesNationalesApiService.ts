@@ -1,12 +1,12 @@
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from "axios";
 import AxiosClient from "../../utils/AxiosClient";
 import {
   JsonCreateAccount,
   JsonLoginRequest,
   JsonLoginResponse
 } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
-import {HttpRequestError} from "@/exception/HttpRequestError";
-import {CredentialNotValidError} from "@/service/licencesnationales/CredentialNotValidError";
+import { HttpRequestError } from "@/exception/HttpRequestError";
+import { CredentialNotValidError } from "@/service/licencesnationales/CredentialNotValidError";
 
 export class LicencesNationalesApiService {
   // Client HTTP
@@ -51,16 +51,16 @@ export class LicencesNationalesApiService {
     return this.client.post("/ln/etablissement/creationCompte", data);
   }
 
-  ajouterAcces(url: string, token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, token, data);
-  }
-
   changePassword(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post(
       "/ln/reinitialisationMotDePasse/updatePassword",
       token,
       data
     );
+  }
+
+  ajouterAcces(url: string, token: string, data: any): Promise<AxiosResponse> {
+    return this.client.post(url, token, data);
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {

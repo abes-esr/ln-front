@@ -195,149 +195,138 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
-import { mapActions } from "vuex";
+import { Component, Vue } from "vue-property-decorator";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
 import { AjouterContactsEditeurEvent } from "@/main";
+import { Logger } from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "NouvelEditeur",
-  components: { ModuleContactTechnique, ModuleContactCommercial },
-  data() {
-    return {
-      show1: false,
-      nomEditeur: "" as string,
-      nomEditeurRules: [
-        (v: never) => !!v || "Le nom de l'éditeur est obligatoire",
-        (v: never) =>
-          /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-          "Le nom de l'éditeur fourni n'est pas valide"
-      ],
-      identifiantEditeur: "" as string,
-      /*identifiantEditeurRules: [
-        (v: never) => !!v || "L'identifiant de l'éditeur est obligatoire",
-        (v: never) =>
-          /^[0-9]$/.test(v) ||
-          "L'identifiant éditeur est uniquement composé de chiffres"
-      ],*/
-      typesEtab: [
-        "EPIC/EPST",
-        "Ecoles d'ingénieurs",
-        "Ecoles de formation spécialisée",
-        "Ecoles de Management",
-        "Enseignement Supérieur et Recherche",
-        "Fondations",
-        "GIP",
-        "Grands etablissements publics",
-        "Hôpitaux universitaires",
-        "Lecture publique",
-        "Universités",
-        "Etablissement membre du réseau Latitude France",
-        "Autre"
-      ],
-      selectedTypesEtab: [],
-      adresseEditeur: "" as string,
-      adresseEditeurRules: [
-        (v: never) =>
-          !!v || "L'adresse postale de l'établissement est obligatoire",
-        (v: never) =>
-          /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-          "L'adresse postale fournie n'est pas valide"
-      ],
-      moduleContactCommercialNumber: 1,
-      moduleContactTechniqueNumber: 1,
-      listeContactCommercialEditeurDTO: [],
-      listeContactTechniqueEditeurDTO: [],
-      buttonLoading: false,
-      alert: false,
-      error: ""
-    };
-  },
-  computed: {
-    loggedIn() {
-      return this.$store.state.user.isLoggedIn;
-    },
-    tousTypesEtab(): any {
-      return this.selectedTypesEtab.length === this.typesEtab.length;
-    },
-    certainsTypesEtab(): any {
-      return this.selectedTypesEtab.length > 0 && !this.tousTypesEtab;
-    },
-    icon() {
-      if (this.tousTypesEtab) return "mdi-close-box";
-      if (this.certainsTypesEtab) return "mdi-minus-box";
-      return "mdi-checkbox-blank-outline";
-    }
-  },
-  /*mounted() {
-    if (this.loggedIn) {
-      this.$router.push("/profile");
-    }
-  },*/
+@Component({
+  components: { ModuleContactTechnique, ModuleContactCommercial }
+})
+export default class NouvelEditeur extends Vue {
+  nomEditeur: string = "";
+  nomEditeurRules = [
+    (v: string) => !!v || "Le nom de l'éditeur est obligatoire",
+    (v: string) =>
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      "Le nom de l'éditeur fourni n'est pas valide"
+  ];
+  identifiantEditeur: string = "";
+  typesEtab: Array<string> = [
+    "EPIC/EPST",
+    "Ecoles d'ingénieurs",
+    "Ecoles de formation spécialisée",
+    "Ecoles de Management",
+    "Enseignement Supérieur et Recherche",
+    "Fondations",
+    "GIP",
+    "Grands etablissements publics",
+    "Hôpitaux universitaires",
+    "Lecture publique",
+    "Universités",
+    "Etablissement membre du réseau Latitude France",
+    "Autre"
+  ];
+  selectedTypesEtab: Array<string> = [];
+  adresseEditeur: string = "";
+  adresseEditeurRules = [
+    (v: string) =>
+      !!v || "L'adresse postale de l'établissement est obligatoire",
+    (v: string) =>
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      "L'adresse postale fournie n'est pas valide"
+  ];
+  moduleContactCommercialNumber: number = 1;
+  moduleContactTechniqueNumber: number = 1;
+  listeContactCommercialEditeurDTO: Array<string> = [];
+  listeContactTechniqueEditeurDTO: Array<string> = [];
+  buttonLoading: boolean = false;
+  alert: boolean = false;
+  error: string = "";
 
-  methods: {
-    ...mapActions({
-      setNotification: "setNotification"
-    }),
-    remplirListeContactCommercialFromModule(payload: never): void {
-      console.log("remplirListeContactCommercialFromModule");
-      this.listeContactCommercialEditeurDTO.push(payload);
-    },
-    remplirListeContactTechniqueFromModule(payload: never): void {
-      console.log("remplirListeContactTechniqueFromModule");
-      this.listeContactTechniqueEditeurDTO.push(payload);
-      this.send();
-    },
-    enclencherAjouterContactsEditeur(): void {
-      console.log("debut enclencherAjouterContactsEditeur");
-      AjouterContactsEditeurEvent.$emit("ajouterContactsEditeurEvent");
-      AjouterContactsEditeurEvent.$emit("clear");
-    },
-    increaseModuleContactCommercialNumber: function() {
-      this.moduleContactCommercialNumber++;
-    },
-    decreaseModuleContactCommercialNumber: function() {
-      this.moduleContactCommercialNumber--;
-    },
-    increaseModuleContactTechniqueNumber: function() {
-      this.moduleContactTechniqueNumber++;
-    },
-    decreaseModuleContactTechniqueNumber: function() {
-      this.moduleContactTechniqueNumber--;
-    },
-    toggle() {
-      this.$nextTick(() => {
-        if (this.tousTypesEtab) {
-          this.selectedTypesEtab = [];
-        } else {
-          this.selectedTypesEtab = this.typesEtab.slice();
-        }
-      });
-    },
-    send() {
-      this.buttonLoading = true;
+  get loggedIn() {
+    return this.$store.state.user.isLoggedIn;
+  }
+  get tousTypesEtab(): any {
+    return this.selectedTypesEtab.length === this.typesEtab.length;
+  }
+  get certainsTypesEtab(): any {
+    return this.selectedTypesEtab.length > 0 && !this.tousTypesEtab;
+  }
+  get icon() {
+    if (this.tousTypesEtab) return "mdi-close-box";
+    if (this.certainsTypesEtab) return "mdi-minus-box";
+    return "mdi-checkbox-blank-outline";
+  }
 
+  remplirListeContactCommercialFromModule(payload: never): void {
+    Logger.debug("remplirListeContactCommercialFromModule");
+    this.listeContactCommercialEditeurDTO.push(payload);
+  }
+
+  remplirListeContactTechniqueFromModule(payload: never): void {
+    Logger.debug("remplirListeContactTechniqueFromModule");
+    this.listeContactTechniqueEditeurDTO.push(payload);
+    this.send();
+  }
+
+  enclencherAjouterContactsEditeur(): void {
+    Logger.debug("debut enclencherAjouterContactsEditeur");
+    AjouterContactsEditeurEvent.$emit("ajouterContactsEditeurEvent");
+    AjouterContactsEditeurEvent.$emit("clear");
+  }
+
+  increaseModuleContactCommercialNumber(): void {
+    this.moduleContactCommercialNumber++;
+  }
+
+  decreaseModuleContactCommercialNumber(): void {
+    this.moduleContactCommercialNumber--;
+  }
+
+  increaseModuleContactTechniqueNumber(): void {
+    this.moduleContactTechniqueNumber++;
+  }
+
+  decreaseModuleContactTechniqueNumber(): void {
+    this.moduleContactTechniqueNumber--;
+  }
+
+  toggle(): void {
+    this.$nextTick(() => {
+      if (this.tousTypesEtab) {
+        this.selectedTypesEtab = [];
+      } else {
+        this.selectedTypesEtab = this.typesEtab.slice();
+      }
+    });
+  }
+
+  send(): void {
+    this.buttonLoading = true;
+
+    if (
+      this.listeContactCommercialEditeurDTO.length ==
+        this.moduleContactCommercialNumber &&
+      this.listeContactTechniqueEditeurDTO.length ==
+        this.moduleContactTechniqueNumber
+    ) {
       if (
-        this.listeContactCommercialEditeurDTO.length ==
-          this.moduleContactCommercialNumber &&
-        this.listeContactTechniqueEditeurDTO.length ==
-          this.moduleContactTechniqueNumber
+        (this.$refs.formNouvelEditeur as Vue & {
+          validate: () => boolean;
+        }).validate()
       ) {
-        if (
-          (this.$refs.formNouvelEditeur as Vue & {
-            validate: () => boolean;
-          }).validate()
-        ) {
-          console.log({
-            listeContactCommercialEditeurDTO: this
-              .listeContactCommercialEditeurDTO
-          });
+        console.log({
+          listeContactCommercialEditeurDTO: this
+            .listeContactCommercialEditeurDTO
+        });
 
-          this.alert = false;
+        this.alert = false;
 
-          LicencesNationalesApiService.createEditeur({
+        serviceLn
+          .createEditeur(this.$store.state.user.token, {
             nomEditeur: this.nomEditeur,
             identifiantEditeur: this.identifiantEditeur,
             groupesEtabRelies: this.selectedTypesEtab,
@@ -347,64 +336,28 @@ export default Vue.extend({
             listeContactTechniqueEditeurDTO: this
               .listeContactTechniqueEditeurDTO
           })
-            .then(response => {
-              this.alert = true;
-              this.buttonLoading = false;
-              this.setNotification(response.data);
-              console.log("notification = " + this.$store.state.notification);
-              this.$router.push({ path: "/listeEditeurs" });
-            })
-            .catch(err => {
-              this.buttonLoading = false;
-              this.error = err.response.data;
-              this.alert = true;
+          .then(response => {
+            this.alert = true;
+            this.buttonLoading = false;
+            this.$store.dispatch('setNotification', response.data).catch((err) => {
+              Logger.error(err);
             });
-        }
+            Logger.debug("notification = " + this.$store.state.notification);
+            this.$router.push({ path: "/listeEditeurs" });
+          })
+          .catch(err => {
+            this.buttonLoading = false;
+            this.error = err.response.data;
+            this.alert = true;
+          });
       }
-    },
-
-    /*validate(): void {
-      this.alert = false;
-      this.error = "";
-
-      if (
-        (this.$refs.formNouvelEditeur as Vue & {
-          validate: () => boolean;
-        }).validate()
-      ) {
-        this.creationEditeur();
-      }
-    },
-    creationEditeur(): void {
-      this.buttonLoading = true;
-      axios
-        .post(process.env.VUE_APP_ROOT_API + "ln/editeur/creationEditeur", {
-          nomEditeur: this.nomEditeur,
-          identifiantEditeur: this.identifiantEditeur,
-          groupesEtabRelies: this.selectedTypesEtab,
-          adresseEditeur: this.adresseEditeur,
-          listeContactCommercialEditeurDTO: this
-            .listeContactCommercialEditeurDTO,
-          listeContactTechniqueEditeurDTO: this.listeContactTechniqueEditeurDTO
-        })
-        .then(response => {
-          this.buttonLoading = false;
-          console.log("notification = " + response.data);
-          this.setNotification(response.data);
-          console.log("notification = " + this.$store.state.notification);
-          this.$router.push({ path: "/listeEditeurs" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.error = err.response.data;
-          this.alert = true;
-        });
-    },*/
-    clear() {
-      (this.$refs.formNouvelEditeur as HTMLFormElement).reset();
     }
   }
-});
+
+  clear() {
+    (this.$refs.formNouvelEditeur as HTMLFormElement).reset();
+  }
+}
 </script>
 
 <style scoped></style>

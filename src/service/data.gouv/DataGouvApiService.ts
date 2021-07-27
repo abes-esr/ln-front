@@ -1,5 +1,4 @@
 import AxiosClient from "../../utils/AxiosClient";
-import { Logger } from "@/utils/Logger";
 import { JsonCheckSirenResponse } from "@/service/data.gouv/DataGouvJsonDefinition";
 import { HttpRequestError } from "@/exception/HttpRequestError";
 import { SirenNotFoundError } from "@/service/data.gouv/SirenNotFoundError";
@@ -22,6 +21,7 @@ export class DataGouvApiService {
         .then(result => {
           /**
            * Attention, l'assignation de AxiosResponse<any> vers l'interface n'est pas considérée comme fiable à 100%
+           * Elle peut mener à la levée d'une exception qui mène dans le catch avec une erreur vide ( = { } ).
            * Il conviendrait de tester la présence de chaque champs et de les assigner "à la main".
            */
           const response: JsonCheckSirenResponse = result.data;

@@ -68,71 +68,75 @@
 </template>
 
 <script lang="ts">
-import FormEtab from "@/components/FormEtab.vue";
-import Vue from "vue";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
+import FormEtab from "@/components/etablissement/FormEtab.vue";
+import { Component, Vue } from "vue-property-decorator";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "FormFusionEtablissement",
-  components: { FormEtab },
-  data() {
-    return {
-      sirenEtab: [],
-      sirenEtabRules: [
-        (v: any) => !!v || "SIREN obligatoire",
-        (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-      ],
-      bus: new Vue(),
-      sirenNumber: 2,
-      buttonLoading: false,
-      alert: false,
-      alertOK: false,
-      retourKo: false,
-      message: ""
-    };
-  },
-  methods: {
-    triggerChildremForm(): void {
-      this.bus.$emit("submit");
-    },
-    send(payload: object): void {
-      this.buttonLoading = true;
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        console.log({
-          etablissementDTO: payload,
-          sirenFusionnes: this.sirenEtab
-        });
-        LicencesNationalesApiService.fusion({
+@Component({
+  components: { FormEtab }
+})
+export default class FormFusionEtablissement extends Vue {
+  sirenEtab: Array<string> = [];
+  sirenEtabRules = [
+    (v: string) => !!v || "SIREN obligatoire",
+    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
+  ];
+  bus: Vue = new Vue();
+  sirenNumber: number = 2;
+  buttonLoading: boolean = false;
+  alert: boolean = false;
+  alertOK: boolean = false;
+  retourKo: boolean = false;
+  message: string = "";
+
+  triggerChildremForm(): void {
+    this.bus.$emit("submit");
+  }
+
+  send(payload: object): void {
+    this.buttonLoading = true;
+    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+      Logger.debug(
+        JSON.stringify({
           etablissementDTO: payload,
           sirenFusionnes: this.sirenEtab
         })
-          .then(response => {
-            this.alert = true;
-            this.buttonLoading = false;
-            this.message = response.data;
-            this.alert = true;
-            this.clear();
-          })
-          .catch(err => {
-            this.buttonLoading = false;
-            this.message = err.response.data;
-            this.alert = true;
-            this.retourKo = true;
-          });
-      }
-    },
-    clear(): void {
-      this.bus.$emit("clear");
-    },
-    increaseSirenNumber: function() {
-      this.sirenNumber++;
-    },
-    decreaseSirenNumber: function() {
-      this.sirenNumber--;
-      this.sirenEtab.pop();
+      );
+      serviceLn
+        .fusion(this.$store.state.user.token, {
+          etablissementDTO: payload,
+          sirenFusionnes: this.sirenEtab
+        })
+        .then(response => {
+          this.alert = true;
+          this.buttonLoading = false;
+          this.message = response.data;
+          this.alert = true;
+          this.clear();
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.message = err.response.data;
+          this.alert = true;
+          this.retourKo = true;
+        });
     }
   }
-});
+
+  clear(): void {
+    this.bus.$emit("clear");
+  }
+
+  increaseSirenNumber() {
+    this.sirenNumber++;
+  }
+
+  decreaseSirenNumber() {
+    this.sirenNumber--;
+    this.sirenEtab.pop();
+  }
+}
 </script>
 
 <style scoped></style>

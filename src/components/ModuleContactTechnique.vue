@@ -37,6 +37,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { AjouterContactsEditeurEvent } from "@/main";
+import { Logger } from "@/utils/Logger";
 
 export default Vue.extend({
   name: "ModuleContactTechnique",
@@ -69,7 +70,7 @@ export default Vue.extend({
   },
   methods: {
     validAndSend(): void {
-      console.log("Validation");
+      Logger.debug("Validation");
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
         this.$emit("FormModuleContactTechniqueEvent", {
           nomContactTechnique: this.nomContactTechnique,

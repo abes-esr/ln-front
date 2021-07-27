@@ -95,191 +95,164 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { mapActions } from "vuex";
-import { AjouterAccesSubmitEvent } from "@/main";
+import { Component, Vue } from "vue-property-decorator";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
-import {Logger} from "@/utils/Logger";
+import { Logger } from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "AjouterAcces2",
-  components: { ModuleSegmentsIpPlage },
-  data() {
-    return {
-      moduleSegmentsIpPlageNumber: 2,
-      titleText: "" as string,
-      alertText: "" as string,
-      buttonAjouterText: "" as string,
-      title2Text: "" as string,
-      buttonAjouterIpPlage: "" as string,
-      buttonSupprimerIpPlage: "" as string,
-      id: "",
-      ip: "",
-      typeAcces: "" as string,
-      //typeIp: "" as string,
-      alertIp: true,
-      alert: false,
-      alertErrorIp: false,
-      errorIp: "" as string,
-      //showButtonAjouterIp: false,
-      error: "",
-      arrayAjouterIp: [] as any,
-      arrayArrays: [] as any,
-      ipV4Url: "/ln/ip/ajoutIpV4" as string,
-      ipV6Url: "/ln/ip/ajoutIpV6" as string,
-      plageIpV4Url: "/ln/ip/ajoutPlageIpV4" as string,
-      plageIpV6Url: "/ln/ip/ajoutPlageIpV6" as string,
-      adminIpV4Url: "/ln/ip/adminAjoutIpV4" as string,
-      adminIpV6Url: "/ln/ip/adminAjoutIpV6" as string,
-      adminPlageIpV4Url: "/ln/ip/adminAjoutPlageIpV4" as string,
-      adminPlageIpV6Url: "/ln/ip/adminAjoutPlageIpV6" as string,
-      //typesIp: ["IPV4", "IPV6"],
-      //typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
-      buttonLoading: false
-    };
-  },
+@Component({
+  components: { ModuleSegmentsIpPlage }
+})
+export default class AjouterAcces extends Vue {
+  moduleSegmentsIpPlageNumber: number = 2;
+  titleText: string = "";
+  alertText: string = "";
+  buttonAjouterText: string = "";
+  title2Text: string = "";
+  buttonAjouterIpPlage: string = "";
+  buttonSupprimerIpPlage: string = "";
+  id: string = "";
+  ip: string = "";
+  typeAcces: string = "";
+  //typeIp: "" as string,
+  alertIp: boolean = true;
+  alert: boolean = false;
+  alertErrorIp: boolean = false;
+  errorIp: string = "";
+  //showButtonAjouterIp: false,
+  error: string = "";
+  arrayAjouterIp: Array<string> = [];
+  arrayArrays: Array<string> = [];
+  ipV4Url: string = "/ln/ip/ajoutIpV4";
+  ipV6Url: string = "/ln/ip/ajoutIpV6";
+  plageIpV4Url: string = "/ln/ip/ajoutPlageIpV4";
+  plageIpV6Url: string = "/ln/ip/ajoutPlageIpV6";
+  adminIpV4Url: string = "/ln/ip/adminAjoutIpV4";
+  adminIpV6Url: string = "/ln/ip/adminAjoutIpV6";
+  adminPlageIpV4Url: string = "/ln/ip/adminAjoutPlageIpV4";
+  adminPlageIpV6Url: string = "/ln/ip/adminAjoutPlageIpV6";
+  //typesIp: ["IPV4", "IPV6"],
+  //typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
+  buttonLoading: boolean = false;
+
   mounted() {
     this.typeAcces = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
     );
 
     this.setText();
-    Logger.info(this.$refs);
+    Logger.info(JSON.stringify(this.$refs));
 
     /*const onchangeIpHandler = ip => {
       this.ip = ip;
       console.log(`ip =  ` + ip);
     };
     IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);*/
-  },
+  }
+  get sirenEtabSiAdmin() {
+    return this.$store.state.sirenEtabSiAdmin;
+  }
+  get getUserSiren() {
+    if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
+    else return this.$store.state.user.siren;
+  }
+  get isAdmin() {
+    Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
+    return this.$store.state.user.isAdmin;
+  }
 
-  computed: {
-    sirenEtabSiAdmin() {
-      return this.$store.state.sirenEtabSiAdmin;
-    },
-    getUserSiren() {
-      if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
-      else return this.$store.state.user.siren;
-    },
-    isAdmin() {
-      console.log("isAdmin = " + this.$store.state.user.isAdmin);
-      return this.$store.state.user.isAdmin;
+  enclencherAjouterIpModuleSegmentsIpPlage(): void {
+    Logger.debug("debut enclencherAjouterAccesModuleIpPlage");
+    //AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
+    //AjouterAccesSubmitEvent.$emit("clear");
+  }
+
+  setText(): void {
+    if (this.typeAcces === "ip") {
+      this.titleText = "Ajout d'adresse IP";
+      this.alertText =
+        "Vous pouvez directement insérer une adresse IP en effectuant un copier coller.";
+      this.buttonAjouterIpPlage = "Ajouter une adresse ip";
+      this.buttonSupprimerIpPlage = "Supprimer une adresse ip";
+    } else {
+      this.titleText = "Ajout de plage d'adresses IP";
+      this.alertText =
+        "Vous pouvez directement insérer une ou plusieurs adresses IP en effectuant un copier coller.";
+      this.buttonAjouterIpPlage = "Ajouter une plage d'adresse ip";
+      this.buttonSupprimerIpPlage = "Supprimer une adresse ip";
     }
-  },
+  }
 
-  methods: {
-    ...mapActions({
-      setNotification: "setNotification"
-    }),
+  getUrl(typeIp) {
+    if (this.typeAcces === "ip") {
+      if (this.isAdmin === "true") {
+        return typeIp === "IPV4" ? this.adminIpV4Url : this.adminIpV6Url;
+      } else return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
+    } else {
+      if (this.isAdmin === "true")
+        return typeIp === "IPV4"
+          ? this.adminPlageIpV4Url
+          : this.adminPlageIpV6Url;
+      else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
+    }
+  }
 
-    enclencherAjouterIpModuleSegmentsIpPlage(): void {
-      console.log("debut enclencherAjouterAccesModuleIpPlage");
-      AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
-      AjouterAccesSubmitEvent.$emit("clear");
-    },
+  suppIpFromArrayArrays(index) {
+    this.arrayArrays.splice(index, 1);
+    Logger.debug(this.arrayArrays.toString());
+    Logger.debug("" + this.arrayArrays.length);
+    this.alertErrorIp = false;
+  }
 
-    setText(): void {
-      if (this.typeAcces === "ip") {
-        this.titleText = "Ajout d'adresse IP";
-        this.alertText =
-          "Vous pouvez directement insérer une adresse IP en effectuant un copier coller.";
-        this.buttonAjouterIpPlage = "Ajouter une adresse ip";
-        this.buttonSupprimerIpPlage = "Supprimer une adresse ip";
-      } else {
-        this.titleText = "Ajout de plage d'adresses IP";
-        this.alertText =
-          "Vous pouvez directement insérer une ou plusieurs adresses IP en effectuant un copier coller.";
-        this.buttonAjouterIpPlage = "Ajouter une plage d'adresse ip";
-        this.buttonSupprimerIpPlage = "Supprimer une adresse ip";
-      }
-    },
-
-    getUrl(typeIp) {
-      if (this.typeAcces === "ip") {
-        if (this.isAdmin === "true") {
-          return typeIp === "IPV4" ? this.adminIpV4Url : this.adminIpV6Url;
-        } else return typeIp === "IPV4" ? this.ipV4Url : this.ipV6Url;
-      } else {
-        if (this.isAdmin === "true")
-          return typeIp === "IPV4"
-            ? this.adminPlageIpV4Url
-            : this.adminPlageIpV6Url;
-        else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
-      }
-    },
-
-    suppIpFromArrayArrays: function(index) {
-      this.arrayArrays.splice(index, 1);
-      console.log(this.arrayArrays.toString());
-      console.log(this.arrayArrays.length);
-      this.alertErrorIp = false;
-    },
-
-    /*eventReinitialisationIpSegments: function(evt) {
-      TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
-    },
-
-    buttonAjouterIp(): void {
-      this.error = "";
-      this.alert = false;
-      this.showButtonAjouterIp = false;
-      if (
-        (this.$refs.formAjouterAcces as Vue & {
-          validate: () => boolean;
-        }).validate()
-      ) {
-        this.showButtonAjouterIp = true;
-        //this.ajouterIp();
-        this.typeIp = "IPV4";
-        this.eventReinitialisationIpSegments("eventReinitialisationIpSegments");
-      }
-    },*/
-
-    validate(payloadFromModuleSegmentsIpPlage): void {
-      console.log("debut validate");
+  /* validate(payloadFromModuleSegmentsIpPlage): void {
+      Logger.debug("debut validate");
 
       this.buttonLoading = true;
       this.arrayAjouterIp.push(payloadFromModuleSegmentsIpPlage);
       this.arrayArrays.push(payloadFromModuleSegmentsIpPlage);
       this.arrayArrays.forEach((value, index) => {
-        console.log("this.getUrl() = " + this.getUrl(value.typeIp));
-        LicencesNationalesApiService.ajouterAcces(this.getUrl(value.typeIp), {
-          siren: this.getUserSiren,
-          ip: value.ip,
-          typeAcces: this.typeAcces,
-          typeIp: value.typeIp,
-          commentaires: value.commentaires
-        })
+        Logger.debug("this.getUrl() = " + this.getUrl(value.typeIp));
+        serviceLn
+          .ajouterAcces(
+            this.$store.state.user.token,
+            this.getUrl(value.typeIp),
+            {
+              siren: this.getUserSiren,
+              ip: value.ip,
+              typeAcces: this.typeAcces,
+              typeIp: value.typeIp,
+              commentaires: value.commentaires
+            }
+          )
           .then(response => {
             this.buttonLoading = false;
-            console.log("notification = " + response.data);
+            Logger.debug("notification = " + response.data);
             this.setNotification(response.data);
-            console.log("notification = " + this.$store.state.notification);
+            Logger.debug("notification = " + this.$store.state.notification);
             this.$router.push({ path: "/listeAcces" });
           })
           .catch(err => {
             this.buttonLoading = false;
             this.error = err.response.data;
-            console.log("err.response.data " + err.response.data);
+            Logger.debug("err.response.data " + err.response.data);
             this.errorIp = err.response.data;
             value.error = err.response.data;
             this.alertErrorIp = true;
           });
       });
-    },
-    increaseModuleIpPlageNumber: function() {
-      this.moduleSegmentsIpPlageNumber++;
-    },
-    decreaseModuleIpPlageNumber: function() {
-      this.moduleSegmentsIpPlageNumber--;
-      //this.moduleIpPlageNumber.pop();
-    },
-    clear() {
-      this.arrayAjouterIp = [];
-    }
+    }*/
+
+  increaseModuleIpPlageNumber() {
+    this.moduleSegmentsIpPlageNumber++;
   }
-});
+
+  decreaseModuleIpPlageNumber() {
+    this.moduleSegmentsIpPlageNumber--;
+    //this.moduleIpPlageNumber.pop();
+  }
+  clear() {
+    this.arrayAjouterIp = [];
+  }
+}
 </script>
 
 <style scoped>

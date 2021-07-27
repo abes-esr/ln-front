@@ -154,163 +154,154 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { mapActions } from "vuex";
+import {Component, Vue} from "vue-property-decorator";
 import moment from "moment";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "ListeEtab",
-  data() {
-    return {
-      statut: "",
-      selectStatut: ["Nouveau", "En validation", "Validé", "Aucune IP"],
-      rechercher: "",
-      etab: [] as any,
-      title: "" as string,
-      id: "" as any,
-      error: "",
-      alert: false,
-      derniereDateModificationIpTemp: "" as string,
-      headers: [
-        {
-          text: "Date de création",
-          align: "start",
-          value: "dateCreation",
-          sortable: true
-        },
-        { text: "ID Abes", value: "idAbes", sortable: true },
-        { text: "SIREN", value: "siren", sortable: true },
-        { text: "Etablissement", value: "nomEtab", sortable: true },
-        { text: "Type d'établissement", value: "typeEtab", sortable: true },
-        {
-          text: "Dernière date de modification",
-          value: "derniereDateModificationIp",
-          sortable: true
-        },
-        { text: "Statut", value: "statut", sortable: true },
-        { text: "Action", value: "action", sortable: false }
-      ],
-      dialog: false,
-      currentSirenToDelete: "",
-      motifSuppression: ""
-    };
-  },
-  computed: {
-    notification() {
-      return this.$store.state.notification;
+@Component
+export default class ListeEtab extends Vue {
+  statut: string = "";
+  selectStatut: Array<string> = [
+    "Nouveau",
+    "En validation",
+    "Validé",
+    "Aucune IP"
+  ];
+  rechercher: string = "";
+  etab: Array<string> = [];
+  title: string = "";
+  id: string = "";
+  error: string = "";
+  alert: boolean = false;
+  derniereDateModificationIpTemp: string = "";
+  headers = [
+    {
+      text: "Date de création",
+      align: "start",
+      value: "dateCreation",
+      sortable: true
     },
-    getUserSiren() {
-      return this.$store.state.user.siren;
+    { text: "ID Abes", value: "idAbes", sortable: true },
+    { text: "SIREN", value: "siren", sortable: true },
+    { text: "Etablissement", value: "nomEtab", sortable: true },
+    { text: "Type d'établissement", value: "typeEtab", sortable: true },
+    {
+      text: "Dernière date de modification",
+      value: "derniereDateModificationIp",
+      sortable: true
     },
-    filteredEtabByStatut(): string {
-      console.log("debut filteredEtabByStatut");
-      const conditions = [] as any;
-      console.log("this.statut = " + this.statut);
-      if (this.statut) {
-        conditions.push(this.filterStatut);
-      }
-      if (conditions.length > 0) {
-        return this.etab.filter(acces => {
-          return conditions.every(condition => {
-            return condition(acces);
-          });
-        });
-      }
-      return this.etab;
+    { text: "Statut", value: "statut", sortable: true },
+    { text: "Action", value: "action", sortable: false }
+  ];
+
+  dialog: boolean = false;
+  currentSirenToDelete: string = "";
+  motifSuppression: string = "";
+
+  get notification() {
+    return this.$store.state.notification;
+  }
+  get getUserSiren() {
+    return this.$store.state.user.siren;
+  }
+  get filteredEtabByStatut(): string {
+    Logger.debug("debut filteredEtabByStatut");
+    const conditions = [] as any;
+    Logger.debug("this.statut = " + this.statut);
+    if (this.statut) {
+      conditions.push(this.filterStatut);
     }
-  },
+    if (conditions.length > 0) {
+      return this.etab.filter(acces => {
+        return conditions.every(condition => {
+          return condition(acces);
+        });
+      })[0];
+    }
+    return this.etab[0];
+  }
   mounted() {
     moment.locale("fr");
     this.collecterEtab();
     this.id = this.getIdEtab(this.etab);
-  },
+  }
 
-  methods: {
-    ...mapActions({
-      setNotification: "setNotification",
-      setSirenEtabSiAdmin: "setSirenEtabSiAdmin"
-    }),
-    getIdEtab(etab) {
-      return {
-        id: etab.id
-      };
-    },
-    filterStatut(statutRecherche) {
-      return statutRecherche.statut.toString().includes(this.statut);
-    },
-    getAll(): any {
-      return LicencesNationalesApiService.listeEtab();
-    },
-    collecterEtab(): any {
-      this.getAll()
-        .then(response => {
-          this.etab = response.data.map(this.affichageEtab);
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-
-    affichageEtab(etab) {
-      if (
-        moment(etab.derniereDateModificationIp).format("L") !== "Invalid date"
-      )
-        this.derniereDateModificationIpTemp = moment(
-          etab.derniereDateModificationIp
-        ).format("L");
-      else this.derniereDateModificationIpTemp = "";
-      return {
-        id: etab.id,
-        dateCreation: moment(etab.dateCreation).format("L"),
-        idAbes: etab.idAbes,
-        siren: etab.siren,
-        nomEtab: etab.nomEtab,
-        derniereDateModificationIp: this.derniereDateModificationIpTemp,
-        typeEtab: etab.typeEtab,
-        statut: etab.valide ? "Validé" : "En validation"
-      };
-    },
-
-    listeAcces(siren): void {
-      this.setSirenEtabSiAdmin(siren);
-      this.$router.push({
-        name: "ListeAcces"
+  getIdEtab(etab) {
+    return etab.id;
+  }
+  filterStatut(statutRecherche) {
+    return statutRecherche.statut.toString().includes(this.statut);
+  }
+  getAll(): any {
+    return serviceLn.listeEtab(this.$store.state.user.token);
+  }
+  collecterEtab(): any {
+    this.getAll()
+      .then(response => {
+        this.etab = response.data.map(this.affichageEtab);
+        Logger.debug(response.data);
+      })
+      .catch(e => {
+        Logger.error(e);
       });
-    },
-    openDialogSuppression(siren): void {
-      this.dialog = true;
-      this.currentSirenToDelete = siren;
-      //(this as any).supprimerEtab(siren);
-    },
-    supprimerEtab(): void {
-      LicencesNationalesApiService.deleteEtab(this.currentSirenToDelete, {
+  }
+
+  affichageEtab(etab) {
+    if (moment(etab.derniereDateModificationIp).format("L") !== "Invalid date")
+      this.derniereDateModificationIpTemp = moment(
+        etab.derniereDateModificationIp
+      ).format("L");
+    else this.derniereDateModificationIpTemp = "";
+    return {
+      id: etab.id,
+      dateCreation: moment(etab.dateCreation).format("L"),
+      idAbes: etab.idAbes,
+      siren: etab.siren,
+      nomEtab: etab.nomEtab,
+      derniereDateModificationIp: this.derniereDateModificationIpTemp,
+      typeEtab: etab.typeEtab,
+      statut: etab.valide ? "Validé" : "En validation"
+    };
+  }
+
+  listeAcces(siren): void {
+    //this.setSirenEtabSiAdmin(siren);
+    this.$router.push({
+      name: "ListeAcces"
+    });
+  }
+  openDialogSuppression(siren): void {
+    this.dialog = true;
+    this.currentSirenToDelete = siren;
+    //(this as any).supprimerEtab(siren);
+  }
+  supprimerEtab(): void {
+    serviceLn
+      .deleteEtab(this.$store.state.user.token, this.currentSirenToDelete, {
         motif: this.motifSuppression
       })
-        .then(response => {
-          this.refreshList();
-          console.log("notification = " + response.data);
-          this.setNotification(response.data);
-        })
-        .catch(err => {
-          this.error = err.response.data;
-          this.alert = true;
+      .then(response => {
+        this.refreshList();
+        Logger.debug("notification = " + response.data);
+        this.$store.dispatch('setNotification', response.data).catch((err) => {
+          Logger.error(err);
         });
-      this.currentSirenToDelete = "";
-      this.motifSuppression = "";
-    },
-    refreshList(): void {
-      this.collecterEtab();
-    },
-    modifierAcces(id): void {
-      this.$router.push({ name: "ModifierEtab", params: { id: id } });
-    }
-  },
-  destroyed() {
-    this.setNotification("");
+      })
+      .catch(err => {
+        this.error = err.response.data;
+        this.alert = true;
+      });
+    this.currentSirenToDelete = "";
+    this.motifSuppression = "";
   }
-});
+  refreshList(): void {
+    this.collecterEtab();
+  }
+  modifierAcces(id): void {
+    this.$router.push({ name: "ModifierEtab", params: { id: id } });
+  }
+}
 </script>
 <style>
 .list {

@@ -109,61 +109,53 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
-import { mapActions } from "vuex";
+import {Component, Vue} from "vue-property-decorator";
+import {serviceLn} from "../service/licencesnationales/LicencesNationalesApiService";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
-import {
-  AjouterAccesSubmitEvent,
-  GetTypeIpFromModifierAccesEvent,
-  IpChangeEvent,
-  TypeIpChangeEvent
-} from "@/main";
+import {GetTypeIpFromModifierAccesEvent, IpChangeEvent, TypeIpChangeEvent} from "@/main";
+import {Logger} from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "ModifierAcces",
-  components: { ModuleSegmentsIpPlage },
-  data() {
-    return {
-      ipToModify: "" as string,
-      titleText: "" as string,
-      alertText: "" as string,
-      labelIp: "" as string,
-      id: "",
-      ip: "" as string,
-      valide: "",
-      typeAcces: "",
-      typeIp: "",
-      commentaires: "",
-      jsonResponse: {},
-      alert: false,
-      error: "",
-      ipV4Url: "/ln/ip/modifIpV4" as string,
-      ipV6Url: "/ln/ip/modifIpV6" as string,
-      plageIpV4Url: "/ln/ip/modifPlageIpV4" as string,
-      plageIpV6Url: "/ln/ip/modifPlageIpV6" as string,
-      adminIpV4Url: "/ln/ip/adminModifIpV4" as string,
-      adminIpV6Url: "/ln/ip/adminModifIpV6" as string,
-      adminPlageIpV4Url: "/ln/ip/adminModifPlageIpV4" as string,
-      adminPlageIpV6Url: "/ln/ip/adminModifPlageIpV6" as string,
-      typesIp: ["IPV4", "IPV6"],
-      typeIpRules: [(v: never) => !!v || "Le type d'IP est obligatoire"],
-      buttonLoading: false
-    };
-  },
-  computed: {
-    sirenEtabSiAdmin() {
+@Component({
+  components: { ModuleSegmentsIpPlage }
+})
+export default class ModifierAcces extends Vue {
+      ipToModify: string = "";
+      titleText: string = "";
+      alertText: string = "";
+      labelIp: string = "";
+      id: string ="";
+      ip: string ="";
+      valide: string = "";
+      typeAcces: string = "";
+      typeIp: string = "";
+      commentaires: string = "";
+      jsonResponse: any = {};
+      alert: boolean = false;
+      error: string = "";
+      ipV4Url: string = "/ln/ip/modifIpV4";
+      ipV6Url: string = "/ln/ip/modifIpV6";
+      plageIpV4Url: string = "/ln/ip/modifPlageIpV4";
+      plageIpV6Url: string = "/ln/ip/modifPlageIpV6";
+      adminIpV4Url: string = "/ln/ip/adminModifIpV4";
+      adminIpV6Url: string = "/ln/ip/adminModifIpV6";
+      adminPlageIpV4Url: string = "/ln/ip/adminModifPlageIpV4";
+      adminPlageIpV6Url: string = "/ln/ip/adminModifPlageIpV6";
+      typesIp: Array<string> = ["IPV4", "IPV6"];
+      typeIpRules = [(v: never) => !!v || "Le type d'IP est obligatoire"];
+      buttonLoading: boolean = false;
+
+    get sirenEtabSiAdmin() {
       return this.$store.state.sirenEtabSiAdmin;
-    },
-    getUserSiren() {
+    }
+    get getUserSiren() {
       if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
       else return this.$store.state.user.siren;
-    },
-    isAdmin() {
-      console.log("isAdmin = " + this.$store.state.user.isAdmin);
+    }
+    get isAdmin() {
+      Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
       return this.$store.state.user.isAdmin;
     }
-  },
+
   mounted() {
     this.id = window.location.href.substring(
       window.location.href.lastIndexOf("/") + 1,
@@ -173,29 +165,26 @@ export default Vue.extend({
       window.location.href.lastIndexOf("&") + 1
     );
     this.setText();
-    console.log("this.id = " + this.id);
-    console.log("this.typeAcces = " + this.typeAcces);
+    Logger.debug("this.id = " + this.id);
+    Logger.debug("this.typeAcces = " + this.typeAcces);
     this.fetchIp();
 
-    console.log(this.id);
+    Logger.debug(this.id);
     const onchangeIpHandler = ip => {
       this.ip = ip;
       console.log(`ip =  ` + ip);
     };
     IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
-  },
-  methods: {
-    ...mapActions({
-      setNotification: "setNotification"
-    }),
+  }
     enclencherAjouterIpModuleSegmentsIpPlage(): void {
-      console.log("debut enclencherAjouterAccesModuleIpPlage");
-      AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
-      AjouterAccesSubmitEvent.$emit("clear");
-    },
-    eventReinitialisationIpSegments: function() {
+      Logger.debug("debut enclencherAjouterAccesModuleIpPlage");
+      //AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
+      //AjouterAccesSubmitEvent.$emit("clear");
+    }
+    eventReinitialisationIpSegments(): void {
       TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
-    },
+    }
+
     setText(): void {
       if (this.typeAcces === "ip") {
         this.titleText = "Modifier mon ip";
@@ -208,14 +197,16 @@ export default Vue.extend({
           "Vous pouvez directement insérer une ou plusieurs adresses IP en effectuant un copier coller.";
         this.labelIp = "Plage d'adresses ip que vous souhaitez modifier";
       }
-    },
+    }
+
     fetchIp(): void {
-      console.log("id = " + this.id);
-      console.log("siren = " + this.getUserSiren);
-      LicencesNationalesApiService.getIPInfos({
-        id: this.id,
-        siren: this.$store.state.user.siren
-      })
+      Logger.debug("id = " + this.id);
+      Logger.debug("siren = " + this.getUserSiren);
+      serviceLn
+        .getIPInfos(this.$store.state.user.token, {
+          id: this.id,
+          siren: this.$store.state.user.siren
+        })
         .then(result => {
           this.id = result.data.id;
           this.ipToModify = result.data.ip;
@@ -232,7 +223,7 @@ export default Vue.extend({
           this.alert = true;
           this.error = err;
         });
-    },
+    }
     getUrl(typeIp) {
       if (this.typeAcces === "ip") {
         if (this.isAdmin === "true") {
@@ -245,7 +236,7 @@ export default Vue.extend({
             : this.adminPlageIpV6Url;
         else return typeIp === "IPV4" ? this.plageIpV4Url : this.plageIpV6Url;
       }
-    },
+    }
     validate(): void {
       this.error = "";
       this.alert = false;
@@ -257,16 +248,23 @@ export default Vue.extend({
         this.buttonLoading = true;
         this.submitAcces();
       }
-    },
+    }
     submitAcces(): void {
       this.updateJsonObject();
-      console.log(this.jsonResponse);
-      LicencesNationalesApiService.addIP(this.getUrl(this.typeIp), this.jsonResponse)
+      Logger.debug(JSON.stringify(this.jsonResponse));
+      serviceLn
+        .addIP(
+          this.$store.state.user.token,
+          this.getUrl(this.typeIp),
+          this.jsonResponse
+        )
         .then(response => {
           this.buttonLoading = false;
-          console.log("notification = " + response.data);
-          this.setNotification(response.data);
-          console.log("notification = " + this.$store.state.notification);
+          Logger.debug("notification = " + response.data);
+          this.$store.dispatch('setNotification', response.data).catch((err) => {
+            Logger.error(err);
+          });
+          Logger.debug("notification = " + this.$store.state.notification);
           this.$router.push({ path: "/listeAcces" });
         })
         .catch(err => {
@@ -274,7 +272,7 @@ export default Vue.extend({
           this.error = err.response.data;
           this.alert = true;
         });
-    },
+    }
 
     updateJsonObject(): void {
       const json: any = {};
@@ -285,10 +283,10 @@ export default Vue.extend({
       json.typeIp = this.typeIp;
       json.siren = this.getUserSiren;
       json.commentaires = this.commentaires;
+
       this.jsonResponse = json;
     }
   }
-});
 </script>
 
 <style scoped></style>

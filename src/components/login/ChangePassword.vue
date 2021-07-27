@@ -68,54 +68,50 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { LicencesNationalesApiService } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Component, Vue } from "vue-property-decorator";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 
-export default Vue.extend({
-  name: "FormLogin",
-  data() {
-    return {
-      alert: false,
-      error: "",
-      buttonLoading: false,
-      oldPassword: "",
-      newPassword: "",
-      newPasswordConfirm: "",
+@Component
+export default class ChangePassword extends Vue {
+  alert: boolean = false;
+  error: string = "";
+  buttonLoading: boolean = false;
+  oldPassword: string = "";
+  newPassword: string = "";
+  newPasswordConfirm: string = "";
+  passwordRules = [
+    (v: string) => !!v || "Champ obligatoire",
+    (v: string) =>
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+        v
+      ) ||
+      "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial, et faire 8 caractères minimum"
+  ];
 
-      passwordRules: [
-        v => !!v || "Champ obligatoire",
-        v =>
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-            v
-          ) ||
-          "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial, et faire 8 caractères minimum"
-      ]
-    };
-  },
-  methods: {
-    validate(): void {
-      this.alert = false;
-      this.error = "";
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
-        this.submit();
-    },
-    submit(): void {
-      this.buttonLoading = true;
-      LicencesNationalesApiService.changePassword({
+  validate(): void {
+    this.alert = false;
+    this.error = "";
+    if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
+      this.submit();
+  }
+
+  submit(): void {
+    this.buttonLoading = true;
+    serviceLn
+      .changePassword(this.$store.state.user.token, {
         oldPassword: this.oldPassword,
         newPassword: this.newPassword
       })
-        .then(() => {
-          this.$router.push({ name: "Home" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.error = err.response.data;
-          this.alert = true;
-        });
-    }
+      .then(() => {
+        this.$router.push({ name: "Home" });
+      })
+      .catch(err => {
+        this.buttonLoading = false;
+        this.error = err.response.data;
+        this.alert = true;
+      });
   }
-});
+}
 </script>
 
 <style scoped></style>

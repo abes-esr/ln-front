@@ -81,79 +81,83 @@
 </template>
 
 <script lang="ts">
-import FormEtab from "@/components/FormEtab.vue";
-import Vue from "vue";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
+import FormEtab from "@/components/etablissement/FormEtab.vue";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
+import { Component, Vue } from "vue-property-decorator";
 
-export default Vue.extend({
-  name: "FormFusionEtablissement",
-  components: { FormEtab },
-  data() {
-    return {
-      sirenEtab: "",
-      sirenEtabRules: [
-        (v: any) => !!v || "SIREN obligatoire",
-        (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-      ],
-      bus: new Vue(),
-      etablissementNumber: 2,
-      etablissementDTOS: [],
-      buttonLoading: false,
-      alert: false,
-      alertOK: false,
-      retourKo: false,
-      message: ""
-    };
-  },
-  methods: {
-    triggerChildremForm(): void {
-      this.bus.$emit("submit");
-    },
-    send(payload: never): void {
-      this.buttonLoading = true;
-      this.etablissementDTOS.push(payload);
+@Component({
+  components: { FormEtab }
+})
+export default class FormScissionEtablissement extends Vue {
+  sirenEtab: string = "";
+  sirenEtabRules = [
+    (v: string) => !!v || "SIREN obligatoire",
+    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
+  ];
+  bus: Vue = new Vue();
+  etablissementNumber: number = 2;
+  etablissementDTOS: Array<string> = [];
+  buttonLoading: boolean = false;
+  alert: boolean = false;
+  alertOK: boolean = false;
+  retourKo: boolean = false;
+  message: string = "";
 
-      if (this.etablissementDTOS.length == this.etablissementNumber) {
-        if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-          console.log({
-            ancienSiren: this.sirenEtab,
-            etablissementDTOS: this.etablissementDTOS
-          });
+  triggerChildremForm(): void {
+    this.bus.$emit("submit");
+  }
 
-          this.alert = false;
-          this.message = "";
-          this.retourKo = false;
-          LicencesNationalesApiService.scission({
+  send(payload: never): void {
+    this.buttonLoading = true;
+    this.etablissementDTOS.push(payload);
+
+    if (this.etablissementDTOS.length == this.etablissementNumber) {
+      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+        Logger.debug(
+          JSON.stringify({
             ancienSiren: this.sirenEtab,
             etablissementDTOS: this.etablissementDTOS
           })
-            .then(response => {
-              this.alert = true;
-              this.buttonLoading = false;
-              this.message = response.data;
-              this.alert = true;
-              this.clear();
-            })
-            .catch(err => {
-              this.buttonLoading = false;
-              this.message = err.response.data;
-              this.alert = true;
-              this.retourKo = true;
-            });
-        }
+        );
+
+        this.alert = false;
+        this.message = "";
+        this.retourKo = false;
+        serviceLn
+          .scission(this.$store.state.user.token, {
+            ancienSiren: this.sirenEtab,
+            etablissementDTOS: this.etablissementDTOS
+          })
+          .then(response => {
+            this.alert = true;
+            this.buttonLoading = false;
+            this.message = response.data;
+            this.alert = true;
+            this.clear();
+          })
+          .catch(err => {
+            this.buttonLoading = false;
+            this.message = err.response.data;
+            this.alert = true;
+            this.retourKo = true;
+          });
       }
-    },
-    clear(): void {
-      this.bus.$emit("clear");
-    },
-    increaseEtablissementNumber: function() {
-      this.etablissementNumber++;
-    },
-    decreaseEtablissementNumber: function() {
-      this.etablissementNumber--;
     }
   }
-});
+
+  clear(): void {
+    this.bus.$emit("clear");
+  }
+
+  increaseEtablissementNumber() {
+    this.etablissementNumber++;
+  }
+
+  decreaseEtablissementNumber() {
+    this.etablissementNumber--;
+  }
+}
 </script>
 
 <style scoped>

@@ -112,169 +112,182 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { LicencesNationalesApiService } from "../service/licencesnationales/LicencesNationalesApiService";
-import { mapActions } from "vuex";
+import {Component, Vue} from "vue-property-decorator";
+import {serviceLn} from "../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
+import {Logger} from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "ListeAcces",
-  data() {
-    return {
-      statut: "",
-      selectStatut: ["En validation", "Validée"],
-      rechercher: "",
-      acces: [] as any,
-      title: "" as string,
-      id: "" as any,
-      error: "",
-      alert: false,
-      headers: [
-        {
-          text: "Date de création",
-          align: "start",
-          value: "dateCreation",
-          sortable: true
-        },
-        {
-          text: "Date de modification",
-          value: "dateModification",
-          sortable: true
-        },
-        {
-          text: "Type d'accès",
-          value: "typeAcces",
-          sortable: true
-        },
-        {
-          text: "Type d'IP",
-          value: "typeIp",
-          sortable: true
-        },
-        { text: "Valeur", value: "ip", sortable: true },
-        { text: "Statut", value: "statut", sortable: true },
-        { text: "Action", value: "action", sortable: false }
-      ]
-    };
-  },
-  computed: {
-    notification() {
-      return this.$store.state.notification;
+@Component
+export default class ListeAcces extends Vue {
+  statut: string = "";
+  selectStatut: Array<string> = ["En validation", "Validée"];
+  rechercher: string = "";
+  acces: Array<string> = [];
+  title: string = "";
+  id: string = "";
+  error: string = "";
+  alert: boolean = false;
+  headers = [
+    {
+      text: "Date de création",
+      align: "start",
+      value: "dateCreation",
+      sortable: true
     },
-    sirenEtabSiAdmin() {
-      return this.$store.state.sirenEtabSiAdmin;
+    {
+      text: "Date de modification",
+      value: "dateModification",
+      sortable: true
     },
-    getUserSiren() {
-      return this.$store.state.user.siren;
+    {
+      text: "Type d'accès",
+      value: "typeAcces",
+      sortable: true
     },
-    isAdmin() {
-      console.log("isAdmin = " + this.$store.state.user.isAdmin);
-      return this.$store.state.user.isAdmin;
+    {
+      text: "Type d'IP",
+      value: "typeIp",
+      sortable: true
     },
-    // pour éviter l'erreur this.qch doesn not exist on ...
-    // declarer le type returné par la fonction computed
-    filteredAccesByStatut(): string {
-      const conditions = [] as any;
-      if (this.statut) {
-        conditions.push(this.filterStatut);
-      }
-      if (conditions.length > 0) {
-        return this.acces.filter(acces => {
-          return conditions.every(condition => {
-            return condition(acces);
-          });
-        });
-      }
-      return this.acces;
+    { text: "Valeur", value: "ip", sortable: true },
+    { text: "Statut", value: "statut", sortable: true },
+    { text: "Action", value: "action", sortable: false }
+  ];
+
+  get notification() {
+    return this.$store.state.notification;
+  }
+
+  get sirenEtabSiAdmin() {
+    return this.$store.state.sirenEtabSiAdmin;
+  }
+
+  get getUserSiren() {
+    return this.$store.state.user.siren;
+  }
+
+  get isAdmin() {
+    Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
+    return this.$store.state.user.isAdmin;
+  }
+
+  // pour éviter l'erreur this.qch doesn not exist on ...
+  // declarer le type returné par la fonction computed
+  get filteredAccesByStatut(): string {
+    const conditions = [] as any;
+    if (this.statut) {
+      conditions.push(this.filterStatut);
     }
-  },
+    if (conditions.length > 0) {
+      return this.acces.filter(acces => {
+        return conditions.every(condition => {
+          return condition(acces);
+        });
+      })[0];
+    }
+    return this.acces[0];
+  }
+
   mounted() {
     moment.locale("fr");
     this.collecterAcces();
     this.id = this.getIdAcces(this.acces);
-  },
-  methods: {
-    ...mapActions({
-      setNotification: "setNotification"
-    }),
-    getIdAcces(acces): any {
-      return {
-        id: acces.id
-      };
-    },
-    filterStatut(statutRecherche) {
-      return statutRecherche.statut.toString().includes(this.statut);
-    },
-    getAll() {
-      if (this.isAdmin === "true")
-        return LicencesNationalesApiService.getListIPEtab(this.sirenEtabSiAdmin);
-      else return LicencesNationalesApiService.getListIP(this.getUserSiren);
-    },
-    collecterAcces(): void {
-      this.getAll()
-        .then(response => {
-          this.acces = response.data.map(this.affichageAcces);
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-    affichageAcces(acces) {
-      console.log("debut affichage acces");
-      return {
-        id: acces.id,
-        dateCreation: moment(acces.dateCreation).format("L"),
-        dateModification: this.getDateModification(acces),
-        typeAcces: acces.typeAcces,
-        typeIp: acces.typeIp,
-        ip: acces.ip,
-        statut: acces.validee ? "Validée" : "En validation"
-      };
-    },
-    getDateModification(acces) {
-      if (acces.dateModification === null) return acces.dateModification;
-      else return moment(acces.dateModification).format("L");
-    },
-    getUrlSuppressionIp() {
-      if (this.isAdmin === "true") return "ln/ip/supprimeByAdmin";
-      else return "ln/ip/supprime";
-    },
-    getSirenSuppressionIp() {
-      if (this.isAdmin === "true") return this.sirenEtabSiAdmin;
-      else return this.getUserSiren;
-    },
-    supprimerAcces(id): void {
-      console.log("id = " + id);
-      LicencesNationalesApiService.deleteIP(this.getUrlSuppressionIp(), {
+  }
+
+  getIdAcces(acces): any {
+    return {
+      id: acces.id
+    };
+  }
+
+  filterStatut(statutRecherche) {
+    return statutRecherche.statut.toString().includes(this.statut);
+  }
+
+  getAll() {
+    if (this.isAdmin === "true")
+      return serviceLn.getListIPEtab(
+        this.$store.state.user.token,
+        this.sirenEtabSiAdmin
+      );
+    else
+      return serviceLn.getListIP(
+        this.$store.state.user.token,
+        this.getUserSiren
+      );
+  }
+
+  collecterAcces(): void {
+    this.getAll()
+      .then(response => {
+        this.acces = response.data.map(this.affichageAcces);
+        Logger.debug(response.data);
+      })
+      .catch(e => {
+        Logger.error(e);
+      });
+  }
+
+  affichageAcces(acces) {
+    Logger.debug("debut affichage acces");
+    return {
+      id: acces.id,
+      dateCreation: moment(acces.dateCreation).format("L"),
+      dateModification: this.getDateModification(acces),
+      typeAcces: acces.typeAcces,
+      typeIp: acces.typeIp,
+      ip: acces.ip,
+      statut: acces.validee ? "Validée" : "En validation"
+    };
+  }
+
+  getDateModification(acces) {
+    if (acces.dateModification === null) return acces.dateModification;
+    else return moment(acces.dateModification).format("L");
+  }
+
+  getUrlSuppressionIp() {
+    if (this.isAdmin === "true") return "ln/ip/supprimeByAdmin";
+    else return "ln/ip/supprime";
+  }
+
+  getSirenSuppressionIp() {
+    if (this.isAdmin === "true") return this.sirenEtabSiAdmin;
+    else return this.getUserSiren;
+  }
+
+  supprimerAcces(id): void {
+    Logger.debug("id = " + id);
+    serviceLn
+      .deleteIP(this.$store.state.user.token, this.getUrlSuppressionIp(), {
         id: id,
         siren: this.getSirenSuppressionIp()
       })
-        .then(response => {
-          this.refreshList();
-          console.log("notification = " + response.data);
-          this.setNotification(response.data);
-          console.log("notification = " + this.$store.state.notification);
-        })
-        .catch(err => {
-          this.error = err.response.data;
-          this.alert = true;
+      .then(response => {
+        this.refreshList();
+        Logger.debug("notification = " + response.data);
+        this.$store.dispatch("setNotification", response.data).catch(err => {
+          Logger.error(err);
         });
-    },
-    refreshList(): void {
-      this.collecterAcces();
-    },
-    modifierAcces(id, typeAcces) {
-      this.$router.push({
-        name: "ModifierAcces",
-        params: { id: id, typeAcces: typeAcces }
+        Logger.debug("notification = " + this.$store.state.notification);
+      })
+      .catch(err => {
+        this.error = err.response.data;
+        this.alert = true;
       });
-    }
-  },
-  destroyed() {
-    this.setNotification("");
   }
-});
+
+  refreshList(): void {
+    this.collecterAcces();
+  }
+
+  modifierAcces(id, typeAcces) {
+    this.$router.push({
+      name: "ModifierAcces",
+      params: { id: id, typeAcces: typeAcces }
+    });
+  }
+}
 </script>
 <style>
 .list {

@@ -141,8 +141,9 @@
 </template>
 
 <script lang="ts">
-import { mapActions } from "vuex";
+import {mapActions} from "vuex";
 import Vue from "vue";
+import {Logger} from "@/utils/Logger";
 
 export default Vue.extend({
   name: "SideMenu",
@@ -162,7 +163,7 @@ export default Vue.extend({
 
   computed: {
     isAdmin() {
-      console.log("isAdmin = " + this.$store.state.user.isAdmin);
+      Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
       return this.$store.state.user.isAdmin;
     }
   }
