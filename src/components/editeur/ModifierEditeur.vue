@@ -192,9 +192,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
-import { Logger } from "@/utils/Logger";
+import {Component, Vue} from "vue-property-decorator";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
 
 @Component
 export default class ModifierEditeur extends Vue {
@@ -364,7 +364,7 @@ export default class ModifierEditeur extends Vue {
       .then(response => {
         this.buttonLoading = false;
         Logger.debug("notification = " + response.data);
-        this.$store.dispatch('setNotification', response.data).catch((err) => {
+        this.$store.dispatch("setNotification", response.data).catch(err => {
           Logger.error(err);
         });
         Logger.debug("notification = " + this.$store.state.notification);
@@ -401,5 +401,3 @@ export default class ModifierEditeur extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

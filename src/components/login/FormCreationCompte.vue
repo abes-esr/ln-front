@@ -540,10 +540,10 @@ export default class FormCreationCompte extends Vue {
         this.buttonLoading = false;
         Logger.debug("notification = " + response.data);
         //this.setNotification(response.data);
-        this.$store.dispatch('setNotification', response.data).catch((err) => {
+        this.$store.dispatch("setNotification", response.data).catch(err => {
           Logger.error(err);
         });
-        this.$store.dispatch('setCreationCompteEffectueeTrue').catch((err) => {
+        this.$store.dispatch("setCreationCompteEffectueeTrue").catch(err => {
           Logger.error(err);
         });
         Logger.debug("notification = " + this.$store.state.notification);
@@ -603,5 +603,3 @@ export default class FormCreationCompte extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

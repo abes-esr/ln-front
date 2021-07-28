@@ -272,5 +272,3 @@ export default class FormProfile extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

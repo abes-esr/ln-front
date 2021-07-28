@@ -84,12 +84,13 @@
     </v-alert>
   </div>
 </template>
-
+<style src="./style.css"></style>
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
 import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
 import {Logger} from "@/utils/Logger";
+import {Editeur} from "@/components/CommonDefinition";
 
 @Component
 export default class ListeEditeurs extends Vue {
@@ -111,10 +112,10 @@ export default class ListeEditeurs extends Vue {
   ];
 
   get notification() {
-    return this.$store.state.notification;
+    return this.$store.getters.notification;
   }
   get getUserSiren() {
-    return this.$store.state.user.siren;
+    return this.$store.getters.userSiren;
   }
   get getEditeurs(): string {
     return this.editeur;
@@ -132,7 +133,7 @@ export default class ListeEditeurs extends Vue {
   getAll(): any {
     return serviceLn.getEditeurs(this.$store.state.user.token);
   }
-  collecterEditeurs(): any {
+  collecterEditeurs(): void {
     this.getAll()
       .then(response => {
         this.editeur = response.data.map(this.affichageEditeurs);
@@ -142,7 +143,7 @@ export default class ListeEditeurs extends Vue {
         Logger.error(e);
       });
   }
-  affichageEditeurs(editeur) {
+  affichageEditeurs(editeur): Editeur {
     return {
       id: editeur.id,
       dateCreation: moment(editeur.dateCreation).format("L"),
@@ -150,7 +151,7 @@ export default class ListeEditeurs extends Vue {
     };
   }
   listeAcces(siren): void {
-    this.$store.dispatch('setSirenEtabSiAdmin', siren).catch((err) => {
+    this.$store.dispatch("setSirenEtabSiAdmin", siren).catch(err => {
       Logger.error(err);
     });
     this.$router.push({
@@ -163,7 +164,7 @@ export default class ListeEditeurs extends Vue {
       .then(response => {
         this.refreshList();
         Logger.debug("notification = " + response.data);
-        this.$store.dispatch('setNotification', response.data).catch((err) => {
+        this.$store.dispatch("setNotification", response.data).catch(err => {
           Logger.error(err);
         });
       })
@@ -181,11 +182,3 @@ export default class ListeEditeurs extends Vue {
   }
 }
 </script>
-<style>
-.list {
-  max-width: 750px;
-}
-#mytable table thead {
-  background: aquamarine;
-}
-</style>

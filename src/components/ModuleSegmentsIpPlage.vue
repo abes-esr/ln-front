@@ -1,3 +1,5 @@
+// Pour mémoire - repeat a form vuejs
+//https://stackoverflow.com/questions/51133782/vuejs-add-the-same-form-multiple-times
 <template>
   <div>
     <v-card>
@@ -256,120 +258,168 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { mapActions } from "vuex";
-import {
-  AjouterAccesSubmitEvent,
-  GetTypeIpFromModifierAccesEvent,
-  IpChangeEvent,
-  TypeIpChangeEvent
-} from "@/main";
-import { serviceLn } from "../service/licencesnationales/LicencesNationalesApiService";
-import { Logger } from "@/utils/Logger";
+import {Component, Vue} from "vue-property-decorator";
+import {AjouterAccesSubmitEvent, GetTypeIpFromModifierAccesEvent, IpChangeEvent, TypeIpChangeEvent} from "@/main";
+import {serviceLn} from "../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
+import {SegmentPlage} from "@/components/CommonDefinition";
 
-export default Vue.extend({
-  name: "ModuleSegmentsIpPlage",
+@Component
+export default class ModuleSegmentsIpPlage extends Vue {
+  id: string = "";
+  ipToModify: string = "";
+  valide: string = "";
+  typeIpTemp: string = "";
+  modeEditIp: boolean = false;
+  suffix: string = "";
+  ipPasted: string = "";
+  ipPastedTemp: string = "";
+  ipPastedArray: Array<string> = ["", "", "", "", "", "", "", "", "", ""];
+  ipv4Segments: Array<SegmentPlage> = [
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" }
+  ];
+  ipv6Segments: Array<SegmentPlage> = [
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" }
+  ];
+  ipv4SegmentsPlage: Array<SegmentPlage> = [
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" }
+  ];
+  ipv6SegmentsPlage: Array<SegmentPlage> = [
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" },
+    { length: 5, value: "" }
+  ];
 
-  data() {
-    return {
-      id: "",
-      ipToModify: "" as string,
-      valide: "",
-      typeIpTemp: "" as string,
-      modeEditIp: false,
-      suffix: "" as string,
-      ipPasted: "" as string,
-      ipPastedTemp: "" as string,
-      ipPastedArray: ["", "", "", "", "", "", "", "", "", ""],
-      ipv4Segments: [
-        { length: 3, value: "" },
-        { length: 3, value: "" },
-        { length: 3, value: "" },
-        { length: 3, value: "" }
-      ],
-      ipv6Segments: [
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" }
-      ],
-      ipv4SegmentsPlage: [
-        { length: 3, value: "" },
-        { length: 3, value: "" },
-        { length: 3, value: "" },
-        { length: 3, value: "" },
-        { length: 3, value: "" },
-        { length: 3, value: "" }
-      ],
-      ipv6SegmentsPlage: [
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" },
-        { length: 5, value: "" }
-      ],
-      resultatPlage: "" as string,
-      labelIp: "" as string,
-      labelIpResultat: "" as string,
-      ip: "",
-      typeAcces: "" as string,
-      typeIp: "" as string,
-      alert: false,
-      error: "",
-      typesIp: ["IPV4", "IPV6"],
-      typeIpRules: [(v: any) => !!v || "Le type d'IP est obligatoire"],
-      ipv4SegmentsRules: [
-        (v: any) => !!v || "Le segment d'IP est obligatoire",
-        (v: any) =>
-          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))$/.test(v) ||
-          "Le segment d'IP fourni n'est pas valide" // cf https://stackoverflow.com/a/47959401
-      ],
-      ipv6SegmentsRules: [
-        (v: any) => !!v || "Le segment d'IP est obligatoire",
-        (v: any) =>
-          /^\s*([0-9a-fA-F]{1,4})$/.test(v) ||
-          "Le segment d'IP fourni n'est pas valide"
-      ],
-      ipV4Rules: [
-        (v: any) => !!v || "L'IP est obligatoire",
-        (v: any) =>
-          /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/.test(
-            v
-          ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/47959401
-      ],
-      ipV6Rules: [
-        (v: any) => !!v || "L'IP est obligatoire",
-        (v: any) =>
-          /^\s*(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\s*$/.test(
-            v
-          ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
-      ],
-      plageIpV4Rules: [
-        (v: any) => !!v || "La plage d'Ips est obligatoire",
-        (v: any) =>
-          /^(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))$/.test(
-            v
-          ) || "La plage d'Ips fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
-      ],
-      plageIpV6Rules: [
-        (v: any) => !!v || "La plage d'Ips est obligatoire",
-        (v: any) =>
-          /^\s*((([0-9a-fA-F]{1,4}:){6,6}[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}))s*$/.test(
-            v
-          ) || "La plage d'Ips fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
-      ],
-      commentaires: "" as string
-    };
-  },
+  resultatPlage: string = "";
+  labelIp: string = "";
+  labelIpResultat: string = "";
+  ip: string = "";
+  typeAcces: string = "";
+  typeIp: string = "";
+  alert: boolean = false;
+  error: string = "";
+  typesIp: Array<string> = ["IPV4", "IPV6"];
+  typeIpRules = [(v: string) => !!v || "Le type d'IP est obligatoire"];
+  ipv4SegmentsRules = [
+    (v: string) => !!v || "Le segment d'IP est obligatoire",
+    (v: string) =>
+      /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))$/.test(v) ||
+      "Le segment d'IP fourni n'est pas valide" // cf https://stackoverflow.com/a/47959401
+  ];
+  ipv6SegmentsRules = [
+    (v: string) => !!v || "Le segment d'IP est obligatoire",
+    (v: string) =>
+      /^\s*([0-9a-fA-F]{1,4})$/.test(v) ||
+      "Le segment d'IP fourni n'est pas valide"
+  ];
+  ipV4Rules = [
+    (v: string) => !!v || "L'IP est obligatoire",
+    (v: string) =>
+      /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/.test(
+        v
+      ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/47959401
+  ];
+  ipV6Rules = [
+    (v: string) => !!v || "L'IP est obligatoire",
+    (v: string) =>
+      /^\s*(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\s*$/.test(
+        v
+      ) || "L'IP fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
+  ];
+  plageIpV4Rules = [
+    (v: string) => !!v || "La plage d'Ips est obligatoire",
+    (v: string) =>
+      /^(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})?\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))\.(([(\d+)(x+)]){1,3})(-+([(\d+)(x)]{1,3}))$/.test(
+        v
+      ) || "La plage d'Ips fournie n'est pas valide" //regex qui filtre le texte parasite au cas où : cf https://stackoverflow.com/a/53442371
+  ];
+  plageIpV6Rules = [
+    (v: string) => !!v || "La plage d'Ips est obligatoire",
+    (v: string) =>
+      /^\s*((([0-9a-fA-F]{1,4}:){6,6}[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}))s*$/.test(
+        v
+      ) || "La plage d'Ips fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
+  ];
+  commentaires: string = "";
+
+  get sirenEtabSiAdmin() {
+    return this.$store.state.sirenEtabSiAdmin;
+  }
+  get getUserSiren() {
+    if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
+    else return this.$store.state.user.siren;
+  }
+  get isAdmin() {
+    Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
+    return this.$store.state.user.isAdmin;
+  }
+  get resultatIp() {
+    let value = "";
+    Logger.debug("this.typeIp =" + this.typeIp);
+    if (this.typeIp === "IPV4") {
+      for (const field of this.ipv4Segments) {
+        value += field.value + ".";
+      }
+      value = value.substr(0, value.lastIndexOf("."));
+    } else {
+      Logger.debug("dans le else");
+      //this.reinitialisationIpSegments();
+      for (const field of this.ipv6Segments) {
+        value += field.value + ":";
+      }
+      value = value.substr(0, value.lastIndexOf(":"));
+    }
+    (this as any).ip = value;
+    Logger.debug("this.ip = " + this.ip);
+    IpChangeEvent.$emit("ipChangeEvent", this.ip);
+    return value;
+  }
+  get resultatPlageIp() {
+    let valeur = "";
+    Logger.debug("this.typeIp =" + this.typeIp);
+    if (this.typeIp === "IPV4") {
+      this.ipv4SegmentsPlage.forEach((value, index) => {
+        Logger.debug("value.value = " + value.value);
+        if (index === 2 || index === 4) valeur += value.value + "-";
+        else valeur += value.value + ".";
+      });
+      valeur = valeur.substr(0, valeur.lastIndexOf("."));
+    } else {
+      Logger.debug("dans le else");
+      this.ipv6SegmentsPlage.forEach((value, index) => {
+        if (index === 6 || index === 8) valeur += value.value + "-";
+        else valeur += value.value + ":";
+      });
+      valeur = valeur.substr(0, valeur.lastIndexOf(":"));
+    }
+    (this as any).ip = valeur;
+    Logger.debug("this.ip = " + this.ip);
+    IpChangeEvent.$emit("ipChangeEvent", this.ip);
+    return valeur;
+  }
+
   mounted() {
     Logger.debug("debut mounted ModuleSegmentsIpPlage");
 
@@ -423,141 +473,77 @@ export default Vue.extend({
     );
     AjouterAccesSubmitEvent.$on("ajouterAccesSubmitEvent", this.ajouterIp);
     AjouterAccesSubmitEvent.$on("clear", this.clear);
-  },
+  }
 
-  computed: {
-    //...mapGetters(["userSiren"]),
-    sirenEtabSiAdmin() {
-      return this.$store.state.sirenEtabSiAdmin;
-    },
-    getUserSiren() {
-      if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
-      else return this.$store.state.user.siren;
-    },
-    isAdmin() {
-      Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
-      return this.$store.state.user.isAdmin;
-    },
-    resultatIp() {
-      let value = "";
-      Logger.debug("this.typeIp =" + this.typeIp);
-      if (this.typeIp === "IPV4") {
-        for (const field of this.ipv4Segments) {
-          value += field.value + ".";
-        }
-        value = value.substr(0, value.lastIndexOf("."));
-      } else {
-        Logger.debug("dans le else");
-        //this.reinitialisationIpSegments();
-        for (const field of this.ipv6Segments) {
-          value += field.value + ":";
-        }
-        value = value.substr(0, value.lastIndexOf(":"));
-      }
-      (this as any).ip = value;
-      Logger.debug("this.ip = " + this.ip);
-      IpChangeEvent.$emit("ipChangeEvent", this.ip);
-      return value;
-    },
-    resultatPlageIp() {
-      let valeur = "";
-      Logger.debug("this.typeIp =" + this.typeIp);
-      if (this.typeIp === "IPV4") {
-        this.ipv4SegmentsPlage.forEach((value, index) => {
-          Logger.debug("value.value = " + value.value);
-          if (index === 2 || index === 4) valeur += value.value + "-";
-          else valeur += value.value + ".";
-        });
-        valeur = valeur.substr(0, valeur.lastIndexOf("."));
-      } else {
-        Logger.debug("dans le else");
-        this.ipv6SegmentsPlage.forEach((value, index) => {
-          if (index === 6 || index === 8) valeur += value.value + "-";
-          else valeur += value.value + ":";
-        });
-        valeur = valeur.substr(0, valeur.lastIndexOf(":"));
-      }
-      (this as any).ip = valeur;
-      Logger.debug("this.ip = " + this.ip);
-      IpChangeEvent.$emit("ipChangeEvent", this.ip);
-      return valeur;
-    }
-  },
-  watch: {},
-
-  methods: {
-    ...mapActions({
-      setNotification: "setNotification"
-    }),
-    /////////////////////pour la modification)
-    fetchIp(): void {
-      Logger.debug("id = " + this.id);
-      Logger.debug("siren = " + this.getUserSiren);
-      serviceLn
-        .getIPInfos(this.$store.state.user.token, {
-          id: this.id,
-          siren: this.$store.state.user.siren
-        })
-        .then(result => {
-          this.id = result.data.id;
-          this.ipToModify = result.data.ip;
-          this.valide = result.data.validee;
-          this.typeAcces = result.data.typeAcces;
-          this.typeIp = result.data.typeIp;
-          this.commentaires = result.data.commentaires;
-          GetTypeIpFromModifierAccesEvent.$emit(
-            "getTypeIpFromModifierAccesEvent",
-            this.typeIp
-          );
-        })
-        .catch(err => {
-          this.alert = true;
-          this.error = err;
-        });
-    },
-
-    getSuffix(index) {
-      Logger.debug("getSuffix");
-      if (this.typeIp === "IPV4") {
-        Logger.debug("IPV4 index = " + index);
-        if (index === 2 || index === 4) return "-";
-        else return ".";
-      } else {
-        Logger.debug("IPV6 index = " + index);
-        if (index === 6 || index === 8) return "-";
-        else return ":";
-      }
-    },
-
-    onPaste(evt) {
-      this.ipPasted = evt.clipboardData.getData("text");
-      this.ipPastedTemp = this.ipPasted;
-      Logger.debug("this.pasted = " + this.ipPasted);
-      this.ipPastedTemp = this.ipPastedTemp.replaceAll(/[: . -]/g, "+");
-      Logger.debug("this.pasted = " + this.ipPasted);
-      this.ipPastedArray = this.ipPastedTemp.split("+");
-      if (this.typeAcces === "ip") {
-        if (this.typeIp === "IPV4")
-          this.pasteSegment(this.ipPastedArray, this.ipv4Segments);
-        else this.pasteSegment(this.ipPastedArray, this.ipv6Segments);
-      } else {
-        if (this.typeIp === "IPV4")
-          this.pasteSegment(this.ipPastedArray, this.ipv4SegmentsPlage);
-        else this.pasteSegment(this.ipPastedArray, this.ipv6SegmentsPlage);
-      }
-    },
-    pasteSegment(ipPastedArray, array) {
-      array.forEach((value, index) => {
-        this.clearIpSegment(index, array);
-      });
-      ipPastedArray.forEach((value, index) => {
-        array[index].value = ipPastedArray[index].valueOf();
-        Logger.debug(
-          "ipPastedArray[index].valueOf() = " + ipPastedArray[index].valueOf()
+  /////////////////////pour la modification)
+  fetchIp(): void {
+    Logger.debug("id = " + this.id);
+    Logger.debug("siren = " + this.getUserSiren);
+    serviceLn
+      .getIPInfos(this.$store.state.user.token, {
+        id: this.id,
+        siren: this.$store.state.user.siren
+      })
+      .then(result => {
+        this.id = result.data.id;
+        this.ipToModify = result.data.ip;
+        this.valide = result.data.validee;
+        this.typeAcces = result.data.typeAcces;
+        this.typeIp = result.data.typeIp;
+        this.commentaires = result.data.commentaires;
+        GetTypeIpFromModifierAccesEvent.$emit(
+          "getTypeIpFromModifierAccesEvent",
+          this.typeIp
         );
+      })
+      .catch(err => {
+        this.alert = true;
+        this.error = err;
       });
-    },
-    /*reinitialisationIpSegments() {
+  }
+
+  getSuffix(index) {
+    Logger.debug("getSuffix");
+    if (this.typeIp === "IPV4") {
+      Logger.debug("IPV4 index = " + index);
+      if (index === 2 || index === 4) return "-";
+      else return ".";
+    } else {
+      Logger.debug("IPV6 index = " + index);
+      if (index === 6 || index === 8) return "-";
+      else return ":";
+    }
+  }
+
+  onPaste(evt) {
+    this.ipPasted = evt.clipboardData.getData("text");
+    this.ipPastedTemp = this.ipPasted;
+    Logger.debug("this.pasted = " + this.ipPasted);
+    this.ipPastedTemp = this.ipPastedTemp.replaceAll(/[: . -]/g, "+");
+    Logger.debug("this.pasted = " + this.ipPasted);
+    this.ipPastedArray = this.ipPastedTemp.split("+");
+    if (this.typeAcces === "ip") {
+      if (this.typeIp === "IPV4")
+        this.pasteSegment(this.ipPastedArray, this.ipv4Segments);
+      else this.pasteSegment(this.ipPastedArray, this.ipv6Segments);
+    } else {
+      if (this.typeIp === "IPV4")
+        this.pasteSegment(this.ipPastedArray, this.ipv4SegmentsPlage);
+      else this.pasteSegment(this.ipPastedArray, this.ipv6SegmentsPlage);
+    }
+  }
+  pasteSegment(ipPastedArray, array) {
+    array.forEach((value, index) => {
+      this.clearIpSegment(index, array);
+    });
+    ipPastedArray.forEach((value, index) => {
+      array[index].value = ipPastedArray[index].valueOf();
+      Logger.debug(
+        "ipPastedArray[index].valueOf() = " + ipPastedArray[index].valueOf()
+      );
+    });
+  }
+  /*reinitialisationIpSegments() {
       if (this.typeAcces === "ip") {
         this.ipv4Segments = [
           { length: 4, value: "192" },
@@ -599,125 +585,118 @@ export default Vue.extend({
       }
       this.clearIpPasted();
     },*/
-    nextSegment(index, array, refArray) {
-      if (this.typeIp === "IPV4") {
-        if (array[index].value.length > 2) {
-          this.clearIpSegment(index + 1, array);
-          (this as any).$refs[refArray][index + 1].focus();
-        }
-      } else {
-        if (array[index].value.length >= 4) {
-          this.clearIpSegment(index + 1, array);
-          (this as any).$refs[refArray][index + 1].focus();
-        }
+  nextSegment(index, array, refArray) {
+    if (this.typeIp === "IPV4") {
+      if (array[index].value.length > 2) {
+        this.clearIpSegment(index + 1, array);
+        (this as any).$refs[refArray][index + 1].focus();
       }
-    },
-    clearIpPasted(): void {
-      this.ipPasted = "";
-    },
-    clearIpSegment(index, array): void {
-      Logger.debug("clear = ");
-      array[index].value = "";
-      Logger.debug("array[index].value = " + array[index].value);
-    },
+    } else {
+      if (array[index].value.length >= 4) {
+        this.clearIpSegment(index + 1, array);
+        (this as any).$refs[refArray][index + 1].focus();
+      }
+    }
+  }
+  clearIpPasted(): void {
+    this.ipPasted = "";
+  }
+  clearIpSegment(index, array): void {
+    Logger.debug("clear = ");
+    array[index].value = "";
+    Logger.debug("array[index].value = " + array[index].value);
+  }
 
-    getLabelSegmentsIpv4(index) {
-      switch (index) {
-        case 0:
-          return "192.";
-        case 1:
-          return "168.";
-        case 2:
-          if (this.typeAcces === "ip") return "136.";
-          else return "136-";
-        case 3:
-          return "120.";
-        case 4:
-          if (this.typeAcces === "ip") return "136.";
-          else return "136-";
-        case 5:
-          return "120";
-      }
-    },
-    getLabelSegmentsIpv6(index) {
-      switch (index) {
-        case 0:
-          return "5800:";
-        case 1:
-          return "10C3:";
-        case 2:
-          return "E3C3:";
-        case 3:
-          return "F1AA:";
-        case 4:
-          return "48E3:";
-        case 5:
-          return "D923:";
-        case 6:
-          if (this.typeAcces === "ip") return "D494:";
-          else return "D494-";
-        case 7:
-          return "AAFF:";
-        case 8:
-          if (this.typeAcces === "ip") return "D494:";
-          else return "D494-";
-        case 9:
-          return "AAFF";
-      }
-    },
+  getLabelSegmentsIpv4(index) {
+    switch (index) {
+      case 0:
+        return "192.";
+      case 1:
+        return "168.";
+      case 2:
+        if (this.typeAcces === "ip") return "136.";
+        else return "136-";
+      case 3:
+        return "120.";
+      case 4:
+        if (this.typeAcces === "ip") return "136.";
+        else return "136-";
+      case 5:
+        return "120";
+    }
+  }
+  getLabelSegmentsIpv6(index) {
+    switch (index) {
+      case 0:
+        return "5800:";
+      case 1:
+        return "10C3:";
+      case 2:
+        return "E3C3:";
+      case 3:
+        return "F1AA:";
+      case 4:
+        return "48E3:";
+      case 5:
+        return "D923:";
+      case 6:
+        if (this.typeAcces === "ip") return "D494:";
+        else return "D494-";
+      case 7:
+        return "AAFF:";
+      case 8:
+        if (this.typeAcces === "ip") return "D494:";
+        else return "D494-";
+      case 9:
+        return "AAFF";
+    }
+  }
 
-    setText(): void {
-      if (this.typeAcces === "ip") {
-        this.labelIp = "Saisissez votre adresse ip.";
-        this.labelIpResultat = "Ip fournie";
-      } else {
-        this.labelIp = "Saisissez votre plage d'adresse ip.";
-        this.labelIpResultat = "Plage d'adresses ip fournie";
-      }
-    },
+  setText(): void {
+    if (this.typeAcces === "ip") {
+      this.labelIp = "Saisissez votre adresse ip.";
+      this.labelIpResultat = "Ip fournie";
+    } else {
+      this.labelIp = "Saisissez votre plage d'adresse ip.";
+      this.labelIpResultat = "Plage d'adresses ip fournie";
+    }
+  }
 
-    getIpRules() {
-      if (this.typeAcces === "ip") {
-        return this.typeIp === "IPV4" ? this.ipV4Rules : this.ipV6Rules;
-      } else
-        return this.typeIp === "IPV4"
-          ? this.plageIpV4Rules
-          : this.plageIpV6Rules;
-    },
-    ajouterIp(): void {
-      Logger.debug("Validation");
-      /*this.arrayAjouterIp.userSiren = this.getUserSiren;
+  getIpRules() {
+    if (this.typeAcces === "ip") {
+      return this.typeIp === "IPV4" ? this.ipV4Rules : this.ipV6Rules;
+    } else
+      return this.typeIp === "IPV4" ? this.plageIpV4Rules : this.plageIpV6Rules;
+  }
+  ajouterIp(): void {
+    Logger.debug("Validation");
+    /*this.arrayAjouterIp.userSiren = this.getUserSiren;
       this.arrayAjouterIp.typeIp = this.typeIp;
       this.arrayAjouterIp.ip = this.ip;
       this.arrayAjouterIp.commentaires = this.commentaires;
       Logger.debug(this.arrayAjouterIp);
       this.arrayArrays.push(this.arrayAjouterIp);
       Logger.debug(this.arrayArrays.toString());*/
-      Logger.debug("v - " + this.typeIp);
-      Logger.debug("v - " + this.ip);
-      Logger.debug("v - " + this.commentaires);
-      if (
-        (this.$refs.formModuleSegmentsIpPlage as Vue & {
-          validate: () => boolean;
-        }).validate()
-      ) {
-        this.$emit("FormModuleSegmentsIpPlageEvent", {
-          //userSiren: this.getUserSiren,
-          typeIp: this.typeIp,
-          ip: this.ip,
-          commentaires: this.commentaires
-        });
-      }
-    },
-    clear() {
-      this.typeIp = "";
-      this.ip = "";
-      this.commentaires = "";
+    Logger.debug("v - " + this.typeIp);
+    Logger.debug("v - " + this.ip);
+    Logger.debug("v - " + this.commentaires);
+    if (
+      (this.$refs.formModuleSegmentsIpPlage as Vue & {
+        validate: () => boolean;
+      }).validate()
+    ) {
+      this.$emit("FormModuleSegmentsIpPlageEvent", {
+        //userSiren: this.getUserSiren,
+        typeIp: this.typeIp,
+        ip: this.ip,
+        commentaires: this.commentaires
+      });
     }
   }
-});
+  clear() {
+    this.typeIp = "";
+    this.ip = "";
+    this.commentaires = "";
+  }
+}
 </script>
-
-<style scoped></style>
-//repeat a form vuejs
-//https://stackoverflow.com/questions/51133782/vuejs-add-the-same-form-multiple-times

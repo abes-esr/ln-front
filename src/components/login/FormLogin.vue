@@ -124,5 +124,3 @@ export default class FormLogin extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

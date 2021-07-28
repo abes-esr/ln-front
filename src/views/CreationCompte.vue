@@ -7,15 +7,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Component, Vue } from "vue-property-decorator";
 import FormCreationCompte from "../components/login/FormCreationCompte.vue";
 
-export default Vue.extend({
-  name: "CreationCompte",
-  components: {
-    FormCreationCompte
-  }
-});
+@Component({
+  components: { FormCreationCompte }
+})
+export default class CreationCompte extends Vue {}
 </script>
-
-<style scoped></style>

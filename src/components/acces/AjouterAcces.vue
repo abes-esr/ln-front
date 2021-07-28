@@ -93,11 +93,11 @@
     </v-alert>
   </div>
 </template>
-
+<style src="./style.css"></style>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import {Component, Vue} from "vue-property-decorator";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
-import { Logger } from "@/utils/Logger";
+import {Logger} from "@/utils/Logger";
 
 @Component({
   components: { ModuleSegmentsIpPlage }
@@ -254,9 +254,3 @@ export default class AjouterAcces extends Vue {
   }
 }
 </script>
-
-<style scoped>
-.v-card__actions {
-  display: block;
-}
-</style>

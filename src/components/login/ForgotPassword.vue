@@ -83,8 +83,8 @@
 </template>
 
 <script lang="ts">
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
-import { Component, Vue } from "vue-property-decorator";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import {Component, Vue} from "vue-property-decorator";
 
 @Component
 export default class ForgotPassword extends Vue {
@@ -167,4 +167,3 @@ export default class ForgotPassword extends Vue {
   }
 }
 </script>
-<style scoped></style>

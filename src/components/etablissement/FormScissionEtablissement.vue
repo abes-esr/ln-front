@@ -79,12 +79,12 @@
     </v-alert>
   </div>
 </template>
-
+<style src="./style.css"></style>
 <script lang="ts">
 import FormEtab from "@/components/etablissement/FormEtab.vue";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
-import { Logger } from "@/utils/Logger";
-import { Component, Vue } from "vue-property-decorator";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
+import {Component, Vue} from "vue-property-decorator";
 
 @Component({
   components: { FormEtab }
@@ -159,9 +159,3 @@ export default class FormScissionEtablissement extends Vue {
   }
 }
 </script>
-
-<style scoped>
-.v-card__actions {
-  display: block;
-}
-</style>

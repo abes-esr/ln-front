@@ -10,14 +10,10 @@
 
 <script lang="ts">
 import ChangePassword from "@/components/login/ChangePassword.vue";
-import Vue from "vue";
+import { Component, Vue } from "vue-property-decorator";
 
-export default Vue.extend({
-  name: "Profile",
-  components: {
-    ChangePassword
-  }
-});
+@Component({
+  components: { ChangePassword }
+})
+export default class Password extends Vue {}
 </script>
-
-<style scoped></style>

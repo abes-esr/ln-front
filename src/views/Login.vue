@@ -36,33 +36,16 @@
     </v-row>
   </v-container>
 </template>
-
+<style src="./style.css"></style>
 <script lang="ts">
-import Vue from "vue";
+import { Component, Vue } from "vue-property-decorator";
 import FormLogin from "../components/login/FormLogin.vue";
 import ForgotPassword from "../components/login/ForgotPassword.vue";
 
-export default Vue.extend({
-  name: "Login",
-  components: {
-    FormLogin,
-    ForgotPassword
-  },
-  data() {
-    return {
-      forgotPasswordVisible: false
-    };
-  }
-});
+@Component({
+  components: { FormLogin, ForgotPassword }
+})
+export default class App extends Vue {
+  forgotPasswordVisible: boolean = false;
+}
 </script>
-
-<style scoped>
-.fade-enter-active {
-  transition: opacity 0.8s;
-}
-
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
-</style>

@@ -110,10 +110,10 @@
     </v-alert>
   </div>
 </template>
-
+<style src="./style.css"></style>
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
-import {serviceLn} from "../service/licencesnationales/LicencesNationalesApiService";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
 import {Logger} from "@/utils/Logger";
 
@@ -289,11 +289,3 @@ export default class ListeAcces extends Vue {
   }
 }
 </script>
-<style>
-.list {
-  max-width: 750px;
-}
-#mytable table thead {
-  background: aquamarine;
-}
-</style>

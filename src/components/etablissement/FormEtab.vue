@@ -147,8 +147,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Logger } from "@/utils/Logger";
+import {Component, Prop, Vue} from "vue-property-decorator";
+import {Logger} from "@/utils/Logger";
 
 @Component
 export default class FormEtab extends Vue {
@@ -296,5 +296,3 @@ export default class FormEtab extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

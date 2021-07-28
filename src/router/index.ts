@@ -56,7 +56,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeAcces",
     name: "ListeAcces",
-    component: () => import("../components/ListeAcces.vue"),
+    component: () => import("../components/acces/ListeAcces.vue"),
     meta: {
       requiresAuth: true
     }
@@ -65,7 +65,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/ajouterAcces2/ip",
     name: "ajouterAcces2",
-    component: () => import("../components/AjouterAcces.vue"),
+    component: () => import("../components/acces/AjouterAcces.vue"),
     meta: {
       requiresAuth: true
     }
@@ -73,7 +73,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/ajouterAcces2/plage",
     name: "ajouterAcces2",
-    component: () => import("../components/AjouterAcces.vue"),
+    component: () => import("../components/acces/AjouterAcces.vue"),
     meta: {
       requiresAuth: true
     }
@@ -81,7 +81,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/modifierAcces/:id&:typeAcces",
     name: "ModifierAcces",
-    component: () => import("../components/ModifierAcces.vue"),
+    component: () => import("../components/acces/ModifierAcces.vue"),
     meta: {
       requiresAuth: true
     }

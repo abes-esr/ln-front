@@ -152,7 +152,7 @@
     </div>
   </div>
 </template>
-
+<style src="./style.css"></style>
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
 import moment from "moment";
@@ -284,7 +284,7 @@ export default class ListeEtab extends Vue {
       .then(response => {
         this.refreshList();
         Logger.debug("notification = " + response.data);
-        this.$store.dispatch('setNotification', response.data).catch((err) => {
+        this.$store.dispatch("setNotification", response.data).catch(err => {
           Logger.error(err);
         });
       })
@@ -303,11 +303,3 @@ export default class ListeEtab extends Vue {
   }
 }
 </script>
-<style>
-.list {
-  max-width: 750px;
-}
-#mytable table thead {
-  background: aquamarine;
-}
-</style>
