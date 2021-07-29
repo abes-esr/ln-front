@@ -1,7 +1,8 @@
-import axios from "axios";
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import {JsonLoginRequest} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
+import {serviceLn} from "@/service/licencesnationales/LicencesNationalesApiService";
 
 Vue.use(Vuex);
 
@@ -51,15 +52,21 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    login({ commit }, credentials) {
-      return axios
-        .post(process.env.VUE_APP_ROOT_API + "login", {
-          login: credentials.siren,
-          password: credentials.password
-        })
-        .then(result => {
-          commit("SET_TOKEN", result.data);
-        });
+    login({ commit }, credentials: JsonLoginRequest): Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        // On appel le serviceLn LicencesNationales
+        serviceLn
+          .login(credentials)
+          .then(result => {
+            // On sauvegarde le token
+            commit("SET_TOKEN", result.accessToken);
+            resolve(true);
+          })
+          .catch(err => {
+            //Si une erreur avec le ws est jetée, on lève un message d'erreur
+            reject(err);
+          });
+      });
     },
     logout({ commit }) {
       commit("SET_LOGOUT");

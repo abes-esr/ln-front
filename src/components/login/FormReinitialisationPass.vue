@@ -3,7 +3,16 @@
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
         <div>
-          <v-card witdh="100%" outlined>
+          <v-card v-if="this.tokenExpired === 'true'">
+            <v-alert dense outlined type="error">
+              La durée de validité de ce lien est dépassée. Mot de passe oublié
+              :
+              <router-link :to="{ path: 'forgotPassword' }"
+                >cliquez ici</router-link
+              >
+            </v-alert>
+          </v-card>
+          <v-card witdh="100%" outlined v-else>
             <v-form ref="formReinitialisationPass" lazy-validation>
               <v-card-title
                 >Réinitialisation de votre mot de passe</v-card-title
@@ -111,140 +120,125 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import axios from "axios";
+import {Component, Vue} from "vue-property-decorator";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "FormReinitialisationPass",
-  data() {
-    return {
-      jwtToken: "" as string,
-      disabled: 0,
-      show1: false,
-      token: "" as unknown,
-      tokenrecaptcha: this.$recaptchaLoaded() as unknown,
-      passContact: "" as string,
-      passContactRules: [
-        (v: never) => !!v || "Le mot de passe du contact est obligatoire",
-        (v: never) =>
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-            v
-          ) || "Le mot de passe fourni n'est pas valide"
-      ],
-      confirmPassContact: "" as string,
-      confirmPassContactRules: [
-        (v: never) => !!v || "Vous devez confirmer le mot de passe du contact"
-      ],
-      buttonLoading: false,
-      alert: false,
-      retourKo: false,
-      message: ""
-    };
-  },
-  computed: {
-    confirmPassContactRule() {
-      return () =>
-        this.confirmPassContact === this.passContact ||
-        "Le mot de passe de confirmation n'est pas valide";
-    },
+@Component
+export default class FormReinitialisationPass extends Vue {
+  jwtToken: string = "";
+  disabled: number = 0;
+  show1: boolean = false;
+  token: string = "";
+  tokenExpired: string = "initialisation";
+  tokenrecaptchaValid: Promise<boolean> = this.$recaptchaLoaded();
+  tokenrecaptcha: string = "";
+  passContact: string = "";
+  passContactRules = [
+    (v: string) => !!v || "Le mot de passe du contact est obligatoire",
+    (v: string) =>
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+        v
+      ) || "Le mot de passe fourni n'est pas valide"
+  ];
+  confirmPassContact: string = "";
+  confirmPassContactRules = [
+    (v: string) => !!v || "Vous devez confirmer le mot de passe du contact"
+  ];
+  buttonLoading: boolean = false;
+  alert: boolean = false;
+  retourKo: boolean = false;
+  message: string = "";
 
-    loggedIn() {
-      return this.$store.state.user.isLoggedIn;
-    }
-  },
+  get confirmPassContactRule() {
+    return () =>
+      this.confirmPassContact === this.passContact ||
+      "Le mot de passe de confirmation n'est pas valide";
+  }
+  get loggedIn() {
+    return this.$store.state.user.isLoggedIn;
+  }
+
   mounted() {
     if (this.loggedIn) {
       this.$router.push("/profile");
     }
-    this.token = this.$route.query.token;
-    console.log(this.token);
+    //this.token = this.$route.query.token;
+    Logger.debug(JSON.stringify(this.token));
     this.jwtToken = window.location.href.substr(
       window.location.href.lastIndexOf("=") + 1
     );
-    console.log(this.jwtToken);
-    this.tokenInvalide(this.token);
+    Logger.debug(JSON.stringify(this.jwtToken));
+    this.tokenInvalide();
     //if (this.message === "Token invalide")
     //this.$router.push("/invalideTokenReinitialisationPass");
-  },
+  }
 
-  methods: {
-    tokenInvalide(token: unknown) {
-      axios
-        .post(
-          process.env.VUE_APP_ROOT_API +
-            "/ln/reinitialisationMotDePasse/verifTokenValide",
-          {
-            jwtToken: this.jwtToken
-          }
-        )
-        .then(response => {
-          this.buttonLoading = false;
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.message = err.response.data;
-          this.disabled = 1;
-          this.alert = true;
-          this.retourKo = true;
-        });
-    },
-    async recaptcha() {
-      // (optional) Wait until recaptcha has been loaded.
-      await this.$recaptchaLoaded();
+  tokenInvalide() {
+    serviceLn
+      .checkToken({
+        jwtToken: this.jwtToken
+      })
+      .then(() => {
+        this.buttonLoading = false;
+      })
+      .catch(() => {
+        this.tokenExpired = "true";
+      });
+    return this.tokenExpired;
+  }
 
-      // Execute reCAPTCHA with action "reinitialisationPass".
-      this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
-      console.log("token dans recaptcha() " + this.tokenrecaptcha);
-      // Do stuff with the received token.
-      this.validate();
-    },
+  async recaptcha() {
+    // (optional) Wait until recaptcha has been loaded.
+    await this.$recaptchaLoaded();
 
-    validate(): void {
-      this.alert = false;
-      this.message = "";
-      this.retourKo = false;
+    // Execute reCAPTCHA with action "reinitialisationPass".
+    this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
+    Logger.debug("token dans recaptcha() " + this.tokenrecaptcha);
+    // Do stuff with the received token.
+    this.validate();
+  }
 
-      if (this.tokenrecaptcha != null) {
-        if (
-          (this.$refs.formReinitialisationPass as Vue & {
-            validate: () => boolean;
-          }).validate()
-        ) {
-          this.reinitialisationPass();
-        }
+  validate(): void {
+    this.alert = false;
+    this.message = "";
+    this.retourKo = false;
+
+    if (this.tokenrecaptcha != null) {
+      if (
+        (this.$refs.formReinitialisationPass as Vue & {
+          validate: () => boolean;
+        }).validate()
+      ) {
+        this.reinitialisationPass();
       }
-    },
-    reinitialisationPass(): void {
-      this.buttonLoading = true;
-      axios
-        .post(
-          process.env.VUE_APP_ROOT_API +
-            "/ln/reinitialisationMotDePasse/enregistrerPassword",
-          {
-            motDePasse: this.passContact,
-            recaptcha: this.tokenrecaptcha,
-            token: this.token
-          }
-        )
-        .then(response => {
-          this.buttonLoading = false;
-          this.message = response.data;
-          this.alert = true;
-          //this.$router.push({ name: "Home" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.message = err.response.data;
-          this.alert = true;
-          this.retourKo = true;
-        });
-    },
-
-    clear() {
-      (this.$refs.formReinitialisationPass as HTMLFormElement).reset();
     }
   }
-});
-</script>
 
-<style scoped></style>
+  reinitialisationPass(): void {
+    this.buttonLoading = true;
+    serviceLn
+      .saveNewPassword({
+        motDePasse: this.passContact,
+        recaptcha: this.tokenrecaptcha,
+        token: this.token
+      })
+      .then(response => {
+        this.buttonLoading = false;
+        this.message = response.data;
+        this.alert = true;
+        //this.$router.push({ name: "Home" });
+      })
+      .catch(err => {
+        this.buttonLoading = false;
+        this.message = err.response.data;
+        this.alert = true;
+        this.retourKo = true;
+      });
+  }
+
+  clear() {
+    (this.$refs.formReinitialisationPass as HTMLFormElement).reset();
+  }
+}
+</script>

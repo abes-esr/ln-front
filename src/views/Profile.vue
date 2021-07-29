@@ -9,15 +9,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Component, Vue } from "vue-property-decorator";
 import FormProfile from "../components/FormProfile.vue";
 
-export default Vue.extend({
-  name: "Profile",
-  components: {
-    FormProfile
-  }
-});
+@Component({
+  components: { FormProfile }
+})
+export default class App extends Vue {}
 </script>
-
-<style scoped></style>

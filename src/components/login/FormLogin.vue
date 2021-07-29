@@ -8,13 +8,14 @@
             <v-col cols="1" />
             <v-col cols="10">
               <v-text-field
+                ref="login"
                 outlined
                 label="SIREN"
                 placeholder="SIREN"
                 v-model="siren"
                 :rules="loginRules"
                 required
-                @keyup.enter="validate()"
+                @keyup="validate()"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -22,6 +23,7 @@
             <v-col cols="1" />
             <v-col cols="10">
               <v-text-field
+                ref="password"
                 outlined
                 label="Mot de passe"
                 placeholder="Mot de passe"
@@ -31,7 +33,7 @@
                 :rules="passwordRules"
                 required
                 @click:append="show = !show"
-                @keyup.enter="validate()"
+                @keyup="validate()"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -43,8 +45,9 @@
               <v-btn
                 color="success"
                 :loading="buttonLoading"
+                :disabled="!isValid"
                 x-large
-                @click="validate()"
+                @click="login()"
                 >Envoyer</v-btn
               >
             </v-col>
@@ -63,62 +66,61 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { mapActions } from "vuex";
-import { mapGetters } from "vuex";
+import {Component, Vue} from "vue-property-decorator";
+import {HttpRequestError} from "@/exception/HttpRequestError";
+import {Logger} from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "FormLogin",
-  data() {
-    return {
-      siren: "" as string,
-      loginRules: [
-        (v: any) => !!v || "SIREN obligatoire",
-        (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-      ],
+@Component
+export default class FormLogin extends Vue {
+  siren: string = "";
+  loginRules = [
+    (v: string) => !!v || "SIREN obligatoire",
+    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
+  ];
+  passwordRules = [(v: string) => !!v || "Mot de passe obligatoire"];
+  password: string = "";
+  buttonLoading: boolean = false;
+  isValid: boolean = false;
+  alert: boolean = false;
+  error: string = "";
+  notification: string = "";
+  show: boolean = false;
+  creationCompteEffectuee: boolean = false;
 
-      passwordRules: [(v: any) => !!v || "Mot de passe obligatoire"],
-      password: "" as string,
-      buttonLoading: false,
-      alert: false,
-      error: "",
-      show: false
-    };
-  },
-  methods: {
-    ...mapActions({
-      loginAction: "login",
-      setCreationCompteEffectueeFalse: "setCreationCompteEffectueeFalse",
-      setNotification: "setNotification"
-    }),
-    validate(): void {
-      this.alert = false;
-      this.error = "";
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
-        this.login();
-    },
-    login(): void {
-      this.buttonLoading = true;
-      this.loginAction({
-        siren: this.siren,
+  validate(): void {
+    this.alert = false;
+    this.error = "";
+
+    if (
+      (this.$refs.login as Vue & { valid: () => boolean }).valid &&
+      (this.$refs.password as Vue & { valid: () => boolean }).valid
+    ) {
+      this.isValid = true;
+    } else {
+      this.isValid = false;
+    }
+  }
+
+  login(): void {
+    this.buttonLoading = true;
+
+    this.$store
+      .dispatch("login", {
+        login: this.siren,
         password: this.password
       })
-        .then(() => {
-          this.$router.push({ name: "Home" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.error = err.response.data;
-          this.alert = true;
-        });
-    }
-  },
-  destroyed() {
-    this.setNotification("");
-    this.setCreationCompteEffectueeFalse();
-  },
-  computed: mapGetters(["notification", "creationCompteEffectuee"])
-});
+      .then(() => {
+        this.$router.push({ name: "Home" });
+      })
+      .catch(err => {
+        Logger.error(err.message);
+        if (err instanceof HttpRequestError) {
+          Logger.debug("Erreur API : " + err.debugMessage);
+        }
+        this.buttonLoading = false;
+        this.error = err.message;
+        this.alert = true;
+      });
+  }
+}
 </script>
-
-<style scoped></style>

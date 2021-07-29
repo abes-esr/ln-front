@@ -83,64 +83,57 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import axios from "axios";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import {Component, Vue} from "vue-property-decorator";
 
-export default Vue.extend({
-  name: "ForgotPassword",
-  data() {
-    return {
-      siren: "" as string,
-      token: this.$recaptchaLoaded() as unknown,
-      sirenRules: [
-        (v: any) => !!v || "SIREN obligatoire",
-        (v: any) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-      ],
-      mailRules: [
-        (v: any) => !!v || "Adresse mail obligatoire",
-        (v: any) =>
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-            v
-          ) || "Adresse mail invalide"
-      ],
-      mail: "" as string,
-      sirenRadio: true,
-      buttonLoading: false,
-      alert: false,
-      alertOK: false,
-      retourKo: false,
-      message: ""
-    };
-  },
-  methods: {
-    async recaptcha() {
-      // (optional) Wait until recaptcha has been loaded.
-      await this.$recaptchaLoaded();
+@Component
+export default class ForgotPassword extends Vue {
+  siren: string = "";
+  tokenValid: Promise<boolean> = this.$recaptchaLoaded();
+  token: string = "";
+  sirenRules = [
+    (v: string) => !!v || "SIREN obligatoire",
+    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
+  ];
+  mailRules = [
+    (v: string) => !!v || "Adresse mail obligatoire",
+    (v: string) =>
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        v
+      ) || "Adresse mail invalide"
+  ];
+  mail: string = "";
+  sirenRadio: boolean = true;
+  buttonLoading: boolean = false;
+  alert: boolean = false;
+  alertOK: boolean = false;
+  retourKo: boolean = false;
+  message: string = "";
 
-      // Execute reCAPTCHA with action "forgotPassword".
-      this.token = await this.$recaptcha("forgotPassword");
-      console.log("token dans recaptcha() " + this.token);
-      // Do stuff with the received token.
-      this.validate();
-    },
-    validate(): void {
-      this.alert = false;
-      this.message = "";
-      this.retourKo = false;
-      if (this.sirenRadio) {
-        if (
-          (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
-        )
-          console.log;
-        axios
-          .post(
-            process.env.VUE_APP_ROOT_API +
-              "/ln/reinitialisationMotDePasse/resetPassword",
-            {
-              siren: this.siren,
-              recaptcha: this.token
-            }
-          )
+  async recaptcha() {
+    // (optional) Wait until recaptcha has been loaded.
+    await this.$recaptchaLoaded();
+
+    // Execute reCAPTCHA with action "forgotPassword".
+    this.token = await this.$recaptcha("forgotPassword");
+    console.log("token dans recaptcha() " + this.token);
+    // Do stuff with the received token.
+    this.validate();
+  }
+
+  validate(): void {
+    this.alert = false;
+    this.message = "";
+    this.retourKo = false;
+    if (this.sirenRadio) {
+      if (
+        (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
+      )
+        serviceLn
+          .resetPassword({
+            siren: this.siren,
+            recaptcha: this.token
+          })
           .then(response => {
             this.buttonLoading = false;
             this.message = response.data;
@@ -152,33 +145,25 @@ export default Vue.extend({
             this.alert = true;
             this.retourKo = true;
           });
-      } else {
-        if (
-          (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
-        )
-          axios
-            .post(
-              process.env.VUE_APP_ROOT_API +
-                "/ln/reinitialisationMotDePasse/resetPassword",
-              {
-                email: this.mail,
-                recaptcha: this.token
-              }
-            )
-            .then(response => {
-              this.buttonLoading = false;
-              this.message = response.data;
-              this.alert = true;
-            })
-            .catch(err => {
-              this.buttonLoading = false;
-              this.message = err.response.data;
-              this.alert = true;
-              this.retourKo = true;
-            });
-      }
+    } else {
+      if ((this.$refs.formMail as Vue & { validate: () => boolean }).validate())
+        serviceLn
+          .resetPassword({
+            email: this.mail,
+            recaptcha: this.token
+          })
+          .then(response => {
+            this.buttonLoading = false;
+            this.message = response.data;
+            this.alert = true;
+          })
+          .catch(err => {
+            this.buttonLoading = false;
+            this.message = err.response.data;
+            this.alert = true;
+            this.retourKo = true;
+          });
     }
   }
-});
+}
 </script>
-<style scoped></style>

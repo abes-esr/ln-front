@@ -159,116 +159,116 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
-import { mapGetters } from "vuex";
+import {serviceLn} from "../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
+import {Component, Vue} from "vue-property-decorator";
 
-export default Vue.extend({
-  name: "FormProfile",
-  data() {
-    return {
-      adresse: "",
-      codePostal: "",
-      ville: "",
-      bp: "",
-      cedex: "",
-      mail: "",
-      nomContact: "",
-      prenomContact: "",
-      telephone: "",
-      jsonResponse: {},
-      alert: false,
-      error: "",
+@Component
+export default class FormProfile extends Vue {
+  adresse: string = "";
+  codePostal: string = "";
+  ville: string = "";
+  bp: string = "";
+  cedex: string = "";
+  mail: string = "";
+  nomContact: string = "";
+  prenomContact: string = "";
+  telephone: string = "";
+  jsonResponse: any = {};
+  alert: boolean = false;
+  error: string = "";
+  nomRules = [(v: string) => !!v || "Champ obligatoire"];
+  adrRules = [
+    (v: string) => !!v || "Champ obligatoire",
+    (v: string) => (v && v.length >= 10) || "Adresse trop courte"
+  ];
+  villeRules = [
+    (v: string) => !!v || "Champ obligatoire",
+    (v: string) => (v && v.length >= 2) || "Ville trop courte"
+  ];
+  mailRules = [
+    (v: string) => !!v || "Champ obligatoire",
+    (v: string) => /.+@.+\..+/.test(v) || "Adresse mail non valide"
+  ];
+  cpRules = [
+    (v: string) => !!v || "Champ obligatoire",
+    (v: string) =>
+      /[\d]{5}/.test(v) || "Le code postal doit être composé de 5 chiffres"
+  ];
+  telRules = [
+    (v: string) => !!v || "Champ obligatoire",
+    (v: string) =>
+      /^[\d]*$/.test(v) ||
+      "Le téléphone doit être composé de chiffres uniquement"
+  ];
+  buttonLoading: boolean = false;
 
-      nomRules: [(v: any) => !!v || "Champ obligatoire"],
-      adrRules: [
-        (v: any) => !!v || "Champ obligatoire",
-        (v: any) => (v && v.length >= 10) || "Adresse trop courte"
-      ],
-      villeRules: [
-        (v: any) => !!v || "Champ obligatoire",
-        (v: any) => (v && v.length >= 2) || "Ville trop courte"
-      ],
-      mailRules: [
-        (v: any) => !!v || "Champ obligatoire",
-        (v: any) => /.+@.+\..+/.test(v) || "Adresse mail non valide"
-      ],
-      cpRules: [
-        (v: any) => !!v || "Champ obligatoire",
-        (v: any) =>
-          /[\d]{5}/.test(v) || "Le code postal doit être composé de 5 chiffres"
-      ],
-      telRules: [
-        (v: any) => !!v || "Champ obligatoire",
-        (v: any) =>
-          /^[\d]*$/.test(v) ||
-          "Le téléphone doit être composé de chiffres uniquement"
-      ],
-      buttonLoading: false
-    };
-  },
-  computed: mapGetters(["userSiren"]),
+  get userSiren(): string {
+    return this.$store.getters.userSiren;
+  }
+
   mounted() {
     this.fetchEtab();
-  },
-  methods: {
-    validate(): void {
-      this.error = "";
-      this.alert = false;
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        this.buttonLoading = true;
-        this.submitProfil();
-      }
-    },
-    fetchEtab(): void {
-      HTTP.get("/ln/etablissement/getInfoEtab")
-        .then(result => {
-          this.mail = result.data.contact.mail;
-          this.nomContact = result.data.contact.nom;
-          this.prenomContact = result.data.contact.prenom;
-          this.adresse = result.data.contact.adresse;
-          this.bp = result.data.contact.boitePostal;
-          this.codePostal = result.data.contact.codePostal;
-          this.cedex = result.data.contact.cedex;
-          this.ville = result.data.contact.ville;
-          this.telephone = result.data.contact.telephone;
-        })
-        .catch(err => {
-          this.alert = true;
-          this.error = err;
-        });
-    },
-    submitProfil(): void {
-      this.updateJsonObject();
-      console.log(this.jsonResponse);
-      HTTP.post("/ln/etablissement/modification", this.jsonResponse)
-        .then(() => {
-          this.buttonLoading = false;
-          this.$router.push({ name: "Home" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.alert = true;
-          this.error = err;
-        });
-    },
-    updateJsonObject(): void {
-      const json: any = {};
-      json.adresseContact = this.adresse;
-      json.boitePostaleContact = this.bp;
-      json.cedexContact = this.cedex;
-      json.codePostalContact = this.codePostal;
-      json.mailContact = this.mail;
-      json.nomContact = this.nomContact;
-      json.prenomContact = this.prenomContact;
-      json.siren = this.userSiren;
-      json.telephoneContact = this.telephone;
-      json.villeContact = this.ville;
-      this.jsonResponse = json;
+  }
+
+  validate(): void {
+    this.error = "";
+    this.alert = false;
+    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+      this.buttonLoading = true;
+      this.submitProfil();
     }
   }
-});
-</script>
 
-<style scoped></style>
+  fetchEtab(): void {
+    serviceLn
+      .getInfosEtab(this.$store.state.user.token)
+      .then(result => {
+        this.mail = result.data.contact.mail;
+        this.nomContact = result.data.contact.nom;
+        this.prenomContact = result.data.contact.prenom;
+        this.adresse = result.data.contact.adresse;
+        this.bp = result.data.contact.boitePostal;
+        this.codePostal = result.data.contact.codePostal;
+        this.cedex = result.data.contact.cedex;
+        this.ville = result.data.contact.ville;
+        this.telephone = result.data.contact.telephone;
+      })
+      .catch(err => {
+        this.alert = true;
+        this.error = err;
+      });
+  }
+
+  submitProfil(): void {
+    this.updateJsonObject();
+    Logger.debug(JSON.stringify(this.jsonResponse));
+    serviceLn
+      .updateProfile(this.$store.state.user.token, this.jsonResponse)
+      .then(() => {
+        this.buttonLoading = false;
+        this.$router.push({ name: "Home" });
+      })
+      .catch(err => {
+        this.buttonLoading = false;
+        this.alert = true;
+        this.error = err;
+      });
+  }
+
+  updateJsonObject(): void {
+    const json: any = {};
+    json.adresseContact = this.adresse;
+    json.boitePostaleContact = this.bp;
+    json.cedexContact = this.cedex;
+    json.codePostalContact = this.codePostal;
+    json.mailContact = this.mail;
+    json.nomContact = this.nomContact;
+    json.prenomContact = this.prenomContact;
+    json.siren = this.userSiren;
+    json.telephoneContact = this.telephone;
+    json.villeContact = this.ville;
+    this.jsonResponse = json;
+  }
+}
+</script>
