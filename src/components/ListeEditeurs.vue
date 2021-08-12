@@ -87,7 +87,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
+import { AxiosApi } from "../utils/AxiosApi";
 import { mapActions } from "vuex";
 import moment from "moment";
 
@@ -141,7 +141,7 @@ export default Vue.extend({
       };
     },
     getAll(): any {
-      return HTTP.get("/ln/editeur/getListEditeurs");
+      return AxiosApi.getEditeurs();
     },
     collecterEditeurs(): any {
       this.getAll()
@@ -167,7 +167,7 @@ export default Vue.extend({
       });
     },
     supprimerEditeur(id): void {
-      HTTP.post("/ln/editeur/suppression", { id: id })
+      AxiosApi.deleteEditeur({ id: id })
         .then(response => {
           this.refreshList();
           console.log("notification = " + response.data);

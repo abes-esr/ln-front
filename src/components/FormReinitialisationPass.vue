@@ -121,7 +121,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import axios from "axios";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "FormReinitialisationPass",
@@ -171,25 +171,20 @@ export default Vue.extend({
       window.location.href.lastIndexOf("=") + 1
     );
     console.log(this.jwtToken);
-    this.tokenInvalide(this.token);
+    this.tokenInvalide();
     //if (this.message === "Token invalide")
     //this.$router.push("/invalideTokenReinitialisationPass");
   },
 
   methods: {
-    tokenInvalide(token: unknown) {
-      axios
-        .post(
-          process.env.VUE_APP_ROOT_API +
-            "ln/reinitialisationMotDePasse/verifTokenValide",
-          {
-            jwtToken: this.jwtToken
-          }
-        )
-        .then(response => {
+    tokenInvalide() {
+      AxiosApi.checkToken({
+        jwtToken: this.jwtToken
+      })
+        .then(() => {
           this.buttonLoading = false;
         })
-        .catch(err => {
+        .catch(() => {
           this.tokenExpired = "true";
         });
       return this.tokenExpired;
@@ -222,16 +217,11 @@ export default Vue.extend({
     },
     reinitialisationPass(): void {
       this.buttonLoading = true;
-      axios
-        .post(
-          process.env.VUE_APP_ROOT_API +
-            "ln/reinitialisationMotDePasse/enregistrerPassword",
-          {
-            motDePasse: this.passContact,
-            recaptcha: this.tokenrecaptcha,
-            token: this.token
-          }
-        )
+      AxiosApi.saveNewPassword({
+        motDePasse: this.passContact,
+        recaptcha: this.tokenrecaptcha,
+        token: this.token
+      })
         .then(response => {
           this.buttonLoading = false;
           this.message = response.data;

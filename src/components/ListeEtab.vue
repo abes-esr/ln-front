@@ -155,10 +155,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
 import { mapActions } from "vuex";
 import moment from "moment";
-import { AxiosPromise } from "axios";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "ListeEtab",
@@ -241,7 +240,7 @@ export default Vue.extend({
       return statutRecherche.statut.toString().includes(this.statut);
     },
     getAll(): any {
-      return HTTP.get("ln/etablissement/getListEtab");
+      return AxiosApi.listeEtab();
     },
     collecterEtab(): any {
       this.getAll()
@@ -286,7 +285,7 @@ export default Vue.extend({
       //(this as any).supprimerEtab(siren);
     },
     supprimerEtab(): void {
-      HTTP.post("ln/etablissement/suppression/" + this.currentSirenToDelete, {
+      AxiosApi.deleteEtab(this.currentSirenToDelete, {
         motif: this.motifSuppression
       })
         .then(response => {

@@ -110,8 +110,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
-import { mapActions, mapGetters } from "vuex";
+import { AxiosApi } from "../utils/AxiosApi";
+import { mapActions } from "vuex";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
 import {
   AjouterAccesSubmitEvent,
@@ -193,7 +193,7 @@ export default Vue.extend({
       AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
       AjouterAccesSubmitEvent.$emit("clear");
     },
-    eventReinitialisationIpSegments: function(evt) {
+    eventReinitialisationIpSegments: function() {
       TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
     },
     setText(): void {
@@ -212,7 +212,7 @@ export default Vue.extend({
     fetchIp(): void {
       console.log("id = " + this.id);
       console.log("siren = " + this.getUserSiren);
-      HTTP.post("/ln/ip/getIpEntity", {
+      AxiosApi.getIPInfos({
         id: this.id,
         siren: this.$store.state.user.siren
       })
@@ -261,7 +261,7 @@ export default Vue.extend({
     submitAcces(): void {
       this.updateJsonObject();
       console.log(this.jsonResponse);
-      HTTP.post(this.getUrl(this.typeIp), this.jsonResponse)
+      AxiosApi.addIP(this.getUrl(this.typeIp), this.jsonResponse)
         .then(response => {
           this.buttonLoading = false;
           console.log("notification = " + response.data);

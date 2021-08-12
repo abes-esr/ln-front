@@ -83,7 +83,7 @@
 <script lang="ts">
 import FormEtab from "@/components/FormEtab.vue";
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "FormFusionEtablissement",
@@ -123,13 +123,10 @@ export default Vue.extend({
           this.alert = false;
           this.message = "";
           this.retourKo = false;
-          HTTP.post(
-            process.env.VUE_APP_ROOT_API + "ln/etablissement/division",
-            {
-              ancienSiren: this.sirenEtab,
-              etablissementDTOS: this.etablissementDTOS
-            }
-          )
+          AxiosApi.scission({
+            ancienSiren: this.sirenEtab,
+            etablissementDTOS: this.etablissementDTOS
+          })
             .then(response => {
               this.alert = true;
               this.buttonLoading = false;

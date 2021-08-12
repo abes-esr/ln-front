@@ -96,11 +96,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { HTTP } from "../utils/http-commons";
-import { mapActions, mapGetters } from "vuex";
-import { AjouterAccesSubmitEvent, TypeIpChangeEvent } from "@/main";
-import { IpChangeEvent } from "@/main";
+import { mapActions } from "vuex";
+import { AjouterAccesSubmitEvent } from "@/main";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
+import { AxiosApi } from "../utils/AxiosApi";
 
 export default Vue.extend({
   name: "AjouterAcces2",
@@ -244,7 +243,7 @@ export default Vue.extend({
       this.arrayArrays.push(payloadFromModuleSegmentsIpPlage);
       this.arrayArrays.forEach((value, index) => {
         console.log("this.getUrl() = " + this.getUrl(value.typeIp));
-        HTTP.post(this.getUrl(value.typeIp), {
+        AxiosApi.ajouterAcces(this.getUrl(value.typeIp), {
           siren: this.getUserSiren,
           ip: value.ip,
           typeAcces: this.typeAcces,
@@ -287,5 +286,3 @@ export default Vue.extend({
   display: block;
 }
 </style>
-//repeat a form vuejs
-//https://stackoverflow.com/questions/51133782/vuejs-add-the-same-form-multiple-times
