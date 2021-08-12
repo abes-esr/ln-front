@@ -160,7 +160,7 @@ export default Vue.extend({
     }
   },
 
-  computed: {
+  computed: {//
     isAdmin() {
       console.log("isAdmin = " + this.$store.state.user.isAdmin);
       return this.$store.state.user.isAdmin;

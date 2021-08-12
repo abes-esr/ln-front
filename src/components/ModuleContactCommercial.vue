@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AjouterContactsCommerciauxEditeurEvent } from "@/main";
+import { AjouterContactsCommerciauxEditeurEvent } from "@/main";//
 
 export default Vue.extend({
   name: "ModuleContactCommercial",

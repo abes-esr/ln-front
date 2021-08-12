@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AjouterContactsTechniquesEditeurEvent } from "@/main";
+import { AjouterContactsTechniquesEditeurEvent } from "@/main";//
 
 export default Vue.extend({
   name: "ModuleContactTechnique",

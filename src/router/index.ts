@@ -106,7 +106,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/nouvelEditeur",
     name: "NouvelEditeur",
-    component: () => import("../components/NouvelEditeur.vue")
+    component: () => import("../components/NouvelEditeur.vue")//
   },
   {
     path: "/modifierEditeur/:id",
