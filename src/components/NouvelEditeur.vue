@@ -94,8 +94,8 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <module-contact-commercial
-                    v-on:FormModuleContactCommercialEvent="
-                      remplirListeContactCommercialFromModule
+                    v-on:ContactsCommerciauxFromModuleEvent="
+                      remplirListeContactsCommerciauxFromModule
                     "
                     v-for="n in moduleContactCommercialNumber"
                     :key="n"
@@ -133,8 +133,8 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <module-contact-technique
-                    v-on:FormModuleContactTechniqueEvent="
-                      remplirListeContactTechniqueFromModule
+                    v-on:ContactsTechniquesFromModuleEvent="
+                      remplirListeContactsTechniquesFromModule
                     "
                     v-for="n in moduleContactTechniqueNumber"
                     :key="n"
@@ -200,7 +200,10 @@ import { HTTP } from "../utils/http-commons";
 import { mapActions } from "vuex";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
-import { AjouterContactsEditeurEvent } from "@/main";
+import {
+  AjouterContactsCommerciauxEditeurEvent,
+  AjouterContactsTechniquesEditeurEvent
+} from "@/main";
 
 export default Vue.extend({
   name: "NouvelEditeur",
@@ -248,8 +251,8 @@ export default Vue.extend({
       ],
       moduleContactCommercialNumber: 1,
       moduleContactTechniqueNumber: 1,
-      listeContactCommercialEditeurDTO: [],
-      listeContactTechniqueEditeurDTO: [],
+      listeContactsCommerciauxEditeurDTO: [] as any,
+      listeContactsTechniquesEditeurDTO: [] as any,
       buttonLoading: false,
       alert: false,
       error: ""
@@ -271,29 +274,63 @@ export default Vue.extend({
       return "mdi-checkbox-blank-outline";
     }
   },
-  /*mounted() {
-    if (this.loggedIn) {
-      this.$router.push("/profile");
-    }
-  },*/
+  mounted() {
+    console.log(
+      "ListCC.length = " + this.listeContactsCommerciauxEditeurDTO.length
+    );
+    console.log(
+      "ListCT.length = " + this.listeContactsTechniquesEditeurDTO.length
+    );
+  },
 
   methods: {
     ...mapActions({
       setNotification: "setNotification"
     }),
-    remplirListeContactCommercialFromModule(payload: never): void {
-      console.log("remplirListeContactCommercialFromModule");
-      this.listeContactCommercialEditeurDTO.push(payload);
+
+    remplirListeContactsCommerciauxFromModule(payload: never): void {
+      console.log("remplirListeContactsCommerciauxFromModule");
+      this.listeContactsCommerciauxEditeurDTO.push(payload);
+
+      console.log(
+        "ListCC.length = " + this.listeContactsCommerciauxEditeurDTO.length
+      );
+      console.log(
+        "ListCT.length = " + this.listeContactsTechniquesEditeurDTO.length
+      );
+
+      //AjouterContactsCommerciauxEditeurEvent.$emit("clear");
+      if (
+        this.listeContactsCommerciauxEditeurDTO.length ==
+          this.moduleContactCommercialNumber &&
+        this.listeContactsTechniquesEditeurDTO.length ==
+          this.moduleContactTechniqueNumber
+      ) {
+        this.send();
+      }
     },
-    remplirListeContactTechniqueFromModule(payload: never): void {
-      console.log("remplirListeContactTechniqueFromModule");
-      this.listeContactTechniqueEditeurDTO.push(payload);
-      this.send();
+    remplirListeContactsTechniquesFromModule(payload: never): void {
+      console.log("remplirListeContactsTechniquesFromModule");
+      this.listeContactsTechniquesEditeurDTO.push(payload);
+
+      AjouterContactsTechniquesEditeurEvent.$emit("clear");
+      AjouterContactsCommerciauxEditeurEvent.$emit(
+        "ajouterContactsCommerciauxEditeurEvent"
+      );
+      if (
+        this.listeContactsCommerciauxEditeurDTO.length ==
+          this.moduleContactCommercialNumber &&
+        this.listeContactsTechniquesEditeurDTO.length ==
+          this.moduleContactTechniqueNumber
+      ) {
+        this.send();
+      }
     },
     enclencherAjouterContactsEditeur(): void {
       console.log("debut enclencherAjouterContactsEditeur");
-      AjouterContactsEditeurEvent.$emit("ajouterContactsEditeurEvent");
-      AjouterContactsEditeurEvent.$emit("clear");
+      AjouterContactsTechniquesEditeurEvent.$emit(
+        "ajouterContactsTechniquesEditeurEvent"
+      );
     },
     increaseModuleContactCommercialNumber: function() {
       this.moduleContactCommercialNumber++;
@@ -318,11 +355,12 @@ export default Vue.extend({
     },
     send() {
       this.buttonLoading = true;
+      console.log("dans le send");
 
       if (
-        this.listeContactCommercialEditeurDTO.length ==
+        this.listeContactsCommerciauxEditeurDTO.length ==
           this.moduleContactCommercialNumber &&
-        this.listeContactTechniqueEditeurDTO.length ==
+        this.listeContactsTechniquesEditeurDTO.length ==
           this.moduleContactTechniqueNumber
       ) {
         if (
@@ -331,8 +369,8 @@ export default Vue.extend({
           }).validate()
         ) {
           console.log({
-            listeContactCommercialEditeurDTO: this
-              .listeContactCommercialEditeurDTO
+            listeContactsCommerciauxEditeurDTO: this
+              .listeContactsCommerciauxEditeurDTO
           });
 
           this.alert = false;
@@ -345,9 +383,9 @@ export default Vue.extend({
               groupesEtabRelies: this.selectedTypesEtab,
               adresseEditeur: this.adresseEditeur,
               listeContactCommercialEditeurDTO: this
-                .listeContactCommercialEditeurDTO,
+                .listeContactsCommerciauxEditeurDTO,
               listeContactTechniqueEditeurDTO: this
-                .listeContactTechniqueEditeurDTO
+                .listeContactsTechniquesEditeurDTO
             }
           )
             .then(response => {
@@ -366,43 +404,6 @@ export default Vue.extend({
       }
     },
 
-    /*validate(): void {
-      this.alert = false;
-      this.error = "";
-
-      if (
-        (this.$refs.formNouvelEditeur as Vue & {
-          validate: () => boolean;
-        }).validate()
-      ) {
-        this.creationEditeur();
-      }
-    },
-    creationEditeur(): void {
-      this.buttonLoading = true;
-      axios
-        .post(process.env.VUE_APP_ROOT_API + "ln/editeur/creationEditeur", {
-          nomEditeur: this.nomEditeur,
-          identifiantEditeur: this.identifiantEditeur,
-          groupesEtabRelies: this.selectedTypesEtab,
-          adresseEditeur: this.adresseEditeur,
-          listeContactCommercialEditeurDTO: this
-            .listeContactCommercialEditeurDTO,
-          listeContactTechniqueEditeurDTO: this.listeContactTechniqueEditeurDTO
-        })
-        .then(response => {
-          this.buttonLoading = false;
-          console.log("notification = " + response.data);
-          this.setNotification(response.data);
-          console.log("notification = " + this.$store.state.notification);
-          this.$router.push({ path: "/listeEditeurs" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.error = err.response.data;
-          this.alert = true;
-        });
-    },*/
     clear() {
       (this.$refs.formNouvelEditeur as HTMLFormElement).reset();
     }

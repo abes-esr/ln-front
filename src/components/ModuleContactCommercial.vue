@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AjouterContactsEditeurEvent } from "@/main";
+import { AjouterContactsCommerciauxEditeurEvent } from "@/main";
 
 export default Vue.extend({
   name: "ModuleContactCommercial",
@@ -69,27 +69,26 @@ export default Vue.extend({
   },
   methods: {
     validAndSend(): void {
-      console.log("Validation");
+      console.log("Validation CC");
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        this.$emit("FormModuleContactCommercialEvent", {
+        this.$emit("ContactsCommerciauxFromModuleEvent", {
           nomContactCommercial: this.nomContactCommercial,
           prenomContactCommercial: this.prenomContactCommercial,
           mailContactCommercial: this.emailContactCommercial
         });
       }
+      (this.$refs.form as HTMLFormElement).reset();
     },
     clear(): void {
       //(this.$refs.form as HTMLFormElement).reset();
     }
   },
   mounted() {
-    AjouterContactsEditeurEvent.$on(
-      "ajouterContactsEditeurEvent",
+    AjouterContactsCommerciauxEditeurEvent.$on(
+      "ajouterContactsCommerciauxEditeurEvent",
       this.validAndSend
     );
-    AjouterContactsEditeurEvent.$on("clear", this.clear);
-    /*this.bus.$on("submit", this.validAndSend);
-    this.bus.$on("clear", this.clear);*/
+    AjouterContactsCommerciauxEditeurEvent.$on("clear", this.clear);
   }
 });
 </script>
