@@ -22,6 +22,6 @@ export const GetTypeIpFromModifierAccesEvent = new Vue();
 export const AjouterAccesSubmitEvent = new Vue();
 export const FormModuleSegmentsIpPlageEvent = new Vue();
 export const AjouterContactsCommerciauxEditeurEvent = new Vue();
-export const AjouterContactsTechniquesEditeurEvent = new Vue();//
+export const AjouterContactsTechniquesEditeurEvent = new Vue(); //
 export const ContactsTechniquesFromModuleEvent = new Vue();
 export const ContactsCommerciauxFromModuleEvent = new Vue();

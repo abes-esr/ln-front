@@ -197,6 +197,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { AxiosApi } from "../utils/AxiosApi";
+import { HTTP } from "../utils/http-commons";
 import { mapActions } from "vuex";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
@@ -298,40 +299,73 @@ export default Vue.extend({
       console.log(
         "ListCT.length = " + this.listeContactsTechniquesEditeurDTO.length
       );
-
-      //AjouterContactsCommerciauxEditeurEvent.$emit("clear");
-      if (
-        this.listeContactsCommerciauxEditeurDTO.length ==
-          this.moduleContactCommercialNumber &&
-        this.listeContactsTechniquesEditeurDTO.length ==
-          this.moduleContactTechniqueNumber
-      ) {
-        this.send();
-      }
+      if (this.moduleContactTechniqueNumber == 0) this.validate();
     },
+
     remplirListeContactsTechniquesFromModule(payload: never): void {
       console.log("remplirListeContactsTechniquesFromModule");
+
       this.listeContactsTechniquesEditeurDTO.push(payload);
 
-      AjouterContactsTechniquesEditeurEvent.$emit("clear");
-      AjouterContactsCommerciauxEditeurEvent.$emit(
-        "ajouterContactsCommerciauxEditeurEvent"
+      if (this.listeContactsCommerciauxEditeurDTO.length != 0)
+        this.listeContactsCommerciauxEditeurDTO.length = 0;
+
+      if (this.moduleContactCommercialNumber != 0) {
+        AjouterContactsCommerciauxEditeurEvent.$emit(
+          "AjouterContactsCommerciauxEditeurEvent"
+        );
+      }
+      console.log(
+        "ListCC.length = " + this.listeContactsCommerciauxEditeurDTO.length
       );
+      console.log(
+        "ListCT.length = " + this.listeContactsTechniquesEditeurDTO.length
+      );
+
       if (
         this.listeContactsCommerciauxEditeurDTO.length ==
           this.moduleContactCommercialNumber &&
         this.listeContactsTechniquesEditeurDTO.length ==
           this.moduleContactTechniqueNumber
       ) {
-        this.send();
+        this.validate();
       }
     },
     enclencherAjouterContactsEditeur(): void {
-      console.log("debut enclencherAjouterContactsEditeur");
-      AjouterContactsTechniquesEditeurEvent.$emit(
-        "ajouterContactsTechniquesEditeurEvent"
-      );
+      this.error = "";
+      this.alert = false;
+      if (
+        (this.$refs.formNouvelEditeur as Vue & {
+          validate: () => boolean;
+        }).validate()
+      ) {
+        console.log("debut enclencherAjouterContactsEditeur");
+        console.log(
+          "this.moduleContactTechniqueNumber = " +
+            this.moduleContactTechniqueNumber
+        );
+        console.log(
+          "this.moduleContactCommercialNumber = " +
+            this.moduleContactCommercialNumber
+        );
+        if (this.listeContactsTechniquesEditeurDTO.length != 0)
+          this.listeContactsTechniquesEditeurDTO.length = 0;
+        if (this.listeContactsCommerciauxEditeurDTO.length != 0)
+          this.listeContactsCommerciauxEditeurDTO.length = 0;
+        if (
+          this.moduleContactTechniqueNumber == 0 &&
+          this.moduleContactCommercialNumber != 0
+        ) {
+          AjouterContactsCommerciauxEditeurEvent.$emit(
+            "AjouterContactsCommerciauxEditeurEvent"
+          );
+        }
+        AjouterContactsTechniquesEditeurEvent.$emit(
+          "AjouterContactsTechniquesEditeurEvent"
+        );
+      }
     },
+
     increaseModuleContactCommercialNumber: function() {
       this.moduleContactCommercialNumber++;
     },
@@ -352,6 +386,17 @@ export default Vue.extend({
           this.selectedTypesEtab = this.typesEtab.slice();
         }
       });
+    },
+    validate(): void {
+      this.error = "";
+      this.alert = false;
+      if (
+        (this.$refs.formNouvelEditeur as Vue & {
+          validate: () => boolean;
+        }).validate()
+      ) {
+        this.send();
+      }
     },
     send() {
       this.buttonLoading = true;
@@ -376,6 +421,7 @@ export default Vue.extend({
           this.alert = false;
 
           AxiosApi.createEditeur({
+            //HTTP.put(process.env.VUE_APP_ROOT_API + "ln/editeur/", {
             nomEditeur: this.nomEditeur,
             identifiantEditeur: this.identifiantEditeur,
             groupesEtabRelies: this.selectedTypesEtab,

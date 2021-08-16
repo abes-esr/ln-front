@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form ref="form" lazy-validation>
+    <v-form ref="formModuleCT" lazy-validation>
       <v-card-title>Contact technique</v-card-title>
 
       <v-text-field
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AjouterContactsTechniquesEditeurEvent } from "@/main";//
+import { AjouterContactsTechniquesEditeurEvent } from "@/main"; //
 
 export default Vue.extend({
   name: "ModuleContactTechnique",
@@ -68,25 +68,32 @@ export default Vue.extend({
     };
   },
   methods: {
+    validate(): void {
+      if (
+        (this.$refs.formModuleCT as Vue & {
+          validate: () => boolean;
+        }).validate()
+      ) {
+        this.validAndSend();
+      }
+    },
     validAndSend(): void {
       console.log("Validation CT");
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        this.$emit("ContactsTechniquesFromModuleEvent", {
-          nomContactTechnique: this.nomContactTechnique,
-          prenomContactTechnique: this.prenomContactTechnique,
-          mailContactTechnique: this.emailContactTechnique
-        });
-      }
-      (this.$refs.form as HTMLFormElement).reset();
+      this.$emit("ContactsTechniquesFromModuleEvent", {
+        nomContactTechnique: this.nomContactTechnique,
+        prenomContactTechnique: this.prenomContactTechnique,
+        mailContactTechnique: this.emailContactTechnique
+      });
     },
+
     clear(): void {
-      //(this.$refs.form as HTMLFormElement).reset();
+      //(this.$refs.formModuleCT as HTMLFormElement).reset();
     }
   },
   mounted() {
     AjouterContactsTechniquesEditeurEvent.$on(
-      "ajouterContactsTechniquesEditeurEvent",
-      this.validAndSend
+      "AjouterContactsTechniquesEditeurEvent",
+      this.validate
     );
     AjouterContactsTechniquesEditeurEvent.$on("clear", this.clear);
   }

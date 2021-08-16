@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form ref="form" lazy-validation>
+    <v-form ref="formModuleCC" lazy-validation>
       <v-card-title>Contact commercial</v-card-title>
 
       <v-text-field
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { AjouterContactsCommerciauxEditeurEvent } from "@/main";//
+import { AjouterContactsCommerciauxEditeurEvent } from "@/main"; //
 
 export default Vue.extend({
   name: "ModuleContactCommercial",
@@ -68,25 +68,33 @@ export default Vue.extend({
     };
   },
   methods: {
+    validate(): void {
+      if (
+        (this.$refs.formModuleCC as Vue & {
+          validate: () => boolean;
+        }).validate()
+      ) {
+        this.validAndSend();
+      }
+    },
     validAndSend(): void {
       console.log("Validation CC");
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        this.$emit("ContactsCommerciauxFromModuleEvent", {
-          nomContactCommercial: this.nomContactCommercial,
-          prenomContactCommercial: this.prenomContactCommercial,
-          mailContactCommercial: this.emailContactCommercial
-        });
-      }
-      (this.$refs.form as HTMLFormElement).reset();
+
+      this.$emit("ContactsCommerciauxFromModuleEvent", {
+        nomContactCommercial: this.nomContactCommercial,
+        prenomContactCommercial: this.prenomContactCommercial,
+        mailContactCommercial: this.emailContactCommercial
+      });
     },
+
     clear(): void {
-      //(this.$refs.form as HTMLFormElement).reset();
+      //(this.$refs.formModuleCC as HTMLFormElement).reset();
     }
   },
   mounted() {
     AjouterContactsCommerciauxEditeurEvent.$on(
-      "ajouterContactsCommerciauxEditeurEvent",
-      this.validAndSend
+      "AjouterContactsCommerciauxEditeurEvent",
+      this.validate
     );
     AjouterContactsCommerciauxEditeurEvent.$on("clear", this.clear);
   }
