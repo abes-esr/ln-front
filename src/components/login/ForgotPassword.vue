@@ -65,16 +65,18 @@
       </v-row>
       <v-card-actions>
         <v-row>
-          <v-col cols="9"></v-col>
-          <v-col cols="2">
+          <v-col>
             <v-btn
-              color="success"
+              color="button"
+              style="float: right;"
               :loading="buttonLoading"
-              x-large
               @click="recaptcha()"
-              >Envoyer</v-btn
-            >
-          </v-col>
+              >Envoyer
+              <v-icon style="padding-left: 5px;"
+                >mdi-arrow-right-circle-outline</v-icon
+              ></v-btn
+            ></v-col
+          >
         </v-row>
       </v-card-actions>
     </v-card>

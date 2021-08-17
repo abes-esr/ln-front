@@ -17,7 +17,14 @@
             >Mot de passe ou identifiant oublié ?</a
           >
         </transition>
-        <p id="noAccount">
+        <transition name="fade">
+          <a
+            v-if="forgotPasswordVisible"
+            @click="forgotPasswordVisible = !forgotPasswordVisible"
+            >Revenir au formulaire de connexion</a
+          >
+        </transition>
+        <p id="noAccount" v-if="!forgotPasswordVisible">
           Votre établissement n'a pas encore de compte ?
         </p>
         <v-row>
