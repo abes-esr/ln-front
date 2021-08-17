@@ -366,7 +366,7 @@
             </v-col>
             <v-col cols="3">
               <v-btn
-                color="#cf491f"
+                color="button"
                 :loading="buttonLoading"
                 x-large
                 @click="recaptcha()"

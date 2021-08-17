@@ -1,8 +1,22 @@
 <template>
   <div>
+    <v-alert border="left" type="info" dense outlined>
+      <h4>
+        Application réservée aux établissements bénéficiaires
+      </h4>
+      <br />
+      <p id="WarningLogin">
+        <strong>Important : </strong>L'accès aux corpus sous licences nationales
+        est reservé aux établissements bénéficiaires selon les conditions
+        spécifiques négociées avec chaque éditeur. Pour permettre la déclaration
+        des adresses IP autorisées, l'Abes met à la disposition des
+        professionnels de la documentation cette application dédiée à la gestion
+        des accès.
+      </p>
+    </v-alert>
     <v-card witdh="100%" outlined>
       <v-form ref="form" lazy-validation>
-        <v-card-title>Connexion</v-card-title>
+        <v-card-title>S'authentifier</v-card-title>
         <v-card-text>
           <v-row>
             <v-col cols="1" />
@@ -14,9 +28,27 @@
                 placeholder="SIREN"
                 v-model="siren"
                 :rules="loginRules"
+                append-icon="mdi-information"
                 required
                 @keyup="validate()"
-              ></v-text-field>
+              >
+                <template v-slot:append>
+                  <a
+                    class="noUnderlineLink"
+                    href="https://www.sirene.fr/sirene/public/static/recherche"
+                    target="_blank"
+                  >
+                    <v-tooltip bottom
+                      ><template v-slot:activator="{ on }">
+                        <v-icon v-on="on">
+                          mdi-information
+                        </v-icon>
+                      </template>
+                      Trouver le numéro SIREN de votre établissement
+                    </v-tooltip></a
+                  ></template
+                >
+              </v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -40,15 +72,16 @@
         </v-card-text>
         <v-card-actions>
           <v-row>
-            <v-col cols="9"></v-col>
-            <v-col cols="2">
+            <v-col>
               <v-btn
-                color="success"
+                color="button"
+                style="float: right;"
                 :loading="buttonLoading"
                 :disabled="!isValid"
-                x-large
                 @click="login()"
-                >Envoyer</v-btn
+                >Se connecter<v-icon style="padding-left: 5px;"
+                  >mdi-arrow-right-circle-outline</v-icon
+                ></v-btn
               >
             </v-col>
           </v-row>
@@ -124,3 +157,4 @@ export default class FormLogin extends Vue {
   }
 }
 </script>
+<style src="./style.css"></style>

@@ -17,12 +17,25 @@
             >Mot de passe ou identifiant oublié ?</a
           >
         </transition>
-
-        <a
-          v-if="!forgotPasswordVisible"
-          @click="$router.push({ path: '/creationCompte' })"
-          ><br />Votre établissement n'a pas encore de compte ? Créer un
-          compte</a
+        <p id="noAccount">
+          Votre établissement n'a pas encore de compte ?
+        </p>
+        <v-row>
+          <v-col cols="4" class="createAccountLinks">
+            <a
+              v-if="!forgotPasswordVisible"
+              href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+              target="_blank"
+              ><br />Vérifier l'éligibilité</a
+            >
+          </v-col>
+          <v-col cols="4" class="createAccountLinks">
+            <a
+              v-if="!forgotPasswordVisible"
+              @click="$router.push({ path: '/creationCompte' })"
+              ><br />Créer un compte</a
+            ></v-col
+          ></v-row
         >
       </v-col>
     </v-row>
