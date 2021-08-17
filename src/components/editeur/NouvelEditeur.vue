@@ -195,12 +195,12 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
-import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Component, Vue } from "vue-property-decorator";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
-import {AjouterContactsEditeurEvent} from "@/main";
-import {Logger} from "@/utils/Logger";
+import { AjouterContactsEditeurEvent } from "@/main";
+import { Logger } from "@/utils/Logger";
 
 @Component({
   components: { ModuleContactTechnique, ModuleContactCommercial }

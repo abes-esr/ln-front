@@ -159,9 +159,9 @@
 </template>
 
 <script lang="ts">
-import {serviceLn} from "../service/licencesnationales/LicencesNationalesApiService";
-import {Logger} from "@/utils/Logger";
-import {Component, Vue} from "vue-property-decorator";
+import { serviceLn } from "../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
+import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class FormProfile extends Vue {

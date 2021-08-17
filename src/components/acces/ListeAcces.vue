@@ -112,10 +112,10 @@
 </template>
 <style src="./style.css"></style>
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
-import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Component, Vue } from "vue-property-decorator";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
-import {Logger} from "@/utils/Logger";
+import { Logger } from "@/utils/Logger";
 
 @Component
 export default class ListeAcces extends Vue {

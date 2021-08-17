@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosResponse} from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 /**
  * Représente un client Axios pour envoyer et recevoir des requêtes HTTP avec

@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
-import {JsonLoginRequest} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
-import {serviceLn} from "@/service/licencesnationales/LicencesNationalesApiService";
+import { JsonLoginRequest } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
+import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
 
 Vue.use(Vuex);
 

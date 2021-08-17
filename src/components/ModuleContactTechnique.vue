@@ -35,9 +35,9 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
-import {AjouterContactsEditeurEvent} from "@/main";
-import {Logger} from "@/utils/Logger";
+import { Component, Vue } from "vue-property-decorator";
+import { AjouterContactsEditeurEvent } from "@/main";
+import { Logger } from "@/utils/Logger";
 
 @Component
 export default class ModuleContactTechnique extends Vue {

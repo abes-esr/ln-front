@@ -61,7 +61,7 @@
 <script lang="ts">
 import Vue from "vue";
 import SideMenu from "./components/SideMenu.vue";
-import {Component} from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 
 @Component({
   components: { SideMenu }

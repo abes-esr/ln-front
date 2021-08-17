@@ -258,11 +258,16 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
-import {AjouterAccesSubmitEvent, GetTypeIpFromModifierAccesEvent, IpChangeEvent, TypeIpChangeEvent} from "@/main";
-import {serviceLn} from "../service/licencesnationales/LicencesNationalesApiService";
-import {Logger} from "@/utils/Logger";
-import {SegmentPlage} from "@/components/CommonDefinition";
+import { Component, Vue } from "vue-property-decorator";
+import {
+  AjouterAccesSubmitEvent,
+  GetTypeIpFromModifierAccesEvent,
+  IpChangeEvent,
+  TypeIpChangeEvent
+} from "@/main";
+import { serviceLn } from "../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
+import { SegmentPlage } from "@/components/CommonDefinition";
 
 @Component
 export default class ModuleSegmentsIpPlage extends Vue {

@@ -3,10 +3,9 @@
  */
 
 export interface JsonCheckSirenResponse {
-   unite_legale: JsonCheckSirenInfo;
+  unite_legale: JsonCheckSirenInfo;
 }
 
 export interface JsonCheckSirenInfo {
-    denomination: string;
+  denomination: string;
 }
-

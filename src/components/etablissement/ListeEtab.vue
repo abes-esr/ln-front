@@ -154,10 +154,10 @@
 </template>
 <style src="./style.css"></style>
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
-import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
-import {Logger} from "@/utils/Logger";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
 
 @Component
 export default class ListeEtab extends Vue {

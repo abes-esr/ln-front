@@ -109,11 +109,15 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
-import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Component, Vue } from "vue-property-decorator";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
-import {GetTypeIpFromModifierAccesEvent, IpChangeEvent, TypeIpChangeEvent} from "@/main";
-import {Logger} from "@/utils/Logger";
+import {
+  GetTypeIpFromModifierAccesEvent,
+  IpChangeEvent,
+  TypeIpChangeEvent
+} from "@/main";
+import { Logger } from "@/utils/Logger";
 
 @Component({
   components: { ModuleSegmentsIpPlage }

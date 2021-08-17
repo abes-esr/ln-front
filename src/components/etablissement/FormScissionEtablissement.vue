@@ -82,9 +82,9 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import FormEtab from "@/components/etablissement/FormEtab.vue";
-import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
-import {Logger} from "@/utils/Logger";
-import {Component, Vue} from "vue-property-decorator";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
+import { Component, Vue } from "vue-property-decorator";
 
 @Component({
   components: { FormEtab }

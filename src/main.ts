@@ -3,8 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
-import {VueReCaptcha} from "vue-recaptcha-v3";
-import {Logger} from "@/utils/Logger";
+import { VueReCaptcha } from "vue-recaptcha-v3";
+import { Logger } from "@/utils/Logger";
 
 // Handle all Vue errors
 Vue.config.errorHandler = error =>

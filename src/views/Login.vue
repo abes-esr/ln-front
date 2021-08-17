@@ -24,14 +24,6 @@
           ><br />Votre établissement n'a pas encore de compte ? Créer un
           compte</a
         >
-
-        <transition name="fade">
-          <a
-            v-if="forgotPasswordVisible"
-            @click="forgotPasswordVisible = !forgotPasswordVisible"
-            >Revenir au formulaire de connexion</a
-          >
-        </transition>
       </v-col>
     </v-row>
   </v-container>
