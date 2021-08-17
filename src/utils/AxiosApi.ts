@@ -92,8 +92,8 @@ export class AxiosApi {
     return ApiService.apiPostRequest("/ln/ip/getEditeurEntity", data);
   }
 
-  static deleteEditeur(data: Record<string, any>): Promise<AxiosResponse> {
-    return ApiService.apiPostRequest("/ln/editeur/suppression", data);
+  static deleteEditeur(id: string): Promise<AxiosResponse> {
+    return ApiService.apiDeleteRequest("ln/editeur/" + id);
   }
 
   static resetPassword(data: Record<string, any>): Promise<AxiosResponse> {

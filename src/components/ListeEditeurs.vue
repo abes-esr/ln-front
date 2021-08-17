@@ -54,11 +54,6 @@
                   <v-row>
                     <v-col cols="12" sm="7"></v-col>
                     <v-col cols="12" sm="2">
-                      <!--                      <v-btn
-                        @click="$router.push({ path: '/ajouterEtab' })"
-                        color="warning"
-                        ><br />Ajouter un établissement</v-btn
-                      >-->
                     </v-col>
                     <v-col cols="12" sm="3">
                       <v-btn
@@ -128,6 +123,7 @@ export default Vue.extend({
     moment.locale("fr");
     this.collecterEditeurs();
     this.id = this.getIdEditeur(this.editeur);
+    console.log(this.id);
   },
 
   methods: {
@@ -136,8 +132,9 @@ export default Vue.extend({
       setSirenEtabSiAdmin: "setSirenEtabSiAdmin"
     }),
     getIdEditeur(editeur) {
+      console.log("editeur.id = " + editeur.idEditeur);
       return {
-        id: editeur.id
+        id: editeur.idEditeur
       };
     },
     getAll(): any {
@@ -155,19 +152,15 @@ export default Vue.extend({
     },
     affichageEditeurs(editeur) {
       return {
-        id: editeur.id,
+        id: editeur.idEditeur,
         dateCreation: moment(editeur.dateCreation).format("L"),
         nomEditeur: editeur.nomEditeur
       };
     },
-    listeAcces(siren): void {
-      this.setSirenEtabSiAdmin(siren);
-      this.$router.push({
-        name: "ListeAcces"
-      });
-    },
+
     supprimerEditeur(id): void {
-      AxiosApi.deleteEditeur({ id: id })
+      console.log("supprimerEditeur id = " + id);
+      AxiosApi.deleteEditeur(id)
         .then(response => {
           this.refreshList();
           console.log("notification = " + response.data);

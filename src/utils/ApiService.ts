@@ -51,6 +51,19 @@ class ApiService {
         return err;
       });
   }
+
+  apiDeleteRequest(url: string): Promise<AxiosResponse> {
+    return this.client
+      .delete(url)
+      .then(response => {
+        if (response.status == 200 || response.status == 201) {
+          return response;
+        }
+      })
+      .catch(err => {
+        return err;
+      });
+  }
 }
 
 export default new ApiService();
