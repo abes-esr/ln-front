@@ -31,7 +31,6 @@
             <v-checkbox
               required
               :rules="checkboxRules"
-              v-model="checkboxEligibilite"
               label="Je confirme que mon établissement est éligible"
             ></v-checkbox> </v-alert
         ></v-col>
@@ -339,7 +338,6 @@
                 <v-checkbox
                   required
                   :rules="checkboxRules"
-                  v-model="checkboxConfidentialite"
                   label="J'accepte les conditions générales liées à la politique de
                 confidentialité*"
                 ></v-checkbox>
@@ -511,8 +509,6 @@ export default class FormCreationCompte extends Vue {
   error: string = "";
   dialog: boolean = false;
   dialogAvailable: boolean = false;
-  checkboxConfidentialite: boolean = false;
-  checkboxEligibilite: boolean = false;
   checkboxRules = [(v: boolean) => !!v || "Veuillez accepter avant de valider"];
 
   get confirmEmailContactRule() {
