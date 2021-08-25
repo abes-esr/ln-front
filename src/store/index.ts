@@ -59,7 +59,7 @@ export default new Vuex.Store({
           .login(credentials)
           .then(result => {
             // On sauvegarde le token
-            commit("SET_TOKEN", result.accessToken);
+            commit("SET_TOKEN", result);
             resolve(true);
           })
           .catch(err => {
