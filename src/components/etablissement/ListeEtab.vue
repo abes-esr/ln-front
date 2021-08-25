@@ -205,7 +205,7 @@ export default class ListeEtab extends Vue {
   get getUserSiren() {
     return this.$store.state.user.siren;
   }
-  get filteredEtabByStatut(): string {
+  get filteredEtabByStatut(): string[] {
     Logger.debug("debut filteredEtabByStatut");
     const conditions = [] as any;
     Logger.debug("this.statut = " + this.statut);
@@ -217,9 +217,9 @@ export default class ListeEtab extends Vue {
         return conditions.every(condition => {
           return condition(acces);
         });
-      })[0];
+      });
     }
-    return this.etab[0];
+    return this.etab;
   }
   mounted() {
     moment.locale("fr");

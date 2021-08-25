@@ -26,7 +26,7 @@ export default new Vuex.Store({
       state.user.siren = token.siren;
       state.user.nameEtab = token.nameEtab;
       state.user.isLoggedIn = true;
-      state.user.isAdmin = token.isAdmin;
+      state.user.isAdmin = token.admin;
     },
     SET_LOGOUT(state) {
       state.user.token = "";
@@ -59,6 +59,7 @@ export default new Vuex.Store({
           .login(credentials)
           .then(result => {
             // On sauvegarde le token
+            console.log(result);
             commit("SET_TOKEN", result);
             resolve(true);
           })

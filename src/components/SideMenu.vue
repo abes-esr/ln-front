@@ -23,7 +23,7 @@
           </v-list-item>
         </v-row>
 
-        <v-row v-if="this.isAdmin === 'false'">
+        <v-row v-if="!isAdmin">
           <v-list-item
             v-on:click="$router.push({ name: 'ListeAcces' }).catch(err => {})"
           >
@@ -37,7 +37,7 @@
         </v-row>
         <v-row v-else></v-row>
 
-        <v-row v-if="this.isAdmin === 'true'">
+        <v-row v-if="isAdmin">
           <v-list-item
             v-on:click="$router.push({ name: 'ListeEtab' }).catch(err => {})"
           >
@@ -51,7 +51,7 @@
         </v-row>
         <v-row v-else></v-row>
 
-        <v-row v-if="this.isAdmin === 'true'">
+        <v-row v-if="isAdmin">
           <v-list-item
             v-on:click="
               $router.push({ name: 'ListeEditeurs' }).catch(err => {})
@@ -93,7 +93,7 @@
           </v-list-item>
         </v-row>
 
-        <v-row v-if="this.isAdmin === 'true'">
+        <v-row v-if="isAdmin">
           <v-list-item
             v-on:click="
               $router.push({ name: 'scissionEtablissement' }).catch(err => {})
@@ -109,7 +109,7 @@
         </v-row>
         <v-row v-else></v-row>
 
-        <v-row v-if="this.isAdmin === 'true'">
+        <v-row v-if="isAdmin">
           <v-list-item
             v-on:click="
               $router.push({ name: 'fusionEtablissement' }).catch(err => {})
