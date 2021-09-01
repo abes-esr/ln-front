@@ -420,8 +420,8 @@ export default Vue.extend({
 
           this.alert = false;
 
-          AxiosApi.createEditeur({
-            //HTTP.put(process.env.VUE_APP_ROOT_API + "ln/editeur/", {
+          //AxiosApi.createEditeur({
+          HTTP.put(process.env.VUE_APP_ROOT_API + "ln/editeur/", {
             nomEditeur: this.nomEditeur,
             identifiantEditeur: this.identifiantEditeur,
             groupesEtabRelies: this.selectedTypesEtab,

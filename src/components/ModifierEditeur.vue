@@ -90,6 +90,43 @@
                 </v-col>
               </v-row>
 
+              <v-row
+                v-for="(value, index) in listeContactsCommerciauxEditeurDTO"
+                v-bind:key="index"
+              >
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-card-title>Contact commercial</v-card-title>
+                  <v-text-field
+                    outlined
+                    label="Nom"
+                    placeholder="Nom"
+                    v-model="value.nomContactCommercial"
+                    :rules="nomContactTechniqueRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                  <v-text-field
+                    outlined
+                    label="Prénom"
+                    placeholder="Prénom"
+                    v-model="value.prenomContactCommercial"
+                    :rules="prenomContactTechniqueRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                  <v-text-field
+                    outlined
+                    label="Adresse e-mail"
+                    placeholder="Adresse e-mail"
+                    v-model="value.mailContactCommercial"
+                    :rules="emailContactTechniqueRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="10">
@@ -126,6 +163,43 @@
                       </v-col>
                     </v-row>
                   </v-card-actions>
+                </v-col>
+              </v-row>
+
+              <v-row
+                v-for="(value, index) in listeContactsTechniquesEditeurDTO"
+                v-bind:key="index"
+              >
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-card-title>Contact technique</v-card-title>
+                  <v-text-field
+                    outlined
+                    label="Nom"
+                    placeholder="Nom"
+                    v-model="value.nomContactTechnique"
+                    :rules="nomContactTechniqueRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                  <v-text-field
+                    outlined
+                    label="Prénom"
+                    placeholder="Prénom"
+                    v-model="value.prenomContactTechnique"
+                    :rules="prenomContactTechniqueRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                  <v-text-field
+                    outlined
+                    label="Adresse e-mail"
+                    placeholder="Adresse e-mail"
+                    v-model="value.mailContactTechnique"
+                    :rules="emailContactTechniqueRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
                 </v-col>
               </v-row>
 
@@ -200,6 +274,7 @@ import { mapActions } from "vuex";
 import { AxiosApi } from "../utils/AxiosApi";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
+import { AjouterContactsCommerciauxEditeurEvent } from "@/main";
 
 export default Vue.extend({
   name: "ModifierEditeur",
@@ -294,6 +369,14 @@ export default Vue.extend({
             (this.identifiantEditeur = result.data.identifiantEditeur),
             (this.selectedTypesEtab = result.data.groupesEtabRelies),
             (this.adresseEditeur = result.data.adresseEditeur);
+          this.listeContactsCommerciauxEditeurDTO =
+            result.data.listeContactCommercialEditeurDTO;
+          this.listeContactsTechniquesEditeurDTO =
+            result.data.listeContactTechniqueEditeurDTO;
+          this.moduleContactCommercialNumber =
+            result.data.listeContactCommercialEditeurDTO.length;
+          this.moduleContactTechniqueNumber =
+            result.data.listeContactTechniqueEditeurDTO.length;
         })
         .catch(err => {
           this.alert = true;
