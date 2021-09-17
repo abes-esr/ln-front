@@ -22,7 +22,6 @@ export interface JsonCreateAccount {
   siren: string;
   prenomContact: string;
   boitePostaleContact: string;
-  idAbes: string;
   nom: string;
   telephoneContact: string;
   cedexContact: string;
@@ -33,5 +32,4 @@ export interface JsonCreateAccount {
   mailContact: string;
   nomContact: string;
   villeContact: string;
-  roleContact: string;
 }

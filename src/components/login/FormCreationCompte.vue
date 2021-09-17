@@ -500,8 +500,6 @@ export default class FormCreationCompte extends Vue {
   confirmPassContactRules = [
     (v: string) => !!v || "Vous devez confirmer le mot de passe du contact"
   ];
-  idAbes: string = "";
-  roleContact: string = "";
   checkSirenAPI: string = "En attente de vérification";
   checkSirenColor: string = "grey";
   buttonLoading: boolean = false;
@@ -585,7 +583,6 @@ export default class FormCreationCompte extends Vue {
         nom: this.nomEtab,
         siren: this.sirenEtab,
         typeEtablissement: this.typeEtab,
-        idAbes: this.idAbes,
         nomContact: this.nomContact,
         prenomContact: this.prenomContact,
         adresseContact: this.adresseContact,
@@ -596,7 +593,6 @@ export default class FormCreationCompte extends Vue {
         telephoneContact: this.telContact,
         mailContact: this.emailContact,
         motDePasse: this.passContact,
-        roleContact: this.roleContact,
         recaptcha: this.token
       })
       .then(response => {

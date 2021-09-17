@@ -48,12 +48,12 @@ export class LicencesNationalesApiService {
    * @param data Json de création d'un nouveau compte à l'API LicencesNationales
    */
   creationCompte(data: JsonCreateAccount): Promise<AxiosResponse> {
-    return this.client.post("/ln/etablissement/creationCompte", data);
+    return this.client.put("/etablissements", data);
   }
 
   changePassword(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post(
-      "/ln/reinitialisationMotDePasse/updatePassword",
+      "/reinitialisationMotDePasse/updatePassword",
       token,
       data
     );
@@ -64,43 +64,39 @@ export class LicencesNationalesApiService {
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("ln/etablissement/fusion", token, data);
+    return this.client.post("/etablissement/fusion", token, data);
   }
 
   scission(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("ln/etablissement/division", token, data);
+    return this.client.post("/etablissement/division", token, data);
   }
 
   listeEtab(token: string): Promise<AxiosResponse> {
-    return this.client.get("ln/etablissement/getListEtab", token);
+    return this.client.get("/etablissement/getListEtab", token);
   }
 
   getInfosEtab(token: string): Promise<AxiosResponse> {
-    return this.client.get("/ln/etablissement/getInfoEtab", token);
+    return this.client.get("/etablissement/getInfoEtab", token);
   }
 
   updateProfile(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ln/etablissement/modification", token, data);
+    return this.client.post("/etablissement/modification", token, data);
   }
 
   deleteEtab(token: string, siren: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(
-      "ln/etablissement/suppression/" + siren,
-      token,
-      data
-    );
+    return this.client.post("/etablissement/suppression/" + siren, token, data);
   }
 
   getListIP(token: string, siren): Promise<AxiosResponse> {
-    return this.client.get("ln/ip/" + siren, token);
+    return this.client.get("/ip/" + siren, token);
   }
 
   getListIPEtab(token: string, siren): Promise<AxiosResponse> {
-    return this.client.get("ln/ip/ipsEtab/" + siren, token);
+    return this.client.get("/ip/ipsEtab/" + siren, token);
   }
 
   getIPInfos(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ln/ip/getIpEntity", token, data);
+    return this.client.post("/ip/getIpEntity", token, data);
   }
 
   addIP(token: string, url: string, data: any): Promise<AxiosResponse> {
@@ -112,42 +108,39 @@ export class LicencesNationalesApiService {
   }
 
   createEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("ln/editeur/creationEditeur", token, data);
+    return this.client.post("/editeur/creationEditeur", token, data);
   }
 
   updateEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ln/editeur/modificationEditeur", token, data);
+    return this.client.post("/editeur/modificationEditeur", token, data);
   }
 
   getEditeurs(token: string): Promise<AxiosResponse> {
-    return this.client.get("/ln/editeur/getListEditeurs", token);
+    return this.client.get("/editeur/getListEditeurs", token);
   }
 
   fetchEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ln/ip/getEditeurEntity", token, data);
+    return this.client.post("/ip/getEditeurEntity", token, data);
   }
 
   deleteEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ln/editeur/suppression", token, data);
+    return this.client.post("/editeur/suppression", token, data);
   }
 
   resetPassword(data: Record<string, any>): Promise<AxiosResponse> {
-    return this.client.post(
-      "/ln/reinitialisationMotDePasse/resetPassword",
-      data
-    );
+    return this.client.post("/reinitialisationMotDePasse/resetPassword", data);
   }
 
   checkToken(data: Record<string, any>): Promise<AxiosResponse> {
     return this.client.post(
-      "ln/reinitialisationMotDePasse/verifTokenValide",
+      "/reinitialisationMotDePasse/verifTokenValide",
       data
     );
   }
 
   saveNewPassword(data: Record<string, any>): Promise<AxiosResponse> {
     return this.client.post(
-      "ln/reinitialisationMotDePasse/enregistrerPassword",
+      "/reinitialisationMotDePasse/enregistrerPassword",
       data
     );
   }
