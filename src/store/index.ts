@@ -1,8 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
-import { JsonLoginRequest } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
-import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
+import {JsonLoginRequest, JsonLoginResponse} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
+import {serviceLn} from "@/service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
 
 Vue.use(Vuex);
 
@@ -21,12 +22,12 @@ export default new Vuex.Store({
     sirenEtabSiAdmin: ""
   },
   mutations: {
-    SET_TOKEN(state, token) {
+    SET_TOKEN(state, token:JsonLoginResponse) {
       state.user.token = token.accessToken;
       state.user.siren = token.siren;
       state.user.nameEtab = token.nameEtab;
       state.user.isLoggedIn = true;
-      state.user.isAdmin = token.admin;
+      state.user.isAdmin = token.role == 'admin' ? true: false;
     },
     SET_LOGOUT(state) {
       state.user.token = "";
@@ -59,7 +60,7 @@ export default new Vuex.Store({
           .login(credentials)
           .then(result => {
             // On sauvegarde le token
-            console.log(result);
+            Logger.debug(JSON.stringify(result));
             commit("SET_TOKEN", result);
             resolve(true);
           })

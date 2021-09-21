@@ -22,7 +22,7 @@ export class LicencesNationalesApiService {
   login(data: JsonLoginRequest): Promise<JsonLoginResponse> {
     return new Promise((resolve, reject) => {
       return this.client
-        .post("/login", data)
+        .post("/authentification/connexion", data)
         .then(result => {
           const response: JsonLoginResponse = result.data;
           resolve(response);
