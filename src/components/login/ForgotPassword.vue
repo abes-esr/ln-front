@@ -134,7 +134,7 @@ export default class ForgotPassword extends Vue {
         (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
       )
         serviceLn
-          .motDePasseOublie({
+          .motDePasseOublieSiren({
             siren: this.siren,
             recaptcha: this.token
           })
@@ -156,7 +156,7 @@ export default class ForgotPassword extends Vue {
     } else {
       if ((this.$refs.formMail as Vue & { validate: () => boolean }).validate())
         serviceLn
-          .motDePasseOublie({
+          .motDePasseOublieEmail({
             email: this.mail,
             recaptcha: this.token
           })
