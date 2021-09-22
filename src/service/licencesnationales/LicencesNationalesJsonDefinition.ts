@@ -14,7 +14,7 @@ export interface JsonLoginResponse {
   isAdmin: boolean;
   siren: string;
   id: number;
-  admin: boolean;
+  role: string;
 }
 
 export interface JsonCreateAccount {
