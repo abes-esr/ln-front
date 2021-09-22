@@ -583,17 +583,19 @@ export default class FormCreationCompte extends Vue {
         nom: this.nomEtab,
         siren: this.sirenEtab,
         typeEtablissement: this.typeEtab,
-        nomContact: this.nomContact,
-        prenomContact: this.prenomContact,
-        adresseContact: this.adresseContact,
-        boitePostaleContact: this.boitePostaleContact,
-        codePostalContact: this.codePostalContact,
-        villeContact: this.villeContact,
-        cedexContact: this.cedexContact,
-        telephoneContact: this.telContact,
-        mailContact: this.emailContact,
-        motDePasse: this.passContact,
-        recaptcha: this.token
+        recaptcha: this.token,
+        contact: {
+          nom: this.nomContact,
+          prenom: this.prenomContact,
+          adresse: this.adresseContact,
+          boitePostale: this.boitePostaleContact,
+          codePostal: this.codePostalContact,
+          ville: this.villeContact,
+          cedex: this.cedexContact,
+          telephone: this.telContact,
+          mail: this.emailContact,
+          motDePasse: this.passContact
+        }
       })
       .then(response => {
         this.buttonLoading = false;

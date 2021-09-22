@@ -17,19 +17,23 @@ export interface JsonLoginResponse {
   admin: boolean;
 }
 
-export interface JsonCreateAccount {
-  adresseContact: string;
-  siren: string;
-  prenomContact: string;
-  boitePostaleContact: string;
+export interface JsonCreateContact {
   nom: string;
-  telephoneContact: string;
-  cedexContact: string;
+  prenom: string;
+  adresse: string;
+  boitePostale: string;
+  codePostal: string;
+  ville: string;
+  cedex: string;
+  telephone: string;
+  mail: string;
   motDePasse: string;
-  codePostalContact: string;
+}
+
+export interface JsonCreateAccount {
+  siren: string;
+  nom: string;
   typeEtablissement: string;
   recaptcha: unknown;
-  mailContact: string;
-  nomContact: string;
-  villeContact: string;
+  contact: JsonCreateContact;
 }
