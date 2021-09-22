@@ -14,7 +14,17 @@ export interface JsonLoginResponse {
   isAdmin: boolean;
   siren: string;
   id: number;
-  admin: boolean;
+  role: string;
+}
+
+export interface JsonMotDePasseOublieRequest {
+  siren: string;
+  email: string;
+  recaptcha: string;
+}
+
+export interface JsonMotDePasseOublieResponse {
+  message: string;
 }
 
 export interface JsonCreateContact {
