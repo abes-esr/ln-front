@@ -87,6 +87,8 @@
 <script lang="ts">
 import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Component, Vue } from "vue-property-decorator";
+import {Logger} from "@/utils/Logger";
+import {HttpRequestError} from "@/exception/HttpRequestError";
 
 @Component
 export default class ForgotPassword extends Vue {
@@ -132,36 +134,44 @@ export default class ForgotPassword extends Vue {
         (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
       )
         serviceLn
-          .resetPassword({
+          .motDePasseOublie({
             siren: this.siren,
             recaptcha: this.token
           })
           .then(response => {
             this.buttonLoading = false;
-            this.message = response.data;
+            this.message = response.message;
             this.alert = true;
           })
           .catch(err => {
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+              Logger.debug("Erreur API : " + err.debugMessage);
+            }
             this.buttonLoading = false;
-            this.message = err.response.data;
+            this.message = err.message;
             this.alert = true;
             this.retourKo = true;
           });
     } else {
       if ((this.$refs.formMail as Vue & { validate: () => boolean }).validate())
         serviceLn
-          .resetPassword({
+          .motDePasseOublie({
             email: this.mail,
             recaptcha: this.token
           })
           .then(response => {
             this.buttonLoading = false;
-            this.message = response.data;
+            this.message = response.message;
             this.alert = true;
           })
           .catch(err => {
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+              Logger.debug("Erreur API : " + err.debugMessage);
+            }
             this.buttonLoading = false;
-            this.message = err.response.data;
+            this.message = err.message;
             this.alert = true;
             this.retourKo = true;
           });

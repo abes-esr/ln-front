@@ -3,7 +3,7 @@ import AxiosClient from "../../utils/AxiosClient";
 import {
   JsonCreateAccount,
   JsonLoginRequest,
-  JsonLoginResponse
+  JsonLoginResponse, JsonMotDePasseOublieResponse
 } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
 import { HttpRequestError } from "@/exception/HttpRequestError";
 import { CredentialNotValidError } from "@/service/licencesnationales/CredentialNotValidError";
@@ -40,6 +40,34 @@ export class LicencesNationalesApiService {
             );
           }
         });
+    });
+  }
+
+  /**
+   * Appel API pour réinitiliser son mot de passe en cas d'oublie
+   * @param data
+   */
+  motDePasseOublie(data: Record<string, any>): Promise<JsonMotDePasseOublieResponse> {
+    return new Promise((resolve, reject) => {
+      return this.client
+          .post("/authentification/motDePasseOublie", data)
+          .then(result => {
+            const response: JsonMotDePasseOublieResponse = result.data;
+            resolve(response);
+          })
+          .catch(err => {
+            if (err.response.status == 404) {
+              reject(new CredentialNotValidError(err.response.data.message));
+            } else {
+              reject(
+                  new HttpRequestError(
+                      err.response.status,
+                      err.response.data.message,
+                      err.response.data.debugMessage
+                  )
+              );
+            }
+          });
     });
   }
 
@@ -125,10 +153,6 @@ export class LicencesNationalesApiService {
 
   deleteEditeur(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/editeur/suppression", token, data);
-  }
-
-  resetPassword(data: Record<string, any>): Promise<AxiosResponse> {
-    return this.client.post("/reinitialisationMotDePasse/resetPassword", data);
   }
 
   checkToken(data: Record<string, any>): Promise<AxiosResponse> {
