@@ -17,6 +17,16 @@ export interface JsonLoginResponse {
   role: string;
 }
 
+export interface JsonMotDePasseOublieRequest {
+  siren: string;
+  email: string;
+  recaptcha: string;
+}
+
+export interface JsonMotDePasseOublieResponse {
+  message: string;
+}
+
 export interface JsonCreateAccount {
   adresseContact: string;
   siren: string;
