@@ -12,7 +12,7 @@ export interface JsonLoginResponse {
   tokenType: string;
   nameEtab: string;
   isAdmin: boolean;
-  siren: string;
+  userSiren: string;
   id: number;
   role: string;
 }
@@ -38,6 +38,24 @@ export interface JsonCreateContact {
   telephone: string;
   mail: string;
   motDePasse: string;
+}
+
+export interface JsonUpdateContact {
+  nom: string;
+  prenom: string;
+  adresse: string;
+  boitePostale: string;
+  codePostal: string;
+  ville: string;
+  cedex: string;
+  telephone: string;
+  mail: string;
+}
+
+export interface JsonUpdateProfile {
+  siren: string;
+  contact: JsonUpdateContact;
+  role: string;
 }
 
 export interface JsonCreateAccount {

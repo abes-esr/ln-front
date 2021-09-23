@@ -206,6 +206,10 @@ export default class FormProfile extends Vue {
   get userSiren(): string {
     return this.$store.getters.userSiren;
   }
+  
+  get isAdmin(): boolean {
+    return this.$store.getters.isAdmin;
+  }
 
   mounted() {
     this.fetchEtab();
@@ -258,16 +262,19 @@ export default class FormProfile extends Vue {
 
   updateJsonObject(): void {
     const json: any = {};
-    json.adresseContact = this.adresse;
-    json.boitePostaleContact = this.bp;
-    json.cedexContact = this.cedex;
-    json.codePostalContact = this.codePostal;
-    json.mailContact = this.mail;
-    json.nomContact = this.nomContact;
-    json.prenomContact = this.prenomContact;
+    const contact: any = {};
+    contact.adresse = this.adresse;
+    contact.boitePostale = this.bp;
+    contact.cedex = this.cedex;
+    contact.codePostal = this.codePostal;
+    contact.mail = this.mail;
+    contact.nom = this.nomContact;
+    contact.prenom = this.prenomContact;
+    contact.telephone = this.telephone;
+    contact.ville = this.ville;
     json.siren = this.userSiren;
-    json.telephoneContact = this.telephone;
-    json.villeContact = this.ville;
+    json.contact = contact;
+    json.role = this.isAdmin ? "admin" : "etab";
     this.jsonResponse = json;
   }
 }
