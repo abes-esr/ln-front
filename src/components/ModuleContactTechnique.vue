@@ -35,69 +35,56 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { AjouterContactsTechniquesEditeurEvent } from "@/main"; //
+import { Component, Vue } from "vue-property-decorator";
+import { Logger } from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "ModuleContactTechnique",
-  data() {
-    return {
-      nomContactTechnique: "" as string,
-      nomContactTechniqueRules: [
-        (v: any) => !!v || "Le nom du contact est obligatoire",
-        (v: any) =>
-          /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-            v
-          ) || "Le nom fourni n'est pas valide"
-      ],
-      prenomContactTechnique: "" as string,
-      prenomContactTechniqueRules: [
-        (v: any) => !!v || "Le prénom du contact est obligatoire",
-        (v: any) =>
-          /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-            v
-          ) || "Le prénom fourni n'est pas valide"
-      ],
-      emailContactTechnique: "" as string,
-      emailContactTechniqueRules: [
-        (v: any) => !!v || "L'adresse mail du contact est obligatoire",
-        (v: any) =>
-          /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||
-          "L'adresse mail fournie n'est pas valide"
-      ]
-    };
-  },
-  methods: {
-    validate(): void {
-      if (
-        (this.$refs.formModuleCT as Vue & {
-          validate: () => boolean;
-        }).validate()
-      ) {
-        this.validAndSend();
-      }
-    },
-    validAndSend(): void {
-      console.log("Validation CT");
-      this.$emit("ContactsTechniquesFromModuleEvent", {
+@Component
+export default class ModuleContactTechnique extends Vue {
+  nomContactTechnique: string = "";
+  nomContactTechniqueRules = [
+    (v: string) => !!v || "Le nom du contact est obligatoire",
+    (v: string) =>
+      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
+        v
+      ) || "Le nom fourni n'est pas valide"
+  ];
+  prenomContactTechnique: string = "";
+  prenomContactTechniqueRules = [
+    (v: string) => !!v || "Le prénom du contact est obligatoire",
+    (v: string) =>
+      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
+        v
+      ) || "Le prénom fourni n'est pas valide"
+  ];
+  emailContactTechnique: string = "";
+  emailContactTechniqueRules = [
+    (v: string) => !!v || "L'adresse mail du contact est obligatoire",
+    (v: string) =>
+      /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||
+      "L'adresse mail fournie n'est pas valide"
+  ];
+
+  validAndSend(): void {
+    Logger.debug("Validation");
+    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+      this.$emit("FormModuleContactTechniqueEvent", {
         nomContactTechnique: this.nomContactTechnique,
         prenomContactTechnique: this.prenomContactTechnique,
         mailContactTechnique: this.emailContactTechnique
       });
-    },
-
-    clear(): void {
-      //(this.$refs.formModuleCT as HTMLFormElement).reset();
     }
-  },
+  }
+
+  clear(): void {
+    //(this.$refs.form as HTMLFormElement).reset();
+  }
+
   mounted() {
-    AjouterContactsTechniquesEditeurEvent.$on(
+    /*AjouterContactsTechniquesEditeurEvent.$on(
       "AjouterContactsTechniquesEditeurEvent",
       this.validate
     );
-    AjouterContactsTechniquesEditeurEvent.$on("clear", this.clear);
+    AjouterContactsTechniquesEditeurEvent.$on("clear", this.clear);*/
   }
-});
+}
 </script>
-
-<style scoped></style>

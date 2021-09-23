@@ -17,14 +17,6 @@
             >Mot de passe ou identifiant oublié ?</a
           >
         </transition>
-
-        <a
-          v-if="!forgotPasswordVisible"
-          @click="$router.push({ path: '/creationCompte' })"
-          ><br />Votre établissement n'a pas encore de compte ? Créer un
-          compte</a
-        >
-
         <transition name="fade">
           <a
             v-if="forgotPasswordVisible"
@@ -32,37 +24,40 @@
             >Revenir au formulaire de connexion</a
           >
         </transition>
+        <p id="noAccount" v-if="!forgotPasswordVisible">
+          Votre établissement n'a pas encore de compte ?
+        </p>
+        <v-row>
+          <v-col cols="4" class="createAccountLinks">
+            <a
+              v-if="!forgotPasswordVisible"
+              href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+              target="_blank"
+              ><br />Vérifier l'éligibilité</a
+            >
+          </v-col>
+          <v-col cols="4" class="createAccountLinks">
+            <a
+              v-if="!forgotPasswordVisible"
+              @click="$router.push({ path: '/creationCompte' })"
+              ><br />Créer un compte</a
+            ></v-col
+          ></v-row
+        >
       </v-col>
     </v-row>
   </v-container>
 </template>
-
+<style src="./style.css"></style>
 <script lang="ts">
-import Vue from "vue";
-import FormLogin from "../components/FormLogin.vue";
-import ForgotPassword from "../components/ForgotPassword.vue";
+import { Component, Vue } from "vue-property-decorator";
+import FormLogin from "../components/login/FormLogin.vue";
+import ForgotPassword from "../components/login/ForgotPassword.vue";
 
-export default Vue.extend({
-  name: "Login",
-  components: {
-    FormLogin,
-    ForgotPassword
-  },
-  data() {
-    return {
-      forgotPasswordVisible: false
-    };
-  }
-});
+@Component({
+  components: { FormLogin, ForgotPassword }
+})
+export default class App extends Vue {
+  forgotPasswordVisible: boolean = false;
+}
 </script>
-
-<style scoped>
-.fade-enter-active {
-  transition: opacity 0.8s;
-}
-
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
-</style>

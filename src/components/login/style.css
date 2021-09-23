@@ -1,0 +1,24 @@
+p {
+    color: black;
+}
+
+#WarningLogin {
+    font-size: smaller
+}
+
+#noAccount {
+    margin: 0;
+    margin-top: 10px;
+}
+
+.createAccountLinks {
+    padding-top:0; 
+    
+}
+.createAccountLinks a {
+    text-decoration: none;
+}
+
+.noUnderlineLink {
+    text-decoration: none;
+}

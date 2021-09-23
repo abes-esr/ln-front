@@ -18,7 +18,7 @@
       flat
       height="80px"
       id="appBar"
-      src="@/assets/graphe-couleur-appli-ln.png"
+      src="@/assets/img/header/graphe-couleur-appli-ln.png"
       extended
       extension-height="30"
     >
@@ -41,7 +41,7 @@
         v-on:click="$router.push({ name: 'Home' }).catch(err => {})"
         ><v-img
           alt="Logo licences nationales"
-          src="@/assets/logo.svg"
+          src="@/assets/img/logo.svg"
           target="_blank"
           max-width="300px"
           style="margin-left: 1em; margin-top: 0.5em"
@@ -55,88 +55,32 @@
     </v-main>
   </v-app>
 </template>
-
+<style lang="scss">
+@import "./assets/styles/main.scss";
+</style>
 <script lang="ts">
 import Vue from "vue";
 import SideMenu from "./components/SideMenu.vue";
+import { Component } from "vue-property-decorator";
 
-import { mapGetters } from "vuex";
+@Component({
+  components: { SideMenu }
+})
+export default class App extends Vue {
+  drawer: boolean = true;
 
-export default Vue.extend({
-  name: "App",
-  data: () => ({
-    drawer: true
-  }),
-  components: {
-    SideMenu
-  },
-  computed: {
-    ...mapGetters({
-      darkTheme: "isDark",
-      isLogged: "isLoggedIn"
-    })
-  },
+  get isDark(): boolean {
+    return this.$store.getters.isDark;
+  }
+
+  get isLoggedIn(): boolean {
+    return this.$store.getters.isLoggedIn;
+  }
+
   mounted() {
-    if (this.darkTheme) {
+    if (this.isDark) {
       this.$vuetify.theme.dark = true;
     }
   }
-});
+}
 </script>
-
-<style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-#titleBar {
-  cursor: pointer;
-}
-#appBar {
-  background: rgb(46, 63, 80);
-  background: linear-gradient(
-    90deg,
-    rgba(46, 63, 80, 1) 20%,
-    rgba(97, 142, 186, 1) 100%
-  );
-}
-#blueBar {
-  width: 100%;
-  height: 100%;
-  background-color: #252c61;
-}
-.v-navigation-drawer__content {
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.v-toolbar__extension {
-  padding: 0 !important;
-  padding-top: 8px !important;
-  margin: 0;
-  z-index: 0;
-  position: static !important;
-}
-h1 {
-  color: #478dcb;
-  font-size: 1.8em;
-  font-weight: 900;
-}
-h2,
-.v-card__title {
-  color: #252c61;
-  font-size: 1.5em !important;
-  font-weight: 900 !important;
-}
-h3,
-h4,
-h5 {
-  color: #252c61;
-}
-body {
-  color: black;
-}
-</style>

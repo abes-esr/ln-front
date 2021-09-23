@@ -23,7 +23,7 @@
           </v-list-item>
         </v-row>
 
-        <v-row v-if="(this.isAdmin = false)">
+        <v-row v-if="!isAdmin">
           <v-list-item
             v-on:click="$router.push({ name: 'ListeAcces' }).catch(err => {})"
           >
@@ -37,7 +37,7 @@
         </v-row>
         <v-row v-else></v-row>
 
-        <v-row v-if="(this.isAdmin = true)">
+        <v-row v-if="isAdmin">
           <v-list-item
             v-on:click="$router.push({ name: 'ListeEtab' }).catch(err => {})"
           >
@@ -51,7 +51,7 @@
         </v-row>
         <v-row v-else></v-row>
 
-        <v-row v-if="(this.isAdmin = true)">
+        <v-row v-if="isAdmin">
           <v-list-item
             v-on:click="
               $router.push({ name: 'ListeEditeurs' }).catch(err => {})
@@ -93,7 +93,7 @@
           </v-list-item>
         </v-row>
 
-        <v-row v-if="(this.isAdmin = true)">
+        <v-row v-if="isAdmin">
           <v-list-item
             v-on:click="
               $router.push({ name: 'scissionEtablissement' }).catch(err => {})
@@ -109,7 +109,7 @@
         </v-row>
         <v-row v-else></v-row>
 
-        <v-row v-if="(this.isAdmin = true)">
+        <v-row v-if="isAdmin">
           <v-list-item
             v-on:click="
               $router.push({ name: 'fusionEtablissement' }).catch(err => {})
@@ -141,30 +141,27 @@
 </template>
 
 <script lang="ts">
-import { mapActions } from "vuex";
-import Vue from "vue";
+import { Component, Vue } from "vue-property-decorator";
+import { Logger } from "@/utils/Logger";
 
-export default Vue.extend({
-  name: "SideMenu",
-  methods: {
-    ...mapActions({
-      changeTheme: "changeTheme",
-      logout: "logout"
-    }),
-    saveTheme(): void {
-      this.changeTheme();
-    },
-    disconnect(): void {
-      this.logout();
-      this.$router.push({ name: "Login" });
-    }
-  },
-
-  computed: {//
-    isAdmin() {
-      console.log("isAdmin = " + this.$store.state.user.isAdmin);
-      return this.$store.state.user.isAdmin;
-    }
+@Component
+export default class SideMenu extends Vue {
+  get isAdmin() {
+    Logger.debug("isAdmin = " + this.$store.getters.isAdmin);
+    return this.$store.getters.isAdmin;
   }
-});
+
+  saveTheme(): void {
+    this.$store.dispatch("changeTheme").catch(err => {
+      Logger.error(err);
+    });
+  }
+  disconnect(): void {
+    this.$store.dispatch("logout").catch(err => {
+      Logger.error(err);
+    });
+
+    this.$router.push({ name: "Login" });
+  }
+}
 </script>

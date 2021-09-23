@@ -1,7 +1,12 @@
-import axios from "axios";
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import {
+  JsonLoginRequest,
+  JsonLoginResponse
+} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
+import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
 
 Vue.use(Vuex);
 
@@ -20,12 +25,12 @@ export default new Vuex.Store({
     sirenEtabSiAdmin: ""
   },
   mutations: {
-    SET_TOKEN(state, token) {
+    SET_TOKEN(state, token: JsonLoginResponse) {
       state.user.token = token.accessToken;
       state.user.siren = token.siren;
       state.user.nameEtab = token.nameEtab;
       state.user.isLoggedIn = true;
-      state.user.isAdmin = token.admin;
+      state.user.isAdmin = token.role == "admin" ? true : false;
     },
     SET_LOGOUT(state) {
       state.user.token = "";
@@ -51,15 +56,22 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    login({ commit }, credentials) {
-      return axios
-        .post(process.env.VUE_APP_ROOT_API + "login", {
-          login: credentials.siren,
-          password: credentials.password
-        })
-        .then(result => {
-          commit("SET_TOKEN", result.data);
-        });
+    login({ commit }, credentials: JsonLoginRequest): Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        // On appel le serviceLn LicencesNationales
+        serviceLn
+          .login(credentials)
+          .then(result => {
+            // On sauvegarde le token
+            Logger.debug(JSON.stringify(result));
+            commit("SET_TOKEN", result);
+            resolve(true);
+          })
+          .catch(err => {
+            //Si une erreur avec le ws est jetée, on lève un message d'erreur
+            reject(err);
+          });
+      });
     },
     logout({ commit }) {
       commit("SET_LOGOUT");

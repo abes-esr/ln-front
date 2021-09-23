@@ -4,9 +4,19 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { VueReCaptcha } from "vue-recaptcha-v3";
+import { Logger } from "@/utils/Logger";
+
+// Handle all Vue errors
+Vue.config.errorHandler = error =>
+  Logger.error(error.message, error.constructor.name);
 
 Vue.config.productionTip = false;
-console.log(process.env.VUE_APP_RECAPTCHA_KEY_SITE);
+
+if (process.env.VUE_APP_RECAPTCHA_KEY_SITE == "") {
+  Logger.error("La clé ReCaptcha est vide");
+} else {
+  Logger.debug(process.env.VUE_APP_RECAPTCHA_KEY_SITE);
+}
 Vue.use(VueReCaptcha, { siteKey: process.env.VUE_APP_RECAPTCHA_KEY_SITE });
 
 new Vue({
@@ -25,3 +35,4 @@ export const AjouterContactsCommerciauxEditeurEvent = new Vue();
 export const AjouterContactsTechniquesEditeurEvent = new Vue(); //
 export const ContactsTechniquesFromModuleEvent = new Vue();
 export const ContactsCommerciauxFromModuleEvent = new Vue();
+export const AjouterContactsEditeurEvent = new Vue();

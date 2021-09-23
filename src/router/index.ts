@@ -39,30 +39,33 @@ const routes: Array<RouteConfig> = [
   {
     path: "/reinitialisationPass",
     name: "ReinitialisationPass",
-    component: () => import("../components/FormReinitialisationPass.vue")
+    component: () => import("../components/login/FormReinitialisationPass.vue")
   },
   {
     path: "/fusionEtablissement",
     name: "fusionEtablissement",
-    component: () => import("../components/FormFusionEtablissement.vue")
+    component: () =>
+      import("../components/etablissement/FormFusionEtablissement.vue")
   },
   {
     path: "/scissionEtablissement",
     name: "scissionEtablissement",
-    component: () => import("../components/FormScissionEtablissement.vue")
+    component: () =>
+      import("../components/etablissement/FormScissionEtablissement.vue")
   },
   {
     path: "/listeAcces",
     name: "ListeAcces",
-    component: () => import("../components/ListeAcces.vue"),
+    component: () => import("../components/acces/ListeAcces.vue"),
     meta: {
       requiresAuth: true
     }
   },
+  //TODO faire un composant générique pour la route /ajouterAccess
   {
     path: "/ajouterAcces2/ip",
     name: "ajouterAcces2",
-    component: () => import("../components/AjouterAcces.vue"),
+    component: () => import("../components/acces/AjouterAcces.vue"),
     meta: {
       requiresAuth: true
     }
@@ -70,7 +73,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/ajouterAcces2/plage",
     name: "ajouterAcces2",
-    component: () => import("../components/AjouterAcces.vue"),
+    component: () => import("../components/acces/AjouterAcces.vue"),
     meta: {
       requiresAuth: true
     }
@@ -78,7 +81,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/modifierAcces/:id&:typeAcces",
     name: "ModifierAcces",
-    component: () => import("../components/ModifierAcces.vue"),
+    component: () => import("../components/acces/ModifierAcces.vue"),
     meta: {
       requiresAuth: true
     }
@@ -86,12 +89,12 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeEtab",
     name: "ListeEtab",
-    component: () => import("../components/ListeEtab.vue")
+    component: () => import("../components/etablissement/ListeEtab.vue")
   },
   {
     path: "/forgotPassword",
     name: "ForgotPassword",
-    component: () => import("../components/ForgotPassword.vue")
+    component: () => import("../components/login/ForgotPassword.vue")
   },
   {
     path: "/creationCompte",
@@ -101,12 +104,17 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeEditeurs",
     name: "ListeEditeurs",
-    component: () => import("../components/ListeEditeurs.vue")
+    component: () => import("../components/editeur/ListeEditeurs.vue")
+  },
+  {
+    path: "/donneespersonnelles",
+    name: "DonneesPersonnelles",
+    component: () => import("../views/DonneesPersonnelles.vue")
   },
   {
     path: "/nouvelEditeur",
     name: "NouvelEditeur",
-    component: () => import("../components/NouvelEditeur.vue")//
+    component: () => import("../components/editeur/NouvelEditeur.vue") //
   },
   {
     path: "/modifierEditeur/:id",

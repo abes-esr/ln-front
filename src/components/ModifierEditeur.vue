@@ -269,177 +269,173 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { mapActions } from "vuex";
+import { Component, Vue } from "vue-property-decorator";
 import { AxiosApi } from "../utils/AxiosApi";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
-import { AjouterContactsCommerciauxEditeurEvent } from "@/main";
 
-export default Vue.extend({
-  name: "ModifierEditeur",
-  components: { ModuleContactTechnique, ModuleContactCommercial },
-  data() {
-    return {
-      id: "" as string,
-      show1: false,
-      jsonResponse: {},
-      nomEditeur: "" as string,
-      nomEditeurRules: [
-        (v: never) => !!v || "Le nom de l'éditeur est obligatoire",
-        (v: never) =>
-          /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-          "Le nom de l'éditeur fourni n'est pas valide"
-      ],
-      identifiantEditeur: "" as string,
-      /*identifiantEditeurRules: [
+@Component({
+  components: { ModuleContactTechnique, ModuleContactCommercial }
+})
+export default class ModifierEditeur extends Vue {
+  id: string = "";
+  show1: boolean = false;
+  jsonResponse: Record<string, any> = {};
+  nomEditeur: string = "";
+  nomEditeurRules = [
+    (v: never) => !!v || "Le nom de l'éditeur est obligatoire",
+    (v: never) =>
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      "Le nom de l'éditeur fourni n'est pas valide"
+  ];
+  identifiantEditeur: string = "";
+  /*identifiantEditeurRules: [
         (v: never) => !!v || "L'identifiant de l'éditeur est obligatoire",
         (v: never) =>
           /^[0-9]$/.test(v) ||
           "L'identifiant éditeur est uniquement composé de chiffres"
       ],*/
-      typesEtab: [
-        "EPIC/EPST",
-        "Ecoles d'ingénieurs",
-        "Ecoles de formation spécialisée",
-        "Ecoles de Management",
-        "Enseignement Supérieur et Recherche",
-        "Fondations",
-        "GIP",
-        "Grands etablissements publics",
-        "Hôpitaux universitaires",
-        "Lecture publique",
-        "Universités",
-        "Etablissement membre du réseau Latitude France",
-        "Autre"
-      ],
-      selectedTypesEtab: [],
-      adresseEditeur: "" as string,
-      adresseEditeurRules: [
-        (v: never) =>
-          !!v || "L'adresse postale de l'établissement est obligatoire",
-        (v: never) =>
-          /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-          "L'adresse postale fournie n'est pas valide"
-      ],
-      moduleContactCommercialNumber: 1,
-      moduleContactTechniqueNumber: 1,
-      listeContactsCommerciauxEditeurDTO: [] as any,
-      listeContactsTechniquesEditeurDTO: [] as any,
-      buttonLoading: false,
-      alert: false,
-      error: ""
-    };
-  },
-  computed: {
-    loggedIn() {
-      return this.$store.state.user.isLoggedIn;
-    },
-    tousTypesEtab(): any {
-      return this.selectedTypesEtab.length === this.typesEtab.length;
-    },
-    certainsTypesEtab(): any {
-      return this.selectedTypesEtab.length > 0 && !this.tousTypesEtab;
-    },
-    icon() {
-      if (this.tousTypesEtab) return "mdi-close-box";
-      if (this.certainsTypesEtab) return "mdi-minus-box";
-      return "mdi-checkbox-blank-outline";
-    }
-  },
+  typesEtab = [
+    "EPIC/EPST",
+    "Ecoles d'ingénieurs",
+    "Ecoles de formation spécialisée",
+    "Ecoles de Management",
+    "Enseignement Supérieur et Recherche",
+    "Fondations",
+    "GIP",
+    "Grands etablissements publics",
+    "Hôpitaux universitaires",
+    "Lecture publique",
+    "Universités",
+    "Etablissement membre du réseau Latitude France",
+    "Autre"
+  ];
+  selectedTypesEtab: string[] = [];
+  adresseEditeur: string = "";
+  adresseEditeurRules = [
+    (v: never) => !!v || "L'adresse postale de l'établissement est obligatoire",
+    (v: never) =>
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      "L'adresse postale fournie n'est pas valide"
+  ];
+  moduleContactCommercialNumber: number = 1;
+  moduleContactTechniqueNumber: number = 1;
+  listeContactsCommerciauxEditeurDTO = [];
+  listeContactsTechniquesEditeurDTO = [];
+  buttonLoading: boolean = false;
+  alert: boolean = false;
+  error: string = "";
+
+  get loggedIn(): boolean {
+    return this.$store.state.user.isLoggedIn;
+  }
+
+  get tousTypesEtab(): any {
+    return this.selectedTypesEtab.length === this.typesEtab.length;
+  }
+
+  get certainsTypesEtab(): any {
+    return this.selectedTypesEtab.length > 0 && !this.tousTypesEtab;
+  }
+
+  get icon() {
+    if (this.tousTypesEtab) return "mdi-close-box";
+    if (this.certainsTypesEtab) return "mdi-minus-box";
+    return "mdi-checkbox-blank-outline";
+  }
+
   mounted() {
     this.id = window.location.href.substr(
       window.location.href.lastIndexOf("/") + 1
     );
     console.log("this.id = " + this.id);
     this.fetchEditeur(this.id);
-  },
+  }
 
-  methods: {
-    ...mapActions({
-      setNotification: "setNotification"
-    }),
+  setNotification(notification) {
+    this.$store.dispatch("setNotification", notification);
+  }
 
-    fetchEditeur(id): void {
-      console.log("fetchEditeur id = " + id);
-      AxiosApi.fetchEditeur(id)
-        .then(result => {
-          this.id = result.data.id;
-          (this.nomEditeur = result.data.nomEditeur),
-            (this.identifiantEditeur = result.data.identifiantEditeur),
-            (this.selectedTypesEtab = result.data.groupesEtabRelies),
-            (this.adresseEditeur = result.data.adresseEditeur);
-          this.listeContactsCommerciauxEditeurDTO =
-            result.data.listeContactCommercialEditeurDTO;
-          this.listeContactsTechniquesEditeurDTO =
-            result.data.listeContactTechniqueEditeurDTO;
-          this.moduleContactCommercialNumber =
-            result.data.listeContactCommercialEditeurDTO.length;
-          this.moduleContactTechniqueNumber =
-            result.data.listeContactTechniqueEditeurDTO.length;
-        })
-        .catch(err => {
-          this.alert = true;
-          this.error = err;
-        });
-    },
-
-    toggle() {
-      this.$nextTick(() => {
-        if (this.tousTypesEtab) {
-          this.selectedTypesEtab = [];
-        } else {
-          this.selectedTypesEtab = this.typesEtab.slice();
-        }
+  fetchEditeur(id): void {
+    console.log("fetchEditeur id = " + id);
+    AxiosApi.fetchEditeur(id)
+      .then(result => {
+        this.id = result.data.id;
+        (this.nomEditeur = result.data.nomEditeur),
+          (this.identifiantEditeur = result.data.identifiantEditeur),
+          (this.selectedTypesEtab = result.data.groupesEtabRelies),
+          (this.adresseEditeur = result.data.adresseEditeur);
+        this.listeContactsCommerciauxEditeurDTO =
+          result.data.listeContactCommercialEditeurDTO;
+        this.listeContactsTechniquesEditeurDTO =
+          result.data.listeContactTechniqueEditeurDTO;
+        this.moduleContactCommercialNumber =
+          result.data.listeContactCommercialEditeurDTO.length;
+        this.moduleContactTechniqueNumber =
+          result.data.listeContactTechniqueEditeurDTO.length;
+      })
+      .catch(err => {
+        this.alert = true;
+        this.error = err;
       });
-    },
+  }
 
-    validate(): void {
-      this.error = "";
-      this.alert = false;
-      if (
-        (this.$refs.formModifierEditeur as Vue & {
-          validate: () => boolean;
-        }).validate()
-      ) {
-        this.buttonLoading = true;
-        this.submitEditeur();
+  toggle() {
+    this.$nextTick(() => {
+      if (this.tousTypesEtab) {
+        this.selectedTypesEtab = [];
+      } else {
+        this.selectedTypesEtab = this.typesEtab.slice();
       }
-    },
-    submitEditeur(): void {
-      this.updateJsonObject();
-      console.log(this.jsonResponse);
-      AxiosApi.updateEditeur(this.jsonResponse)
-        .then(response => {
-          this.buttonLoading = false;
-          console.log("notification = " + response.data);
-          this.setNotification(response.data);
-          console.log("notification = " + this.$store.state.notification);
-          this.$router.push({ path: "/listeEditeurs" });
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.error = err.response.data;
-          this.alert = true;
-        });
-    },
+    });
+  }
 
-    updateJsonObject(): void {
-      const json: any = {};
-      json.id = this.id;
-      (json.nomEditeur = this.nomEditeur),
-        (json.identifiantEditeur = this.identifiantEditeur),
-        (json.adresseEditeur = this.adresseEditeur),
-        (json.groupesEtabRelies = this.selectedTypesEtab),
-        (json.listeContactCommercialEditeurDTO = this.listeContactsCommerciauxEditeurDTO),
-        (json.listeContactTechniqueEditeurDTO = this.listeContactsTechniquesEditeurDTO),
-        (this.jsonResponse = json);
-    },
-    clear() {
-      (this.$refs.formModifierEditeur as HTMLFormElement).reset();
+  validate(): void {
+    this.error = "";
+    this.alert = false;
+    if (
+      (this.$refs.formModifierEditeur as Vue & {
+        validate: () => boolean;
+      }).validate()
+    ) {
+      this.buttonLoading = true;
+      this.submitEditeur();
     }
   }
-});
+
+  submitEditeur(): void {
+    this.updateJsonObject();
+    console.log(this.jsonResponse);
+    AxiosApi.updateEditeur(this.jsonResponse)
+      .then(response => {
+        this.buttonLoading = false;
+        console.log("notification = " + response.data);
+        this.setNotification(response.data);
+        console.log("notification = " + this.$store.state.notification);
+        this.$router.push({ path: "/listeEditeurs" });
+      })
+      .catch(err => {
+        this.buttonLoading = false;
+        this.error = err.response.data;
+        this.alert = true;
+      });
+  }
+
+  updateJsonObject(): void {
+    const json: any = {};
+    json.id = this.id;
+    (json.nomEditeur = this.nomEditeur),
+      (json.identifiantEditeur = this.identifiantEditeur),
+      (json.adresseEditeur = this.adresseEditeur),
+      (json.groupesEtabRelies = this.selectedTypesEtab),
+      (json.listeContactCommercialEditeurDTO = this.listeContactsCommerciauxEditeurDTO),
+      (json.listeContactTechniqueEditeurDTO = this.listeContactsTechniquesEditeurDTO),
+      (this.jsonResponse = json);
+  }
+  clear() {
+    (this.$refs.formModifierEditeur as HTMLFormElement).reset();
+  }
+}
 </script>
 
 <style scoped></style>
