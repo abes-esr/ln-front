@@ -222,7 +222,7 @@ export default class FormProfile extends Vue {
 
   fetchEtab(): void {
     serviceLn
-      .getInfosEtab(this.$store.state.user.token)
+      .getInfosEtab(this.$store.state.user.token, this.userSiren)
       .then(result => {
         this.mail = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;

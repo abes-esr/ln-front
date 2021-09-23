@@ -103,12 +103,13 @@ export class LicencesNationalesApiService {
     return this.client.get("/etablissement/getListEtab", token);
   }
 
-  getInfosEtab(token: string): Promise<AxiosResponse> {
-    return this.client.get("/etablissement/getInfoEtab", token);
+  getInfosEtab(token: string, siren: string): Promise<AxiosResponse> {
+    console.log(siren);
+    return this.client.get("/etablissements/" + siren, token);
   }
 
   updateProfile(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/modification", token, data);
+    return this.client.post("/etablissements/", token, data);
   }
 
   deleteEtab(token: string, siren: string, data: any): Promise<AxiosResponse> {
