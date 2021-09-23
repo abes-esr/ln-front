@@ -120,9 +120,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
-import { Logger } from "@/utils/Logger";
+import {Component, Vue} from "vue-property-decorator";
+import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
+import {Logger} from "@/utils/Logger";
+import {HttpRequestError} from "@/exception/HttpRequestError";
 
 @Component
 export default class FormReinitialisationPass extends Vue {
@@ -176,15 +177,28 @@ export default class FormReinitialisationPass extends Vue {
 
   tokenInvalide() {
     serviceLn
-      .checkToken({
-        jwtToken: this.jwtToken
+      .verifierValiditeToken({
+        token: this.jwtToken
       })
-      .then(() => {
+      .then(response => {
         this.buttonLoading = false;
+        if (response.valid) {
+          this.tokenExpired = "false";
+        } else {
+          this.tokenExpired = "true";
+        }
       })
-      .catch(() => {
-        this.tokenExpired = "true";
+      .catch(err => {
+        Logger.error(err.message);
+        if (err instanceof HttpRequestError) {
+          Logger.debug("Erreur API : " + err.debugMessage);
+        }
+        this.buttonLoading = false;
+        this.message = err.message;
+        this.alert = true;
+        this.retourKo = true;
       });
+
     return this.tokenExpired;
   }
 
@@ -218,20 +232,24 @@ export default class FormReinitialisationPass extends Vue {
   reinitialisationPass(): void {
     this.buttonLoading = true;
     serviceLn
-      .saveNewPassword({
-        motDePasse: this.passContact,
+      .reinitialiserMotDePasse({
+        nouveauMotDePasse: this.passContact,
         recaptcha: this.tokenrecaptcha,
         token: this.token
       })
       .then(response => {
         this.buttonLoading = false;
-        this.message = response.data;
+        this.message = response.message;
         this.alert = true;
         //this.$router.push({ name: "Home" });
       })
       .catch(err => {
+        Logger.error(err.message);
+        if (err instanceof HttpRequestError) {
+          Logger.debug("Erreur API : " + err.debugMessage);
+        }
         this.buttonLoading = false;
-        this.message = err.response.data;
+        this.message = err.message;
         this.alert = true;
         this.retourKo = true;
       });

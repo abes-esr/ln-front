@@ -17,14 +17,36 @@ export interface JsonLoginResponse {
   role: string;
 }
 
-export interface JsonMotDePasseOublieRequest {
+export interface JsonMotDePasseOublieSirenRequest {
   siren: string;
+  recaptcha: string;
+}
+
+export interface JsonMotDePasseOublieEmailRequest {
   email: string;
   recaptcha: string;
 }
 
 export interface JsonMotDePasseOublieResponse {
   message: string;
+}
+
+export interface JsonReinitialiserMotDePasseRequest {
+  nouveauMotDePasse: string;
+  token: string;
+  recaptcha: string;
+}
+
+export interface JsonReinitialiserMotDePasseResponse {
+  message: string;
+}
+
+export interface JsonVerifierValiditeTokenRequest {
+  token: string;
+}
+
+export interface JsonVerifierValiditeTokenResponse {
+  valid: boolean;
 }
 
 export interface JsonCreateContact {
