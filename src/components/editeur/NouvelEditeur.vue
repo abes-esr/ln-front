@@ -421,9 +421,7 @@ export default class NouvelEditeur extends Vue {
 
   /////////////////on valide et on envoit au back////////////////////////
 
-  //on verifie que l'utilisateur a bien remplit les modules
-  //sinon, l'utilisateur est obligé de supprimer le module CC ou CT non utilisé
-  //ainsi, notre compteur CC ou CT reste vrai
+  //on verifie que l'utilisateur a bien remplit les champs obligatoires pas ceux des modules (nom et adresse)
   validate(): void {
     this.error = "";
     this.alert = false;
