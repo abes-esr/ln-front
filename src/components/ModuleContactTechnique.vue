@@ -37,6 +37,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
+import { AjouterContactsTechniquesEditeurEvent } from "@/main";
+import { ModifierContactsTechniquesEditeurEvent } from "@/main";
 
 @Component
 export default class ModuleContactTechnique extends Vue {
@@ -64,27 +66,41 @@ export default class ModuleContactTechnique extends Vue {
       "L'adresse mail fournie n'est pas valide"
   ];
 
-  validAndSend(): void {
-    Logger.debug("Validation");
-    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-      this.$emit("FormModuleContactTechniqueEvent", {
-        nomContactTechnique: this.nomContactTechnique,
-        prenomContactTechnique: this.prenomContactTechnique,
-        mailContactTechnique: this.emailContactTechnique
-      });
+  validate(): void {
+    if (
+        (this.$refs.formModuleCT as Vue & {
+          validate: () => boolean;
+        }).validate()
+    ) {
+      this.validAndSend();
     }
   }
+
+  validAndSend(): void {
+    Logger.debug("Validation CT");
+    this.$emit("FormModuleContactTechniqueEvent", {
+      nomContactTechnique: this.nomContactTechnique,
+      prenomContactTechnique: this.prenomContactTechnique,
+      mailContactTechnique: this.emailContactTechnique
+    });
+  }
+
 
   clear(): void {
     //(this.$refs.form as HTMLFormElement).reset();
   }
 
   mounted() {
-    /*AjouterContactsTechniquesEditeurEvent.$on(
-      "AjouterContactsTechniquesEditeurEvent",
-      this.validate
+    AjouterContactsTechniquesEditeurEvent.$on(
+        "AjouterContactsTechniquesEditeurEvent",
+        this.validate
     );
-    AjouterContactsTechniquesEditeurEvent.$on("clear", this.clear);*/
+    AjouterContactsTechniquesEditeurEvent.$on("clear", this.clear);
+    ModifierContactsTechniquesEditeurEvent.$on(
+        "ModifierContactsTechniquesEditeurEvent",
+        this.validate
+    );
+    ModifierContactsTechniquesEditeurEvent.$on("clear", this.clear);
   }
 }
 </script>

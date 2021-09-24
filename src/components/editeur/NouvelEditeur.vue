@@ -94,7 +94,7 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <module-contact-commercial
-                    v-on:ContactsCommerciauxFromModuleEvent="
+                    v-on:FormModuleContactCommercialEvent="
                       remplirListeContactsCommerciauxFromModule
                     "
                     v-for="n in moduleContactCommercialNumber"
@@ -133,7 +133,7 @@
                 <v-col cols="1" />
                 <v-col cols="10">
                   <module-contact-technique
-                    v-on:ContactsTechniquesFromModuleEvent="
+                    v-on:FormModuleContactTechniqueEvent="
                       remplirListeContactsTechniquesFromModule
                     "
                     v-for="n in moduleContactTechniqueNumber"
@@ -199,7 +199,10 @@ import { Component, Vue } from "vue-property-decorator";
 import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import ModuleContactTechnique from "@/components/ModuleContactTechnique.vue";
 import ModuleContactCommercial from "@/components/ModuleContactCommercial.vue";
-import { AjouterContactsEditeurEvent } from "@/main";
+import {
+  AjouterContactsCommerciauxEditeurEvent,
+  AjouterContactsTechniquesEditeurEvent
+} from "@/main";
 import { Logger } from "@/utils/Logger";
 
 @Component({
@@ -215,19 +218,19 @@ export default class NouvelEditeur extends Vue {
   ];
   identifiantEditeur: string = "";
   typesEtab: Array<string> = [
-    "EPIC/EPST",
-    "Ecoles d'ingénieurs",
-    "Ecoles de formation spécialisée",
-    "Ecoles de Management",
-    "Enseignement Supérieur et Recherche",
-    "Fondations",
+    "Universités, grandes écoles, écoles de formation spécialisées",
+    "CHR-CHU",
+    "Etablissements de santé (autres que CHR-CHU)",
+    "Ecoles françaises à l'étranger",
+    "Etablissements publics administratifs",
+    "Organismes de recherche",
+    "Etablissements publics de coopération scientifique",
+    "Etablissements publics de coopération culturelle",
+    "Etablissements publics à caractère industriel et commercial",
+    "Fondation reconnues d'utilité publique",
     "GIP",
-    "Grands etablissements publics",
-    "Hôpitaux universitaires",
-    "Lecture publique",
-    "Universités",
-    "Etablissement membre du réseau Latitude France",
-    "Autre"
+    "Réseau Latitude France",
+    "Bibliothèques de lecture publique"
   ];
   selectedTypesEtab: Array<string> = [];
   adresseEditeur: string = "";
@@ -240,8 +243,8 @@ export default class NouvelEditeur extends Vue {
   ];
   moduleContactCommercialNumber: number = 1;
   moduleContactTechniqueNumber: number = 1;
-  listeContactCommercialEditeurDTO: Array<string> = [];
-  listeContactTechniqueEditeurDTO: Array<string> = [];
+  listeContactsCommerciauxEditeurDTO: Array<string> = [];
+  listeContactsTechniquesEditeurDTO: Array<string> = [];
   buttonLoading: boolean = false;
   alert: boolean = false;
   error: string = "";
@@ -261,22 +264,54 @@ export default class NouvelEditeur extends Vue {
     return "mdi-checkbox-blank-outline";
   }
 
-  remplirListeContactCommercialFromModule(payload: never): void {
-    Logger.debug("remplirListeContactCommercialFromModule");
-    this.listeContactCommercialEditeurDTO.push(payload);
-  }
+  /* ordre du process :
+  * au clic sur valider => enclencherAjouterContactsEditeur()
+  * 1 - verifie les champs obligatoire de formNouvelEditeur
+  * 2 - remets à zero les listes formModuleCC et CT au cas où erreurs utilisateurs en amont => evite doublonnage
+  * 3 - si min 1CC et 0CT
+  *         envoie l'event CC,
+  *         on arrive sur le module CC au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
+  *         on revient sur nouvelEditeur sur le champs cc et v-on = la méthode de remplissage liste CC
+  *         on transfère le payload dans l'array listeCC-DTO
+  *         validate
+  *   -si min 1CT
+  *         envoie l'event CT,
+  *         on arrive sur le module CT au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
+  *         on revient sur nouvelEditeur sur le champs ct et v-on = la méthode de remplissage liste CT
+  *         on transfère le payload dans l'array listeCT-DTO
+  *         on déclenche l'event CC
+  *         on arrive sur le module CC au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
+  *         on revient sur nouvelEditeur sur le champs cc et v-on = la méthode de remplissage liste CC
+  *         on transfère le payload dans l'array listeCC-DTO
+  *         les 2 listes sont remplies
+  *         validate
+  * 4 - on verifie les champs du formNouvelEditeur (les verifications modules se passent au nv des modules
+  * 5 - on envoit
+  * Vérifications : dans l'ordre
+  * 1 - au clic sur valider : verifie les champs formNouvelEditeur (obligatoires nomEditeur + adresse)
+  * 2 - si aucun modules CC ou CT remplis, étant donné que par défaut les compteurs modules sont à 1, l'event CT se déclenche et repère le module vide avec son validate
+  *   - cas d'utilisation :
+  *          => l'utilisateur remplit 1 CT et 0 CC et clique sur valider
+  *             l'event CT est envoyé, on arrive sur le module CT, on vérifie les données, on emit, on reçoit au nv du v-on sur le champs ct, la méthode de remplissage ct se déclenche
+  *             la liste ct est remplie, on envoit l'event cc, on arrive sur le module au nv du validate, qui repère que le module est vide et renvoit du rouge et l'utilisateur est bloqué car le module par défaut à 1 est vide
+  *             l'utilisateur supprime le module clique sur envoyer ou remplit le module CC
+  *             le process reprend => d'où l'utilité de mettre à zero les listes pour couvrir le cas où il y a des erreurs
+  *          => l'utilisateur remplit 1CC et 0CT
+  *             l'event CT est envoyé, car par défaut les modules sont à 1, on arrive sur le module CT, au nv du validate, qui repère que le module est vide et renvoit du rouge et l'utilisateur est bloqué car le module par défaut à 1 est vide
+  *             l'utilisateur supprime le module clique sur envoyer ou remplit le module CT
+  *             le process reprend
+  *             si il a supprimé le CT, le compteur CT est à 0 et qd il clique sur valider le if CC!= 0 && CT==0 déclenche l'event CC directement
+  *
+  * En résumé : par defaut on affiche 1 module CC et 1 module CT donc si l'utilisateur ne supprime pas les modules qu'il n'utilisent pas, au clic sur valider ce sera l'event CT qui sera envoyé
+  *             qui renvoit du rouge sur le CT vide
+  *             0CC et 1 CT = event CT => verif module CT=> remplissage liste CT  ==> validate => send
+  *             1CC et 0CT = event CC = > verif module CC=> remplissage liste CC + ==> validate => send
+  *             et situation par défaut:
+  *             1CC et 1CT = event CT => verif module CT=> remplissage liste CT + event CC = > verif module CC=> remplissage liste CC + ==> validate => send
+  *
+  * */
 
-  remplirListeContactTechniqueFromModule(payload: never): void {
-    Logger.debug("remplirListeContactTechniqueFromModule");
-    this.listeContactTechniqueEditeurDTO.push(payload);
-    this.send();
-  }
-
-  enclencherAjouterContactsEditeur(): void {
-    Logger.debug("debut enclencherAjouterContactsEditeur");
-    AjouterContactsEditeurEvent.$emit("ajouterContactsEditeurEvent");
-    AjouterContactsEditeurEvent.$emit("clear");
-  }
+  ///////////////methodes utilitaires////////////
 
   increaseModuleContactCommercialNumber(): void {
     this.moduleContactCommercialNumber++;
@@ -304,13 +339,111 @@ export default class NouvelEditeur extends Vue {
     });
   }
 
+  ////////////////Au clic sur valider on envoit les évenements vers les modules CC ou CT///////////////////////
+
+  /*enclencherAjouterContactsEditeur(): void {
+    Logger.debug("debut enclencherAjouterContactsEditeur");
+    AjouterContactsEditeurEvent.$emit("ajouterContactsEditeurEvent");
+    AjouterContactsEditeurEvent.$emit("clear");
+  }*/
+
+  enclencherAjouterContactsEditeur(): void {
+    this.error = "";
+    this.alert = false;
+    if (
+        (this.$refs.formNouvelEditeur as Vue & {
+          validate: () => boolean;
+        }).validate()
+    ) {
+      console.log("debut enclencherAjouterContactsEditeur");
+
+      //Remettre à zéro les listes dans le cas où l'utilisateur aurait déjà cliqué au préalable sur valider et ayant reçu des erreurs
+      //notamment du fait que on offre un module CC et un module CT par défaut
+      //si un module reste vide il faut nécéssairement qu'il clique sur - pour le retirer
+      if (this.listeContactsTechniquesEditeurDTO.length != 0)
+        this.listeContactsTechniquesEditeurDTO.length = 0;
+      if (this.listeContactsCommerciauxEditeurDTO.length != 0)
+        this.listeContactsCommerciauxEditeurDTO.length = 0;
+
+      //si 0 CT et au moins 1 CC on va directement recup les infos au module CC
+      if (
+          this.moduleContactTechniqueNumber == 0 &&
+          this.moduleContactCommercialNumber != 0
+      ) {
+        AjouterContactsCommerciauxEditeurEvent.$emit(
+            "AjouterContactsCommerciauxEditeurEvent"
+        );
+      }
+      //si en revanche on a au moins 1 module CT remplit, c'est lui qui prend les devants
+      AjouterContactsTechniquesEditeurEvent.$emit(
+          "AjouterContactsTechniquesEditeurEvent"
+      );
+    }
+  }
+
+  ////////////////les modules CT ou CC ont renvoyé un signal emit, nos v-on reçoivent le signal, les méthodes de remplissages des listes se déclenchent /////////////
+  remplirListeContactsCommerciauxFromModule(payload: never): void {
+    Logger.debug("remplirListeContactCommercialFromModule");
+    this.listeContactsCommerciauxEditeurDTO.push(payload);
+    //si pas de contacts techniques remplis, on envoit directement les contacts commerciaux
+    if (this.moduleContactTechniqueNumber == 0) this.validate();
+  }
+
+  remplirListeContactsTechniquesFromModule(payload: never): void {
+    Logger.debug("remplirListeContactTechniqueFromModule");
+    //on remplit la liste à partir du module
+    this.listeContactsTechniquesEditeurDTO.push(payload);
+
+    //on remet la liste CC à zéro => cas où l'utilisateur a cliqué sur valider alors qu'il a laissé des modules vides
+    //l'erreur lui a été signalée (champs en rouge)
+    //il supprime les modules vide et clique à nouveau sur valider
+    //les listes se reremplissent donc doublonnages
+    //c'est pourquoi on fait ce qui suit
+    if (this.listeContactsCommerciauxEditeurDTO.length != 0)
+      this.listeContactsCommerciauxEditeurDTO.length = 0;
+
+    //si un ou des modules contacts commerciaux sont remplis on envoit l'evenement d'ajout CC
+    if (this.moduleContactCommercialNumber != 0) {
+      AjouterContactsCommerciauxEditeurEvent.$emit(
+          "AjouterContactsCommerciauxEditeurEvent"
+      );
+    }
+    if (
+        this.listeContactsCommerciauxEditeurDTO.length ==
+        this.moduleContactCommercialNumber &&
+        this.listeContactsTechniquesEditeurDTO.length ==
+        this.moduleContactTechniqueNumber
+    ) {
+      this.validate();
+    }
+  }
+
+
+  /////////////////on valide et on envoit au back////////////////////////
+
+  //on verifie que l'utilisateur a bien remplit les modules
+  //sinon, l'utilisateur est obligé de supprimer le module CC ou CT non utilisé
+  //ainsi, notre compteur CC ou CT reste vrai
+  validate(): void {
+    this.error = "";
+    this.alert = false;
+    if (
+        (this.$refs.formNouvelEditeur as Vue & {
+          validate: () => boolean;
+        }).validate()
+    ) {
+      this.send();
+    }
+  }
+
   send(): void {
     this.buttonLoading = true;
 
+    //on verifie que le nb d'éléments dans les liste correspond bien aux nb des compteurs
     if (
-      this.listeContactCommercialEditeurDTO.length ==
+        this.listeContactsCommerciauxEditeurDTO.length ==
         this.moduleContactCommercialNumber &&
-      this.listeContactTechniqueEditeurDTO.length ==
+        this.listeContactsTechniquesEditeurDTO.length ==
         this.moduleContactTechniqueNumber
     ) {
       if (
@@ -319,8 +452,8 @@ export default class NouvelEditeur extends Vue {
         }).validate()
       ) {
         console.log({
-          listeContactCommercialEditeurDTO: this
-            .listeContactCommercialEditeurDTO
+          listeContactsCommerciauxEditeurDTO: this
+              .listeContactsCommerciauxEditeurDTO
         });
 
         this.alert = false;
@@ -332,9 +465,9 @@ export default class NouvelEditeur extends Vue {
             groupesEtabRelies: this.selectedTypesEtab,
             adresseEditeur: this.adresseEditeur,
             listeContactCommercialEditeurDTO: this
-              .listeContactCommercialEditeurDTO,
+                .listeContactsCommerciauxEditeurDTO,
             listeContactTechniqueEditeurDTO: this
-              .listeContactTechniqueEditeurDTO
+                .listeContactsTechniquesEditeurDTO
           })
           .then(response => {
             this.alert = true;

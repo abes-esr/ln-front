@@ -37,6 +37,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
+import { AjouterContactsCommerciauxEditeurEvent } from "@/main";
+import { ModifierContactsCommerciauxEditeurEvent } from "@/main";
 
 @Component
 export default class ModuleContactCommercial extends Vue {
@@ -64,27 +66,45 @@ export default class ModuleContactCommercial extends Vue {
       "L'adresse mail fournie n'est pas valide"
   ];
 
-  validAndSend(): void {
-    Logger.debug("Validation");
-    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-      this.$emit("FormModuleContactCommercialEvent", {
-        nomContactCommercial: this.nomContactCommercial,
-        prenomContactCommercial: this.prenomContactCommercial,
-        mailContactCommercial: this.emailContactCommercial
-      });
+  //la méthode validate est neccesaire parceque elle permet dès le mounted de détecter si un module est remplit ou pas du tout
+  //donc au moment de valider le form NouvelEditeur, elle permet de rappeler à l'utilisateur que les champs sont vides
+  //et de le pousser intuitivement à supprimer le module inutilisé
+  //cette action est necessaire pour que le compteur CC et CT soit correct
+  validate(): void {
+    if (
+        (this.$refs.formModuleCC as Vue & {
+          validate: () => boolean;
+        }).validate()
+    ) {
+      this.validAndSend();
     }
   }
+
+  validAndSend(): void {
+  Logger.debug("Validation CC");
+    this.$emit("FormModuleContactCommercialEvent", {
+      nomContactCommercial: this.nomContactCommercial,
+      prenomContactCommercial: this.prenomContactCommercial,
+      mailContactCommercial: this.emailContactCommercial
+    });
+  }
+
 
   clear(): void {
     //(this.$refs.form as HTMLFormElement).reset();
   }
 
   mounted() {
-    /*AjouterContactsCommerciauxEditeurEvent.$on(
-      "AjouterContactsCommerciauxEditeurEvent",
-      this.validate
+    AjouterContactsCommerciauxEditeurEvent.$on(
+        "AjouterContactsCommerciauxEditeurEvent",
+        this.validate
     );
-    AjouterContactsCommerciauxEditeurEvent.$on("clear", this.clear);*/
+    AjouterContactsCommerciauxEditeurEvent.$on("clear", this.clear);
+    ModifierContactsCommerciauxEditeurEvent.$on(
+        "ModifierContactsCommerciauxEditeurEvent",
+        this.validate
+    );
+    AjouterContactsCommerciauxEditeurEvent.$on("clear", this.clear);
   }
 }
 </script>

@@ -69,3 +69,12 @@ export interface JsonCreateAccount {
   recaptcha: unknown;
   contact: JsonCreateContact;
 }
+
+export interface JsonCreateEditeur {
+  nomEditeur: string,
+  identifiantEditeur: string,
+  groupesEtabRelies: Array<string>,
+  adresseEditeur: string,
+  listeContactCommercialEditeurDTO: Array<string>,
+  listeContactTechniqueEditeurDTO: Array<string>
+}
