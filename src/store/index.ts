@@ -24,7 +24,7 @@ export default new Vuex.Store({
   mutations: {
     SET_TOKEN(state, token:JsonLoginResponse) {
       state.user.token = token.accessToken;
-      state.user.siren = token.siren;
+      state.user.siren = token.userSiren;
       state.user.nameEtab = token.nameEtab;
       state.user.isLoggedIn = true;
       state.user.isAdmin = token.role == 'admin' ? true: false;

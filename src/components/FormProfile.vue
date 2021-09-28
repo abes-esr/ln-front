@@ -279,6 +279,10 @@ export default class FormProfile extends FormProfileProps {
   get userSiren(): string {
     return this.$store.getters.userSiren;
   }
+  
+  get isAdmin(): boolean {
+    return this.$store.getters.isAdmin;
+  }
 
   get isAdmin(): boolean {
     return this.$store.getters.isAdmin;
@@ -303,7 +307,11 @@ export default class FormProfile extends FormProfileProps {
   fetchEtab(): void {
     //Le param "sirenParam" est optionel, utilisé dans le cas Admin
     serviceLn
+<<<<<<< HEAD
       .getInfosEtab(this.$store.state.user.token, this.sirenParam)
+=======
+      .getInfosEtab(this.$store.state.user.token, this.userSiren)
+>>>>>>> develop
       .then(result => {
         this.mail = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;
@@ -358,16 +366,19 @@ export default class FormProfile extends FormProfileProps {
 
   updateJsonObject(): void {
     const json: any = {};
-    json.adresseContact = this.adresse;
-    json.boitePostaleContact = this.bp;
-    json.cedexContact = this.cedex;
-    json.codePostalContact = this.codePostal;
-    json.mailContact = this.mail;
-    json.nomContact = this.nomContact;
-    json.prenomContact = this.prenomContact;
+    const contact: any = {};
+    contact.adresse = this.adresse;
+    contact.boitePostale = this.bp;
+    contact.cedex = this.cedex;
+    contact.codePostal = this.codePostal;
+    contact.mail = this.mail;
+    contact.nom = this.nomContact;
+    contact.prenom = this.prenomContact;
+    contact.telephone = this.telephone;
+    contact.ville = this.ville;
     json.siren = this.userSiren;
-    json.telephoneContact = this.telephone;
-    json.villeContact = this.ville;
+    json.contact = contact;
+    json.role = this.isAdmin ? "admin" : "etab";
     this.jsonResponse = json;
   }
 }
