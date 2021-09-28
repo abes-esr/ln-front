@@ -2,7 +2,7 @@
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col lg="9" md="10" xs="12">
-        <form-profile />
+        <form-profile :sirenParam="sirenParam" />
       </v-col>
     </v-row>
   </v-container>
@@ -12,8 +12,17 @@
 import { Component, Vue } from "vue-property-decorator";
 import FormProfile from "../components/FormProfile.vue";
 
+const ProfileProps = Vue.extend({
+  props: {
+    sirenParam: {
+      type: String,
+      default: ""
+    }
+  }
+});
+
 @Component({
   components: { FormProfile }
 })
-export default class App extends Vue {}
+export default class App extends ProfileProps {}
 </script>

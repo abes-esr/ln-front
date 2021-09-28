@@ -411,21 +411,7 @@ export default class FormCreationCompte extends Vue {
     (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
   ];
 
-  typesEtab: Array<string> = [
-    "EPIC/EPST",
-    "Ecoles d'ingénieurs",
-    "Ecoles de formation spécialisée",
-    "Ecoles de Management",
-    "Enseignement Supérieur et Recherche",
-    "Fondations",
-    "GIP",
-    "Grands etablissements publics",
-    "Hôpitaux universitaires",
-    "Lecture publique",
-    "Universités",
-    "Etablissement membre du réseau Latitude France",
-    "Autre"
-  ];
+  typesEtab: Array<string> = [];
 
   typeEtab: string = "";
   typeEtabRules = [
@@ -527,6 +513,7 @@ export default class FormCreationCompte extends Vue {
     if (this.loggedIn) {
       this.$router.push("/profile");
     }
+    this.fetchListeType();
   }
 
   async recaptcha() {
@@ -657,6 +644,14 @@ export default class FormCreationCompte extends Vue {
       this.dialogAvailable = false;
     }
     this.checkSirenAPI = "En attente de vérification";
+  }
+
+  fetchListeType(): void {
+    serviceLn.listeType().then(result => {
+      result.data.forEach(element => {
+        this.typesEtab.push(element.libelle);
+      });
+    });
   }
 
   clear() {

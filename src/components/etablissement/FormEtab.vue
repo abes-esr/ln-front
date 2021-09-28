@@ -149,6 +149,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 
 @Component
 export default class FormEtab extends Vue {
@@ -166,21 +167,7 @@ export default class FormEtab extends Vue {
     (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
   ];
 
-  typesEtab: Array<string> = [
-    "EPIC/EPST",
-    "Ecoles d'ingénieurs",
-    "Ecoles de formation spécialisée",
-    "Ecoles de Management",
-    "Enseignement Supérieur et Recherche",
-    "Fondations",
-    "GIP",
-    "Grands etablissements publics",
-    "Hôpitaux universitaires",
-    "Lecture publique",
-    "Universités",
-    "Etablissement membre du réseau Latitude France",
-    "Autre"
-  ];
+  typesEtab: Array<string> = [];
 
   typeEtab: string = "";
   typeEtabRules = [
@@ -290,7 +277,17 @@ export default class FormEtab extends Vue {
   clear(): void {
     (this.$refs.form as HTMLFormElement).reset();
   }
+
+  fetchListeType(): void {
+    serviceLn.listeType().then(result => {
+      result.data.forEach(element => {
+        this.typesEtab.push(element.libelle);
+      });
+    });
+  }
+
   mounted() {
+    this.fetchListeType();
     //this.bus.$on("submit", this.validAndSend);
     //this.bus.$on("clear", this.clear);
   }
