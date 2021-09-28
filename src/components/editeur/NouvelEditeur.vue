@@ -326,7 +326,7 @@ export default class NouvelEditeur extends Vue {
         this.alert = false;
 
         serviceLn
-          .createEditeur(this.$store.state.user.token, {
+          .createEditeur(this.$store.getters.token, {
             nomEditeur: this.nomEditeur,
             identifiantEditeur: this.identifiantEditeur,
             groupesEtabRelies: this.selectedTypesEtab,

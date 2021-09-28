@@ -317,7 +317,7 @@ export default class ModifierEditeur extends Vue {
   fetchEditeur(): void {
     console.log("id = " + this.id);
     serviceLn
-      .fetchEditeur(this.$store.state.user.token, {
+      .fetchEditeur(this.$store.getters.token, {
         id: this.id,
         siren: this.$store.state.user.siren
       })
@@ -360,7 +360,7 @@ export default class ModifierEditeur extends Vue {
     this.updateJsonObject();
     Logger.debug(JSON.stringify(this.jsonResponse));
     serviceLn
-      .updateEditeur(this.$store.state.user.token, this.jsonResponse)
+      .updateEditeur(this.$store.getters.token, this.jsonResponse)
       .then(response => {
         this.buttonLoading = false;
         Logger.debug("notification = " + response.data);

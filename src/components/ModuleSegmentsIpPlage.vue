@@ -485,7 +485,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
     Logger.debug("id = " + this.id);
     Logger.debug("siren = " + this.getUserSiren);
     serviceLn
-      .getIPInfos(this.$store.state.user.token, {
+      .getIPInfos(this.$store.getters.token, {
         id: this.id,
         siren: this.$store.state.user.siren
       })

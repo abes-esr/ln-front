@@ -206,7 +206,7 @@ export default class FormProfile extends Vue {
   get userSiren(): string {
     return this.$store.getters.userSiren;
   }
-  
+
   get isAdmin(): boolean {
     return this.$store.getters.isAdmin;
   }
@@ -226,7 +226,7 @@ export default class FormProfile extends Vue {
 
   fetchEtab(): void {
     serviceLn
-      .getInfosEtab(this.$store.state.user.token, this.userSiren)
+      .getInfosEtab(this.$store.getters.token, this.userSiren)
       .then(result => {
         this.mail = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;
@@ -248,7 +248,7 @@ export default class FormProfile extends Vue {
     this.updateJsonObject();
     Logger.debug(JSON.stringify(this.jsonResponse));
     serviceLn
-      .updateProfile(this.$store.state.user.token, this.jsonResponse)
+      .updateProfile(this.$store.getters.token, this.jsonResponse)
       .then(() => {
         this.buttonLoading = false;
         this.$router.push({ name: "Home" });

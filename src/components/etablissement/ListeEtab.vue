@@ -234,7 +234,7 @@ export default class ListeEtab extends Vue {
     return statutRecherche.statut.toString().includes(this.statut);
   }
   getAll(): any {
-    return serviceLn.listeEtab(this.$store.state.user.token);
+    return serviceLn.listeEtab(this.$store.getters.token);
   }
   collecterEtab(): any {
     this.getAll()
@@ -278,7 +278,7 @@ export default class ListeEtab extends Vue {
   }
   supprimerEtab(): void {
     serviceLn
-      .deleteEtab(this.$store.state.user.token, this.currentSirenToDelete, {
+      .deleteEtab(this.$store.getters.token, this.currentSirenToDelete, {
         motif: this.motifSuppression
       })
       .then(response => {
