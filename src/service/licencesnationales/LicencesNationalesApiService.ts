@@ -183,19 +183,19 @@ export class LicencesNationalesApiService {
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/fusion", token, data);
+    return this.client.post("/etablissements/fusion", token, data);
   }
 
   scission(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/division", token, data);
+    return this.client.post("/etablissements/division", token, data);
   }
 
   listeEtab(token: string): Promise<AxiosResponse> {
-    return this.client.get("/etablissement/getListEtab", token);
+    return this.client.get("/etablissements/", token);
   }
 
   listeType(): Promise<AxiosResponse> {
-    return this.client.get("etablissements/getType");
+    return this.client.get("/etablissements/getType");
   }
 
   getInfosEtab(token: string, siren?: string): Promise<AxiosResponse> {
@@ -207,7 +207,7 @@ export class LicencesNationalesApiService {
   }
 
   deleteEtab(token: string, siren: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/suppression/" + siren, data, token);
+    return this.client.delete("/etablissements/" + siren, data, token);
   }
 
   getListIP(token: string, siren): Promise<AxiosResponse> {

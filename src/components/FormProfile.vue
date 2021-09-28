@@ -30,9 +30,7 @@
                       label="SIREN"
                       placeholder="SIREN"
                       v-model="siren"
-                      :rules="sirenEtabRules"
-                      required
-                      @keyup.enter="validate()"
+                      disabled
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -219,11 +217,12 @@ import { Component, Vue } from "vue-property-decorator";
 
 //Si la modification est effectuée par un admin
 //On passe le SIREN du compte à modifier en Prop
+//Si on ne passe rien, la prop reste vide, on peut utiliser le composant pour modifier uniquement en mode utilisateur
 const FormProfileProps = Vue.extend({
   props: {
     sirenParam: {
       type: String,
-      default: "123456788"
+      default: ""
     }
   }
 });
@@ -371,6 +370,11 @@ export default class FormProfile extends FormProfileProps {
     json.siren = this.userSiren;
     json.contact = contact;
     json.role = this.isAdmin ? "admin" : "etab";
+    if (this.isAdmin) {
+      json.siren = this.siren;
+      json.typeEtablissement = this.typeEtab;
+      json.nom = this.nomEtab;
+    }
     this.jsonResponse = json;
   }
 }

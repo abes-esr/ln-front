@@ -54,9 +54,10 @@ const routes: Array<RouteConfig> = [
       import("../components/etablissement/FormScissionEtablissement.vue")
   },
   {
-    path: "/listeAcces",
+    path: "/listeAcces/:sirenEtabSiAdmin",
     name: "ListeAcces",
     component: () => import("../components/acces/ListeAcces.vue"),
+    props: true,
     meta: {
       requiresAuth: true
     }
@@ -82,6 +83,15 @@ const routes: Array<RouteConfig> = [
     path: "/modifierAcces/:id&:typeAcces",
     name: "ModifierAcces",
     component: () => import("../components/acces/ModifierAcces.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/modifierEtabAdmin/:sirenParam",
+    name: "modifierEtabAdmin",
+    component: () => import("../views/Profile.vue"),
+    props: true,
     meta: {
       requiresAuth: true
     }

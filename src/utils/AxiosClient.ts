@@ -54,6 +54,24 @@ class AxiosClient {
   }
 
   /**
+   * Appel HTTP DELETE
+   * @param url URL de la requête HTTP
+   * @param data Body de la requête HTTP
+   * @param token Token Bearer à ajouter à l'entête
+   */
+  delete(url: string, data: any, token?: string): Promise<AxiosResponse> {
+    // Si un token est renseigné, on le rajoute à l'entête
+    let config;
+    if (token) {
+      config = {
+        Authorization: "Bearer " + token
+      };
+    }
+
+    return this.client.delete(url, { data: data, headers: config });
+  }
+
+  /**
    * Appel HTTP GET
    * @param url URL de la requête HTTP
    * @param token Token Bearer à ajouter à l'entête

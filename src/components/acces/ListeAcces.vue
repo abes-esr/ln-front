@@ -117,8 +117,17 @@ import { serviceLn } from "../../service/licencesnationales/LicencesNationalesAp
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
 
+const ListeAccesProps = Vue.extend({
+  props: {
+    sirenEtabSiAdmin: {
+      type: String,
+      default: ""
+    }
+  }
+});
+
 @Component
-export default class ListeAcces extends Vue {
+export default class ListeAcces extends ListeAccesProps {
   statut: string = "";
   selectStatut: Array<string> = ["En validation", "Validée"];
   rechercher: string = "";
@@ -156,10 +165,6 @@ export default class ListeAcces extends Vue {
 
   get notification() {
     return this.$store.state.notification;
-  }
-
-  get sirenEtabSiAdmin() {
-    return this.$store.state.sirenEtabSiAdmin;
   }
 
   get getUserSiren() {
