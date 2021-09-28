@@ -119,7 +119,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/modifierEditeur/:id",
     name: "ModifierEditeur",
-    component: () => import("../components/ModifierEditeur.vue"),
+    component: () => import("../components/editeur/ModifierEditeur.vue"),
     meta: {
       requiresAuth: true
     }
