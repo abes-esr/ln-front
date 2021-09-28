@@ -302,7 +302,7 @@ export default class FormProfile extends FormProfileProps {
   fetchEtab(): void {
     //Le param "sirenParam" est optionel, utilisé dans le cas Admin
     serviceLn
-      .getInfosEtab(this.$store.state.user.token, this.sirenParam)
+      .getInfosEtab(this.$store.getters.token, this.userSiren)
       .then(result => {
         this.mail = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;
@@ -343,7 +343,7 @@ export default class FormProfile extends FormProfileProps {
     this.updateJsonObject();
     Logger.debug(JSON.stringify(this.jsonResponse));
     serviceLn
-      .updateProfile(this.$store.state.user.token, this.jsonResponse)
+      .updateProfile(this.$store.getters.token, this.jsonResponse)
       .then(() => {
         this.buttonLoading = false;
         this.$router.push({ name: "Home" });

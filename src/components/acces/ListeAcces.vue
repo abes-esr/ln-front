@@ -212,14 +212,11 @@ export default class ListeAcces extends ListeAccesProps {
   getAll() {
     if (this.isAdmin === "true")
       return serviceLn.getListIPEtab(
-        this.$store.state.user.token,
+        this.$store.getters.token,
         this.sirenEtabSiAdmin
       );
     else
-      return serviceLn.getListIP(
-        this.$store.state.user.token,
-        this.getUserSiren
-      );
+      return serviceLn.getListIP(this.$store.getters.token, this.getUserSiren);
   }
 
   collecterAcces(): void {
@@ -264,7 +261,7 @@ export default class ListeAcces extends ListeAccesProps {
   supprimerAcces(id): void {
     Logger.debug("id = " + id);
     serviceLn
-      .deleteIP(this.$store.state.user.token, this.getUrlSuppressionIp(), {
+      .deleteIP(this.$store.getters.token, this.getUrlSuppressionIp(), {
         id: id,
         siren: this.getSirenSuppressionIp()
       })

@@ -104,7 +104,7 @@ export default class FormFusionEtablissement extends Vue {
         })
       );
       serviceLn
-        .fusion(this.$store.state.user.token, {
+        .fusion(this.$store.getters.token, {
           etablissementDTO: payload,
           sirenFusionnes: this.sirenEtab
         })
