@@ -2,7 +2,61 @@
   <div>
     <v-card width="100%" outlined>
       <v-form ref="form" lazy-validation>
-        <v-card-title>Modifier mes informations</v-card-title>
+        <!-- Bloc Spécifique aux Admin -->
+        <div v-if="isAdmin">
+          <v-card-title>Modifier l'établissement</v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col lg="6" md="12" xs="12">
+                <v-row>
+                  <v-col cols="1" />
+                  <v-col cols="10">
+                    <v-text-field
+                      outlined
+                      label="Nom de l'établissement"
+                      placeholder="Nom de l'établissement"
+                      v-model="nomEtab"
+                      :rules="nomRules"
+                      required
+                      @keyup.enter="validate()"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="1" />
+                  <v-col cols="10">
+                    <v-text-field
+                      outlined
+                      label="SIREN"
+                      placeholder="SIREN"
+                      v-model="siren"
+                      :rules="sirenEtabRules"
+                      required
+                      @keyup.enter="validate()"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col lg="6" md="12" xs="12">
+                <v-row>
+                  <v-col cols="1" />
+                  <v-col cols="10">
+                    <v-select
+                      outlined
+                      v-model="typeEtab"
+                      :items="listeType"
+                      label="Type de l'établissement"
+                      required
+                    ></v-select>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </div>
+        <!-- FIN Bloc Spécifique aux Admin -->
+        <v-card-title v-if="isAdmin">Modifier le contact</v-card-title>
+        <v-card-title v-else>Modifier mes informations</v-card-title>
         <v-card-text>
           <v-row>
             <v-col lg="6" md="12" xs="12">
@@ -163,8 +217,22 @@ import { serviceLn } from "../service/licencesnationales/LicencesNationalesApiSe
 import { Logger } from "@/utils/Logger";
 import { Component, Vue } from "vue-property-decorator";
 
+//Si la modification est effectuée par un admin
+//On passe le SIREN du compte à modifier en Prop
+const FormProfileProps = Vue.extend({
+  props: {
+    sirenParam: {
+      type: String,
+      default: "123456788"
+    }
+  }
+});
+
 @Component
-export default class FormProfile extends Vue {
+export default class FormProfile extends FormProfileProps {
+  siren: string = "";
+  nomEtab: string = "";
+  typeEtab: string = "";
   adresse: string = "";
   codePostal: string = "";
   ville: string = "";
@@ -175,6 +243,7 @@ export default class FormProfile extends Vue {
   prenomContact: string = "";
   telephone: string = "";
   jsonResponse: any = {};
+  listeType: Array<string> = [];
   alert: boolean = false;
   error: string = "";
   nomRules = [(v: string) => !!v || "Champ obligatoire"];
@@ -201,14 +270,25 @@ export default class FormProfile extends Vue {
       /^[\d]*$/.test(v) ||
       "Le téléphone doit être composé de chiffres uniquement"
   ];
+  sirenEtabRules = [
+    (v: string) => !!v || "SIREN obligatoire",
+    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
+  ];
   buttonLoading: boolean = false;
 
   get userSiren(): string {
     return this.$store.getters.userSiren;
   }
 
+  get isAdmin(): boolean {
+    return this.$store.getters.isAdmin;
+  }
+
   mounted() {
     this.fetchEtab();
+    if (this.isAdmin) {
+      this.fetchListeType();
+    }
   }
 
   validate(): void {
@@ -221,8 +301,9 @@ export default class FormProfile extends Vue {
   }
 
   fetchEtab(): void {
+    //Le param "sirenParam" est optionel, utilisé dans le cas Admin
     serviceLn
-      .getInfosEtab(this.$store.state.user.token)
+      .getInfosEtab(this.$store.state.user.token, this.sirenParam)
       .then(result => {
         this.mail = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;
@@ -233,6 +314,25 @@ export default class FormProfile extends Vue {
         this.cedex = result.data.contact.cedex;
         this.ville = result.data.contact.ville;
         this.telephone = result.data.contact.telephone;
+        if (this.isAdmin) {
+          this.siren = result.data.siren;
+          this.nomEtab = result.data.nom;
+          this.typeEtab = result.data.typeEtablissement;
+        }
+      })
+      .catch(err => {
+        this.alert = true;
+        this.error = err;
+      });
+  }
+
+  fetchListeType(): void {
+    serviceLn
+      .listeType()
+      .then(result => {
+        result.data.forEach(element => {
+          this.listeType.push(element.libelle);
+        });
       })
       .catch(err => {
         this.alert = true;

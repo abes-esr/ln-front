@@ -54,27 +54,29 @@ export class LicencesNationalesApiService {
    * Appel API pour réinitiliser son mot de passe avec son Siren
    * @param data
    */
-  motDePasseOublieSiren(data: JsonMotDePasseOublieSirenRequest): Promise<JsonMotDePasseOublieResponse> {
+  motDePasseOublieSiren(
+    data: JsonMotDePasseOublieSirenRequest
+  ): Promise<JsonMotDePasseOublieResponse> {
     return new Promise((resolve, reject) => {
       return this.client
-          .post("/authentification/motDePasseOublie", data)
-          .then(result => {
-            const response: JsonMotDePasseOublieResponse = result.data;
-            resolve(response);
-          })
-          .catch(err => {
-            if (err.response.status == 404) {
-              reject(new CredentialNotValidError(err.response.data.message));
-            } else {
-              reject(
-                  new HttpRequestError(
-                      err.response.status,
-                      err.response.data.message,
-                      err.response.data.debugMessage
-                  )
-              );
-            }
-          });
+        .post("/authentification/motDePasseOublie", data)
+        .then(result => {
+          const response: JsonMotDePasseOublieResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          if (err.response.status == 404) {
+            reject(new CredentialNotValidError(err.response.data.message));
+          } else {
+            reject(
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.message,
+                err.response.data.debugMessage
+              )
+            );
+          }
+        });
     });
   }
 
@@ -82,75 +84,81 @@ export class LicencesNationalesApiService {
    * Appel API pour réinitiliser son mot de passe avec son email
    * @param data
    */
-  motDePasseOublieEmail(data: JsonMotDePasseOublieEmailRequest): Promise<JsonMotDePasseOublieResponse> {
+  motDePasseOublieEmail(
+    data: JsonMotDePasseOublieEmailRequest
+  ): Promise<JsonMotDePasseOublieResponse> {
     return new Promise((resolve, reject) => {
       return this.client
-          .post("/authentification/motDePasseOublie", data)
-          .then(result => {
-            const response: JsonMotDePasseOublieResponse = result.data;
-            resolve(response);
-          })
-          .catch(err => {
-            if (err.response.status == 404) {
-              reject(new CredentialNotValidError(err.response.data.message));
-            } else {
-              reject(
-                  new HttpRequestError(
-                      err.response.status,
-                      err.response.data.message,
-                      err.response.data.debugMessage
-                  )
-              );
-            }
-          });
+        .post("/authentification/motDePasseOublie", data)
+        .then(result => {
+          const response: JsonMotDePasseOublieResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          if (err.response.status == 404) {
+            reject(new CredentialNotValidError(err.response.data.message));
+          } else {
+            reject(
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.message,
+                err.response.data.debugMessage
+              )
+            );
+          }
+        });
     });
   }
 
-  reinitialiserMotDePasse(data: JsonReinitialiserMotDePasseRequest): Promise<JsonReinitialiserMotDePasseResponse> {
+  reinitialiserMotDePasse(
+    data: JsonReinitialiserMotDePasseRequest
+  ): Promise<JsonReinitialiserMotDePasseResponse> {
     return new Promise((resolve, reject) => {
       return this.client
-          .post("/authentification/reinitialiserMotDePasse", data)
-          .then(result => {
-            const response: JsonReinitialiserMotDePasseResponse = result.data;
-            resolve(response);
-          })
-          .catch(err => {
-            if (err.response.status == 404) {
-              reject(new CredentialNotValidError(err.response.data.message));
-            } else {
-              reject(
-                  new HttpRequestError(
-                      err.response.status,
-                      err.response.data.message,
-                      err.response.data.debugMessage
-                  )
-              );
-            }
-          });
+        .post("/authentification/reinitialiserMotDePasse", data)
+        .then(result => {
+          const response: JsonReinitialiserMotDePasseResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          if (err.response.status == 404) {
+            reject(new CredentialNotValidError(err.response.data.message));
+          } else {
+            reject(
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.message,
+                err.response.data.debugMessage
+              )
+            );
+          }
+        });
     });
   }
 
-  verifierValiditeToken(data: JsonVerifierValiditeTokenRequest): Promise<JsonVerifierValiditeTokenResponse> {
+  verifierValiditeToken(
+    data: JsonVerifierValiditeTokenRequest
+  ): Promise<JsonVerifierValiditeTokenResponse> {
     return new Promise((resolve, reject) => {
       return this.client
-          .post("/authentification/verifierValiditeToken", data)
-          .then(result => {
-            const response: JsonVerifierValiditeTokenResponse = result.data;
-            resolve(response);
-          })
-          .catch(err => {
-            if (err.response.status == 404) {
-              reject(new CredentialNotValidError(err.response.data.message));
-            } else {
-              reject(
-                  new HttpRequestError(
-                      err.response.status,
-                      err.response.data.message,
-                      err.response.data.debugMessage
-                  )
-              );
-            }
-          });
+        .post("/authentification/verifierValiditeToken", data)
+        .then(result => {
+          const response: JsonVerifierValiditeTokenResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          if (err.response.status == 404) {
+            reject(new CredentialNotValidError(err.response.data.message));
+          } else {
+            reject(
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.message,
+                err.response.data.debugMessage
+              )
+            );
+          }
+        });
     });
   }
 
@@ -186,8 +194,12 @@ export class LicencesNationalesApiService {
     return this.client.get("/etablissement/getListEtab", token);
   }
 
-  getInfosEtab(token: string): Promise<AxiosResponse> {
-    return this.client.get("/etablissement/getInfoEtab", token);
+  listeType(): Promise<AxiosResponse> {
+    return this.client.get("etablissements/getType");
+  }
+
+  getInfosEtab(token: string, siren?: string): Promise<AxiosResponse> {
+    return this.client.get("/etablissements/" + siren, token);
   }
 
   updateProfile(token: string, data: any): Promise<AxiosResponse> {
@@ -237,7 +249,6 @@ export class LicencesNationalesApiService {
   deleteEditeur(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/editeur/suppression", token, data);
   }
-
 }
 
 export const serviceLn = new LicencesNationalesApiService();
