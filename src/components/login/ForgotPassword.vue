@@ -3,8 +3,8 @@
     <v-card witdh="100%" outlined>
       <v-card-title>Mot de passe oublié</v-card-title>
       <v-card-subtitle
-        >Remplissez un des deux champs ci-dessous</v-card-subtitle
-      >
+        >Remplissez un des deux champs ci-dessous
+      </v-card-subtitle>
       <v-radio-group v-model="sirenRadio">
         <v-card-text>
           <v-row>
@@ -73,10 +73,10 @@
               @click="recaptcha()"
               >Envoyer
               <v-icon style="padding-left: 5px;"
-                >mdi-arrow-right-circle-outline</v-icon
-              ></v-btn
-            ></v-col
-          >
+                >mdi-arrow-right-circle-outline
+              </v-icon>
+            </v-btn>
+          </v-col>
         </v-row>
       </v-card-actions>
     </v-card>
@@ -87,13 +87,13 @@
 <script lang="ts">
 import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Component, Vue } from "vue-property-decorator";
-import {Logger} from "@/utils/Logger";
-import {HttpRequestError} from "@/exception/HttpRequestError";
+import { Logger } from "@/utils/Logger";
+import { HttpRequestError } from "@/exception/HttpRequestError";
 
 @Component
 export default class ForgotPassword extends Vue {
   siren: string = "";
-  tokenValid: Promise<boolean> = this.$recaptchaLoaded();
+  isTokenValid: Promise<boolean> = this.$recaptchaLoaded();
   token: string = "";
   sirenRules = [
     (v: string) => !!v || "SIREN obligatoire",
@@ -144,14 +144,19 @@ export default class ForgotPassword extends Vue {
             this.alert = true;
           })
           .catch(err => {
-            Logger.error(err.message);
-            if (err instanceof HttpRequestError) {
-              Logger.debug("Erreur API : " + err.debugMessage);
-            }
             this.buttonLoading = false;
-            this.message = err.message;
             this.alert = true;
             this.retourKo = true;
+
+            if (err instanceof HttpRequestError) {
+              Logger.error(
+                "Erreur HTTP : " + err.error + " sur la route " + err.path
+              );
+              this.message = "Erreur de requête : " + err.error;
+            } else {
+              Logger.error(err.message);
+              this.message = err.message;
+            }
           });
     } else {
       if ((this.$refs.formMail as Vue & { validate: () => boolean }).validate())
@@ -166,14 +171,19 @@ export default class ForgotPassword extends Vue {
             this.alert = true;
           })
           .catch(err => {
-            Logger.error(err.message);
-            if (err instanceof HttpRequestError) {
-              Logger.debug("Erreur API : " + err.debugMessage);
-            }
             this.buttonLoading = false;
-            this.message = err.message;
             this.alert = true;
             this.retourKo = true;
+
+            if (err instanceof HttpRequestError) {
+              Logger.error(
+                "Erreur HTTP : " + err.error + " sur la route " + err.path
+              );
+              this.message = "Erreur de requête : " + err.error;
+            } else {
+              Logger.error(err.message);
+              this.message = err.message;
+            }
           });
     }
   }
