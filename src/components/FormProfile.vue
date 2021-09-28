@@ -279,10 +279,6 @@ export default class FormProfile extends FormProfileProps {
   get userSiren(): string {
     return this.$store.getters.userSiren;
   }
-  
-  get isAdmin(): boolean {
-    return this.$store.getters.isAdmin;
-  }
 
   get isAdmin(): boolean {
     return this.$store.getters.isAdmin;
@@ -307,11 +303,7 @@ export default class FormProfile extends FormProfileProps {
   fetchEtab(): void {
     //Le param "sirenParam" est optionel, utilisé dans le cas Admin
     serviceLn
-<<<<<<< HEAD
       .getInfosEtab(this.$store.state.user.token, this.sirenParam)
-=======
-      .getInfosEtab(this.$store.state.user.token, this.userSiren)
->>>>>>> develop
       .then(result => {
         this.mail = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;
