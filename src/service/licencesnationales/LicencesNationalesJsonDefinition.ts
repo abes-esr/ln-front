@@ -71,10 +71,10 @@ export interface JsonCreateAccount {
 }
 
 export interface JsonCreateEditeur {
-  nomEditeur: string,
-  identifiantEditeur: string,
-  groupesEtabRelies: Array<string>,
-  adresseEditeur: string,
-  listeContactCommercialEditeurDTO: Array<string>,
-  listeContactTechniqueEditeurDTO: Array<string>
+  nomEditeur: string;
+  identifiantEditeur: string;
+  groupesEtabRelies: Array<string>;
+  adresseEditeur: string;
+  listeContactCommercialEditeurDTO: Array<string>;
+  listeContactTechniqueEditeurDTO: Array<string>;
 }

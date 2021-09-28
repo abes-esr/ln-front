@@ -265,51 +265,51 @@ export default class NouvelEditeur extends Vue {
   }
 
   /* ordre du process :
-  * au clic sur valider => enclencherAjouterContactsEditeur()
-  * 1 - verifie les champs obligatoire de formNouvelEditeur
-  * 2 - remets à zero les listes formModuleCC et CT au cas où erreurs utilisateurs en amont => evite doublonnage
-  * 3 - si min 1CC et 0CT
-  *         envoie l'event CC,
-  *         on arrive sur le module CC au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
-  *         on revient sur nouvelEditeur sur le champs cc et v-on = la méthode de remplissage liste CC
-  *         on transfère le payload dans l'array listeCC-DTO
-  *         validate
-  *   -si min 1CT
-  *         envoie l'event CT,
-  *         on arrive sur le module CT au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
-  *         on revient sur nouvelEditeur sur le champs ct et v-on = la méthode de remplissage liste CT
-  *         on transfère le payload dans l'array listeCT-DTO
-  *         on déclenche l'event CC
-  *         on arrive sur le module CC au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
-  *         on revient sur nouvelEditeur sur le champs cc et v-on = la méthode de remplissage liste CC
-  *         on transfère le payload dans l'array listeCC-DTO
-  *         les 2 listes sont remplies
-  *         validate
-  * 4 - on verifie les champs du formNouvelEditeur (les verifications modules se passent au nv des modules
-  * 5 - on envoit
-  * Vérifications : dans l'ordre
-  * 1 - au clic sur valider : verifie les champs formNouvelEditeur (obligatoires nomEditeur + adresse)
-  * 2 - si aucun modules CC ou CT remplis, étant donné que par défaut les compteurs modules sont à 1, l'event CT se déclenche et repère le module vide avec son validate
-  *   - cas d'utilisation :
-  *          => l'utilisateur remplit 1 CT et 0 CC et clique sur valider
-  *             l'event CT est envoyé, on arrive sur le module CT, on vérifie les données, on emit, on reçoit au nv du v-on sur le champs ct, la méthode de remplissage ct se déclenche
-  *             la liste ct est remplie, on envoit l'event cc, on arrive sur le module au nv du validate, qui repère que le module est vide et renvoit du rouge et l'utilisateur est bloqué car le module par défaut à 1 est vide
-  *             l'utilisateur supprime le module clique sur envoyer ou remplit le module CC
-  *             le process reprend => d'où l'utilité de mettre à zero les listes pour couvrir le cas où il y a des erreurs
-  *          => l'utilisateur remplit 1CC et 0CT
-  *             l'event CT est envoyé, car par défaut les modules sont à 1, on arrive sur le module CT, au nv du validate, qui repère que le module est vide et renvoit du rouge et l'utilisateur est bloqué car le module par défaut à 1 est vide
-  *             l'utilisateur supprime le module clique sur envoyer ou remplit le module CT
-  *             le process reprend
-  *             si il a supprimé le CT, le compteur CT est à 0 et qd il clique sur valider le if CC!= 0 && CT==0 déclenche l'event CC directement
-  *
-  * En résumé : par defaut on affiche 1 module CC et 1 module CT donc si l'utilisateur ne supprime pas les modules qu'il n'utilisent pas, au clic sur valider ce sera l'event CT qui sera envoyé
-  *             qui renvoit du rouge sur le CT vide
-  *             0CC et 1 CT = event CT => verif module CT=> remplissage liste CT  ==> validate => send
-  *             1CC et 0CT = event CC = > verif module CC=> remplissage liste CC + ==> validate => send
-  *             et situation par défaut:
-  *             1CC et 1CT = event CT => verif module CT=> remplissage liste CT + event CC = > verif module CC=> remplissage liste CC + ==> validate => send
-  *
-  * */
+   * au clic sur valider => enclencherAjouterContactsEditeur()
+   * 1 - verifie les champs obligatoire de formNouvelEditeur
+   * 2 - remets à zero les listes formModuleCC et CT au cas où erreurs utilisateurs en amont => evite doublonnage
+   * 3 - si min 1CC et 0CT
+   *         envoie l'event CC,
+   *         on arrive sur le module CC au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
+   *         on revient sur nouvelEditeur sur le champs cc et v-on = la méthode de remplissage liste CC
+   *         on transfère le payload dans l'array listeCC-DTO
+   *         validate
+   *   -si min 1CT
+   *         envoie l'event CT,
+   *         on arrive sur le module CT au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
+   *         on revient sur nouvelEditeur sur le champs ct et v-on = la méthode de remplissage liste CT
+   *         on transfère le payload dans l'array listeCT-DTO
+   *         on déclenche l'event CC
+   *         on arrive sur le module CC au niveau du mounted eventON puis verification des champs avec le validate et enfin le emit dans la méthode validAndSend
+   *         on revient sur nouvelEditeur sur le champs cc et v-on = la méthode de remplissage liste CC
+   *         on transfère le payload dans l'array listeCC-DTO
+   *         les 2 listes sont remplies
+   *         validate
+   * 4 - on verifie les champs du formNouvelEditeur (les verifications modules se passent au nv des modules
+   * 5 - on envoit
+   * Vérifications : dans l'ordre
+   * 1 - au clic sur valider : verifie les champs formNouvelEditeur (obligatoires nomEditeur + adresse)
+   * 2 - si aucun modules CC ou CT remplis, étant donné que par défaut les compteurs modules sont à 1, l'event CT se déclenche et repère le module vide avec son validate
+   *   - cas d'utilisation :
+   *          => l'utilisateur remplit 1 CT et 0 CC et clique sur valider
+   *             l'event CT est envoyé, on arrive sur le module CT, on vérifie les données, on emit, on reçoit au nv du v-on sur le champs ct, la méthode de remplissage ct se déclenche
+   *             la liste ct est remplie, on envoit l'event cc, on arrive sur le module au nv du validate, qui repère que le module est vide et renvoit du rouge et l'utilisateur est bloqué car le module par défaut à 1 est vide
+   *             l'utilisateur supprime le module clique sur envoyer ou remplit le module CC
+   *             le process reprend => d'où l'utilité de mettre à zero les listes pour couvrir le cas où il y a des erreurs
+   *          => l'utilisateur remplit 1CC et 0CT
+   *             l'event CT est envoyé, car par défaut les modules sont à 1, on arrive sur le module CT, au nv du validate, qui repère que le module est vide et renvoit du rouge et l'utilisateur est bloqué car le module par défaut à 1 est vide
+   *             l'utilisateur supprime le module clique sur envoyer ou remplit le module CT
+   *             le process reprend
+   *             si il a supprimé le CT, le compteur CT est à 0 et qd il clique sur valider le if CC!= 0 && CT==0 déclenche l'event CC directement
+   *
+   * En résumé : par defaut on affiche 1 module CC et 1 module CT donc si l'utilisateur ne supprime pas les modules qu'il n'utilisent pas, au clic sur valider ce sera l'event CT qui sera envoyé
+   *             qui renvoit du rouge sur le CT vide
+   *             0CC et 1 CT = event CT => verif module CT=> remplissage liste CT  ==> validate => send
+   *             1CC et 0CT = event CC = > verif module CC=> remplissage liste CC + ==> validate => send
+   *             et situation par défaut:
+   *             1CC et 1CT = event CT => verif module CT=> remplissage liste CT + event CC = > verif module CC=> remplissage liste CC + ==> validate => send
+   *
+   * */
 
   ///////////////methodes utilitaires////////////
 
@@ -351,9 +351,9 @@ export default class NouvelEditeur extends Vue {
     this.error = "";
     this.alert = false;
     if (
-        (this.$refs.formNouvelEditeur as Vue & {
-          validate: () => boolean;
-        }).validate()
+      (this.$refs.formNouvelEditeur as Vue & {
+        validate: () => boolean;
+      }).validate()
     ) {
       console.log("debut enclencherAjouterContactsEditeur");
 
@@ -367,16 +367,16 @@ export default class NouvelEditeur extends Vue {
 
       //si 0 CT et au moins 1 CC on va directement recup les infos au module CC
       if (
-          this.moduleContactTechniqueNumber == 0 &&
-          this.moduleContactCommercialNumber != 0
+        this.moduleContactTechniqueNumber == 0 &&
+        this.moduleContactCommercialNumber != 0
       ) {
         AjouterContactsCommerciauxEditeurEvent.$emit(
-            "AjouterContactsCommerciauxEditeurEvent"
+          "AjouterContactsCommerciauxEditeurEvent"
         );
       }
       //si en revanche on a au moins 1 module CT remplit, c'est lui qui prend les devants
       AjouterContactsTechniquesEditeurEvent.$emit(
-          "AjouterContactsTechniquesEditeurEvent"
+        "AjouterContactsTechniquesEditeurEvent"
       );
     }
   }
@@ -405,19 +405,18 @@ export default class NouvelEditeur extends Vue {
     //si un ou des modules contacts commerciaux sont remplis on envoit l'evenement d'ajout CC
     if (this.moduleContactCommercialNumber != 0) {
       AjouterContactsCommerciauxEditeurEvent.$emit(
-          "AjouterContactsCommerciauxEditeurEvent"
+        "AjouterContactsCommerciauxEditeurEvent"
       );
     }
     if (
-        this.listeContactsCommerciauxEditeurDTO.length ==
+      this.listeContactsCommerciauxEditeurDTO.length ==
         this.moduleContactCommercialNumber &&
-        this.listeContactsTechniquesEditeurDTO.length ==
+      this.listeContactsTechniquesEditeurDTO.length ==
         this.moduleContactTechniqueNumber
     ) {
       this.validate();
     }
   }
-
 
   /////////////////on valide et on envoit au back////////////////////////
 
@@ -426,9 +425,9 @@ export default class NouvelEditeur extends Vue {
     this.error = "";
     this.alert = false;
     if (
-        (this.$refs.formNouvelEditeur as Vue & {
-          validate: () => boolean;
-        }).validate()
+      (this.$refs.formNouvelEditeur as Vue & {
+        validate: () => boolean;
+      }).validate()
     ) {
       this.send();
     }
@@ -439,9 +438,9 @@ export default class NouvelEditeur extends Vue {
 
     //on verifie que le nb d'éléments dans les liste correspond bien aux nb des compteurs
     if (
-        this.listeContactsCommerciauxEditeurDTO.length ==
+      this.listeContactsCommerciauxEditeurDTO.length ==
         this.moduleContactCommercialNumber &&
-        this.listeContactsTechniquesEditeurDTO.length ==
+      this.listeContactsTechniquesEditeurDTO.length ==
         this.moduleContactTechniqueNumber
     ) {
       if (
@@ -451,7 +450,7 @@ export default class NouvelEditeur extends Vue {
       ) {
         console.log({
           listeContactsCommerciauxEditeurDTO: this
-              .listeContactsCommerciauxEditeurDTO
+            .listeContactsCommerciauxEditeurDTO
         });
 
         this.alert = false;
@@ -463,9 +462,9 @@ export default class NouvelEditeur extends Vue {
             groupesEtabRelies: this.selectedTypesEtab,
             adresseEditeur: this.adresseEditeur,
             listeContactCommercialEditeurDTO: this
-                .listeContactsCommerciauxEditeurDTO,
+              .listeContactsCommerciauxEditeurDTO,
             listeContactTechniqueEditeurDTO: this
-                .listeContactsTechniquesEditeurDTO
+              .listeContactsTechniquesEditeurDTO
           })
           .then(response => {
             this.alert = true;

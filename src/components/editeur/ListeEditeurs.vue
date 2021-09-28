@@ -89,7 +89,7 @@ import { Editeur } from "@/components/CommonDefinition";
 @Component
 export default class ListeEditeurs extends Vue {
   rechercher: string = "";
-  editeur: string = "";
+  editeur: Array<string> = [];
   title: string = "";
   id: string = "";
   error: string = "";
@@ -111,7 +111,7 @@ export default class ListeEditeurs extends Vue {
   get getUserSiren() {
     return this.$store.getters.userSiren;
   }
-  get getEditeurs(): string {
+  get getEditeurs(): Array<string> {
     return this.editeur;
   }
 
@@ -139,7 +139,7 @@ export default class ListeEditeurs extends Vue {
   }
   affichageEditeurs(editeur): Editeur {
     return {
-      id: editeur.id,
+      id: editeur.idEditeur,
       dateCreation: moment(editeur.dateCreation).format("L"),
       nomEditeur: editeur.nomEditeur
     };

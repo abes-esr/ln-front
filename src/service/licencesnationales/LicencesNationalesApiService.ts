@@ -10,7 +10,8 @@ import {
   JsonReinitialiserMotDePasseRequest,
   JsonMotDePasseOublieEmailRequest,
   JsonVerifierValiditeTokenRequest,
-  JsonVerifierValiditeTokenResponse, JsonCreateEditeur
+  JsonVerifierValiditeTokenResponse,
+  JsonCreateEditeur
 } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
 import { HttpRequestError } from "@/exception/HttpRequestError";
 import { CredentialNotValidError } from "@/service/licencesnationales/CredentialNotValidError";
@@ -226,7 +227,10 @@ export class LicencesNationalesApiService {
     return this.client.post(url, token, data);
   }
 
-  createEditeur(token: string, data: JsonCreateEditeur): Promise<AxiosResponse> {
+  createEditeur(
+    token: string,
+    data: JsonCreateEditeur
+  ): Promise<AxiosResponse> {
     return this.client.put("/editeur/", data, token);
   }
 

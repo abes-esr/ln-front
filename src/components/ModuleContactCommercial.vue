@@ -72,16 +72,16 @@ export default class ModuleContactCommercial extends Vue {
   //cette action est necessaire pour que le compteur CC et CT soit correct
   validate(): void {
     if (
-        (this.$refs.formModuleCC as Vue & {
-          validate: () => boolean;
-        }).validate()
+      (this.$refs.formModuleCC as Vue & {
+        validate: () => boolean;
+      }).validate()
     ) {
       this.validAndSend();
     }
   }
 
   validAndSend(): void {
-  Logger.debug("Validation CC");
+    Logger.debug("Validation CC");
     this.$emit("FormModuleContactCommercialEvent", {
       nomContactCommercial: this.nomContactCommercial,
       prenomContactCommercial: this.prenomContactCommercial,
@@ -89,20 +89,19 @@ export default class ModuleContactCommercial extends Vue {
     });
   }
 
-
   clear(): void {
     //(this.$refs.form as HTMLFormElement).reset();
   }
 
   mounted() {
     AjouterContactsCommerciauxEditeurEvent.$on(
-        "AjouterContactsCommerciauxEditeurEvent",
-        this.validate
+      "AjouterContactsCommerciauxEditeurEvent",
+      this.validate
     );
     AjouterContactsCommerciauxEditeurEvent.$on("clear", this.clear);
     ModifierContactsCommerciauxEditeurEvent.$on(
-        "ModifierContactsCommerciauxEditeurEvent",
-        this.validate
+      "ModifierContactsCommerciauxEditeurEvent",
+      this.validate
     );
     AjouterContactsCommerciauxEditeurEvent.$on("clear", this.clear);
   }

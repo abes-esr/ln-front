@@ -68,9 +68,9 @@ export default class ModuleContactTechnique extends Vue {
 
   validate(): void {
     if (
-        (this.$refs.formModuleCT as Vue & {
-          validate: () => boolean;
-        }).validate()
+      (this.$refs.formModuleCT as Vue & {
+        validate: () => boolean;
+      }).validate()
     ) {
       this.validAndSend();
     }
@@ -85,20 +85,19 @@ export default class ModuleContactTechnique extends Vue {
     });
   }
 
-
   clear(): void {
     //(this.$refs.form as HTMLFormElement).reset();
   }
 
   mounted() {
     AjouterContactsTechniquesEditeurEvent.$on(
-        "AjouterContactsTechniquesEditeurEvent",
-        this.validate
+      "AjouterContactsTechniquesEditeurEvent",
+      this.validate
     );
     AjouterContactsTechniquesEditeurEvent.$on("clear", this.clear);
     ModifierContactsTechniquesEditeurEvent.$on(
-        "ModifierContactsTechniquesEditeurEvent",
-        this.validate
+      "ModifierContactsTechniquesEditeurEvent",
+      this.validate
     );
     ModifierContactsTechniquesEditeurEvent.$on("clear", this.clear);
   }
