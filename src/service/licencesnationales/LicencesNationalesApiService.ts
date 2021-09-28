@@ -186,16 +186,16 @@ export class LicencesNationalesApiService {
     return this.client.get("/etablissement/getListEtab", token);
   }
 
-  getInfosEtab(token: string): Promise<AxiosResponse> {
-    return this.client.get("/etablissement/getInfoEtab", token);
+  getInfosEtab(token: string, siren: string): Promise<AxiosResponse> {
+    return this.client.get("/etablissements/" + siren, token);
   }
 
   updateProfile(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/modification", token, data);
+    return this.client.post("/etablissements/", data, token);
   }
 
   deleteEtab(token: string, siren: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/suppression/" + siren, token, data);
+    return this.client.post("/etablissement/suppression/" + siren, data, token);
   }
 
   getListIP(token: string, siren): Promise<AxiosResponse> {
@@ -207,23 +207,23 @@ export class LicencesNationalesApiService {
   }
 
   getIPInfos(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ip/getIpEntity", token, data);
+    return this.client.post("/ip/getIpEntity", data, token);
   }
 
   addIP(token: string, url: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, token, data);
+    return this.client.post(url, data, token);
   }
 
   deleteIP(token: string, url: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, token, data);
+    return this.client.post(url, data, token);
   }
 
   createEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/editeur/creationEditeur", token, data);
+    return this.client.post("/editeur/creationEditeur", data, token);
   }
 
   updateEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/editeur/modificationEditeur", token, data);
+    return this.client.post("/editeur/modificationEditeur", data, token);
   }
 
   getEditeurs(token: string): Promise<AxiosResponse> {
@@ -231,11 +231,11 @@ export class LicencesNationalesApiService {
   }
 
   fetchEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ip/getEditeurEntity", token, data);
+    return this.client.post("/ip/getEditeurEntity", data, token);
   }
 
   deleteEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/editeur/suppression", token, data);
+    return this.client.post("/editeur/suppression", data, token);
   }
 
 }
