@@ -98,7 +98,7 @@ export default class ChangePassword extends Vue {
   submit(): void {
     this.buttonLoading = true;
     serviceLn
-      .changePassword(this.$store.state.user.token, {
+      .changePassword(this.$store.getters.token, {
         oldPassword: this.oldPassword,
         newPassword: this.newPassword
       })
