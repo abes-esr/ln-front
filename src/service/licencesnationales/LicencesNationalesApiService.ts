@@ -173,21 +173,21 @@ export class LicencesNationalesApiService {
   changePassword(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post(
       "/reinitialisationMotDePasse/updatePassword",
-      token,
-      data
+      data,
+      token
     );
   }
 
   ajouterAcces(url: string, token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, token, data);
+    return this.client.post(url, data, token);
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissements/fusion", token, data);
+    return this.client.post("/etablissements/fusion", data, token);
   }
 
   scission(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissements/division", token, data);
+    return this.client.post("/etablissements/division", data, token);
   }
 
   listeEtab(token: string): Promise<AxiosResponse> {
