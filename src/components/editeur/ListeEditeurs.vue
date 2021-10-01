@@ -160,7 +160,7 @@ export default class ListeEditeurs extends Vue {
   }
   supprimerEditeur(id): void {
     serviceLn
-      .deleteEditeur(this.$store.getters.token, { id: id })
+      .deleteEditeur(this.$store.getters.token, id)
       .then(response => {
         this.refreshList();
         Logger.debug("notification = " + response.data);

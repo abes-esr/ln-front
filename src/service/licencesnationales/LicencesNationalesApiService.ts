@@ -172,7 +172,7 @@ export class LicencesNationalesApiService {
 
   changePassword(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post(
-      "/reinitialisationMotDePasse/updatePassword",
+      "/authentification/modifierMotDePasse",
       data,
       token
     );
@@ -187,7 +187,7 @@ export class LicencesNationalesApiService {
   }
 
   scission(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissements/division", data, token);
+    return this.client.post("/etablissements/scission", data, token);
   }
 
   listeEtab(token: string): Promise<AxiosResponse> {
@@ -231,23 +231,23 @@ export class LicencesNationalesApiService {
   }
 
   createEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/editeur/creationEditeur", data, token);
+    return this.client.post("/editeurs/", data, token);
   }
 
-  updateEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/editeur/modificationEditeur", data, token);
+  updateEditeur(token: string, data: any, id): Promise<AxiosResponse> {
+    return this.client.post("/editeurs/" + id, data, token);
   }
 
   getEditeurs(token: string): Promise<AxiosResponse> {
-    return this.client.get("/editeur/getListEditeurs", token);
+    return this.client.get("/editeurs", token);
   }
 
   fetchEditeur(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/ip/getEditeurEntity", data, token);
   }
 
-  deleteEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/editeur/suppression", data, token);
+  deleteEditeur(token: string, id): Promise<AxiosResponse> {
+    return this.client.delete("/editeurs/" + id, token);
   }
 }
 

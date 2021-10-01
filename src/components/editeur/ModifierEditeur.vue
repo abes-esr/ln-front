@@ -360,7 +360,7 @@ export default class ModifierEditeur extends Vue {
     this.updateJsonObject();
     Logger.debug(JSON.stringify(this.jsonResponse));
     serviceLn
-      .updateEditeur(this.$store.getters.token, this.jsonResponse)
+      .updateEditeur(this.$store.getters.token, this.jsonResponse, this.id)
       .then(response => {
         this.buttonLoading = false;
         Logger.debug("notification = " + response.data);
