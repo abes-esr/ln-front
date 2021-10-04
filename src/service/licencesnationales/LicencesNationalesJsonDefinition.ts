@@ -46,7 +46,16 @@ export interface JsonVerifierValiditeTokenRequest {
 }
 
 export interface JsonVerifierValiditeTokenResponse {
-  valid: boolean;
+  estValid: boolean;
+}
+
+export interface JsonModifierMotDePasseRequest {
+  ancienMotDePasse: string;
+  nouveauMotDePasse: string;
+}
+
+export interface JsonModifierMotDePasseResponse {
+  message: string;
 }
 
 export interface JsonCreateContact {
