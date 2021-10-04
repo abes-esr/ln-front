@@ -317,10 +317,7 @@ export default class ModifierEditeur extends Vue {
   fetchEditeur(): void {
     console.log("id = " + this.id);
     serviceLn
-      .fetchEditeur(this.$store.getters.token, {
-        id: this.id,
-        siren: this.$store.state.user.siren
-      })
+      .fetchEditeur(this.$store.getters.token, this.id)
       .then(result => {
         this.id = result.data.id;
         (this.nomEditeur = result.data.nomEditeur),

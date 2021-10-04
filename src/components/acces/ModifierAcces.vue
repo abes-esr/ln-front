@@ -259,7 +259,7 @@ export default class ModifierAcces extends Vue {
     serviceLn
       .addIP(
         this.$store.getters.token,
-        this.getUrl(this.typeIp),
+        this.$store.state.user.siren,
         this.jsonResponse
       )
       .then(response => {

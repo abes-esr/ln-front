@@ -222,12 +222,20 @@ export class LicencesNationalesApiService {
     return this.client.post("/ip/getIpEntity", data, token);
   }
 
-  addIP(token: string, url: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, data, token);
+  addIP(token: string, siren: string, data: any): Promise<AxiosResponse> {
+    return this.client.put("/ip/" + siren, data, token);
   }
 
-  deleteIP(token: string, url: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, data, token);
+  updateIP(token: string, id, data: any): Promise<AxiosResponse> {
+    return this.client.post("/ip/" + id, data, token);
+  }
+
+  validateIp(token: string, data: any): Promise<AxiosResponse> {
+    return this.client.post("/ip/valider", data, token);
+  }
+
+  deleteIP(token: string, id): Promise<AxiosResponse> {
+    return this.client.delete("/ip/" + id, token);
   }
 
   createEditeur(token: string, data: any): Promise<AxiosResponse> {
@@ -242,8 +250,8 @@ export class LicencesNationalesApiService {
     return this.client.get("/editeurs", token);
   }
 
-  fetchEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ip/getEditeurEntity", data, token);
+  fetchEditeur(token: string, id): Promise<AxiosResponse> {
+    return this.client.get("/editeurs/" + id, token);
   }
 
   deleteEditeur(token: string, id): Promise<AxiosResponse> {
