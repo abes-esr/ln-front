@@ -32,8 +32,9 @@
               required
               :rules="checkboxRules"
               label="Je confirme que mon établissement est éligible"
-            ></v-checkbox> </v-alert
-        ></v-col>
+            ></v-checkbox>
+          </v-alert>
+        </v-col>
         <v-card-title>Informations de l'établissement</v-card-title>
         <v-divider></v-divider>
         <br />
@@ -78,8 +79,8 @@
                       v-bind="attrs"
                       v-on="on"
                       color="primary"
-                      >Valider</v-btn
-                    >
+                      >Valider
+                    </v-btn>
                   </template>
                   <v-card>
                     <v-card-title class="headline">
@@ -115,8 +116,8 @@
               <v-col cols="1" />
               <v-col cols="10">
                 <v-chip class="ma-2" :color="checkSirenColor" text-color="white"
-                  >SIREN : {{ checkSirenAPI }}</v-chip
-                >
+                  >SIREN : {{ checkSirenAPI }}
+                </v-chip>
               </v-col>
             </v-row>
           </v-col>
@@ -136,14 +137,15 @@
                   style="text-decoration: none"
                   href="https://www.sirene.fr/sirene/public/static/recherche"
                   target="_blank"
-                  ><v-alert border="left" type="info" outlined>
-                    Trouver le SIREN de votre établissement ?
-                  </v-alert></a
                 >
+                  <v-alert border="left" type="info" outlined>
+                    Trouver le SIREN de votre établissement ?
+                  </v-alert>
+                </a>
               </v-col>
-            </v-row></v-col
-          ></v-row
-        >
+            </v-row>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-text>
         <v-card-title>Informations de contact</v-card-title>
@@ -370,9 +372,9 @@
                 @click="recaptcha()"
                 >Enregistrer
                 <v-icon style="padding-left: 5px;"
-                  >mdi-arrow-right-circle-outline</v-icon
-                ></v-btn
-              >
+                  >mdi-arrow-right-circle-outline
+                </v-icon>
+              </v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -500,11 +502,13 @@ export default class FormCreationCompte extends Vue {
       this.confirmEmailContact === this.emailContact ||
       "L'adresse mail de confirmation n'est pas valide";
   }
+
   get confirmPassContactRule() {
     return () =>
       this.confirmPassContact === this.passContact ||
       "Le mot de passe de confirmation n'est pas valide";
   }
+
   get loggedIn() {
     return this.$store.state.user.isLoggedIn;
   }
@@ -602,14 +606,18 @@ export default class FormCreationCompte extends Vue {
         this.$router.push({ path: "/login" });
       })
       .catch(err => {
-        Logger.error(err.message);
-        if (err instanceof HttpRequestError) {
-          Logger.debug("Erreur API : " + err.debugMessage);
-        }
-
         this.buttonLoading = false;
-        this.error = err.message;
         this.alert = true;
+
+        if (err instanceof HttpRequestError) {
+          Logger.error(
+            "Erreur HTTP : " + err.error + " sur la route " + err.path
+          );
+          this.error = "Erreur de requête : " + err.error;
+        } else {
+          Logger.error(err.message);
+          this.error = err.message;
+        }
       });
   }
 

@@ -3,20 +3,20 @@
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
         <div>
-          <v-card v-if="this.tokenExpired === 'true'">
+          <v-card v-if="tokenValid">
             <v-alert dense outlined type="error">
               La durée de validité de ce lien est dépassée. Mot de passe oublié
               :
               <router-link :to="{ path: 'forgotPassword' }"
-                >cliquez ici</router-link
-              >
+                >cliquez ici
+              </router-link>
             </v-alert>
           </v-card>
           <v-card witdh="100%" outlined v-else>
             <v-form ref="formReinitialisationPass" lazy-validation>
               <v-card-title
-                >Réinitialisation de votre mot de passe</v-card-title
-              >
+                >Réinitialisation de votre mot de passe
+              </v-card-title>
               <v-card-text>
                 <v-row>
                   <v-col cols="1" />
@@ -63,7 +63,7 @@
                 </v-row>
                 <v-row>
                   <v-col cols="1" />
-                  <v-col cols="10"> </v-col>
+                  <v-col cols="10"></v-col>
                 </v-row>
               </v-card-text>
               <v-row>
@@ -93,8 +93,8 @@
                         color="grey"
                         @click="clear"
                         :disabled="disabled == 1"
-                        >Effacer</v-btn
-                      >
+                        >Effacer
+                      </v-btn>
                     </v-col>
                     <v-col cols="1"></v-col>
                     <v-col cols="4">
@@ -104,8 +104,8 @@
                         :disabled="disabled == 1"
                         x-large
                         @click="recaptcha()"
-                        >Envoyer</v-btn
-                      >
+                        >Envoyer
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -127,11 +127,10 @@ import {HttpRequestError} from "@/exception/HttpRequestError";
 
 @Component
 export default class FormReinitialisationPass extends Vue {
-  jwtToken: string = "";
+  resetToken: string = "";
   disabled: number = 0;
   show1: boolean = false;
-  token: string = "";
-  tokenExpired: string = "initialisation";
+  tokenValid: boolean = true;
   tokenrecaptchaValid: Promise<boolean> = this.$recaptchaLoaded();
   tokenrecaptcha: string = "";
   passContact: string = "";
@@ -151,55 +150,62 @@ export default class FormReinitialisationPass extends Vue {
   retourKo: boolean = false;
   message: string = "";
 
+  mounted() {
+    if (this.loggedIn) {
+      this.$router.push("/profile");
+    }
+
+    this.resetToken = window.location.href.substr(
+      window.location.href.lastIndexOf("=") + 1
+    );
+
+    this.isTokenValid
+      .then(result => {
+        this.tokenValid = result;
+      })
+      .catch(err => {
+        this.tokenValid = false;
+      });
+  }
+
   get confirmPassContactRule() {
     return () =>
       this.confirmPassContact === this.passContact ||
       "Le mot de passe de confirmation n'est pas valide";
   }
+
   get loggedIn() {
     return this.$store.state.user.isLoggedIn;
   }
 
-  mounted() {
-    if (this.loggedIn) {
-      this.$router.push("/profile");
-    }
-    //this.token = this.$route.query.token;
-    Logger.debug(JSON.stringify(this.token));
-    this.jwtToken = window.location.href.substr(
-      window.location.href.lastIndexOf("=") + 1
-    );
-    Logger.debug(JSON.stringify(this.jwtToken));
-    this.tokenInvalide();
-    //if (this.message === "Token invalide")
-    //this.$router.push("/invalideTokenReinitialisationPass");
-  }
+  get isTokenValid(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      serviceLn
+        .verifierValiditeToken({
+          token: this.resetToken
+        })
+        .then(response => {
+          this.buttonLoading = false;
+          resolve(response.estValid);
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.alert = true;
+          this.retourKo = true;
 
-  tokenInvalide() {
-    serviceLn
-      .verifierValiditeToken({
-        token: this.jwtToken
-      })
-      .then(response => {
-        this.buttonLoading = false;
-        if (response.valid) {
-          this.tokenExpired = "false";
-        } else {
-          this.tokenExpired = "true";
-        }
-      })
-      .catch(err => {
-        Logger.error(err.message);
-        if (err instanceof HttpRequestError) {
-          Logger.debug("Erreur API : " + err.debugMessage);
-        }
-        this.buttonLoading = false;
-        this.message = err.message;
-        this.alert = true;
-        this.retourKo = true;
-      });
+          if (err instanceof HttpRequestError) {
+            Logger.error(
+              "Erreur HTTP : " + err.error + " sur la route " + err.path
+            );
+            this.message = "Erreur de requête : " + err.error;
+          } else {
+            Logger.error(err.message);
+            this.message = err.message;
+          }
 
-    return this.tokenExpired;
+          reject(false);
+        });
+    });
   }
 
   async recaptcha() {
@@ -235,7 +241,7 @@ export default class FormReinitialisationPass extends Vue {
       .reinitialiserMotDePasse({
         nouveauMotDePasse: this.passContact,
         recaptcha: this.tokenrecaptcha,
-        token: this.token
+        token: this.resetToken
       })
       .then(response => {
         this.buttonLoading = false;
@@ -244,14 +250,19 @@ export default class FormReinitialisationPass extends Vue {
         //this.$router.push({ name: "Home" });
       })
       .catch(err => {
-        Logger.error(err.message);
-        if (err instanceof HttpRequestError) {
-          Logger.debug("Erreur API : " + err.debugMessage);
-        }
         this.buttonLoading = false;
-        this.message = err.message;
         this.alert = true;
         this.retourKo = true;
+
+        Logger.error(err.message);
+        if (err instanceof HttpRequestError) {
+          Logger.debug(
+            "Erreur HTTP : " + err.error + " sur la route " + err.path
+          );
+          this.message = "Erreur de requête : " + err.error;
+        } else {
+          this.message = err.message;
+        }
       });
   }
 

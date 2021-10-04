@@ -53,16 +53,25 @@
                 :loading="buttonLoading"
                 x-large
                 @click="validate()"
-                >Envoyer</v-btn
-              >
+                >Envoyer
+              </v-btn>
             </v-col>
           </v-row>
-        </v-card-actions></v-form
-      >
+        </v-card-actions>
+      </v-form>
     </v-card>
     <br />
-    <v-alert dense outlined :value="alert" type="error">
-      {{ error }}
+    <v-alert
+        v-if="!retourKo"
+        dense
+        outlined
+        :value="alert"
+        type="error"
+    >
+      {{ message }}
+    </v-alert>
+    <v-alert v-else dense outlined :value="alert" type="success">
+      {{ message }}
     </v-alert>
   </div>
 </template>
@@ -70,11 +79,13 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
+import { HttpRequestError } from "@/exception/HttpRequestError";
 
 @Component
 export default class ChangePassword extends Vue {
   alert: boolean = false;
-  error: string = "";
+  message: string = "";
   buttonLoading: boolean = false;
   oldPassword: string = "";
   newPassword: string = "";
@@ -87,10 +98,11 @@ export default class ChangePassword extends Vue {
       ) ||
       "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial, et faire 8 caractères minimum"
   ];
+  retourKo: boolean = false;
 
   validate(): void {
     this.alert = false;
-    this.error = "";
+    this.message = "";
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
       this.submit();
   }
@@ -98,17 +110,36 @@ export default class ChangePassword extends Vue {
   submit(): void {
     this.buttonLoading = true;
     serviceLn
-      .changePassword(this.$store.getters.token, {
-        ancienMotDePasse: this.oldPassword,
-        nouveauMotDePasse: this.newPassword
-      })
-      .then(() => {
-        this.$router.push({ name: "Home" });
+      .changePassword(
+        {
+          ancienMotDePasse: this.oldPassword,
+          nouveauMotDePasse: this.newPassword
+        },
+        this.$store.getters.token
+      )
+      .then(response => {
+        this.buttonLoading = false;
+        this.message = response.message;
+        this.alert = true;
+        this.retourKo = true;
+
+        setTimeout(() => {  this.$router.push({ name: "Home" })}, 2000);
+
       })
       .catch(err => {
         this.buttonLoading = false;
-        this.error = err.response.data;
         this.alert = true;
+        this.retourKo = false;
+
+        if (err instanceof HttpRequestError) {
+          Logger.error(
+            "Erreur HTTP : " + err.error + " sur la route " + err.path
+          );
+          this.message = "Erreur de requête : " + err.error;
+        } else {
+          Logger.error(err.message);
+          this.message = err.message;
+        }
       });
   }
 }
