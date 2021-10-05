@@ -220,12 +220,6 @@ export class LicencesNationalesApiService {
     return this.client.put("/etablissements", data);
   }
 
-
-
-  ajouterAcces(url: string, token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, data, token);
-  }
-
   fusion(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/etablissements/fusion", data, token);
   }
