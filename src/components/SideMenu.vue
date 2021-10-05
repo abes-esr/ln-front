@@ -67,7 +67,7 @@
         </v-row>
         <v-row v-else></v-row>
 
-        <v-row>
+        <v-row v-if="!isAdmin">
           <v-list-item
             v-on:click="$router.push({ name: 'Profil' }).catch(err => {})"
           >

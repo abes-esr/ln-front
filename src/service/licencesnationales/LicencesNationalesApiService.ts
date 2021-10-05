@@ -11,10 +11,15 @@ import {
   JsonMotDePasseOublieEmailRequest,
   JsonVerifierValiditeTokenRequest,
   JsonVerifierValiditeTokenResponse,
-  JsonCreateEditeur
+  JsonCreateEditeur,
+  JsonVerifierValiditeTokenResponse,
+  JsonModifierMotDePasseRequest,
+  JsonModifierMotDePasseResponse
 } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
 import { HttpRequestError } from "@/exception/HttpRequestError";
 import { CredentialNotValidError } from "@/service/licencesnationales/CredentialNotValidError";
+import { UnauthorizedError } from "@/service/licencesnationales/UnauthorizedError";
+import { BadRequestError } from "@/service/licencesnationales/BadRequestError";
 
 export class LicencesNationalesApiService {
   // Client HTTP
@@ -36,14 +41,24 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 404) {
+          if (err.response.status == 400) {
+            reject(new BadRequestError(err.response.data.message));
+          } else if (err.response.status == 401) {
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
+          } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
               new HttpRequestError(
                 err.response.status,
-                err.response.data.message,
-                err.response.data.debugMessage
+                err.response.data.error,
+                err.response.data.path
               )
             );
           }
@@ -66,14 +81,24 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 404) {
+          if (err.response.status == 400) {
+            reject(new BadRequestError(err.response.data.message));
+          } else if (err.response.status == 401) {
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
+          } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
               new HttpRequestError(
                 err.response.status,
-                err.response.data.message,
-                err.response.data.debugMessage
+                err.response.data.error,
+                err.response.data.path
               )
             );
           }
@@ -96,14 +121,24 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 404) {
+          if (err.response.status == 400) {
+            reject(new BadRequestError(err.response.data.message));
+          } else if (err.response.status == 401) {
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
+          } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
               new HttpRequestError(
                 err.response.status,
-                err.response.data.message,
-                err.response.data.debugMessage
+                err.response.data.error,
+                err.response.data.path
               )
             );
           }
@@ -122,14 +157,24 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 404) {
+          if (err.response.status == 400) {
+            reject(new BadRequestError(err.response.data.message));
+          } else if (err.response.status == 401) {
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
+          } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
               new HttpRequestError(
                 err.response.status,
-                err.response.data.message,
-                err.response.data.debugMessage
+                err.response.data.error,
+                err.response.data.path
               )
             );
           }
@@ -148,14 +193,61 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 404) {
+          if (err.response.status == 400) {
+            reject(new BadRequestError(err.response.data.message));
+          } else if (err.response.status == 401) {
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
+          } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
               new HttpRequestError(
                 err.response.status,
-                err.response.data.message,
-                err.response.data.debugMessage
+                err.response.data.error,
+                err.response.data.path
+              )
+            );
+          }
+        });
+    });
+  }
+
+  changePassword(
+    data: JsonModifierMotDePasseRequest,
+    token: string
+  ): Promise<JsonModifierMotDePasseResponse> {
+    return new Promise((resolve, reject) => {
+      return this.client
+        .post("/authentification/modifierMotDePasse", data, token)
+        .then(result => {
+          const response: JsonModifierMotDePasseResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          if (err.response.status == 400) {
+            reject(new BadRequestError(err.response.data.message));
+          } else if (err.response.status == 401) {
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
+          } else if (err.response.status == 404) {
+            reject(new CredentialNotValidError(err.response.data.message));
+          } else {
+            reject(
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.error,
+                err.response.data.path
               )
             );
           }
@@ -171,31 +263,27 @@ export class LicencesNationalesApiService {
     return this.client.put("/etablissements", data);
   }
 
-  changePassword(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(
-      "/reinitialisationMotDePasse/updatePassword",
-      token,
-      data
-    );
-  }
-
   ajouterAcces(url: string, token: string, data: any): Promise<AxiosResponse> {
     return this.client.post(url, token, data);
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/fusion", token, data);
+    return this.client.post("/etablissements/fusion", token, data);
   }
 
   scission(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/division", token, data);
+    return this.client.post("/etablissements/division", token, data);
   }
 
   listeEtab(token: string): Promise<AxiosResponse> {
-    return this.client.get("/etablissement/getListEtab", token);
+    return this.client.get("/etablissements/", token);
   }
 
-  getInfosEtab(token: string, siren: string): Promise<AxiosResponse> {
+  listeType(): Promise<AxiosResponse> {
+    return this.client.get("/etablissements/getType");
+  }
+
+  getInfosEtab(token: string, siren?: string): Promise<AxiosResponse> {
     return this.client.get("/etablissements/" + siren, token);
   }
 
@@ -204,7 +292,7 @@ export class LicencesNationalesApiService {
   }
 
   deleteEtab(token: string, siren: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissement/suppression/" + siren, data, token);
+    return this.client.delete("/etablissements/" + siren, data, token);
   }
 
   getListIP(token: string, siren): Promise<AxiosResponse> {

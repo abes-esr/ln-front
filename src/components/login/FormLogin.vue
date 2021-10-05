@@ -38,15 +38,15 @@
                     href="https://www.sirene.fr/sirene/public/static/recherche"
                     target="_blank"
                   >
-                    <v-tooltip bottom
-                      ><template v-slot:activator="{ on }">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
                         <v-icon v-on="on">
                           mdi-information
                         </v-icon>
                       </template>
                       Trouver le numéro SIREN de votre établissement
-                    </v-tooltip></a
-                  ></template
+                    </v-tooltip>
+                  </a></template
                 >
               </v-text-field>
             </v-col>
@@ -79,10 +79,11 @@
                 :loading="buttonLoading"
                 :disabled="!isValid"
                 @click="login()"
-                >Se connecter<v-icon style="padding-left: 5px;"
-                  >mdi-arrow-right-circle-outline</v-icon
-                ></v-btn
-              >
+                >Se connecter
+                <v-icon style="padding-left: 5px;"
+                  >mdi-arrow-right-circle-outline
+                </v-icon>
+              </v-btn>
             </v-col>
           </v-row>
         </v-card-actions>
@@ -99,9 +100,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { HttpRequestError } from "@/exception/HttpRequestError";
-import { Logger } from "@/utils/Logger";
+import {Component, Vue} from "vue-property-decorator";
+import {HttpRequestError} from "@/exception/HttpRequestError";
+import {Logger} from "@/utils/Logger";
 
 @Component
 export default class FormLogin extends Vue {
@@ -146,13 +147,18 @@ export default class FormLogin extends Vue {
         this.$router.push({ name: "Home" });
       })
       .catch(err => {
-        Logger.error(err.message);
-        if (err instanceof HttpRequestError) {
-          Logger.debug("Erreur API : " + err.debugMessage);
-        }
         this.buttonLoading = false;
-        this.error = err.message;
         this.alert = true;
+
+        if (err instanceof HttpRequestError) {
+          Logger.error(
+            "Erreur HTTP : " + err.error + " sur la route " + err.path
+          );
+          this.error = "Erreur de requête : " + err.error;
+        } else {
+          Logger.error(err.message);
+          this.error = err.message;
+        }
       });
   }
 }

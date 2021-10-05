@@ -60,7 +60,7 @@
                           <v-icon
                             small
                             class="mr-2"
-                            @click="modifierEtab(item.id)"
+                            @click="modifierEtab(item.siren)"
                             >mdi-pencil</v-icon
                           >
                           <v-icon
@@ -184,8 +184,12 @@ export default class ListeEtab extends Vue {
     },
     { text: "ID Abes", value: "idAbes", sortable: true },
     { text: "SIREN", value: "siren", sortable: true },
-    { text: "Etablissement", value: "nomEtab", sortable: true },
-    { text: "Type d'établissement", value: "typeEtab", sortable: true },
+    { text: "Etablissement", value: "nom", sortable: true },
+    {
+      text: "Type d'établissement",
+      value: "typeEtablissement",
+      sortable: true
+    },
     {
       text: "Dernière date de modification",
       value: "derniereDateModificationIp",
@@ -200,11 +204,12 @@ export default class ListeEtab extends Vue {
   motifSuppression: string = "";
 
   get notification() {
-    return this.$store.state.notification;
+    return this.$store.getters.notification;
   }
   get getUserSiren() {
-    return this.$store.state.user.siren;
+    return this.$store.getters.userSiren;
   }
+
   get filteredEtabByStatut(): string[] {
     Logger.debug("debut filteredEtabByStatut");
     const conditions = [] as any;
@@ -258,17 +263,17 @@ export default class ListeEtab extends Vue {
       dateCreation: moment(etab.dateCreation).format("L"),
       idAbes: etab.idAbes,
       siren: etab.siren,
-      nomEtab: etab.nomEtab,
+      nom: etab.nom,
       derniereDateModificationIp: this.derniereDateModificationIpTemp,
-      typeEtab: etab.typeEtab,
+      typeEtablissement: etab.typeEtablissement,
       statut: etab.valide ? "Validé" : "En validation"
     };
   }
 
-  listeAcces(siren): void {
-    //this.setSirenEtabSiAdmin(siren);
+  listeAcces(siren?): void {
     this.$router.push({
-      name: "ListeAcces"
+      name: "ListeAcces",
+      params: { sirenEtabSiAdmin: siren }
     });
   }
   openDialogSuppression(siren): void {
@@ -298,8 +303,12 @@ export default class ListeEtab extends Vue {
   refreshList(): void {
     this.collecterEtab();
   }
-  modifierAcces(id): void {
-    this.$router.push({ name: "ModifierEtab", params: { id: id } });
+
+  modifierEtab(sirenParam): void {
+    this.$router.push({
+      name: "modifierEtabAdmin",
+      params: { sirenParam: sirenParam }
+    });
   }
 }
 </script>
