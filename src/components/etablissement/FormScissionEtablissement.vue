@@ -132,7 +132,6 @@ export default class FormScissionEtablissement extends Vue {
             this.alert = true;
             this.buttonLoading = false;
             this.message = response.data;
-            this.alert = true;
             this.clear();
           })
           .catch(err => {
