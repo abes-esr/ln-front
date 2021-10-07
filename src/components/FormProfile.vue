@@ -320,6 +320,9 @@ export default class FormProfile extends FormProfileProps {
     return this.$store.getters.isAdmin;
   }
 
+  //Le param "sirenParam" est optionel, utilisé dans le cas Admin
+  sirenLocal = this.sirenParam? this.sirenParam : this.userSiren;
+
   mounted() {
     this.fetchEtab();
     if (this.isAdmin) {
@@ -337,9 +340,8 @@ export default class FormProfile extends FormProfileProps {
   }
 
   fetchEtab(): void {
-    //Le param "sirenParam" est optionel, utilisé dans le cas Admin
     serviceLn
-        .getInfosEtab(this.$store.getters.token, this.userSiren)
+        .getInfosEtab(this.$store.getters.token,this.sirenLocal)
         .then(result => {
           this.emailContact = result.data.contact.mail;
           this.nomContact = result.data.contact.nom;
