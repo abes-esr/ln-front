@@ -13,30 +13,39 @@
                     outlined
                     label="Ancien mot de passe"
                     placeholder="Ancien mot de passe"
+                    :type="show ? 'text' : 'password'"
+                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                     v-model="oldPassword"
                     :rules="passwordRules"
                     required
+                    @click:append="show = !show"
                     @keyup.enter="validate()"
                   ></v-text-field>
                   <v-text-field
                     outlined
                     label="Nouveau mot de passe"
                     placeholder="Nouveau mot de passe"
+                    :type="show ? 'text' : 'password'"
+                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                     v-model="newPassword"
                     :rules="passwordRules"
                     required
+                    @click:append="show = !show"
                     @keyup.enter="validate()"
                   ></v-text-field>
                   <v-text-field
                     outlined
                     label="Confirmer le nouveau mot de passe"
                     placeholder="Confirmer le nouveau mot de passe"
+                    :type="show ? 'text' : 'password'"
+                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                     v-model="newPasswordConfirm"
                     :rules="[
                       newPassword === newPasswordConfirm ||
                         'Les mots de passe doivent correspondre'
                     ]"
                     required
+                    @click:append="show = !show"
                     @keyup.enter="validate()"
                   ></v-text-field>
                 </v-col>
@@ -85,6 +94,7 @@ import { HttpRequestError } from "@/exception/HttpRequestError";
 @Component
 export default class ChangePassword extends Vue {
   alert: boolean = false;
+  show: boolean = false;
   message: string = "";
   buttonLoading: boolean = false;
   oldPassword: string = "";
