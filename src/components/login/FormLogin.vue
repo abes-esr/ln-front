@@ -100,9 +100,10 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
-import {HttpRequestError} from "@/exception/HttpRequestError";
-import {Logger} from "@/utils/Logger";
+import { Component, Vue } from "vue-property-decorator";
+import { Logger } from "@/utils/Logger";
+import { LicencesNationalesApiError } from "@/service/licencesnationales/exception/LicencesNationalesApiError";
+import { LicencesNationalesBadRequestApiError } from "@/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component
 export default class FormLogin extends Vue {
@@ -137,6 +138,7 @@ export default class FormLogin extends Vue {
 
   login(): void {
     this.buttonLoading = true;
+    this.alert = false;
 
     this.$store
       .dispatch("login", {
@@ -150,14 +152,12 @@ export default class FormLogin extends Vue {
         this.buttonLoading = false;
         this.alert = true;
 
-        if (err instanceof HttpRequestError) {
-          Logger.error(
-            "Erreur HTTP : " + err.error + " sur la route " + err.path
-          );
-          this.error = "Erreur de requête : " + err.error;
-        } else {
-          Logger.error(err.message);
+        if (err instanceof LicencesNationalesBadRequestApiError) {
           this.error = err.message;
+          Logger.error(err.toString());
+        } else {
+          Logger.error(err.toString());
+          this.error = "Impossible d'exécuter l'action : " + err.message;
         }
       });
   }

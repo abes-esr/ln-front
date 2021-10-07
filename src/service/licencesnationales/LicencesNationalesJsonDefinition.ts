@@ -97,11 +97,70 @@ export interface JsonCreateAccount {
   contact: JsonCreateContact;
 }
 
-export interface JsonCreateEditeur {
-  nomEditeur: string;
-  identifiantEditeur: string;
+//******* Fonctionnalité EditeurItem *********
+// Création
+export interface JsonCreationContactEditeurRequest {
+  nom: string;
+  prenom: string;
+  mail: string;
+}
+
+export interface JsonCreationEditeurRequest {
+  nom: string;
+  identifiantBis: number;
   groupesEtabRelies: Array<string>;
-  adresseEditeur: string;
-  listeContactCommercialEditeurDTO: Array<string>;
-  listeContactTechniqueEditeurDTO: Array<string>;
+  adresse: string;
+  contactsCommerciaux: Array<JsonCreationContactEditeurRequest>;
+  contactsTechniques: Array<JsonCreationContactEditeurRequest>;
+}
+
+//Liste
+export interface JsonListeEditeurResponse {
+  editeurs: Array<JsonSimpleEditeurResponse>;
+}
+
+export interface JsonSimpleEditeurResponse {
+  id: number;
+  nom: string;
+  dateCreation: string;
+}
+
+export interface JsonContactEditeurResponse {
+  id: number;
+  nom: string;
+  prenom: string;
+  mail: string;
+}
+
+export interface JsonEditeurResponse {
+  id: number;
+  nom: string;
+  identifiantBis: number;
+  dateCreation: string;
+  groupesEtabRelies: Array<string>;
+  adresse: string;
+  contactsCommerciaux: Array<JsonContactEditeurResponse>;
+  contactsTechniques: Array<JsonContactEditeurResponse>;
+}
+
+//Modification
+export interface JsonModificationContactEditeurRequest {
+  id: number;
+  nom: string;
+  prenom: string;
+  mail: string;
+}
+
+export interface JsonModificationEditeurRequest {
+  id: number;
+  nom: string;
+  identifiantBis: number;
+  groupesEtabRelies: Array<string>;
+  adresse: string;
+  contactsCommerciaux: Array<JsonModificationContactEditeurRequest>;
+  contactsTechniques: Array<JsonModificationContactEditeurRequest>;
+}
+
+export interface JsonSuppresionEditeurResponse {
+  message: string;
 }

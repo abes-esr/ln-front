@@ -2,13 +2,24 @@
  * Définitions des structures de données communes
  */
 
-export interface SegmentPlage {
-  length: number;
-  value: string;
+export enum Action {
+    CREATION,
+    MODIFICATION
 }
 
-export interface Editeur {
-  id: string;
-  dateCreation: string;
-  nomEditeur: string;
+export interface SegmentPlage {
+    length: number;
+    value: string;
 }
+
+export interface EditeurItem {
+    id: string;
+    dateCreation: string;
+    nomEditeur: string;
+}
+
+export enum ContactType {
+    TECHNIQUE,
+    COMMERCIAL,
+}
+

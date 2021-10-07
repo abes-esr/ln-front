@@ -61,13 +61,7 @@
       </v-form>
     </v-card>
     <br />
-    <v-alert
-        v-if="!retourKo"
-        dense
-        outlined
-        :value="alert"
-        type="error"
-    >
+    <v-alert v-if="!retourKo" dense outlined :value="alert" type="error">
       {{ message }}
     </v-alert>
     <v-alert v-else dense outlined :value="alert" type="success">
@@ -80,7 +74,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
-import { HttpRequestError } from "@/exception/HttpRequestError";
+import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 
 @Component
 export default class ChangePassword extends Vue {
@@ -115,7 +109,7 @@ export default class ChangePassword extends Vue {
           ancienMotDePasse: this.oldPassword,
           nouveauMotDePasse: this.newPassword
         },
-        this.$store.getters.token
+        this.$store.getters.getToken
       )
       .then(response => {
         this.buttonLoading = false;
@@ -123,22 +117,23 @@ export default class ChangePassword extends Vue {
         this.alert = true;
         this.retourKo = true;
 
-        setTimeout(() => {  this.$router.push({ name: "Home" })}, 2000);
-
+        setTimeout(() => {
+          this.$router.push({ name: "Home" });
+        }, 2000);
       })
       .catch(err => {
         this.buttonLoading = false;
         this.alert = true;
         this.retourKo = false;
 
-        if (err instanceof HttpRequestError) {
-          Logger.error(
-            "Erreur HTTP : " + err.error + " sur la route " + err.path
-          );
-          this.message = "Erreur de requête : " + err.error;
+        if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          this.message =
+            "Vous n'êtes pas autorisé à effectuer cette opération.: " +
+            err.message;
+          Logger.error(err.toString());
         } else {
-          Logger.error(err.message);
-          this.message = err.message;
+          Logger.error(err.toString());
+          this.message = "Impossible d'exécuter l'action : " + err.message;
         }
       });
   }

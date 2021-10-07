@@ -7,25 +7,22 @@ import {
 } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
 import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
+import User from "@/components/User";
+import Editeur from "@/components/Editeur";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    user: {
-      siren: "",
-      token: "",
-      nameEtab: "",
-      isLoggedIn: false,
-      isAdmin: false
-    },
+    user: new User(),
     darkTheme: false,
     notification: "",
     creationCompteEffectuee: false,
-    sirenEtabSiAdmin: ""
+    sirenEtabSiAdmin: "",
+    currentEditeur: new Editeur()
   },
   mutations: {
-    SET_TOKEN(state, token: JsonLoginResponse) {
+    SET_USER(state, token: JsonLoginResponse) {
       state.user.token = token.accessToken;
       state.user.siren = token.userSiren;
       state.user.nameEtab = token.nameEtab;
@@ -53,6 +50,9 @@ export default new Vuex.Store({
     },
     SET_SIRENETABSIADMIN(state, sirenEtabSiAdmin) {
       state.sirenEtabSiAdmin = sirenEtabSiAdmin;
+    },
+    SET_CURRENT_EDITEUR(state, item: Editeur) {
+      state.currentEditeur = item;
     }
   },
   actions: {
@@ -62,9 +62,8 @@ export default new Vuex.Store({
         serviceLn
           .login(credentials)
           .then(result => {
-            // On sauvegarde le token
-            Logger.debug(JSON.stringify(result));
-            commit("SET_TOKEN", result);
+            // On sauvegarde le getToken
+            commit("SET_USER", result);
             resolve(true);
           })
           .catch(err => {
@@ -90,35 +89,41 @@ export default new Vuex.Store({
     },
     setSirenEtabSiAdmin({ commit }, sirenEtabSiAdmin) {
       commit("SET_SIRENETABSIADMIN", sirenEtabSiAdmin);
+    },
+    setCurrentEditeur({ commit }, editeur: Editeur) {
+      commit("SET_CURRENT_EDITEUR", editeur);
     }
   },
   getters: {
-    userSiren: state => {
+    userSiren: state => () => {
       return state.user.siren;
     },
-    userEtab: state => {
+    userEtab: state => () => {
       return state.user.nameEtab;
     },
-    token: state => {
+    getToken: state => () => {
       return state.user.token;
     },
-    isLoggedIn: state => {
+    isLoggedIn: state => () => {
       return state.user.isLoggedIn;
     },
-    isAdmin: state => {
+    isAdmin: state => () => {
       return state.user.isAdmin;
     },
-    isDark: state => {
+    isDark: state => () => {
       return state.darkTheme;
     },
-    notification: state => {
+    notification: state => () => {
       return state.notification;
     },
-    creationCompteEffectuee: state => {
+    creationCompteEffectuee: state => () => {
       return state.creationCompteEffectuee;
     },
-    sirenEtabSiAdmin: state => {
+    sirenEtabSiAdmin: state => () => {
       return state.sirenEtabSiAdmin;
+    },
+    getCurrentEditeur: state => () => {
+      return state.currentEditeur;
     }
   },
   plugins: [createPersistedState()]

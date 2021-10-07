@@ -7,7 +7,7 @@
       :permanent="!$vuetify.breakpoint.xsOnly"
       hide-overlay
       flat
-      width="180"
+      width="15vw"
     >
       <side-menu></side-menu>
     </v-navigation-drawer>
@@ -70,11 +70,11 @@ export default class App extends Vue {
   drawer: boolean = true;
 
   get isDark(): boolean {
-    return this.$store.getters.isDark;
+    return this.$store.getters.isDark();
   }
 
   get isLoggedIn(): boolean {
-    return this.$store.getters.isLoggedIn;
+    return this.$store.getters.isLoggedIn();
   }
 
   mounted() {

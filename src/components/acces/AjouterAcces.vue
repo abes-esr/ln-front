@@ -96,7 +96,7 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
+import ModuleSegmentsIpPlage from "@/components/acces/ModuleSegmentsIpPlage.vue";
 import { Logger } from "@/utils/Logger";
 
 @Component({
@@ -149,15 +149,15 @@ export default class AjouterAcces extends Vue {
     IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);*/
   }
   get sirenEtabSiAdmin() {
-    return this.$store.state.sirenEtabSiAdmin;
+    return this.$store.getters.sirenEtabSiAdmin();
   }
   get getUserSiren() {
-    if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
+    if (this.isAdmin === "true") return this.$store.getters.sirenEtabSiAdmin();
     else return this.$store.state.user.siren;
   }
   get isAdmin() {
-    Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
-    return this.$store.state.user.isAdmin;
+    Logger.debug("isAdmin = " + this.$store.getters.isAdmin());
+    return this.$store.getters.isAdmin();
   }
 
   enclencherAjouterIpModuleSegmentsIpPlage(): void {
@@ -213,7 +213,7 @@ export default class AjouterAcces extends Vue {
         Logger.debug("this.getUrl() = " + this.getUrl(value.typeIp));
         serviceLn
           .ajouterAcces(
-            this.$store.state.user.token,
+            this.$store.state.user.getToken,
             this.getUrl(value.typeIp),
             {
               siren: this.getUserSiren,

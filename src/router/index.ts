@@ -3,6 +3,8 @@ import store from "../store/index";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
+import { Action } from "@/components/CommonDefinition";
+import Editeur from "@/components/Editeur";
 
 Vue.use(VueRouter);
 
@@ -124,12 +126,17 @@ const routes: Array<RouteConfig> = [
   {
     path: "/nouvelEditeur",
     name: "NouvelEditeur",
-    component: () => import("../components/editeur/NouvelEditeur.vue") //
+    component: () => import("../components/editeur/ComposantEditeur.vue"),
+    props: { action: Action.CREATION },
+    meta: {
+      requiresAuth: true
+    }
   },
   {
-    path: "/modifierEditeur/:id",
+    path: "/modifierEditeur",
     name: "ModifierEditeur",
-    component: () => import("../components/editeur/ModifierEditeur.vue"),
+    component: () => import("../components/editeur/ComposantEditeur.vue"),
+    props: { action: Action.MODIFICATION },
     meta: {
       requiresAuth: true
     }
@@ -149,9 +156,8 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = store.getters["isLoggedIn"];
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!isLoggedIn) {
+    if (!store.getters.isLoggedIn()) {
       next({ path: "/login" });
     } else {
       next();

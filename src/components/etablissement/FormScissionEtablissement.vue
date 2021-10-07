@@ -125,7 +125,7 @@ export default class FormScissionEtablissement extends Vue {
         this.message = "";
         this.retourKo = false;
         serviceLn
-          .scission(this.$store.getters.token, {
+          .scission(this.$store.getters.getToken(), {
             ancienSiren: this.sirenEtab,
             etablissementDTOS: this.etablissementDTOS
           })

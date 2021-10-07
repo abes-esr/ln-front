@@ -141,14 +141,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { Logger } from "@/utils/Logger";
+import {Component, Vue} from "vue-property-decorator";
+import {Logger} from "@/utils/Logger";
 
 @Component
 export default class SideMenu extends Vue {
   get isAdmin() {
-    Logger.debug("isAdmin = " + this.$store.getters.isAdmin);
-    return this.$store.getters.isAdmin;
+    return this.$store.getters.isAdmin();
   }
 
   saveTheme(): void {

@@ -2,31 +2,82 @@ import { AxiosResponse } from "axios";
 import AxiosClient from "../../utils/AxiosClient";
 import {
   JsonCreateAccount,
+  JsonCreationEditeurRequest,
+  JsonEditeurResponse,
+  JsonListeEditeurResponse,
   JsonLoginRequest,
   JsonLoginResponse,
-  JsonMotDePasseOublieSirenRequest,
-  JsonMotDePasseOublieResponse,
-  JsonReinitialiserMotDePasseResponse,
-  JsonReinitialiserMotDePasseRequest,
-  JsonMotDePasseOublieEmailRequest,
-  JsonVerifierValiditeTokenRequest,
-  JsonVerifierValiditeTokenResponse,
-  JsonCreateEditeur,
-  JsonVerifierValiditeTokenResponse,
   JsonModifierMotDePasseRequest,
-  JsonModifierMotDePasseResponse
+  JsonModifierMotDePasseResponse,
+  JsonMotDePasseOublieEmailRequest,
+  JsonMotDePasseOublieResponse,
+  JsonMotDePasseOublieSirenRequest,
+  JsonReinitialiserMotDePasseRequest,
+  JsonReinitialiserMotDePasseResponse, JsonSimpleEditeurResponse,
+  JsonSuppresionEditeurResponse,
+  JsonVerifierValiditeTokenRequest,
+  JsonVerifierValiditeTokenResponse
 } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
-import { HttpRequestError } from "@/exception/HttpRequestError";
-import { CredentialNotValidError } from "@/service/licencesnationales/CredentialNotValidError";
-import { UnauthorizedError } from "@/service/licencesnationales/UnauthorizedError";
-import { BadRequestError } from "@/service/licencesnationales/BadRequestError";
+import { LicencesNationalesApiError } from "@/service/licencesnationales/exception/LicencesNationalesApiError";
+import { LicencesNationalesBadRequestApiError } from "@/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { LicencesNationalesNotFoundApiError } from "@/service/licencesnationales/exception/LicencesNationalesNotFoundApiError";
+import { LicencesNationalesInternalErrorApiError } from "@/service/licencesnationales/exception/LicencesNationalesInternalErrorApiError";
 
 export class LicencesNationalesApiService {
   // Client HTTP
   client: AxiosClient = new AxiosClient(process.env.VUE_APP_ROOT_API);
 
+  buildException(err: any): LicencesNationalesApiError {
+    if (err.response) {
+      // Il y a une réponse HTTP
+      if (err.response.status) {
+        // Il s'agit d'une exception de l'API
+        if (err.response.status == 400) {
+          return new LicencesNationalesBadRequestApiError(
+            err.response.data.message,
+            err.response.data.path,
+            err.response.data.debugMessage
+          );
+        } else if (err.response.status == 401) {
+          return new LicencesNationalesUnauthorizedApiError(
+            err.response.data.error,
+            err.response.data.path,
+            err.response.data.debugMessage
+          );
+        } else if (err.response.status == 403) {
+          return new LicencesNationalesUnauthorizedApiError(
+            err.response.data.error,
+            err.response.data.path,
+            err.response.data.debugMessage
+          );
+        } else if (err.response.status == 404) {
+          return new LicencesNationalesNotFoundApiError(
+            err.response.data.error,
+            err.response.data.path,
+            err.response.data.debugMessage
+          );
+        } else if (err.response.status == 500) {
+          return new LicencesNationalesInternalErrorApiError(
+            err.response.data.error,
+            err.response.data.path,
+            err.response.data.debugMessage
+          );
+        } else {
+          return new LicencesNationalesApiError(err.error);
+        }
+      } else {
+        // Exception non géré par l'API - Erreur interne ?
+        return new LicencesNationalesApiError(err.error);
+      }
+    } else {
+      // Erreur au départ de la requête HTTP
+      return new LicencesNationalesApiError(err.message);
+    }
+  }
+
   /**
-   * Appel API pour se logger et obtenir un token d'identification
+   * Appel API pour se logger et obtenir un getToken d'identification
    * @param data Json de login à l'API LicencesNationales
    * @return Json de réponse à l'authentification
    * @throws CredentialNotValidError si l'authentification a échoué
@@ -41,27 +92,7 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 400) {
-            reject(new BadRequestError(err.response.data.message));
-          } else if (err.response.status == 401) {
-            reject(
-              new UnauthorizedError(
-                "La route API " +
-                  err.response.data.path +
-                  " n'est pas autorisée"
-              )
-            );
-          } else if (err.response.status == 404) {
-            reject(new CredentialNotValidError(err.response.data.message));
-          } else {
-            reject(
-              new HttpRequestError(
-                err.response.status,
-                err.response.data.error,
-                err.response.data.path
-              )
-            );
-          }
+          reject(this.buildException(err));
         });
     });
   }
@@ -81,27 +112,7 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 400) {
-            reject(new BadRequestError(err.response.data.message));
-          } else if (err.response.status == 401) {
-            reject(
-              new UnauthorizedError(
-                "La route API " +
-                  err.response.data.path +
-                  " n'est pas autorisée"
-              )
-            );
-          } else if (err.response.status == 404) {
-            reject(new CredentialNotValidError(err.response.data.message));
-          } else {
-            reject(
-              new HttpRequestError(
-                err.response.status,
-                err.response.data.error,
-                err.response.data.path
-              )
-            );
-          }
+          reject(this.buildException(err));
         });
     });
   }
@@ -121,27 +132,7 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 400) {
-            reject(new BadRequestError(err.response.data.message));
-          } else if (err.response.status == 401) {
-            reject(
-              new UnauthorizedError(
-                "La route API " +
-                  err.response.data.path +
-                  " n'est pas autorisée"
-              )
-            );
-          } else if (err.response.status == 404) {
-            reject(new CredentialNotValidError(err.response.data.message));
-          } else {
-            reject(
-              new HttpRequestError(
-                err.response.status,
-                err.response.data.error,
-                err.response.data.path
-              )
-            );
-          }
+          reject(this.buildException(err));
         });
     });
   }
@@ -157,27 +148,7 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 400) {
-            reject(new BadRequestError(err.response.data.message));
-          } else if (err.response.status == 401) {
-            reject(
-              new UnauthorizedError(
-                "La route API " +
-                  err.response.data.path +
-                  " n'est pas autorisée"
-              )
-            );
-          } else if (err.response.status == 404) {
-            reject(new CredentialNotValidError(err.response.data.message));
-          } else {
-            reject(
-              new HttpRequestError(
-                err.response.status,
-                err.response.data.error,
-                err.response.data.path
-              )
-            );
-          }
+          reject(this.buildException(err));
         });
     });
   }
@@ -193,27 +164,7 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 400) {
-            reject(new BadRequestError(err.response.data.message));
-          } else if (err.response.status == 401) {
-            reject(
-              new UnauthorizedError(
-                "La route API " +
-                  err.response.data.path +
-                  " n'est pas autorisée"
-              )
-            );
-          } else if (err.response.status == 404) {
-            reject(new CredentialNotValidError(err.response.data.message));
-          } else {
-            reject(
-              new HttpRequestError(
-                err.response.status,
-                err.response.data.error,
-                err.response.data.path
-              )
-            );
-          }
+          reject(this.buildException(err));
         });
     });
   }
@@ -230,27 +181,7 @@ export class LicencesNationalesApiService {
           resolve(response);
         })
         .catch(err => {
-          if (err.response.status == 400) {
-            reject(new BadRequestError(err.response.data.message));
-          } else if (err.response.status == 401) {
-            reject(
-              new UnauthorizedError(
-                "La route API " +
-                  err.response.data.path +
-                  " n'est pas autorisée"
-              )
-            );
-          } else if (err.response.status == 404) {
-            reject(new CredentialNotValidError(err.response.data.message));
-          } else {
-            reject(
-              new HttpRequestError(
-                err.response.status,
-                err.response.data.error,
-                err.response.data.path
-              )
-            );
-          }
+          reject(this.buildException(err));
         });
     });
   }
@@ -315,27 +246,76 @@ export class LicencesNationalesApiService {
     return this.client.post(url, data, token);
   }
 
+  //******* Fonctionnalité EditeurItem *********
+  // Création
+
   createEditeur(
     token: string,
-    data: JsonCreateEditeur
+    data: JsonCreationEditeurRequest
   ): Promise<AxiosResponse> {
-    return this.client.put("/editeur/", data, token);
+    return new Promise((resolve, reject) => {
+      return this.client
+          .put("/editeurs",data, token)
+          .then(result => {
+            const response: JsonListeEditeurResponse = result.data;
+            resolve(response);
+          })
+          .catch(err => {
+            reject(this.buildException(err));
+          });
+    });
+
   }
 
+  // Modification
   updateEditeur(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/editeur/modificationEditeur", data, token);
   }
 
-  getEditeurs(token: string): Promise<AxiosResponse> {
-    return this.client.get("/editeur/getListEditeurs", token);
+  //Liste
+  getEditeurs(token: string): Promise<Array<JsonSimpleEditeurResponse>> {
+    return new Promise((resolve, reject) => {
+      return this.client
+        .get("/editeurs", token)
+        .then(result => {
+          const response: Array<JsonSimpleEditeurResponse> = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
   }
 
-  fetchEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ip/getEditeurEntity", data, token);
+  getEditeur(id: number, token: string): Promise<JsonEditeurResponse> {
+    return new Promise((resolve, reject) => {
+      return this.client
+        .get("/editeurs/" + id, token)
+        .then(result => {
+          const response: JsonEditeurResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
   }
 
-  deleteEditeur(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/editeur/suppression", data, token);
+  deleteEditeur(
+    id: number,
+    token: string
+  ): Promise<JsonSuppresionEditeurResponse> {
+    return new Promise((resolve, reject) => {
+      return this.client
+        .delete("/editeurs/" + id, token)
+        .then(result => {
+          const response: JsonSuppresionEditeurResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
   }
 }
 

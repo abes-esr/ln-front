@@ -276,11 +276,11 @@ export default class FormProfile extends FormProfileProps {
   buttonLoading: boolean = false;
 
   get userSiren(): string {
-    return this.$store.getters.userSiren;
+    return this.$store.getters.userSiren();
   }
 
   get isAdmin(): boolean {
-    return this.$store.getters.isAdmin;
+    return this.$store.getters.isAdmin();
   }
 
   mounted() {
@@ -302,7 +302,7 @@ export default class FormProfile extends FormProfileProps {
   fetchEtab(): void {
     //Le param "sirenParam" est optionel, utilisé dans le cas Admin
     serviceLn
-      .getInfosEtab(this.$store.getters.token, this.userSiren)
+      .getInfosEtab(this.$store.getters.getToken(), this.userSiren)
       .then(result => {
         this.mail = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;
@@ -341,9 +341,8 @@ export default class FormProfile extends FormProfileProps {
 
   submitProfil(): void {
     this.updateJsonObject();
-    Logger.debug(JSON.stringify(this.jsonResponse));
     serviceLn
-      .updateProfile(this.$store.getters.token, this.jsonResponse)
+      .updateProfile(this.$store.getters.getToken(), this.jsonResponse)
       .then(() => {
         this.buttonLoading = false;
         this.$router.push({ name: "Home" });

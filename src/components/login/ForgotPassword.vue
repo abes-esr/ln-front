@@ -88,7 +88,7 @@
 import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import { HttpRequestError } from "@/exception/HttpRequestError";
+import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 
 @Component
 export default class ForgotPassword extends Vue {
@@ -120,8 +120,8 @@ export default class ForgotPassword extends Vue {
 
     // Execute reCAPTCHA with action "forgotPassword".
     this.token = await this.$recaptcha("forgotPassword");
-    console.log("token dans recaptcha() " + this.token);
-    // Do stuff with the received token.
+    console.log("getToken dans recaptcha() " + this.token);
+    // Do stuff with the received getToken.
     this.validate();
   }
 
@@ -148,14 +148,14 @@ export default class ForgotPassword extends Vue {
             this.alert = true;
             this.retourKo = true;
 
-            if (err instanceof HttpRequestError) {
-              Logger.error(
-                "Erreur HTTP : " + err.error + " sur la route " + err.path
-              );
-              this.message = "Erreur de requête : " + err.error;
+            if (err instanceof LicencesNationalesUnauthorizedApiError) {
+              this.message =
+                "Vous n'êtes pas autorisé à effectuer cette opération.: " +
+                err.message;
+              Logger.error(err.toString());
             } else {
-              Logger.error(err.message);
-              this.message = err.message;
+              Logger.error(err.toString());
+              this.message = "Impossible d'exécuter l'action : " + err.message;
             }
           });
     } else {
@@ -175,14 +175,14 @@ export default class ForgotPassword extends Vue {
             this.alert = true;
             this.retourKo = true;
 
-            if (err instanceof HttpRequestError) {
-              Logger.error(
-                "Erreur HTTP : " + err.error + " sur la route " + err.path
-              );
-              this.message = "Erreur de requête : " + err.error;
+            if (err instanceof LicencesNationalesUnauthorizedApiError) {
+              this.message =
+                "Vous n'êtes pas autorisé à effectuer cette opération.: " +
+                err.message;
+              Logger.error(err.toString());
             } else {
-              Logger.error(err.message);
-              this.message = err.message;
+              Logger.error(err.toString());
+              this.message = "Impossible d'exécuter l'action : " + err.message;
             }
           });
     }
