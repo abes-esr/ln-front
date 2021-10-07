@@ -1,9 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
-import {JsonLoginRequest, JsonLoginResponse} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
-import {serviceLn} from "@/service/licencesnationales/LicencesNationalesApiService";
-import {Logger} from "@/utils/Logger";
+import {
+  JsonLoginRequest,
+  JsonLoginResponse
+} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
+import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
 
 Vue.use(Vuex);
 
@@ -22,12 +25,12 @@ export default new Vuex.Store({
     sirenEtabSiAdmin: ""
   },
   mutations: {
-    SET_TOKEN(state, token:JsonLoginResponse) {
+    SET_TOKEN(state, token: JsonLoginResponse) {
       state.user.token = token.accessToken;
       state.user.siren = token.userSiren;
       state.user.nameEtab = token.nameEtab;
       state.user.isLoggedIn = true;
-      state.user.isAdmin = token.role == 'admin' ? true: false;
+      state.user.isAdmin = token.role == "admin" ? true : false;
     },
     SET_LOGOUT(state) {
       state.user.token = "";

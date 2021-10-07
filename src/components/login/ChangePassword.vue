@@ -61,13 +61,7 @@
       </v-form>
     </v-card>
     <br />
-    <v-alert
-        v-if="!retourKo"
-        dense
-        outlined
-        :value="alert"
-        type="error"
-    >
+    <v-alert v-if="!retourKo" dense outlined :value="alert" type="error">
       {{ message }}
     </v-alert>
     <v-alert v-else dense outlined :value="alert" type="success">
@@ -123,8 +117,9 @@ export default class ChangePassword extends Vue {
         this.alert = true;
         this.retourKo = true;
 
-        setTimeout(() => {  this.$router.push({ name: "Home" })}, 2000);
-
+        setTimeout(() => {
+          this.$router.push({ name: "Home" });
+        }, 2000);
       })
       .catch(err => {
         this.buttonLoading = false;

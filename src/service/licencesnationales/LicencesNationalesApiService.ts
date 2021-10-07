@@ -10,12 +10,14 @@ import {
   JsonReinitialiserMotDePasseRequest,
   JsonMotDePasseOublieEmailRequest,
   JsonVerifierValiditeTokenRequest,
-  JsonVerifierValiditeTokenResponse, JsonModifierMotDePasseRequest, JsonModifierMotDePasseResponse
+  JsonVerifierValiditeTokenResponse,
+  JsonModifierMotDePasseRequest,
+  JsonModifierMotDePasseResponse
 } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
 import { HttpRequestError } from "@/exception/HttpRequestError";
 import { CredentialNotValidError } from "@/service/licencesnationales/CredentialNotValidError";
-import {UnauthorizedError} from "@/service/licencesnationales/UnauthorizedError";
-import {BadRequestError} from "@/service/licencesnationales/BadRequestError";
+import { UnauthorizedError } from "@/service/licencesnationales/UnauthorizedError";
+import { BadRequestError } from "@/service/licencesnationales/BadRequestError";
 
 export class LicencesNationalesApiService {
   // Client HTTP
@@ -40,16 +42,22 @@ export class LicencesNationalesApiService {
           if (err.response.status == 400) {
             reject(new BadRequestError(err.response.data.message));
           } else if (err.response.status == 401) {
-            reject(new UnauthorizedError('La route API '+err.response.data.path+' n\'est pas autorisée'));
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
           } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
-                new HttpRequestError(
-                    err.response.status,
-                    err.response.data.error,
-                    err.response.data.path
-                )
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.error,
+                err.response.data.path
+              )
             );
           }
         });
@@ -74,16 +82,22 @@ export class LicencesNationalesApiService {
           if (err.response.status == 400) {
             reject(new BadRequestError(err.response.data.message));
           } else if (err.response.status == 401) {
-            reject(new UnauthorizedError('La route API '+err.response.data.path+' n\'est pas autorisée'));
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
           } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
-                new HttpRequestError(
-                    err.response.status,
-                    err.response.data.error,
-                    err.response.data.path
-                )
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.error,
+                err.response.data.path
+              )
             );
           }
         });
@@ -108,16 +122,22 @@ export class LicencesNationalesApiService {
           if (err.response.status == 400) {
             reject(new BadRequestError(err.response.data.message));
           } else if (err.response.status == 401) {
-            reject(new UnauthorizedError('La route API '+err.response.data.path+' n\'est pas autorisée'));
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
           } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
-                new HttpRequestError(
-                    err.response.status,
-                    err.response.data.error,
-                    err.response.data.path
-                )
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.error,
+                err.response.data.path
+              )
             );
           }
         });
@@ -138,16 +158,22 @@ export class LicencesNationalesApiService {
           if (err.response.status == 400) {
             reject(new BadRequestError(err.response.data.message));
           } else if (err.response.status == 401) {
-            reject(new UnauthorizedError('La route API '+err.response.data.path+' n\'est pas autorisée'));
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
           } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
             reject(
-                new HttpRequestError(
-                    err.response.status,
-                    err.response.data.error,
-                    err.response.data.path
-                )
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.error,
+                err.response.data.path
+              )
             );
           }
         });
@@ -168,7 +194,13 @@ export class LicencesNationalesApiService {
           if (err.response.status == 400) {
             reject(new BadRequestError(err.response.data.message));
           } else if (err.response.status == 401) {
-            reject(new UnauthorizedError('La route API '+err.response.data.path+' n\'est pas autorisée'));
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
           } else if (err.response.status == 404) {
             reject(new CredentialNotValidError(err.response.data.message));
           } else {
@@ -184,31 +216,40 @@ export class LicencesNationalesApiService {
     });
   }
 
-  changePassword(data: JsonModifierMotDePasseRequest,token: string): Promise<JsonModifierMotDePasseResponse> {
+  changePassword(
+    data: JsonModifierMotDePasseRequest,
+    token: string
+  ): Promise<JsonModifierMotDePasseResponse> {
     return new Promise((resolve, reject) => {
       return this.client
-          .post("/authentification/modifierMotDePasse", data,token)
-          .then(result => {
-            const response: JsonModifierMotDePasseResponse = result.data;
-            resolve(response);
-          })
-          .catch(err => {
-            if (err.response.status == 400) {
-              reject(new BadRequestError(err.response.data.message));
-            } else if (err.response.status == 401) {
-              reject(new UnauthorizedError('La route API '+err.response.data.path+' n\'est pas autorisée'));
-            } else if (err.response.status == 404) {
-              reject(new CredentialNotValidError(err.response.data.message));
-            } else {
-              reject(
-                  new HttpRequestError(
-                      err.response.status,
-                      err.response.data.error,
-                      err.response.data.path
-                  )
-              );
-            }
-          });
+        .post("/authentification/modifierMotDePasse", data, token)
+        .then(result => {
+          const response: JsonModifierMotDePasseResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          if (err.response.status == 400) {
+            reject(new BadRequestError(err.response.data.message));
+          } else if (err.response.status == 401) {
+            reject(
+              new UnauthorizedError(
+                "La route API " +
+                  err.response.data.path +
+                  " n'est pas autorisée"
+              )
+            );
+          } else if (err.response.status == 404) {
+            reject(new CredentialNotValidError(err.response.data.message));
+          } else {
+            reject(
+              new HttpRequestError(
+                err.response.status,
+                err.response.data.error,
+                err.response.data.path
+              )
+            );
+          }
+        });
     });
   }
 
@@ -220,18 +261,16 @@ export class LicencesNationalesApiService {
     return this.client.put("/etablissements", data);
   }
 
-
-
   ajouterAcces(url: string, token: string, data: any): Promise<AxiosResponse> {
     return this.client.post(url, token, data);
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissements/fusion", token, data);
+    return this.client.post("/etablissements/fusion", data, token);
   }
 
   scission(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissements/division", token, data);
+    return this.client.post("/etablissements/scission", data, token);
   }
 
   listeEtab(token: string): Promise<AxiosResponse> {

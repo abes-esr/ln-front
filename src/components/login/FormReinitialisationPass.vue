@@ -120,10 +120,10 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
-import {serviceLn} from "../../service/licencesnationales/LicencesNationalesApiService";
-import {Logger} from "@/utils/Logger";
-import {HttpRequestError} from "@/exception/HttpRequestError";
+import { Component, Vue } from "vue-property-decorator";
+import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { Logger } from "@/utils/Logger";
+import { HttpRequestError } from "@/exception/HttpRequestError";
 
 @Component
 export default class FormReinitialisationPass extends Vue {
@@ -163,7 +163,7 @@ export default class FormReinitialisationPass extends Vue {
       .then(result => {
         this.tokenValid = result;
       })
-      .catch(err => {
+      .catch(() => {
         this.tokenValid = false;
       });
   }
