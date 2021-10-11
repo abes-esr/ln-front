@@ -334,7 +334,7 @@ export default class ComposantEditeur extends Vue {
         .then(response => {
           this.alert = true;
           this.buttonLoading = false;
-          this.$store.dispatch("setNotification", response.data).catch(err => {
+          this.$store.dispatch("setNotification", "OK").catch(err => {
             Logger.error(err);
           });
           Logger.debug("notification = " + this.$store.state.notification);

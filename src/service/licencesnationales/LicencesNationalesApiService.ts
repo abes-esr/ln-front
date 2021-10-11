@@ -13,7 +13,8 @@ import {
   JsonMotDePasseOublieResponse,
   JsonMotDePasseOublieSirenRequest,
   JsonReinitialiserMotDePasseRequest,
-  JsonReinitialiserMotDePasseResponse, JsonSimpleEditeurResponse,
+  JsonReinitialiserMotDePasseResponse,
+  JsonSimpleEditeurResponse,
   JsonSuppresionEditeurResponse,
   JsonVerifierValiditeTokenRequest,
   JsonVerifierValiditeTokenResponse
@@ -199,11 +200,11 @@ export class LicencesNationalesApiService {
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissements/fusion", token, data);
+    return this.client.post("/etablissements/fusion", data, token);
   }
 
   scission(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissements/division", token, data);
+    return this.client.post("/etablissements/scission", data, token);
   }
 
   listeEtab(token: string): Promise<AxiosResponse> {
@@ -252,19 +253,18 @@ export class LicencesNationalesApiService {
   createEditeur(
     token: string,
     data: JsonCreationEditeurRequest
-  ): Promise<AxiosResponse> {
+  ): Promise<JsonListeEditeurResponse> {
     return new Promise((resolve, reject) => {
       return this.client
-          .put("/editeurs",data, token)
-          .then(result => {
-            const response: JsonListeEditeurResponse = result.data;
-            resolve(response);
-          })
-          .catch(err => {
-            reject(this.buildException(err));
-          });
+        .put("/editeurs", data, token)
+        .then(result => {
+          const response: JsonListeEditeurResponse = result.data;
+          resolve(response);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
     });
-
   }
 
   // Modification

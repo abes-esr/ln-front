@@ -111,13 +111,12 @@ export default class FormScissionEtablissement extends Vue {
   send(payload: never): void {
     this.buttonLoading = true;
     this.etablissementDTOS.push(payload);
-
     if (this.etablissementDTOS.length == this.etablissementNumber) {
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
         Logger.debug(
           JSON.stringify({
-            ancienSiren: this.sirenEtab,
-            etablissementDTOS: this.etablissementDTOS
+            sirenScinde: this.sirenEtab,
+            nouveauxEtabs: this.etablissementDTOS
           })
         );
 
@@ -125,6 +124,7 @@ export default class FormScissionEtablissement extends Vue {
         this.message = "";
         this.retourKo = false;
         serviceLn
+
           .scission(this.$store.getters.getToken(), {
             ancienSiren: this.sirenEtab,
             etablissementDTOS: this.etablissementDTOS
@@ -133,7 +133,6 @@ export default class FormScissionEtablissement extends Vue {
             this.alert = true;
             this.buttonLoading = false;
             this.message = response.data;
-            this.alert = true;
             this.clear();
           })
           .catch(err => {
@@ -141,7 +140,11 @@ export default class FormScissionEtablissement extends Vue {
             this.message = err.response.data;
             this.alert = true;
             this.retourKo = true;
+            this.etablissementDTOS = [];
           });
+      } else {
+        this.buttonLoading = false;
+        this.etablissementDTOS = [];
       }
     }
   }

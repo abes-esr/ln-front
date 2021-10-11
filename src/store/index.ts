@@ -10,6 +10,7 @@ import { Logger } from "@/utils/Logger";
 import User from "@/components/User";
 import Editeur from "@/components/Editeur";
 
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({

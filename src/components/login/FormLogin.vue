@@ -101,6 +101,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesApiError } from "@/service/licencesnationales/exception/LicencesNationalesApiError";
 import { LicencesNationalesBadRequestApiError } from "@/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";

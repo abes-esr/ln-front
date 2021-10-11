@@ -99,7 +99,7 @@ export default class FormFusionEtablissement extends Vue {
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
       Logger.debug(
         JSON.stringify({
-          etablissementDTO: payload,
+          nouveauEtab: payload,
           sirenFusionnes: this.sirenEtab
         })
       );
@@ -121,6 +121,8 @@ export default class FormFusionEtablissement extends Vue {
           this.alert = true;
           this.retourKo = true;
         });
+    } else {
+      this.buttonLoading = false;
     }
   }
 
