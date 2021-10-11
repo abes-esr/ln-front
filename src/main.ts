@@ -12,8 +12,7 @@ Vue.config.errorHandler = error =>
 
 Vue.config.productionTip = false;
 
-
-if (process.env.VUE_APP_RECAPTCHA_KEY_SITE == '') {
+if (process.env.VUE_APP_RECAPTCHA_KEY_SITE == "") {
   Logger.error("La clé ReCaptcha est vide");
 } else {
   Logger.debug(process.env.VUE_APP_RECAPTCHA_KEY_SITE);
