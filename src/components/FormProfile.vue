@@ -15,8 +15,9 @@
                       outlined
                       label="Nom de l'établissement"
                       placeholder="Nom de l'établissement"
+                      maxlength="80"
                       v-model="nomEtab"
-                      :rules="nomRules"
+                      :rules="nomEtabRules"
                       required
                       @keyup.enter="validate()"
                     ></v-text-field>
@@ -29,7 +30,9 @@
                       outlined
                       label="SIREN"
                       placeholder="SIREN"
-                      v-model="siren"
+                      maxlength="9"
+                      v-model="sirenEtab"
+                      :rules="sirenEtabRules"
                       disabled
                     ></v-text-field>
                   </v-col>
@@ -42,7 +45,7 @@
                     <v-select
                       outlined
                       v-model="typeEtab"
-                      :items="listeType"
+                      :items="typesEtab"
                       label="Type de l'établissement"
                       required
                     ></v-select>
@@ -65,8 +68,8 @@
                     outlined
                     label="Mail de contact"
                     placeholder="Mail de contact"
-                    v-model="mail"
-                    :rules="mailRules"
+                    v-model="emailContact"
+                    :rules="emailContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -80,7 +83,7 @@
                     label="Nom"
                     placeholder="Nom"
                     v-model="nomContact"
-                    :rules="nomRules"
+                    :rules="nomContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -94,7 +97,7 @@
                     label="Prénom"
                     placeholder="Prénom"
                     v-model="prenomContact"
-                    :rules="nomRules"
+                    :rules="prenomContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -107,8 +110,9 @@
                     outlined
                     label="Téléphone"
                     placeholder="Téléphone"
-                    v-model="telephone"
-                    :rules="telRules"
+                    maxlength="10"
+                    v-model="telContact"
+                    :rules="telContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -123,49 +127,9 @@
                     outlined
                     label="Adresse"
                     placeholder="Adresse"
-                    v-model="adresse"
-                    :rules="adrRules"
-                    required
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-text-field
-                    outlined
-                    label="Code Postal"
-                    placeholder="Code Postal"
-                    v-model="codePostal"
-                    :rules="cpRules"
-                    required
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-text-field
-                    outlined
-                    label="Ville"
-                    placeholder="Ville"
-                    v-model="ville"
-                    :rules="villeRules"
-                    required
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-text-field
-                    outlined
-                    label="CEDEX"
-                    placeholder="CEDEX"
-                    v-model="cedex"
+                    maxlength="80"
+                    v-model="adresseContact"
+                    :rules="adresseContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -178,7 +142,49 @@
                     outlined
                     label="Boite Postal"
                     placeholder="Boite Postal"
-                    v-model="bp"
+                    v-model="boitePostalContact"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-text-field
+                    outlined
+                    label="Code Postal"
+                    placeholder="Code Postal"
+                    maxlength="5"
+                    v-model="codePostalContact"
+                    :rules="codePostalContactRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-text-field
+                    outlined
+                    label="Ville"
+                    placeholder="Ville"
+                    v-model="villeContact"
+                    :rules="villeContactRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-text-field
+                    outlined
+                    label="CEDEX"
+                    placeholder="CEDEX"
+                    v-model="cedexContact"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -196,12 +202,12 @@
                 :loading="buttonLoading"
                 x-large
                 @click="validate()"
-                >Envoyer</v-btn
-              >
+                >Envoyer
+              </v-btn>
             </v-col>
           </v-row>
-        </v-card-actions></v-form
-      >
+        </v-card-actions>
+      </v-form>
     </v-card>
     <br />
     <v-alert dense outlined :value="alert" type="error">
@@ -212,7 +218,6 @@
 
 <script lang="ts">
 import { serviceLn } from "../service/licencesnationales/LicencesNationalesApiService";
-import { Logger } from "@/utils/Logger";
 import { Component, Vue } from "vue-property-decorator";
 
 //Si la modification est effectuée par un admin
@@ -229,50 +234,81 @@ const FormProfileProps = Vue.extend({
 
 @Component
 export default class FormProfile extends FormProfileProps {
-  siren: string = "";
   nomEtab: string = "";
-  typeEtab: string = "";
-  adresse: string = "";
-  codePostal: string = "";
-  ville: string = "";
-  bp: string = "";
-  cedex: string = "";
-  mail: string = "";
-  nomContact: string = "";
-  prenomContact: string = "";
-  telephone: string = "";
-  jsonResponse: any = {};
-  listeType: Array<string> = [];
-  alert: boolean = false;
-  error: string = "";
-  nomRules = [(v: string) => !!v || "Champ obligatoire"];
-  adrRules = [
-    (v: string) => !!v || "Champ obligatoire",
-    (v: string) => (v && v.length >= 10) || "Adresse trop courte"
-  ];
-  villeRules = [
-    (v: string) => !!v || "Champ obligatoire",
-    (v: string) => (v && v.length >= 2) || "Ville trop courte"
-  ];
-  mailRules = [
-    (v: string) => !!v || "Champ obligatoire",
-    (v: string) => /.+@.+\..+/.test(v) || "Adresse mail non valide"
-  ];
-  cpRules = [
-    (v: string) => !!v || "Champ obligatoire",
+  nomEtabRules = [
+    (v: string) => !!v || "Le nom de l'établissement est obligatoire",
+    (v: string) => v.length >= 5 || "Minimum 5 caractères",
     (v: string) =>
-      /[\d]{5}/.test(v) || "Le code postal doit être composé de 5 chiffres"
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]){5,80}$/.test(v) ||
+      "Le nom d'établissement fourni n'est pas valide"
   ];
-  telRules = [
-    (v: string) => !!v || "Champ obligatoire",
-    (v: string) =>
-      /^[\d]*$/.test(v) ||
-      "Le téléphone doit être composé de chiffres uniquement"
-  ];
+  sirenEtab: string = "";
   sirenEtabRules = [
     (v: string) => !!v || "SIREN obligatoire",
     (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
   ];
+
+  typesEtab: Array<string> = [];
+
+  typeEtab: string = "";
+  typeEtabRules = [
+    (v: string) => !!v || "Le type de l'établissement est obligatoire"
+  ];
+
+  nomContact: string = "";
+  nomContactRules = [
+    (v: string) => !!v || "Le nom du contact est obligatoire",
+    (v: string) =>
+      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
+        v
+      ) || "Le nom fourni n'est pas valide"
+  ];
+  prenomContact: string = "";
+  prenomContactRules = [
+    (v: string) => !!v || "Le prénom du contact est obligatoire",
+    (v: string) =>
+      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
+        v
+      ) || "Le prénom fourni n'est pas valide"
+  ];
+  adresseContact: string = "";
+  adresseContactRules = [
+    (v: string) =>
+      !!v || "L'adresse postale de l'établissement est obligatoire",
+    (v: string) => v.length >= 5 || "Minimum 5 caractères",
+    (v: string) =>
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      "L'adresse postale fournie n'est pas valide"
+  ];
+  boitePostalContact: string = "";
+  codePostalContact: string = "";
+  codePostalContactRules = [
+    (v: string) => !!v || "Le code postal de l'établissement est obligatoire",
+    (v: string) => /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
+  ];
+  villeContact: string = "";
+  villeContactRules = [
+    (v: string) => !!v || "La ville de l'établissement est obligatoire",
+    (v: string) =>
+      /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(v) ||
+      "La ville fournie n'est pas valide"
+  ];
+
+  cedexContact: string = "";
+  telContact: string = "";
+  telContactRules = [
+    (v: string) => !!v || "Le téléphone du contact est obligatoire",
+    (v: string) =>
+      /^\d{10}$/.test(v) || "Veuillez entrer 10 chiffres sans espace"
+  ];
+  emailContact: string = "";
+  emailContactRules = [
+    (v: string) => !!v || "Champ obligatoire",
+    (v: string) => /.+@.+\..+/.test(v) || "Adresse mail non valide"
+  ];
+  jsonResponse: any = {};
+  alert: boolean = false;
+  error: string = "";
   buttonLoading: boolean = false;
 
   get userSiren(): string {
@@ -282,6 +318,9 @@ export default class FormProfile extends FormProfileProps {
   get isAdmin(): boolean {
     return this.$store.getters.isAdmin();
   }
+
+  //Le param "sirenParam" est optionel, utilisé dans le cas Admin
+  sirenLocal = this.sirenParam ? this.sirenParam : this.userSiren;
 
   mounted() {
     this.fetchEtab();
@@ -300,21 +339,20 @@ export default class FormProfile extends FormProfileProps {
   }
 
   fetchEtab(): void {
-    //Le param "sirenParam" est optionel, utilisé dans le cas Admin
     serviceLn
-      .getInfosEtab(this.$store.getters.getToken(), this.userSiren)
+      .getInfosEtab(this.$store.getters.getToken(), this.sirenLocal)
       .then(result => {
-        this.mail = result.data.contact.mail;
+        this.emailContact = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;
         this.prenomContact = result.data.contact.prenom;
-        this.adresse = result.data.contact.adresse;
-        this.bp = result.data.contact.boitePostal;
-        this.codePostal = result.data.contact.codePostal;
-        this.cedex = result.data.contact.cedex;
-        this.ville = result.data.contact.ville;
-        this.telephone = result.data.contact.telephone;
+        this.adresseContact = result.data.contact.adresse;
+        this.boitePostalContact = result.data.contact.boitePostal;
+        this.codePostalContact = result.data.contact.codePostal;
+        this.cedexContact = result.data.contact.cedex;
+        this.villeContact = result.data.contact.ville;
+        this.telContact = result.data.contact.telephone;
         if (this.isAdmin) {
-          this.siren = result.data.siren;
+          this.sirenEtab = result.data.siren;
           this.nomEtab = result.data.nom;
           this.typeEtab = result.data.typeEtablissement;
         }
@@ -330,7 +368,7 @@ export default class FormProfile extends FormProfileProps {
       .listeType()
       .then(result => {
         result.data.forEach(element => {
-          this.listeType.push(element.libelle);
+          this.typesEtab.push(element.libelle);
         });
       })
       .catch(err => {
@@ -357,20 +395,20 @@ export default class FormProfile extends FormProfileProps {
   updateJsonObject(): void {
     const json: any = {};
     const contact: any = {};
-    contact.adresse = this.adresse;
-    contact.boitePostale = this.bp;
-    contact.cedex = this.cedex;
-    contact.codePostal = this.codePostal;
-    contact.mail = this.mail;
+    contact.adresse = this.adresseContact;
+    contact.boitePostale = this.boitePostalContact;
+    contact.cedex = this.cedexContact;
+    contact.codePostal = this.codePostalContact;
+    contact.mail = this.emailContact;
     contact.nom = this.nomContact;
     contact.prenom = this.prenomContact;
-    contact.telephone = this.telephone;
-    contact.ville = this.ville;
+    contact.telephone = this.telContact;
+    contact.ville = this.villeContact;
     json.siren = this.userSiren;
     json.contact = contact;
     json.role = this.isAdmin ? "admin" : "etab";
     if (this.isAdmin) {
-      json.siren = this.siren;
+      json.siren = this.sirenEtab;
       json.typeEtablissement = this.typeEtab;
       json.nom = this.nomEtab;
     }

@@ -26,6 +26,7 @@
                 outlined
                 label="SIREN"
                 placeholder="SIREN"
+                maxlength="9"
                 v-model="siren"
                 :rules="loginRules"
                 append-icon="mdi-information"

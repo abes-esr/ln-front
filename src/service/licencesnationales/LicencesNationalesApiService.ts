@@ -195,10 +195,6 @@ export class LicencesNationalesApiService {
     return this.client.put("/etablissements", data);
   }
 
-  ajouterAcces(url: string, token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, token, data);
-  }
-
   fusion(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/etablissements/fusion", data, token);
   }
@@ -239,12 +235,20 @@ export class LicencesNationalesApiService {
     return this.client.post("/ip/getIpEntity", data, token);
   }
 
-  addIP(token: string, url: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, data, token);
+  addIP(token: string, siren: string, data: any): Promise<AxiosResponse> {
+    return this.client.put("/ip/" + siren, data, token);
   }
 
-  deleteIP(token: string, url: string, data: any): Promise<AxiosResponse> {
-    return this.client.post(url, data, token);
+  updateIP(token: string, id, data: any): Promise<AxiosResponse> {
+    return this.client.post("/ip/" + id, data, token);
+  }
+
+  validateIp(token: string, data: any): Promise<AxiosResponse> {
+    return this.client.post("/ip/valider", data, token);
+  }
+
+  deleteIP(token: string, id): Promise<AxiosResponse> {
+    return this.client.delete("/ip/" + id, token);
   }
 
   //******* Fonctionnalité EditeurItem *********

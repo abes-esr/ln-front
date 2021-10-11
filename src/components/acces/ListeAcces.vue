@@ -216,7 +216,10 @@ export default class ListeAcces extends ListeAccesProps {
         this.sirenEtabSiAdmin
       );
     else
-      return serviceLn.getListIP(this.$store.getters.getToken(), this.getUserSiren);
+      return serviceLn.getListIP(
+        this.$store.getters.getToken(),
+        this.getUserSiren
+      );
   }
 
   collecterAcces(): void {
@@ -261,10 +264,7 @@ export default class ListeAcces extends ListeAccesProps {
   supprimerAcces(id): void {
     Logger.debug("id = " + id);
     serviceLn
-      .deleteIP(this.$store.getters.getToken(), this.getUrlSuppressionIp(), {
-        id: id,
-        siren: this.getSirenSuppressionIp()
-      })
+      .deleteIP(this.$store.getters.getToken(), id)
       .then(response => {
         this.refreshList();
         Logger.debug("notification = " + response.data);

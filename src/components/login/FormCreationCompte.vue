@@ -47,6 +47,7 @@
                   outlined
                   label="Nom de l'établissement"
                   placeholder="Nom de l'établissement"
+                  maxlength="80"
                   v-model="nomEtab"
                   :rules="nomEtabRules"
                   required
@@ -61,6 +62,7 @@
                   outlined
                   label="SIREN"
                   placeholder="SIREN"
+                  maxlength="9"
                   v-model="sirenEtab"
                   :rules="sirenEtabRules"
                   required
@@ -190,6 +192,7 @@
                   placeholder="Adresse postale"
                   v-model="adresseContact"
                   :rules="adresseContactRules"
+                  maxlength="80"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -216,6 +219,7 @@
                   placeholder="Code postal"
                   v-model="codePostalContact"
                   :rules="codePostalContactRules"
+                  maxlength="5"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -257,6 +261,7 @@
                   label="Téléphone"
                   placeholder="Téléphone"
                   v-model="telContact"
+                  maxlength="10"
                   :rules="telContactRules"
                   required
                   @keyup.enter="validate()"
@@ -404,8 +409,9 @@ export default class FormCreationCompte extends Vue {
   nomEtab: string = "";
   nomEtabRules = [
     (v: string) => !!v || "Le nom de l'établissement est obligatoire",
+    (v: string) => v.length >= 5 || "Minimum 5 caractères",
     (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]){5,80}$/.test(v) ||
       "Le nom d'établissement fourni n'est pas valide"
   ];
   sirenEtab: string = "";
@@ -441,6 +447,7 @@ export default class FormCreationCompte extends Vue {
   adresseContactRules = [
     (v: string) =>
       !!v || "L'adresse postale de l'établissement est obligatoire",
+    (v: string) => v.length >= 5 || "Minimum 5 caractères",
     (v: string) =>
       /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
       "L'adresse postale fournie n'est pas valide"
@@ -480,6 +487,7 @@ export default class FormCreationCompte extends Vue {
   passContact: string = "";
   passContactRules = [
     (v: string) => !!v || "Le mot de passe du contact est obligatoire",
+    (v: string) => v.length >= 5 || "Minimum 8 caractères",
     (v: string) =>
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
         v

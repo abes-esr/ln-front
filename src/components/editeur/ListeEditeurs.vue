@@ -86,7 +86,8 @@ import Editeur from "@/components/Editeur";
 import { Action } from "@/components/CommonDefinition";
 import {
   JsonEditeurResponse,
-  JsonListeEditeurResponse, JsonSimpleEditeurResponse
+  JsonListeEditeurResponse,
+  JsonSimpleEditeurResponse
 } from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
 import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 
@@ -129,7 +130,9 @@ export default class ListeEditeurs extends Vue {
     serviceLn
       .getEditeurs(this.$store.getters.getToken())
       .then(res => {
-        const response: Array<JsonSimpleEditeurResponse> = (res as unknown) as Array<JsonSimpleEditeurResponse>;
+        const response: Array<JsonSimpleEditeurResponse> = (res as unknown) as Array<
+          JsonSimpleEditeurResponse
+        >;
         response.forEach(element => {
           const editeur = new Editeur();
           editeur.id = element.id;
