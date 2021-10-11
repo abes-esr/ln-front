@@ -261,10 +261,7 @@ export default class ListeAcces extends ListeAccesProps {
   supprimerAcces(id): void {
     Logger.debug("id = " + id);
     serviceLn
-      .deleteIP(this.$store.getters.token, this.getUrlSuppressionIp(), {
-        id: id,
-        siren: this.getSirenSuppressionIp()
-      })
+      .deleteIP(this.$store.getters.token,id)
       .then(response => {
         this.refreshList();
         Logger.debug("notification = " + response.data);
