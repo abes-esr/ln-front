@@ -156,8 +156,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
+import { etablissementService } from "@/service/licencesnationales/EtablissementService";
 
 @Component
 export default class ListeEtab extends Vue {
@@ -239,7 +239,7 @@ export default class ListeEtab extends Vue {
     return statutRecherche.statut.toString().includes(this.statut);
   }
   getAll(): any {
-    return serviceLn.listeEtab(this.$store.getters.getToken());
+    return etablissementService.listeEtab(this.$store.getters.getToken());
   }
   collecterEtab(): any {
     this.getAll()
@@ -282,7 +282,7 @@ export default class ListeEtab extends Vue {
     //(this as any).supprimerEtab(siren);
   }
   supprimerEtab(): void {
-    serviceLn
+    etablissementService
       .deleteEtab(this.$store.getters.getToken(), this.currentSirenToDelete, {
         motif: this.motifSuppression
       })

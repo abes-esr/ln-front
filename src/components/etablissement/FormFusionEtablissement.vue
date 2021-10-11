@@ -70,8 +70,8 @@
 <script lang="ts">
 import FormEtab from "@/components/etablissement/FormEtab.vue";
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
+import { etablissementService } from "@/service/licencesnationales/EtablissementService";
 
 @Component({
   components: { FormEtab }
@@ -103,7 +103,7 @@ export default class FormFusionEtablissement extends Vue {
           sirenFusionnes: this.sirenEtab
         })
       );
-      serviceLn
+      etablissementService
         .fusion(this.$store.getters.getToken(), {
           etablissementDTO: payload,
           sirenFusionnes: this.sirenEtab

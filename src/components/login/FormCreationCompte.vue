@@ -394,12 +394,12 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import { serviceGouv } from "@/service/data.gouv/DataGouvApiService";
 import { SirenNotFoundError } from "@/service/data.gouv/exception/SirenNotFoundError";
 import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { DataGouvApiError } from "@/service/data.gouv/exception/DataGouvApiError";
+import { etablissementService } from "@/service/licencesnationales/EtablissementService";
 
 @Component
 export default class FormCreationCompte extends Vue {
@@ -580,7 +580,7 @@ export default class FormCreationCompte extends Vue {
     this.buttonLoading = true;
     this.alert = false;
 
-    serviceLn
+    etablissementService
       .creationCompte({
         nom: this.nomEtab,
         siren: this.sirenEtab,
@@ -667,7 +667,7 @@ export default class FormCreationCompte extends Vue {
   }
 
   fetchListeType(): void {
-    serviceLn.listeType().then(result => {
+    etablissementService.listeType().then(result => {
       result.data.forEach(element => {
         this.typesEtab.push(element.libelle);
       });

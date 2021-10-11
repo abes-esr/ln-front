@@ -113,9 +113,9 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
+import { iPService } from "@/service/licencesnationales/IPService";
 
 const ListeAccesProps = Vue.extend({
   props: {
@@ -211,12 +211,12 @@ export default class ListeAcces extends ListeAccesProps {
 
   getAll() {
     if (this.isAdmin === "true")
-      return serviceLn.getListIPEtab(
+      return iPService.getListIPEtab(
         this.$store.getters.getToken(),
         this.sirenEtabSiAdmin
       );
     else
-      return serviceLn.getListIP(
+      return iPService.getListIP(
         this.$store.getters.getToken(),
         this.getUserSiren
       );
@@ -263,7 +263,7 @@ export default class ListeAcces extends ListeAccesProps {
 
   supprimerAcces(id): void {
     Logger.debug("id = " + id);
-    serviceLn
+    iPService
       .deleteIP(this.$store.getters.getToken(), id)
       .then(response => {
         this.refreshList();

@@ -1,4 +1,5 @@
 export class User {
+  id: number = -999;
   token: string = "";
   siren: string = "";
   nameEtab: string = "";

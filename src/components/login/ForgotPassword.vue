@@ -85,10 +85,10 @@
 </template>
 
 <script lang="ts">
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { authService } from "@/service/licencesnationales/AuthentificationService";
 
 @Component
 export default class ForgotPassword extends Vue {
@@ -133,7 +133,7 @@ export default class ForgotPassword extends Vue {
       if (
         (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
       )
-        serviceLn
+        authService
           .motDePasseOublieSiren({
             siren: this.siren,
             recaptcha: this.token
@@ -160,7 +160,7 @@ export default class ForgotPassword extends Vue {
           });
     } else {
       if ((this.$refs.formMail as Vue & { validate: () => boolean }).validate())
-        serviceLn
+        authService
           .motDePasseOublieEmail({
             email: this.mail,
             recaptcha: this.token

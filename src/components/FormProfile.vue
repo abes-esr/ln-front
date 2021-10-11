@@ -217,8 +217,8 @@
 </template>
 
 <script lang="ts">
-import { serviceLn } from "../service/licencesnationales/LicencesNationalesApiService";
 import { Component, Vue } from "vue-property-decorator";
+import { etablissementService } from "@/service/licencesnationales/EtablissementService";
 
 //Si la modification est effectuée par un admin
 //On passe le SIREN du compte à modifier en Prop
@@ -339,7 +339,7 @@ export default class FormProfile extends FormProfileProps {
   }
 
   fetchEtab(): void {
-    serviceLn
+    etablissementService
       .getInfosEtab(this.$store.getters.getToken(), this.sirenLocal)
       .then(result => {
         this.emailContact = result.data.contact.mail;
@@ -364,7 +364,7 @@ export default class FormProfile extends FormProfileProps {
   }
 
   fetchListeType(): void {
-    serviceLn
+    etablissementService
       .listeType()
       .then(result => {
         result.data.forEach(element => {
@@ -379,7 +379,7 @@ export default class FormProfile extends FormProfileProps {
 
   submitProfil(): void {
     this.updateJsonObject();
-    serviceLn
+    etablissementService
       .updateProfile(this.$store.getters.getToken(), this.jsonResponse)
       .then(() => {
         this.buttonLoading = false;

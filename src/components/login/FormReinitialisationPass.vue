@@ -121,9 +121,9 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { authService } from "@/service/licencesnationales/AuthentificationService";
 
 @Component
 export default class FormReinitialisationPass extends Vue {
@@ -181,7 +181,7 @@ export default class FormReinitialisationPass extends Vue {
   get isTokenValid(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.alert = false;
-      serviceLn
+      authService
         .verifierValiditeToken({
           token: this.resetToken
         })
@@ -238,7 +238,7 @@ export default class FormReinitialisationPass extends Vue {
   reinitialisationPass(): void {
     this.buttonLoading = true;
     this.alert = false;
-    serviceLn
+    authService
       .reinitialiserMotDePasse({
         nouveauMotDePasse: this.passContact,
         recaptcha: this.tokenrecaptcha,

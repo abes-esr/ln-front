@@ -1,15 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
-import {
-  JsonLoginRequest,
-  JsonLoginResponse
-} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
-import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import User from "@/components/User";
 import Editeur from "@/components/Editeur";
-
+import {authService, JsonLoginRequest} from "@/service/licencesnationales/AuthentificationService";
 
 Vue.use(Vuex);
 
@@ -23,12 +18,8 @@ export default new Vuex.Store({
     currentEditeur: new Editeur()
   },
   mutations: {
-    SET_USER(state, token: JsonLoginResponse) {
-      state.user.token = token.accessToken;
-      state.user.siren = token.userSiren;
-      state.user.nameEtab = token.nameEtab;
-      state.user.isLoggedIn = true;
-      state.user.isAdmin = token.role == "admin" ? true : false;
+    SET_USER(state, user: User) {
+      state.user = user;
     },
     SET_LOGOUT(state) {
       state.user.token = "";
@@ -57,13 +48,13 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    login({ commit }, credentials: JsonLoginRequest): Promise<boolean> {
+    login({commit}, data:JsonLoginRequest): Promise<boolean> {
       return new Promise((resolve, reject) => {
         // On appel le serviceLn LicencesNationales
-        serviceLn
-          .login(credentials)
+        authService
+          .login(data.login,data.password)
           .then(result => {
-            // On sauvegarde le getToken
+            // On sauvegarde l'utilisateur
             commit("SET_USER", result);
             resolve(true);
           })

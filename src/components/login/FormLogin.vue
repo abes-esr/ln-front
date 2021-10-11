@@ -104,7 +104,6 @@
 import { Component, Vue } from "vue-property-decorator";
 
 import { Logger } from "@/utils/Logger";
-import { LicencesNationalesApiError } from "@/service/licencesnationales/exception/LicencesNationalesApiError";
 import { LicencesNationalesBadRequestApiError } from "@/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component
@@ -143,10 +142,7 @@ export default class FormLogin extends Vue {
     this.alert = false;
 
     this.$store
-      .dispatch("login", {
-        login: this.siren,
-        password: this.password
-      })
+      .dispatch("login", { login: this.siren, password: this.password })
       .then(() => {
         this.$router.push({ name: "Home" });
       })

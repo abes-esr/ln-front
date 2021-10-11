@@ -81,9 +81,9 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { authService } from "@/service/licencesnationales/AuthentificationService";
 
 @Component
 export default class ChangePassword extends Vue {
@@ -113,7 +113,7 @@ export default class ChangePassword extends Vue {
 
   submit(): void {
     this.buttonLoading = true;
-    serviceLn
+    authService
       .changePassword(
         {
           ancienMotDePasse: this.oldPassword,

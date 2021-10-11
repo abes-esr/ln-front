@@ -110,7 +110,6 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import ModuleSegmentsIpPlage from "@/components/acces/ModuleSegmentsIpPlage.vue";
 import {
   GetTypeIpFromModifierAccesEvent,
@@ -118,6 +117,7 @@ import {
   TypeIpChangeEvent
 } from "@/main";
 import { Logger } from "@/utils/Logger";
+import { iPService } from "@/service/licencesnationales/IPService";
 
 @Component({
   components: { ModuleSegmentsIpPlage }
@@ -206,7 +206,7 @@ export default class ModifierAcces extends Vue {
   fetchIp(): void {
     Logger.debug("id = " + this.id);
     Logger.debug("siren = " + this.getUserSiren);
-    serviceLn
+    iPService
       .getIPInfos(this.$store.getters.getToken(), {
         id: this.id,
         siren: this.$store.getters.userSiren()
@@ -256,7 +256,7 @@ export default class ModifierAcces extends Vue {
   submitAcces(): void {
     this.updateJsonObject();
     Logger.debug(JSON.stringify(this.jsonResponse));
-    serviceLn
+    iPService
       .addIP(
         this.$store.getters.getToken(),
         this.getUrl(this.typeIp),

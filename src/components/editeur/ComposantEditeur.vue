@@ -167,17 +167,12 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
-import {
-  JsonContactEditeurResponse,
-  JsonCreationContactEditeurRequest,
-  JsonEditeurResponse
-} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
 import { Action, ContactType } from "@/components/CommonDefinition";
 import Editeur from "@/components/Editeur";
 import Contact from "@/components/editeur/Contact.vue";
 import ContactEditeur from "@/components/ContactEditeur";
 import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { editeurService } from "@/service/licencesnationales/EditeurService";
 
 @Component({
   components: { Contact }
@@ -310,27 +305,9 @@ export default class ComposantEditeur extends Vue {
     this.buttonLoading = true;
     this.alert = false;
 
-    const contactsCommerciaux: Array<JsonCreationContactEditeurRequest> = [];
-    const contactsTechniques: Array<JsonCreationContactEditeurRequest> = [];
-
-    for (let index = 0; index < this.editeur.contacts.length; index++) {
-      if (this.editeur.contacts[index].type == ContactType.COMMERCIAL) {
-        contactsCommerciaux.push(this.editeur.contacts[index]);
-      } else if (this.editeur.contacts[index].type == ContactType.TECHNIQUE) {
-        contactsTechniques.push(this.editeur.contacts[index]);
-      }
-    }
-
     if (this.action == Action.CREATION) {
-      serviceLn
-        .createEditeur(this.$store.getters.getToken(), {
-          nom: this.editeur.nom,
-          identifiantBis: this.editeur.identifiantBis,
-          groupesEtabRelies: this.editeur.groupesEtabRelies,
-          adresse: this.editeur.adresse,
-          contactsCommerciaux: contactsCommerciaux,
-          contactsTechniques: contactsTechniques
-        })
+      editeurService
+        .createEditeur(this.editeur, this.$store.getters.getToken())
         .then(response => {
           this.alert = true;
           this.buttonLoading = false;
@@ -351,7 +328,27 @@ export default class ComposantEditeur extends Vue {
           }
         });
     } else if (this.action == Action.MODIFICATION) {
-      //TODO a faire
+      editeurService
+        .updateEditeur(this.editeur, this.$store.getters.getToken())
+        .then(response => {
+          this.alert = true;
+          this.buttonLoading = false;
+          this.$store.dispatch("setNotification", "OK").catch(err => {
+            Logger.error(err);
+          });
+          Logger.debug("notification = " + this.$store.state.notification);
+          this.$router.push({ path: "/listeEditeurs" });
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.alert = true;
+          Logger.error(err.toString());
+          if (err instanceof LicencesNationalesUnauthorizedApiError) {
+            this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
+          } else {
+            this.error = "Impossible de créer l'éditeur : " + err.message;
+          }
+        });
     }
   }
 
@@ -365,35 +362,10 @@ export default class ComposantEditeur extends Vue {
   }
 
   private fetchEditeur() {
-    serviceLn
+    editeurService
       .getEditeur(this.editeur.id, this.$store.getters.getToken())
       .then(res => {
-        const response: JsonEditeurResponse = (res as unknown) as JsonEditeurResponse;
-        this.editeur.nom = response.nom;
-        this.editeur.dateCreation = new Date(response.dateCreation);
-        this.editeur.groupesEtabRelies = response.groupesEtabRelies;
-        this.editeur.identifiantBis = response.identifiantBis;
-        this.editeur.adresse = response.adresse;
-
-        // On vide les contacts et on les regénère à partir du JSON
-        this.editeur.contacts = [];
-        response.contactsCommerciaux.forEach(element => {
-          const contact: ContactEditeur = new ContactEditeur();
-          contact.id = element.id;
-          contact.nom = element.nom;
-          contact.type = ContactType.COMMERCIAL;
-          contact.prenom = element.prenom;
-          contact.mail = element.mail;
-        });
-
-        response.contactsTechniques.forEach(element => {
-          const contact: ContactEditeur = new ContactEditeur();
-          contact.id = element.id;
-          contact.nom = element.nom;
-          contact.type = ContactType.TECHNIQUE;
-          contact.prenom = element.prenom;
-          contact.mail = element.mail;
-        });
+        this.editeur = res;
       })
       .catch(err => {
         this.alert = true;

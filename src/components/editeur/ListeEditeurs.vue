@@ -79,17 +79,12 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import Editeur from "@/components/Editeur";
 import { Action } from "@/components/CommonDefinition";
-import {
-  JsonEditeurResponse,
-  JsonListeEditeurResponse,
-  JsonSimpleEditeurResponse
-} from "@/service/licencesnationales/LicencesNationalesJsonDefinition";
 import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { editeurService } from "@/service/licencesnationales/EditeurService";
 
 @Component
 export default class ListeEditeurs extends Vue {
@@ -127,19 +122,10 @@ export default class ListeEditeurs extends Vue {
   fetchEditeurs(): void {
     this.alert = false;
 
-    serviceLn
+    editeurService
       .getEditeurs(this.$store.getters.getToken())
       .then(res => {
-        const response: Array<JsonSimpleEditeurResponse> = (res as unknown) as Array<
-          JsonSimpleEditeurResponse
-        >;
-        response.forEach(element => {
-          const editeur = new Editeur();
-          editeur.id = element.id;
-          editeur.nom = element.nom;
-          editeur.dateCreation = new Date(element.dateCreation);
-          this.editeurs.push(editeur);
-        });
+        this.editeurs = res;
       })
       .catch(err => {
         this.alert = true;
@@ -183,7 +169,7 @@ export default class ListeEditeurs extends Vue {
   supprimerEditeur(item: Editeur): void {
     this.alert = false;
 
-    serviceLn
+    editeurService
       .deleteEditeur(item.id, this.$store.getters.getToken())
       .then(response => {
         this.fetchEditeurs();

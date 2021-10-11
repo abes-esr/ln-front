@@ -265,9 +265,9 @@ import {
   IpChangeEvent,
   TypeIpChangeEvent
 } from "@/main";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import { SegmentPlage } from "@/components/CommonDefinition";
+import { iPService } from "@/service/licencesnationales/IPService";
 
 @Component
 export default class ModuleSegmentsIpPlage extends Vue {
@@ -484,7 +484,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
   fetchIp(): void {
     Logger.debug("id = " + this.id);
     Logger.debug("siren = " + this.getUserSiren);
-    serviceLn
+    iPService
       .getIPInfos(this.$store.getters.getToken(), {
         id: this.id,
         siren: this.$store.getters.userSiren()
