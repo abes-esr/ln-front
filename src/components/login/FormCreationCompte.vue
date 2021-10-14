@@ -30,7 +30,7 @@
             </p>
             <v-checkbox
               required
-              :rules="checkboxRules"
+              :rules="this.rules.checkboxRules"
               label="Je confirme que mon établissement est éligible"
             ></v-checkbox>
           </v-alert>
@@ -49,7 +49,7 @@
                   placeholder="Nom de l'établissement"
                   maxlength="80"
                   v-model="nomEtab"
-                  :rules="nomEtabRules"
+                  :rules="this.rules.nomEtabRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -64,7 +64,7 @@
                   placeholder="SIREN"
                   maxlength="9"
                   v-model="sirenEtab"
-                  :rules="sirenEtabRules"
+                  :rules="this.rules.sirenEtabRules"
                   required
                   @input="checkSiren()"
                   @keyup.enter="validate()"
@@ -132,7 +132,7 @@
                   v-model="typeEtab"
                   :items="typesEtab"
                   label="Type de l'établissement"
-                  :rules="typeEtabRules"
+                  :rules="this.rules.typeEtabRules"
                   required
                 ></v-select>
                 <a
@@ -163,7 +163,7 @@
                   label="Nom"
                   placeholder="Nom"
                   v-model="nomContact"
-                  :rules="nomContactRules"
+                  :rules="this.rules.nomContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -177,7 +177,7 @@
                   label="Prénom"
                   placeholder="Prénom"
                   v-model="prenomContact"
-                  :rules="prenomContactRules"
+                  :rules="this.rules.prenomContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -191,7 +191,7 @@
                   label="Adresse postale"
                   placeholder="Adresse postale"
                   v-model="adresseContact"
-                  :rules="adresseContactRules"
+                  :rules="this.rules.adresseContactRules"
                   maxlength="80"
                   required
                   @keyup.enter="validate()"
@@ -218,7 +218,7 @@
                   label="Code postal"
                   placeholder="Code postal"
                   v-model="codePostalContact"
-                  :rules="codePostalContactRules"
+                  :rules="this.rules.codePostalContactRules"
                   maxlength="5"
                   required
                   @keyup.enter="validate()"
@@ -233,7 +233,7 @@
                   label="Ville"
                   placeholder="Ville"
                   v-model="villeContact"
-                  :rules="villeContactRules"
+                  :rules="this.rules.villeContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -262,7 +262,7 @@
                   placeholder="Téléphone"
                   v-model="telContact"
                   maxlength="10"
-                  :rules="telContactRules"
+                  :rules="this.rules.telContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -276,7 +276,7 @@
                   label="Adresse e-mail"
                   placeholder="Adresse e-mail"
                   v-model="emailContact"
-                  :rules="emailContactRules"
+                  :rules="this.rules.emailContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -291,7 +291,9 @@
                   placeholder="Confirmez votre adresse e-mail"
                   v-model="confirmEmailContact"
                   :rules="
-                    confirmEmailContactRules.concat(confirmEmailContactRule)
+                    this.rules.confirmEmailContactRules.concat(
+                      confirmEmailContactRule
+                    )
                   "
                   required
                   @keyup.enter="validate()"
@@ -312,7 +314,7 @@
                   label="Mot de passe"
                   placeholder="Mot de passe"
                   v-model="passContact"
-                  :rules="passContactRules"
+                  :rules="this.rules.passwordRules"
                   :type="show1 ? 'text' : 'password'"
                   required
                   @keyup.enter="validate()"
@@ -330,7 +332,9 @@
                   placeholder="Confirmez votre mot de passe"
                   v-model="confirmPassContact"
                   :rules="
-                    confirmPassContactRules.concat(confirmPassContactRule)
+                    this.rules.confirmPassContactRules.concat(
+                      confirmPassContactRule
+                    )
                   "
                   :type="show1 ? 'text' : 'password'"
                   required
@@ -344,7 +348,7 @@
               <v-col cols="10">
                 <v-checkbox
                   required
-                  :rules="checkboxRules"
+                  :rules="this.rules.checkboxRules"
                   label="J'accepte les conditions générales liées à la politique de
                 confidentialité*"
                 ></v-checkbox>
@@ -394,108 +398,35 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import { HttpRequestError } from "@/exception/HttpRequestError";
 import { serviceGouv } from "@/service/data.gouv/DataGouvApiService";
 import { SirenNotFoundError } from "@/service/data.gouv/SirenNotFoundError";
+import { rulesForm } from "@/service/RulesForm";
 
 @Component
 export default class FormCreationCompte extends Vue {
+  rules = new rulesForm();
   show1: boolean = false;
   isValid: Promise<boolean> = this.$recaptchaLoaded();
   token: string = "";
   nomEtab: string = "";
-  nomEtabRules = [
-    (v: string) => !!v || "Le nom de l'établissement est obligatoire",
-    (v: string) => v.length >= 5 || "Minimum 5 caractères",
-    (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]){5,80}$/.test(v) ||
-      "Le nom d'établissement fourni n'est pas valide"
-  ];
   sirenEtab: string = "";
-  sirenEtabRules = [
-    (v: string) => !!v || "SIREN obligatoire",
-    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-  ];
-
   typesEtab: Array<string> = [];
-
   typeEtab: string = "";
-  typeEtabRules = [
-    (v: string) => !!v || "Le type de l'établissement est obligatoire"
-  ];
-
   nomContact: string = "";
-  nomContactRules = [
-    (v: string) => !!v || "Le nom du contact est obligatoire",
-    (v: string) =>
-      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-        v
-      ) || "Le nom fourni n'est pas valide"
-  ];
   prenomContact: string = "";
-  prenomContactRules = [
-    (v: string) => !!v || "Le prénom du contact est obligatoire",
-    (v: string) =>
-      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-        v
-      ) || "Le prénom fourni n'est pas valide"
-  ];
   adresseContact: string = "";
-  adresseContactRules = [
-    (v: string) =>
-      !!v || "L'adresse postale de l'établissement est obligatoire",
-    (v: string) => v.length >= 5 || "Minimum 5 caractères",
-    (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-      "L'adresse postale fournie n'est pas valide"
-  ];
   boitePostaleContact: string = "";
   codePostalContact: string = "";
-  codePostalContactRules = [
-    (v: string) => !!v || "Le code postal de l'établissement est obligatoire",
-    (v: string) => /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
-  ];
   villeContact: string = "";
-  villeContactRules = [
-    (v: string) => !!v || "La ville de l'établissement est obligatoire",
-    (v: string) =>
-      /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(v) ||
-      "La ville fournie n'est pas valide"
-  ];
   cedexContact: string = "";
   telContact: string = "";
-  telContactRules = [
-    (v: string) => !!v || "Le téléphone du contact est obligatoire",
-    (v: string) =>
-      /^\d{10}$/.test(v) || "Veuillez entrer 10 chiffres sans espace"
-  ];
   emailContact: string = "";
-  emailContactRules = [
-    (v: string) => !!v || "L'adresse mail du contact est obligatoire",
-    (v: string) =>
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        v
-      ) || "L'adresse mail fournie n'est pas valide"
-  ];
   confirmEmailContact: string = "";
-  confirmEmailContactRules = [
-    (v: string) => !!v || "Vous devez confirmer l'adresse mail du contact"
-  ];
   passContact: string = "";
-  passContactRules = [
-    (v: string) => !!v || "Le mot de passe du contact est obligatoire",
-    (v: string) => v.length >= 5 || "Minimum 8 caractères",
-    (v: string) =>
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-        v
-      ) || "Le mot de passe fourni n'est pas valide"
-  ];
   confirmPassContact: string = "";
-  confirmPassContactRules = [
-    (v: string) => !!v || "Vous devez confirmer le mot de passe du contact"
-  ];
   checkSirenAPI: string = "En attente de vérification";
   checkSirenColor: string = "grey";
   buttonLoading: boolean = false;
@@ -503,7 +434,6 @@ export default class FormCreationCompte extends Vue {
   error: string = "";
   dialog: boolean = false;
   dialogAvailable: boolean = false;
-  checkboxRules = [(v: boolean) => !!v || "Veuillez accepter avant de valider"];
 
   get confirmEmailContactRule() {
     return () =>

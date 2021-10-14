@@ -28,7 +28,7 @@
                 placeholder="SIREN"
                 maxlength="9"
                 v-model="siren"
-                :rules="loginRules"
+                :rules="this.rules.loginRules"
                 append-icon="mdi-information"
                 required
                 @keyup="validate()"
@@ -63,7 +63,7 @@
                 :type="show ? 'text' : 'password'"
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="password"
-                :rules="passwordRules"
+                :rules="this.rules.passwordObligatoryRules"
                 required
                 @click:append="show = !show"
                 @keyup="validate()"
@@ -104,15 +104,12 @@
 import { Component, Vue } from "vue-property-decorator";
 import { HttpRequestError } from "@/exception/HttpRequestError";
 import { Logger } from "@/utils/Logger";
+import { rulesForm } from "@/service/RulesForm";
 
 @Component
 export default class FormLogin extends Vue {
+  rules = new rulesForm();
   siren: string = "";
-  loginRules = [
-    (v: string) => !!v || "SIREN obligatoire",
-    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-  ];
-  passwordRules = [(v: string) => !!v || "Mot de passe obligatoire"];
   password: string = "";
   buttonLoading: boolean = false;
   isValid: boolean = false;
@@ -126,14 +123,10 @@ export default class FormLogin extends Vue {
     this.alert = false;
     this.error = "";
 
-    if (
+    this.isValid = !!(
       (this.$refs.login as Vue & { valid: () => boolean }).valid &&
       (this.$refs.password as Vue & { valid: () => boolean }).valid
-    ) {
-      this.isValid = true;
-    } else {
-      this.isValid = false;
-    }
+    );
   }
 
   login(): void {

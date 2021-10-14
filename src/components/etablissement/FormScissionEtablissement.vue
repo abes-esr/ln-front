@@ -82,7 +82,7 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import FormEtab from "@/components/etablissement/FormEtab.vue";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import { Component, Vue } from "vue-property-decorator";
 
@@ -91,10 +91,6 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class FormScissionEtablissement extends Vue {
   sirenEtab: string = "";
-  sirenEtabRules = [
-    (v: string) => !!v || "SIREN obligatoire",
-    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-  ];
   bus: Vue = new Vue();
   etablissementNumber: number = 2;
   etablissementDTOS: Array<string> = [];

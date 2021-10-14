@@ -20,7 +20,7 @@
                   label="SIREN"
                   placeholder="SIREN"
                   v-model="siren"
-                  :rules="sirenRules"
+                  :rules="this.rules.sirenEtabRules"
                   required
                   @keyup.enter="validate()"
                   :disabled="!sirenRadio"
@@ -42,7 +42,7 @@
                   placeholder="Adresse mail de contact"
                   type="mail"
                   v-model="mail"
-                  :rules="mailRules"
+                  :rules="this.rules.emailContactRules"
                   required
                   @keyup.enter="validate()"
                   :disabled="sirenRadio"
@@ -85,32 +85,22 @@
 </template>
 
 <script lang="ts">
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { HttpRequestError } from "@/exception/HttpRequestError";
+import { rulesForm } from "@/service/RulesForm";
 
 @Component
 export default class ForgotPassword extends Vue {
+  rules = new rulesForm();
   siren: string = "";
   isTokenValid: Promise<boolean> = this.$recaptchaLoaded();
   token: string = "";
-  sirenRules = [
-    (v: string) => !!v || "SIREN obligatoire",
-    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-  ];
-  mailRules = [
-    (v: string) => !!v || "Adresse mail obligatoire",
-    (v: string) =>
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        v
-      ) || "Adresse mail invalide"
-  ];
   mail: string = "";
   sirenRadio: boolean = true;
   buttonLoading: boolean = false;
   alert: boolean = false;
-  alertOK: boolean = false;
   retourKo: boolean = false;
   message: string = "";
 
