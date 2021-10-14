@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import FormCreationCompte from "../components/login/FormCreationCompte.vue";
+import FormCreationCompte from "../components/etablissement/FormCreationCompte.vue";
 
 @Component({
   components: { FormCreationCompte }

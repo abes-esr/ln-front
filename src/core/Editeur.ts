@@ -1,10 +1,10 @@
-import ContactEditeur from "@/components/ContactEditeur";
+import ContactEditeur from "@/core/ContactEditeur";
 import { ValueError } from "@/exception/ValueError";
 
 export class Editeur {
   id: number = -999;
   nom: string = "";
-  identifiantBis: number = -999;
+  identifiantBis: number = 9999;
   dateCreation: Date = new Date();
   groupesEtabRelies: Array<string> = [];
   adresse: string = "";
@@ -24,7 +24,7 @@ export class Editeur {
   }
 
   removeContact(item: ContactEditeur): void {
-    const index = this.contacts.findIndex(x => x.id === item.id);
+    const index = this.contacts.findIndex(x => (x.id === item.id && x.nom === item.nom));
     if (index == -1) {
       throw new ValueError("Contact " + item + " not found");
     }

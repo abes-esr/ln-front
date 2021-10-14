@@ -1,5 +1,14 @@
 <template>
-  <div>
+  <v-navigation-drawer
+      v-if="displayMenu"
+      app
+      clipped
+      styles="width:30wv"
+      flat
+      hide-overlay
+      permanent
+      :visible="displayMenu"
+  >
     <v-list dense rounded color="transparent">
       <v-col cols="1" sm="1"></v-col>
       <v-col cols="1" sm="1">
@@ -137,18 +146,17 @@
         </v-row>
       </v-col>
     </v-list>
-  </div>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import {Component, Prop, Vue} from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 
 @Component
 export default class SideMenu extends Vue {
-  get isAdmin() {
-    return this.$store.getters.isAdmin();
-  }
+  @Prop() displayMenu!: boolean;
+  @Prop() isAdmin!: boolean;
 
   saveTheme(): void {
     this.$store.dispatch("changeTheme").catch(err => {

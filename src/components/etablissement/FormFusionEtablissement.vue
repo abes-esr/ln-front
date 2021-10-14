@@ -71,7 +71,7 @@
 import FormEtab from "@/components/etablissement/FormEtab.vue";
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import { etablissementService } from "@/service/licencesnationales/EtablissementService";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 
 @Component({
   components: { FormEtab }

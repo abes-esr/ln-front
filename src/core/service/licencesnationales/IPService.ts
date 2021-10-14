@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { LicencesNationalesApiService } from "@/service/licencesnationales/LicencesNationalesApiService";
+import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 
 export class IPService extends LicencesNationalesApiService {
   getListIP(token: string, siren): Promise<AxiosResponse> {

@@ -117,7 +117,7 @@ import {
   TypeIpChangeEvent
 } from "@/main";
 import { Logger } from "@/utils/Logger";
-import { iPService } from "@/service/licencesnationales/IPService";
+import { iPService } from "@/core/service/licencesnationales/IPService";
 
 @Component({
   components: { ModuleSegmentsIpPlage }

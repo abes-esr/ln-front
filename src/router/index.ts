@@ -3,8 +3,8 @@ import store from "../store/index";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
-import { Action } from "@/components/CommonDefinition";
-import Editeur from "@/components/Editeur";
+import { Action } from "@/core/CommonDefinition";
+import Editeur from "@/core/Editeur";
 
 Vue.use(VueRouter);
 
@@ -114,19 +114,19 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/CreationCompte.vue")
   },
   {
-    path: "/listeEditeurs",
-    name: "ListeEditeurs",
-    component: () => import("../components/editeur/ListeEditeurs.vue")
-  },
-  {
     path: "/donneespersonnelles",
     name: "DonneesPersonnelles",
     component: () => import("../views/DonneesPersonnelles.vue")
   },
   {
+    path: "/listeEditeurs",
+    name: "ListeEditeurs",
+    component: () => import("../components/editeur/ListeEditeurs.vue")
+  },
+  {
     path: "/nouvelEditeur",
     name: "NouvelEditeur",
-    component: () => import("../components/editeur/ComposantEditeur.vue"),
+    component: () => import("../components/editeur/FormEditeur.vue"),
     props: { action: Action.CREATION },
     meta: {
       requiresAuth: true
@@ -135,7 +135,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/modifierEditeur",
     name: "ModifierEditeur",
-    component: () => import("../components/editeur/ComposantEditeur.vue"),
+    component: () => import("../components/editeur/FormEditeur.vue"),
     props: { action: Action.MODIFICATION },
     meta: {
       requiresAuth: true

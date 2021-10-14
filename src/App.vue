@@ -1,16 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-      clipped
-      :permanent="!$vuetify.breakpoint.xsOnly"
-      hide-overlay
-      flat
-      width="15vw"
-    >
-      <side-menu></side-menu>
-    </v-navigation-drawer>
+    <side-menu :display-menu="isLoggedIn" :is-admin="isAdmin"></side-menu>
     <v-app-bar
       color="primary"
       clipped-left
@@ -39,14 +29,15 @@
       <v-toolbar-title
         id="titleBar"
         v-on:click="$router.push({ name: 'Home' }).catch(err => {})"
-        ><v-img
+      >
+        <v-img
           alt="Logo licences nationales"
           src="@/assets/img/logo.svg"
           target="_blank"
           max-width="300px"
           style="margin-left: 1em; margin-top: 0.5em"
-        ></v-img
-      ></v-toolbar-title>
+        ></v-img>
+      </v-toolbar-title>
     </v-app-bar>
     <v-main>
       <transition name="fade">
@@ -61,7 +52,7 @@
 <script lang="ts">
 import Vue from "vue";
 import SideMenu from "./components/SideMenu.vue";
-import { Component } from "vue-property-decorator";
+import {Component} from "vue-property-decorator";
 
 @Component({
   components: { SideMenu }
@@ -75,6 +66,10 @@ export default class App extends Vue {
 
   get isLoggedIn(): boolean {
     return this.$store.getters.isLoggedIn();
+  }
+
+  get isAdmin(): boolean {
+    return this.$store.getters.isAdmin();
   }
 
   mounted() {

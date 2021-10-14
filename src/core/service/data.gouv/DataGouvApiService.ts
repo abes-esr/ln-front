@@ -1,7 +1,7 @@
-import AxiosClient from "../../utils/AxiosClient";
-import { JsonCheckSirenResponse } from "@/service/data.gouv/DataGouvJsonDefinition";
-import { SirenNotFoundError } from "@/service/data.gouv/exception/SirenNotFoundError";
-import { DataGouvApiError } from "@/service/data.gouv/exception/DataGouvApiError";
+import AxiosClient from "../../../utils/AxiosClient";
+import { JsonCheckSirenResponse } from "@/core/service/data.gouv/DataGouvJsonDefinition";
+import { SirenNotFoundError } from "@/core/service/data.gouv/exception/SirenNotFoundError";
+import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApiError";
 
 export class DataGouvApiService {
   // Client HTTP

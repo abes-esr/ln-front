@@ -160,7 +160,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import { etablissementService } from "@/service/licencesnationales/EtablissementService";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 
 @Component
 export default class FormEtab extends Vue {

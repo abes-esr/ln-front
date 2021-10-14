@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosResponse} from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 /**
  * Représente un client Axios pour envoyer et recevoir des requêtes HTTP avec
@@ -67,7 +67,7 @@ class AxiosClient {
    * @param url URL de la requête HTTP
    * @param token Token Bearer à ajouter à l'entête
    */
-  get(url: string, token?: string, param?:any): Promise<AxiosResponse> {
+  get(url: string, token?: string, param?: any): Promise<AxiosResponse> {
     // Si un token est renseigné, on le rajoute à l'entête
     let config;
     if (token) {
@@ -77,7 +77,6 @@ class AxiosClient {
         },
         params: param,
         timeout: 1000 * 10
-
       };
     } else {
       config = {

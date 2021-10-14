@@ -266,8 +266,8 @@ import {
   TypeIpChangeEvent
 } from "@/main";
 import { Logger } from "@/utils/Logger";
-import { SegmentPlage } from "@/components/CommonDefinition";
-import { iPService } from "@/service/licencesnationales/IPService";
+import { SegmentPlage } from "@/core/CommonDefinition";
+import { iPService } from "@/core/service/licencesnationales/IPService";
 
 @Component
 export default class ModuleSegmentsIpPlage extends Vue {
