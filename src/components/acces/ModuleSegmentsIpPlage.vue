@@ -265,9 +265,9 @@ import {
   IpChangeEvent,
   TypeIpChangeEvent
 } from "@/main";
-import { serviceLn } from "../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import { SegmentPlage } from "@/components/CommonDefinition";
+import { iPService } from "@/service/licencesnationales/IPService";
 
 @Component
 export default class ModuleSegmentsIpPlage extends Vue {
@@ -370,15 +370,15 @@ export default class ModuleSegmentsIpPlage extends Vue {
   commentaires: string = "";
 
   get sirenEtabSiAdmin() {
-    return this.$store.state.sirenEtabSiAdmin;
+    return this.$store.getters.sirenEtabSiAdmin();
   }
   get getUserSiren() {
-    if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
-    else return this.$store.state.user.siren;
+    if (this.isAdmin === "true") return this.$store.getters.sirenEtabSiAdmin();
+    else return this.$store.getters.userSiren();
   }
   get isAdmin() {
-    Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
-    return this.$store.state.user.isAdmin;
+    Logger.debug("isAdmin = " + this.$store.getters.isAdmin());
+    return this.$store.getters.isAdmin();
   }
   get resultatIp() {
     let value = "";
@@ -484,10 +484,10 @@ export default class ModuleSegmentsIpPlage extends Vue {
   fetchIp(): void {
     Logger.debug("id = " + this.id);
     Logger.debug("siren = " + this.getUserSiren);
-    serviceLn
-      .getIPInfos(this.$store.getters.token, {
+    iPService
+      .getIPInfos(this.$store.getters.getToken(), {
         id: this.id,
-        siren: this.$store.state.user.siren
+        siren: this.$store.getters.userSiren()
       })
       .then(result => {
         this.id = result.data.id;

@@ -160,7 +160,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
+import { etablissementService } from "@/service/licencesnationales/EtablissementService";
 
 @Component
 export default class FormEtab extends Vue {
@@ -289,7 +289,7 @@ export default class FormEtab extends Vue {
   }
 
   fetchListeType(): void {
-    serviceLn.listeType().then(result => {
+    etablissementService.listeType().then(result => {
       result.data.forEach(element => {
         this.typesEtab.push(element.libelle);
       });

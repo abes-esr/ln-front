@@ -113,9 +113,9 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
+import { iPService } from "@/service/licencesnationales/IPService";
 
 const ListeAccesProps = Vue.extend({
   props: {
@@ -172,8 +172,8 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   get isAdmin() {
-    Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
-    return this.$store.state.user.isAdmin;
+    Logger.debug("isAdmin = " + this.$store.getters.isAdmin());
+    return this.$store.getters.isAdmin();
   }
 
   // pour éviter l'erreur this.qch doesn not exist on ...
@@ -211,12 +211,15 @@ export default class ListeAcces extends ListeAccesProps {
 
   getAll() {
     if (this.isAdmin === "true")
-      return serviceLn.getListIPEtab(
-        this.$store.getters.token,
+      return iPService.getListIPEtab(
+        this.$store.getters.getToken(),
         this.sirenEtabSiAdmin
       );
     else
-      return serviceLn.getListIP(this.$store.getters.token, this.getUserSiren);
+      return iPService.getListIP(
+        this.$store.getters.getToken(),
+        this.getUserSiren
+      );
   }
 
   collecterAcces(): void {
@@ -260,15 +263,15 @@ export default class ListeAcces extends ListeAccesProps {
 
   supprimerAcces(id): void {
     Logger.debug("id = " + id);
-    serviceLn
-      .deleteIP(this.$store.getters.token,id)
+    iPService
+      .deleteIP(this.$store.getters.getToken(), id)
       .then(response => {
         this.refreshList();
         Logger.debug("notification = " + response.data);
         this.$store.dispatch("setNotification", response.data).catch(err => {
           Logger.error(err);
         });
-        Logger.debug("notification = " + this.$store.state.notification);
+        Logger.debug("notification = " + this.$store.getters.notification());
       })
       .catch(err => {
         this.error = err.response.data;

@@ -110,14 +110,14 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
-import ModuleSegmentsIpPlage from "@/components/ModuleSegmentsIpPlage.vue";
+import ModuleSegmentsIpPlage from "@/components/acces/ModuleSegmentsIpPlage.vue";
 import {
   GetTypeIpFromModifierAccesEvent,
   IpChangeEvent,
   TypeIpChangeEvent
 } from "@/main";
 import { Logger } from "@/utils/Logger";
+import { iPService } from "@/service/licencesnationales/IPService";
 
 @Component({
   components: { ModuleSegmentsIpPlage }
@@ -149,15 +149,15 @@ export default class ModifierAcces extends Vue {
   buttonLoading: boolean = false;
 
   get sirenEtabSiAdmin() {
-    return this.$store.state.sirenEtabSiAdmin;
+    return this.$store.getters.sirenEtabSiAdmin();
   }
   get getUserSiren() {
-    if (this.isAdmin === "true") return this.$store.state.sirenEtabSiAdmin;
-    else return this.$store.state.user.siren;
+    if (this.isAdmin === "true") return this.$store.getters.sirenEtabSiAdmin();
+    else return this.$store.getters.userSiren();
   }
   get isAdmin() {
-    Logger.debug("isAdmin = " + this.$store.state.user.isAdmin);
-    return this.$store.state.user.isAdmin;
+    Logger.debug("isAdmin = " + this.$store.getters.isAdmin());
+    return this.$store.getters.isAdmin();
   }
 
   mounted() {
@@ -206,10 +206,10 @@ export default class ModifierAcces extends Vue {
   fetchIp(): void {
     Logger.debug("id = " + this.id);
     Logger.debug("siren = " + this.getUserSiren);
-    serviceLn
-      .getIPInfos(this.$store.getters.token, {
+    iPService
+      .getIPInfos(this.$store.getters.getToken(), {
         id: this.id,
-        siren: this.$store.state.user.siren
+        siren: this.$store.getters.userSiren()
       })
       .then(result => {
         this.id = result.data.id;
@@ -256,10 +256,10 @@ export default class ModifierAcces extends Vue {
   submitAcces(): void {
     this.updateJsonObject();
     Logger.debug(JSON.stringify(this.jsonResponse));
-    serviceLn
+    iPService
       .addIP(
-        this.$store.getters.token,
-        this.$store.state.user.siren,
+        this.$store.getters.getToken(),
+        this.getUrl(this.typeIp),
         this.jsonResponse
       )
       .then(response => {
@@ -268,7 +268,7 @@ export default class ModifierAcces extends Vue {
         this.$store.dispatch("setNotification", response.data).catch(err => {
           Logger.error(err);
         });
-        Logger.debug("notification = " + this.$store.state.notification);
+        Logger.debug("notification = " + this.$store.getters.notification());
         this.$router.push({ path: "/listeAcces" });
       })
       .catch(err => {

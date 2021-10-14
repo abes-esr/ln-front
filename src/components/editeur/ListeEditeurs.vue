@@ -14,7 +14,7 @@
                       <v-data-table
                         dense
                         :headers="headers"
-                        :items="getEditeurs"
+                        :items="editeurs"
                         :items-per-page="10"
                         class="elevation-1"
                         :search="rechercher"
@@ -41,10 +41,10 @@
                           <v-icon
                             small
                             class="mr-2"
-                            @click="modifierEditeur(item.id)"
+                            @click="modifierEditeur(item)"
                             >mdi-pencil</v-icon
                           >
-                          <v-icon small @click="supprimerEditeur(item.id)"
+                          <v-icon small @click="supprimerEditeur(item)"
                             >mdi-delete</v-icon
                           >
                         </template>
@@ -53,17 +53,9 @@
                   </v-row>
                   <v-row>
                     <v-col cols="12" sm="7"></v-col>
-                    <v-col cols="12" sm="2">
-                      <!--                      <v-btn
-                        @click="$router.push({ path: '/ajouterEtab' })"
-                        color="warning"
-                        ><br />Ajouter un établissement</v-btn
-                      >-->
-                    </v-col>
+                    <v-col cols="12" sm="2"> </v-col>
                     <v-col cols="12" sm="3">
-                      <v-btn
-                        @click="$router.push({ path: '/nouvelEditeur' })"
-                        color="warning"
+                      <v-btn @click="ajouterEditeur()" color="warning"
                         ><br />Nouvel éditeur</v-btn
                       >
                     </v-col>
@@ -87,15 +79,17 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
-import { Editeur } from "@/components/CommonDefinition";
+import Editeur from "@/components/Editeur";
+import { Action } from "@/components/CommonDefinition";
+import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { editeurService } from "@/service/licencesnationales/EditeurService";
 
 @Component
 export default class ListeEditeurs extends Vue {
   rechercher: string = "";
-  editeur: string = "";
+  editeurs: Array<Editeur> = [];
   title: string = "";
   id: string = "";
   error: string = "";
@@ -112,73 +106,79 @@ export default class ListeEditeurs extends Vue {
   ];
 
   get notification() {
-    return this.$store.getters.notification;
-  }
-  get getUserSiren() {
-    return this.$store.getters.userSiren;
-  }
-  get getEditeurs(): string {
-    return this.editeur;
+    return this.$store.getters.notification();
   }
 
   mounted() {
     moment.locale("fr");
-    this.collecterEditeurs();
-    this.id = this.getIdEditeur(this.editeur);
+    this.fetchEditeurs();
+    this.id = this.getIdEditeur(this.editeurs);
   }
 
   getIdEditeur(editeur): string {
     return editeur.id;
   }
-  getAll(): any {
-    return serviceLn.getEditeurs(this.$store.getters.token);
-  }
-  collecterEditeurs(): void {
-    this.getAll()
-      .then(response => {
-        this.editeur = response.data.map(this.affichageEditeurs);
-        Logger.debug(response.data);
-      })
-      .catch(e => {
-        Logger.error(e);
-      });
-  }
-  affichageEditeurs(editeur): Editeur {
-    return {
-      id: editeur.id,
-      dateCreation: moment(editeur.dateCreation).format("L"),
-      nomEditeur: editeur.nomEditeur
-    };
-  }
-  listeAcces(siren): void {
-    this.$store.dispatch("setSirenEtabSiAdmin", siren).catch(err => {
-      Logger.error(err);
-    });
-    this.$router.push({
-      name: "ListeAcces"
-    });
-  }
-  supprimerEditeur(id): void {
-    serviceLn
-      .deleteEditeur(this.$store.getters.token, id)
-      .then(response => {
-        this.refreshList();
-        Logger.debug("notification = " + response.data);
-        this.$store.dispatch("setNotification", response.data).catch(err => {
-          Logger.error(err);
-        });
+
+  fetchEditeurs(): void {
+    this.alert = false;
+
+    editeurService
+      .getEditeurs(this.$store.getters.getToken())
+      .then(res => {
+        this.editeurs = res;
       })
       .catch(err => {
-        this.error = err.response.data;
+        this.alert = true;
+        Logger.error(err.toString());
+        if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
+        } else {
+          this.error = "Impossible de charger les éditeurs : " + err.message;
+        }
+      });
+  }
+
+  ajouterEditeur(): void {
+    this.alert = false;
+    this.$store
+      .dispatch("setCurrentEditeur", new Editeur())
+      .then(() => {
+        this.$router.push({ name: "NouvelEditeur" });
+      })
+      .catch(err => {
+        Logger.error(err);
+        this.error = "Impossible de créer un nouvel éditeur : " + err.message;
         this.alert = true;
       });
   }
-  refreshList(): void {
-    this.collecterEditeurs();
+
+  modifierEditeur(item: Editeur): void {
+    this.alert = false;
+    this.$store
+      .dispatch("setCurrentEditeur", item)
+      .then(() => {
+        this.$router.push({ name: "ModifierEditeur" });
+      })
+      .catch(err => {
+        Logger.error(err);
+        this.error = "Impossible de modifier cet éditeur : " + err.message;
+        this.alert = true;
+      });
   }
 
-  modifierEditeur(id): void {
-    this.$router.push({ name: "ModifierEditeur", params: { id: id } });
+  supprimerEditeur(item: Editeur): void {
+    this.alert = false;
+
+    editeurService
+      .deleteEditeur(item.id, this.$store.getters.getToken())
+      .then(response => {
+        this.fetchEditeurs();
+      })
+      .catch(err => {
+        Logger.error(err);
+        this.error = "Impossible de supprimer cet éditeur : " + err.message;
+        this.alert = true;
+      });
   }
 }
 </script>

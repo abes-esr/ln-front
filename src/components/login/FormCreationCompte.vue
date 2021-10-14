@@ -394,11 +394,12 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
-import { HttpRequestError } from "@/exception/HttpRequestError";
 import { serviceGouv } from "@/service/data.gouv/DataGouvApiService";
-import { SirenNotFoundError } from "@/service/data.gouv/SirenNotFoundError";
+import { SirenNotFoundError } from "@/service/data.gouv/exception/SirenNotFoundError";
+import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { DataGouvApiError } from "@/service/data.gouv/exception/DataGouvApiError";
+import { etablissementService } from "@/service/licencesnationales/EtablissementService";
 
 @Component
 export default class FormCreationCompte extends Vue {
@@ -534,14 +535,14 @@ export default class FormCreationCompte extends Vue {
 
     // Execute reCAPTCHA with action "creationCompte".
     this.token = await this.$recaptcha("creationCompte");
-    Logger.debug("token dans recaptcha() " + this.token);
-    // Do stuff with the received token.
+    Logger.debug("getToken dans recaptcha() " + this.token);
+    // Do stuff with the received getToken.
     this.validate();
   }
 
   //si on veut faire la verif du score sur le front et pas le back on peut faire comme ceci :
-  /*isHuman(token: any) {
-      const endpoint = `${process.env.VUE_APP_RECAPTCHA_VERIFY_URL}?response=${token}&secret=${process.env.VUE_APP_RECAPTCHA_KEY_SITE}`;
+  /*isHuman(getToken: any) {
+      const endpoint = `${process.env.VUE_APP_RECAPTCHA_VERIFY_URL}?response=${getToken}&secret=${process.env.VUE_APP_RECAPTCHA_KEY_SITE}`;
       Logger.debug(
         "requete axios = " +
           axios
@@ -577,7 +578,9 @@ export default class FormCreationCompte extends Vue {
 
   creationCompte(): void {
     this.buttonLoading = true;
-    serviceLn
+    this.alert = false;
+
+    etablissementService
       .creationCompte({
         nom: this.nomEtab,
         siren: this.sirenEtab,
@@ -606,10 +609,10 @@ export default class FormCreationCompte extends Vue {
         this.$store.dispatch("setCreationCompteEffectueeTrue").catch(err => {
           Logger.error(err);
         });
-        Logger.debug("notification = " + this.$store.state.notification);
+        Logger.debug("notification = " + this.$store.getters.notification());
         Logger.debug(
           "creationCompteEffectuee = " +
-            this.$store.state.creationCompteEffectuee
+            this.$store.getters.creationCompteEffectuee()
         );
         this.$router.push({ path: "/login" });
       })
@@ -617,14 +620,14 @@ export default class FormCreationCompte extends Vue {
         this.buttonLoading = false;
         this.alert = true;
 
-        if (err instanceof HttpRequestError) {
-          Logger.error(
-            "Erreur HTTP : " + err.error + " sur la route " + err.path
-          );
-          this.error = "Erreur de requête : " + err.error;
+        if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          this.error =
+            "Vous n'êtes pas autorisé à effectuer cette opération.: " +
+            err.message;
+          Logger.error(err.toString());
         } else {
-          Logger.error(err.message);
-          this.error = err.message;
+          Logger.error(err.toString());
+          this.error = "Impossible d'exécuter l'action : " + err.message;
         }
       });
   }
@@ -644,12 +647,13 @@ export default class FormCreationCompte extends Vue {
           this.checkSirenColor = "green";
         })
         .catch(err => {
-          if (err instanceof HttpRequestError) {
+          Logger.error(err);
+          if (err instanceof SirenNotFoundError) {
+            this.checkSirenAPI = "inconnu";
+            this.checkSirenColor = "red";
+          } else if (err instanceof DataGouvApiError) {
             this.checkSirenAPI =
               "Impossible de contacter le service de vérification du numéro SIREN";
-            this.checkSirenColor = "red";
-          } else if (err instanceof SirenNotFoundError) {
-            this.checkSirenAPI = "inconnu";
             this.checkSirenColor = "red";
           } else {
             this.checkSirenAPI = "Erreur interne : " + err.message;
@@ -663,7 +667,7 @@ export default class FormCreationCompte extends Vue {
   }
 
   fetchListeType(): void {
-    serviceLn.listeType().then(result => {
+    etablissementService.listeType().then(result => {
       result.data.forEach(element => {
         this.typesEtab.push(element.libelle);
       });

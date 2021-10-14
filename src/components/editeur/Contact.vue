@@ -1,14 +1,21 @@
 <template>
   <div>
     <v-form ref="form" lazy-validation>
-      <v-card-title>Contact commercial</v-card-title>
+      <v-radio-group v-model="contact.type">
+        <v-radio
+          v-for="type in typeContactCandidates"
+          :key="type"
+          :label="`Contact ${typeContactCandidatesLabel[type]}`"
+          :value="type"
+        ></v-radio>
+      </v-radio-group>
 
       <v-text-field
         outlined
         label="Nom"
         placeholder="Nom"
-        v-model="nomContactCommercial"
-        :rules="nomContactCommercialRules"
+        v-model="contact.nom"
+        :rules="nomContactRules"
         required
         @keyup.enter="validate()"
       ></v-text-field>
@@ -16,8 +23,8 @@
         outlined
         label="Prénom"
         placeholder="Prénom"
-        v-model="prenomContactCommercial"
-        :rules="prenomContactCommercialRules"
+        v-model="contact.prenom"
+        :rules="prenomContactRules"
         required
         @keyup.enter="validate()"
       ></v-text-field>
@@ -25,69 +32,74 @@
         outlined
         label="Adresse e-mail"
         placeholder="Adresse e-mail"
-        v-model="emailContactCommercial"
-        :rules="emailContactCommercialRules"
+        v-model="contact.mail"
+        :rules="emailContactRules"
         required
         @keyup.enter="validate()"
       ></v-text-field>
+      <v-btn class="mx-2" fab dark x-small color="red" @click="remove()">
+        <v-icon dark>
+          mdi-minus
+        </v-icon>
+      </v-btn>
     </v-form>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { AjouterContactsEditeurEvent } from "@/main";
-import { Logger } from "@/utils/Logger";
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { ContactType } from "@/components/CommonDefinition";
+import ContactEditeur from "@/components/ContactEditeur";
 
 @Component
-export default class ModuleContactCommercial extends Vue {
-  nomContactCommercial: string = "";
-  nomContactCommercialRules = [
+export default class Contact extends Vue {
+  @Prop() contact!: ContactEditeur;
+  nomContactRules = [
     (v: string) => !!v || "Le nom du contact est obligatoire",
     (v: string) =>
       /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
         v
       ) || "Le nom fourni n'est pas valide"
   ];
-  prenomContactCommercial: string = "";
-  prenomContactCommercialRules = [
+  prenomContactRules = [
     (v: any) => !!v || "Le prénom du contact est obligatoire",
     (v: any) =>
       /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
         v
       ) || "Le prénom fourni n'est pas valide"
   ];
-  emailContactCommercial: string = "";
-  emailContactCommercialRules = [
+  emailContactRules = [
     (v: any) => !!v || "L'adresse mail du contact est obligatoire",
     (v: any) =>
       /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||
       "L'adresse mail fournie n'est pas valide"
   ];
 
-  validAndSend(): void {
-    Logger.debug("Validation");
-    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-      this.$emit("FormModuleContactCommercialEvent", {
-        nomContactCommercial: this.nomContactCommercial,
-        prenomContactCommercial: this.prenomContactCommercial,
-        mailContactCommercial: this.emailContactCommercial
-      });
+  typeContactCandidates: Array<ContactType> = [
+    ContactType.TECHNIQUE,
+    ContactType.COMMERCIAL
+  ];
+  typeContactCandidatesLabel: Array<string> = [];
+
+  constructor() {
+    super();
+    for (const type in this.typeContactCandidates) {
+      this.typeContactCandidatesLabel.push(ContactType[type].toLowerCase());
     }
+  }
+
+  remove(): void {
+    this.$emit("onChange"); // On notifie le composant parent
+  }
+
+  validate(): boolean {
+    return (this.$refs.form as Vue & {
+      validate: () => boolean;
+    }).validate();
   }
 
   clear(): void {
     //(this.$refs.form as HTMLFormElement).reset();
-  }
-
-  mounted() {
-    AjouterContactsEditeurEvent.$on(
-      "ajouterContactsEditeurEvent",
-      this.validAndSend
-    );
-    AjouterContactsEditeurEvent.$on("clear", this.clear);
-    /*this.bus.$on("submit", this.validAndSend);
-    this.bus.$on("clear", this.clear);*/
   }
 }
 </script>

@@ -121,9 +121,9 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "../../service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
-import { HttpRequestError } from "@/exception/HttpRequestError";
+import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { authService } from "@/service/licencesnationales/AuthentificationService";
 
 @Component
 export default class FormReinitialisationPass extends Vue {
@@ -180,7 +180,8 @@ export default class FormReinitialisationPass extends Vue {
 
   get isTokenValid(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      serviceLn
+      this.alert = false;
+      authService
         .verifierValiditeToken({
           token: this.resetToken
         })
@@ -193,16 +194,15 @@ export default class FormReinitialisationPass extends Vue {
           this.alert = true;
           this.retourKo = true;
 
-          if (err instanceof HttpRequestError) {
-            Logger.error(
-              "Erreur HTTP : " + err.error + " sur la route " + err.path
-            );
-            this.message = "Erreur de requête : " + err.error;
+          if (err instanceof LicencesNationalesUnauthorizedApiError) {
+            this.message =
+              "Vous n'êtes pas autorisé à effectuer cette opération.: " +
+              err.message;
+            Logger.error(err.toString());
           } else {
-            Logger.error(err.message);
-            this.message = err.message;
+            Logger.error(err.toString());
+            this.message = "Impossible d'exécuter l'action : " + err.message;
           }
-
           reject(false);
         });
     });
@@ -214,8 +214,8 @@ export default class FormReinitialisationPass extends Vue {
 
     // Execute reCAPTCHA with action "reinitialisationPass".
     this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
-    Logger.debug("token dans recaptcha() " + this.tokenrecaptcha);
-    // Do stuff with the received token.
+    Logger.debug("getToken dans recaptcha() " + this.tokenrecaptcha);
+    // Do stuff with the received getToken.
     this.validate();
   }
 
@@ -237,7 +237,8 @@ export default class FormReinitialisationPass extends Vue {
 
   reinitialisationPass(): void {
     this.buttonLoading = true;
-    serviceLn
+    this.alert = false;
+    authService
       .reinitialiserMotDePasse({
         nouveauMotDePasse: this.passContact,
         recaptcha: this.tokenrecaptcha,
@@ -247,21 +248,23 @@ export default class FormReinitialisationPass extends Vue {
         this.buttonLoading = false;
         this.message = response.message;
         this.alert = true;
-        //this.$router.push({ name: "Home" });
+        setTimeout(() => {
+          this.$router.push({ name: "Login" });
+        }, 2000);
       })
       .catch(err => {
         this.buttonLoading = false;
         this.alert = true;
         this.retourKo = true;
 
-        Logger.error(err.message);
-        if (err instanceof HttpRequestError) {
-          Logger.debug(
-            "Erreur HTTP : " + err.error + " sur la route " + err.path
-          );
-          this.message = "Erreur de requête : " + err.error;
+        if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          this.message =
+            "Vous n'êtes pas autorisé à effectuer cette opération.: " +
+            err.message;
+          Logger.error(err.toString());
         } else {
-          this.message = err.message;
+          Logger.error(err.toString());
+          this.message = "Impossible d'exécuter l'action : " + err.message;
         }
       });
   }
