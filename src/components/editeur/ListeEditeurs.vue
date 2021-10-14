@@ -44,9 +44,41 @@
                             @click="modifierEditeur(item)"
                             >mdi-pencil</v-icon
                           >
-                          <v-icon small @click="supprimerEditeur(item)"
+                          <v-icon small @click="$set(confirmDeleteDialog, item.id, true)"
                             >mdi-delete</v-icon
                           >
+                          <v-dialog
+                              v-model="confirmDeleteDialog[item.id]"
+                              width="500"
+                              :key="item.id"
+                          >
+                            <v-card>
+                              <v-card-title class="text-h5">
+                                Confirmation de suppression
+                              </v-card-title>
+
+                              <v-card-text>
+                                Êtes-vous sûr de vouloir supprimer l'éditeur
+                                {{ item.nom }} ?
+                              </v-card-text>
+
+                              <v-divider></v-divider>
+
+                              <v-card-actions>
+                                <v-btn
+                                    color="primary"
+                                    text
+                                    @click="$set(confirmDeleteDialog, item.id, false)"
+                                >
+                                  Non
+                                </v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" text @click="supprimerEditeur(item)">
+                                  Oui
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
                         </template>
                       </v-data-table>
                     </v-col>
@@ -89,7 +121,7 @@ import { editeurService } from "@/service/licencesnationales/EditeurService";
 @Component
 export default class ListeEditeurs extends Vue {
   rechercher: string = "";
-  editeurs: Array<Editeur> = [];
+  editeurs: Array<Editeur> = [new Editeur()];
   title: string = "";
   id: string = "";
   error: string = "";
@@ -101,9 +133,10 @@ export default class ListeEditeurs extends Vue {
       value: "dateCreation",
       sortable: true
     },
-    { text: "Editeur", value: "nomEditeur", sortable: true },
+    { text: "Editeur", value: "nom", sortable: true },
     { text: "Action", value: "action", sortable: false }
   ];
+  confirmDeleteDialog: any = {};
 
   get notification() {
     return this.$store.getters.notification();
@@ -126,6 +159,7 @@ export default class ListeEditeurs extends Vue {
       .getEditeurs(this.$store.getters.getToken())
       .then(res => {
         this.editeurs = res;
+        this.editeurs.push(new Editeur())
       })
       .catch(err => {
         this.alert = true;
@@ -168,6 +202,7 @@ export default class ListeEditeurs extends Vue {
 
   supprimerEditeur(item: Editeur): void {
     this.alert = false;
+    this.$set(this.confirmDeleteDialog, item.id, false);
 
     editeurService
       .deleteEditeur(item.id, this.$store.getters.getToken())
