@@ -24,7 +24,7 @@ export class AuthentificationService extends LicencesNationalesApiService {
           user.token = response.accessToken;
           user.nameEtab = response.nameEtab;
           user.siren = response.userSiren;
-          user.isAdmin = response.isAdmin;
+          user.isAdmin = response.role==="admin"?true:false;
           user.isLoggedIn = true;
           resolve(user);
         })
