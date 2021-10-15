@@ -17,7 +17,7 @@
                       placeholder="Nom de l'établissement"
                       maxlength="80"
                       v-model="nomEtab"
-                      :rules="this.rules.nomEtabRules"
+                      :rules="rulesForms.nomEtabRules"
                       required
                       @keyup.enter="validate()"
                     ></v-text-field>
@@ -32,7 +32,7 @@
                       placeholder="SIREN"
                       maxlength="9"
                       v-model="sirenEtab"
-                      :rules="this.rules.sirenEtabRules"
+                      :rules="rulesForms.sirenEtabRules"
                       disabled
                     ></v-text-field>
                   </v-col>
@@ -69,7 +69,7 @@
                     label="Mail de contact"
                     placeholder="Mail de contact"
                     v-model="emailContact"
-                    :rules="this.rules.emailContactRules"
+                    :rules="rulesForms.emailContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -83,7 +83,7 @@
                     label="Nom"
                     placeholder="Nom"
                     v-model="nomContact"
-                    :rules="this.rules.nomContactRules"
+                    :rules="rulesForms.nomContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -97,7 +97,7 @@
                     label="Prénom"
                     placeholder="Prénom"
                     v-model="prenomContact"
-                    :rules="this.rules.prenomContactRules"
+                    :rules="rulesForms.prenomContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -112,7 +112,7 @@
                     placeholder="Téléphone"
                     maxlength="10"
                     v-model="telContact"
-                    :rules="this.rules.telContactRules"
+                    :rules="rulesForms.telContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -129,7 +129,7 @@
                     placeholder="Adresse"
                     maxlength="80"
                     v-model="adresseContact"
-                    :rules="this.rules.adresseContactRules"
+                    :rules="rulesForms.adresseContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -157,7 +157,7 @@
                     placeholder="Code Postal"
                     maxlength="5"
                     v-model="codePostalContact"
-                    :rules="this.rules.codePostalContactRules"
+                    :rules="rulesForms.codePostalContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -171,7 +171,7 @@
                     label="Ville"
                     placeholder="Ville"
                     v-model="villeContact"
-                    :rules="this.rules.villeContactRules"
+                    :rules="rulesForms.villeContactRules"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field>
@@ -219,7 +219,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
-import { rulesForm } from "@/service/RulesForm";
+import { rulesForms } from "@/core/RulesForm";
 
 //Si la modification est effectuée par un admin
 //On passe le SIREN du compte à modifier en Prop
@@ -235,7 +235,7 @@ const FormProfileProps = Vue.extend({
 
 @Component
 export default class FormProfile extends FormProfileProps {
-  rules = new rulesForm();
+  rulesForms: any = rulesForms;
   nomEtab: string = "";
 
   sirenEtab: string = "";

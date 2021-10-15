@@ -16,7 +16,7 @@
                     :type="show ? 'text' : 'password'"
                     :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                     v-model="oldPassword"
-                    :rules="this.rules.passwordObligatoryRules"
+                    :rules="rulesForms.passwordObligatoryRules"
                     required
                     @click:append="show = !show"
                     @keyup.enter="validate()"
@@ -28,7 +28,7 @@
                     :type="show ? 'text' : 'password'"
                     :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                     v-model="newPassword"
-                    :rules="this.rules.passwordRules"
+                    :rules="rulesForms.passwordRules"
                     required
                     @click:append="show = !show"
                     @keyup.enter="validate()"
@@ -84,11 +84,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { rulesForm } from "@/service/RulesForm";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class ChangePassword extends Vue {
-  rules = new rulesForm();
+
+  rulesForms: any = rulesForms;
   alert: boolean = false;
   show: boolean = false;
   message: string = "";

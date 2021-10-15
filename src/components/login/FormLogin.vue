@@ -28,7 +28,7 @@
                 placeholder="SIREN"
                 maxlength="9"
                 v-model="siren"
-                :rules="this.rules.loginRules"
+                :rules="rulesForms.loginRules"
                 append-icon="mdi-information"
                 required
                 @keyup="validate()"
@@ -63,7 +63,7 @@
                 :type="show ? 'text' : 'password'"
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="password"
-                :rules="this.rules.passwordObligatoryRules"
+                :rules="rulesForms.passwordObligatoryRules"
                 required
                 @click:append="show = !show"
                 @keyup="validate()"
@@ -105,11 +105,12 @@ import { Component, Vue } from "vue-property-decorator";
 
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
-import { rulesForm } from "@/service/RulesForm";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class FormLogin extends Vue {
-  rules = new rulesForm();
+
+  rulesForms: any = rulesForms;
   siren: string = "";
   password: string = "";
   buttonLoading: boolean = false;

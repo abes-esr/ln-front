@@ -30,7 +30,7 @@
             </p>
             <v-checkbox
               required
-              :rules="this.rules.checkboxRules"
+              :rules="rulesForms.checkboxRules"
               label="Je confirme que mon établissement est éligible"
             ></v-checkbox>
           </v-alert>
@@ -49,7 +49,7 @@
                   placeholder="Nom de l'établissement"
                   maxlength="80"
                   v-model="nomEtab"
-                  :rules="this.rules.nomEtabRules"
+                  :rules="rulesForms.nomEtabRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -64,7 +64,7 @@
                   placeholder="SIREN"
                   maxlength="9"
                   v-model="sirenEtab"
-                  :rules="this.rules.sirenEtabRules"
+                  :rules="rulesForms.sirenEtabRules"
                   required
                   @input="checkSiren()"
                   @keyup.enter="validate()"
@@ -132,7 +132,7 @@
                   v-model="typeEtab"
                   :items="typesEtab"
                   label="Type de l'établissement"
-                  :rules="this.rules.typeEtabRules"
+                  :rules="rulesForms.typeEtabRules"
                   required
                 ></v-select>
                 <a
@@ -163,7 +163,7 @@
                   label="Nom"
                   placeholder="Nom"
                   v-model="nomContact"
-                  :rules="this.rules.nomContactRules"
+                  :rules="rulesForms.nomContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -177,7 +177,7 @@
                   label="Prénom"
                   placeholder="Prénom"
                   v-model="prenomContact"
-                  :rules="this.rules.prenomContactRules"
+                  :rules="rulesForms.prenomContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -191,7 +191,7 @@
                   label="Adresse postale"
                   placeholder="Adresse postale"
                   v-model="adresseContact"
-                  :rules="this.rules.adresseContactRules"
+                  :rules="rulesForms.adresseContactRules"
                   maxlength="80"
                   required
                   @keyup.enter="validate()"
@@ -218,7 +218,7 @@
                   label="Code postal"
                   placeholder="Code postal"
                   v-model="codePostalContact"
-                  :rules="this.rules.codePostalContactRules"
+                  :rules="rulesForms.codePostalContactRules"
                   maxlength="5"
                   required
                   @keyup.enter="validate()"
@@ -233,7 +233,7 @@
                   label="Ville"
                   placeholder="Ville"
                   v-model="villeContact"
-                  :rules="this.rules.villeContactRules"
+                  :rules="rulesForms.villeContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -262,7 +262,7 @@
                   placeholder="Téléphone"
                   v-model="telContact"
                   maxlength="10"
-                  :rules="this.rules.telContactRules"
+                  :rules="rulesForms.telContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -276,7 +276,7 @@
                   label="Adresse e-mail"
                   placeholder="Adresse e-mail"
                   v-model="emailContact"
-                  :rules="this.rules.emailContactRules"
+                  :rules="rulesForms.emailContactRules"
                   required
                   @keyup.enter="validate()"
                 ></v-text-field>
@@ -291,7 +291,7 @@
                   placeholder="Confirmez votre adresse e-mail"
                   v-model="confirmEmailContact"
                   :rules="
-                    this.rules.confirmEmailContactRules.concat(
+                    rulesForms.confirmEmailContactRules.concat(
                       confirmEmailContactRule
                     )
                   "
@@ -314,7 +314,7 @@
                   label="Mot de passe"
                   placeholder="Mot de passe"
                   v-model="passContact"
-                  :rules="this.rules.passwordRules"
+                  :rules="rulesForms.passwordRules"
                   :type="show1 ? 'text' : 'password'"
                   required
                   @keyup.enter="validate()"
@@ -332,7 +332,7 @@
                   placeholder="Confirmez votre mot de passe"
                   v-model="confirmPassContact"
                   :rules="
-                    this.rules.confirmPassContactRules.concat(
+                    rulesForms.confirmPassContactRules.concat(
                       confirmPassContactRule
                     )
                   "
@@ -348,7 +348,7 @@
               <v-col cols="10">
                 <v-checkbox
                   required
-                  :rules="this.rules.checkboxRules"
+                  :rules="rulesForms.checkboxRules"
                   label="J'accepte les conditions générales liées à la politique de
                 confidentialité*"
                 ></v-checkbox>
@@ -404,11 +404,11 @@ import { SirenNotFoundError } from "@/core/service/data.gouv/exception/SirenNotF
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApiError";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
-import { rulesForm } from "@/service/RulesForm";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class FormCreationCompte extends Vue {
-  rules = new rulesForm();
+  rulesForms: any = rulesForms;
   show1: boolean = false;
   isValid: Promise<boolean> = this.$recaptchaLoaded();
   token: string = "";

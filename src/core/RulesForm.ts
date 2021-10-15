@@ -100,3 +100,4 @@ export class rulesForm {
     (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
   ];
 }
+export const rulesForms = new rulesForm();

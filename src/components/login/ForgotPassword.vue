@@ -20,7 +20,7 @@
                   label="SIREN"
                   placeholder="SIREN"
                   v-model="siren"
-                  :rules="this.rules.sirenEtabRules"
+                  :rules="rulesForms.sirenEtabRules"
                   required
                   @keyup.enter="validate()"
                   :disabled="!sirenRadio"
@@ -42,7 +42,7 @@
                   placeholder="Adresse mail de contact"
                   type="mail"
                   v-model="mail"
-                  :rules="this.rules.emailContactRules"
+                  :rules="rulesForms.emailContactRules"
                   required
                   @keyup.enter="validate()"
                   :disabled="sirenRadio"
@@ -87,13 +87,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import { rulesForm } from "@/service/RulesForm";
+import { rulesForms } from "@/core/RulesForm";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
 
 @Component
 export default class ForgotPassword extends Vue {
-  rules = new rulesForm();
+
+  rulesForms: any = rulesForms;
   siren: string = "";
   isTokenValid: Promise<boolean> = this.$recaptchaLoaded();
   token: string = "";

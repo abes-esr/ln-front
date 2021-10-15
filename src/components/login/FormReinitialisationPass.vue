@@ -33,7 +33,7 @@
                       placeholder="Mot de passe"
                       :disabled="disabled === 1"
                       v-model="passContact"
-                      :rules="this.rules.passwordRules"
+                      :rules="rulesForms.passwordRules"
                       :type="show1 ? 'text' : 'password'"
                       required
                       @keyup.enter="validate()"
@@ -52,7 +52,7 @@
                       :disabled="disabled === 1"
                       v-model="confirmPassContact"
                       :rules="
-                        this.rules.confirmPassContactRules.concat(
+                        rulesForms.confirmPassContactRules.concat(
                           confirmPassContactRule
                         )
                       "
@@ -126,11 +126,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { rulesForm } from "@/service/RulesForm";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class FormReinitialisationPass extends Vue {
-  rules = new rulesForm();
+
+  rulesForms: any = rulesForms;
   resetToken: string = "";
   disabled: number = 0;
   show1: boolean = false;
