@@ -104,7 +104,7 @@
 import { Component, Vue } from "vue-property-decorator";
 
 import { Logger } from "@/utils/Logger";
-import { LicencesNationalesBadRequestApiError } from "@/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { rulesForm } from "@/service/RulesForm";
 
 @Component

@@ -218,7 +218,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { etablissementService } from "@/service/licencesnationales/EtablissementService";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { rulesForm } from "@/service/RulesForm";
 
 //Si la modification est effectuée par un admin

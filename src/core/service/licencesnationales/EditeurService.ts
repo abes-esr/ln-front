@@ -1,7 +1,7 @@
-import {LicencesNationalesApiService} from "@/service/licencesnationales/LicencesNationalesApiService";
-import Editeur from "@/components/Editeur";
-import {ContactType} from "@/components/CommonDefinition";
-import ContactEditeur from "@/components/ContactEditeur";
+import {LicencesNationalesApiService} from "@/core/service/licencesnationales/LicencesNationalesApiService";
+import Editeur from "@/core/Editeur";
+import {ContactType} from "@/core/CommonDefinition";
+import ContactEditeur from "@/core/ContactEditeur";
 
 export class EditeurService extends LicencesNationalesApiService {
 
@@ -22,9 +22,19 @@ export class EditeurService extends LicencesNationalesApiService {
 
       for (let index = 0; index < editeur.contacts.length; index++) {
         if (editeur.contacts[index].type == ContactType.COMMERCIAL) {
-          contactsCommerciaux.push(editeur.contacts[index]);
+          const jsonContact: JsonCreationContactEditeurRequest = {
+            nom:editeur.contacts[index].nom,
+            prenom:editeur.contacts[index].prenom,
+            mail:editeur.contacts[index].mail
+          }
+          contactsCommerciaux.push(jsonContact);
         } else if (editeur.contacts[index].type == ContactType.TECHNIQUE) {
-          contactsTechniques.push(editeur.contacts[index]);
+          const jsonContact: JsonCreationContactEditeurRequest = {
+            nom:editeur.contacts[index].nom,
+            prenom:editeur.contacts[index].prenom,
+            mail:editeur.contacts[index].mail
+          }
+          contactsTechniques.push(jsonContact);
         }
       }
       const json:JsonCreationEditeurRequest = {
@@ -60,16 +70,28 @@ export class EditeurService extends LicencesNationalesApiService {
 
       for (let index = 0; index < editeur.contacts.length; index++) {
         if (editeur.contacts[index].type == ContactType.COMMERCIAL) {
-          contactsCommerciaux.push(editeur.contacts[index]);
+          const jsonContact: JsonModificationContactEditeurRequest = {
+            id:editeur.contacts[index].id,
+            nom:editeur.contacts[index].nom,
+            prenom:editeur.contacts[index].prenom,
+            mail:editeur.contacts[index].mail
+          }
+          contactsCommerciaux.push(jsonContact);
         } else if (editeur.contacts[index].type == ContactType.TECHNIQUE) {
-          contactsTechniques.push(editeur.contacts[index]);
+          const jsonContact: JsonModificationContactEditeurRequest = {
+            id:editeur.contacts[index].id,
+            nom:editeur.contacts[index].nom,
+            prenom:editeur.contacts[index].prenom,
+            mail:editeur.contacts[index].mail
+          }
+          contactsTechniques.push(jsonContact);
         }
       }
       const json: JsonModificationEditeurRequest = {
         id:editeur.id,
         nom: editeur.nom,
         identifiantBis: editeur.identifiantBis,
-        groupesEtabRelies: editeur.groupesEtabRelies,
+        typesEtablissements: editeur.groupesEtabRelies,
         adresse: editeur.adresse,
         contactsCommerciaux: contactsCommerciaux,
         contactsTechniques: contactsTechniques
@@ -132,7 +154,7 @@ export class EditeurService extends LicencesNationalesApiService {
           editeur.id = response.id;
           editeur.nom = response.nom;
           editeur.dateCreation = new Date(response.dateCreation);
-          editeur.groupesEtabRelies = response.groupesEtabRelies;
+          editeur.groupesEtabRelies = response.typesEtablissements;
           editeur.identifiantBis = response.identifiantBis;
           editeur.adresse = response.adresse;
 
@@ -176,7 +198,7 @@ export class EditeurService extends LicencesNationalesApiService {
   deleteEditeur(id: number, token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       return this.client
-        .delete("/editeurs/" + id, token)
+        .delete("/editeurs/" + id,null, token)
         .then(result => {
           resolve(true);
         })
@@ -226,7 +248,7 @@ export interface JsonEditeurResponse {
   nom: string;
   identifiantBis: number;
   dateCreation: string;
-  groupesEtabRelies: Array<string>;
+  typesEtablissements: Array<string>;
   adresse: string;
   contactsCommerciaux: Array<JsonContactEditeurResponse>;
   contactsTechniques: Array<JsonContactEditeurResponse>;
@@ -244,7 +266,7 @@ export interface JsonModificationEditeurRequest {
   id: number;
   nom: string;
   identifiantBis: number;
-  groupesEtabRelies: Array<string>;
+  typesEtablissements: Array<string>;
   adresse: string;
   contactsCommerciaux: Array<JsonModificationContactEditeurRequest>;
   contactsTechniques: Array<JsonModificationContactEditeurRequest>;

@@ -88,8 +88,8 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { rulesForm } from "@/service/RulesForm";
-import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import { authService } from "@/service/licencesnationales/AuthentificationService";
+import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { authService } from "@/core/service/licencesnationales/AuthentificationService";
 
 @Component
 export default class ForgotPassword extends Vue {

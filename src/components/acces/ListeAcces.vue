@@ -115,7 +115,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
-import { iPService } from "@/service/licencesnationales/IPService";
+import { iPService } from "@/core/service/licencesnationales/IPService";
 
 const ListeAccesProps = Vue.extend({
   props: {

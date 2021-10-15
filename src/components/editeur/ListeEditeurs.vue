@@ -37,6 +37,9 @@
                             </v-col>
                           </v-row>
                         </template>
+                        <template v-slot:item.dateCreation="{ item }">
+                          <span>{{ item.dateCreation.toLocaleString() }}</span>
+                        </template>
                         <template v-slot:[`item.action`]="{ item }">
                           <v-icon
                             small
@@ -113,15 +116,15 @@
 import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
-import Editeur from "@/components/Editeur";
-import { Action } from "@/components/CommonDefinition";
-import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import { editeurService } from "@/service/licencesnationales/EditeurService";
+import Editeur from "@/core/Editeur";
+import { Action } from "@/core/CommonDefinition";
+import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 
 @Component
 export default class ListeEditeurs extends Vue {
   rechercher: string = "";
-  editeurs: Array<Editeur> = [new Editeur()];
+  editeurs: Array<Editeur> = [];
   title: string = "";
   id: string = "";
   error: string = "";
@@ -159,7 +162,6 @@ export default class ListeEditeurs extends Vue {
       .getEditeurs(this.$store.getters.getToken())
       .then(res => {
         this.editeurs = res;
-        this.editeurs.push(new Editeur())
       })
       .catch(err => {
         this.alert = true;
