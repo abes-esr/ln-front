@@ -82,9 +82,9 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import FormEtab from "@/components/etablissement/FormEtab.vue";
-import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
 import { Component, Vue } from "vue-property-decorator";
+import { etablissementService } from "@/service/licencesnationales/EtablissementService";
 
 @Component({
   components: { FormEtab }
@@ -119,10 +119,10 @@ export default class FormScissionEtablissement extends Vue {
         this.alert = false;
         this.message = "";
         this.retourKo = false;
-        serviceLn
-          .scission(this.$store.getters.token, {
-            sirenScinde: this.sirenEtab,
-            nouveauxEtabs: this.etablissementDTOS
+        etablissementService
+          .scission(this.$store.getters.getToken(), {
+            ancienSiren: this.sirenEtab,
+            etablissementDTOS: this.etablissementDTOS
           })
           .then(response => {
             this.alert = true;

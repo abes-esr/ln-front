@@ -81,9 +81,9 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
 import { Logger } from "@/utils/Logger";
-import { HttpRequestError } from "@/exception/HttpRequestError";
+import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { authService } from "@/service/licencesnationales/AuthentificationService";
 import { rulesForm } from "@/service/RulesForm";
 
 @Component
@@ -108,13 +108,13 @@ export default class ChangePassword extends Vue {
 
   submit(): void {
     this.buttonLoading = true;
-    serviceLn
+    authService
       .changePassword(
         {
           ancienMotDePasse: this.oldPassword,
           nouveauMotDePasse: this.newPassword
         },
-        this.$store.getters.token
+        this.$store.getters.getToken
       )
       .then(response => {
         this.buttonLoading = false;
@@ -131,14 +131,14 @@ export default class ChangePassword extends Vue {
         this.alert = true;
         this.retourKo = false;
 
-        if (err instanceof HttpRequestError) {
-          Logger.error(
-            "Erreur HTTP : " + err.error + " sur la route " + err.path
-          );
-          this.message = "Erreur de requête : " + err.error;
+        if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          this.message =
+            "Vous n'êtes pas autorisé à effectuer cette opération.: " +
+            err.message;
+          Logger.error(err.toString());
         } else {
-          Logger.error(err.message);
-          this.message = err.message;
+          Logger.error(err.toString());
+          this.message = "Impossible d'exécuter l'action : " + err.message;
         }
       });
   }

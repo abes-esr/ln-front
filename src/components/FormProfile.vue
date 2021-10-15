@@ -217,10 +217,10 @@
 </template>
 
 <script lang="ts">
-import { serviceLn } from "@/service/licencesnationales/LicencesNationalesApiService";
-import { Logger } from "@/utils/Logger";
 import { Component, Vue } from "vue-property-decorator";
+import { etablissementService } from "@/service/licencesnationales/EtablissementService";
 import { rulesForm } from "@/service/RulesForm";
+
 //Si la modification est effectuée par un admin
 //On passe le SIREN du compte à modifier en Prop
 //Si on ne passe rien, la prop reste vide, on peut utiliser le composant pour modifier uniquement en mode utilisateur
@@ -264,11 +264,11 @@ export default class FormProfile extends FormProfileProps {
   buttonLoading: boolean = false;
 
   get userSiren(): string {
-    return this.$store.getters.userSiren;
+    return this.$store.getters.userSiren();
   }
 
   get isAdmin(): boolean {
-    return this.$store.getters.isAdmin;
+    return this.$store.getters.isAdmin();
   }
 
   //Le param "sirenParam" est optionel, utilisé dans le cas Admin
@@ -291,8 +291,8 @@ export default class FormProfile extends FormProfileProps {
   }
 
   fetchEtab(): void {
-    serviceLn
-      .getInfosEtab(this.$store.getters.token, this.sirenLocal)
+    etablissementService
+      .getInfosEtab(this.$store.getters.getToken(), this.sirenLocal)
       .then(result => {
         this.emailContact = result.data.contact.mail;
         this.nomContact = result.data.contact.nom;
@@ -316,7 +316,7 @@ export default class FormProfile extends FormProfileProps {
   }
 
   fetchListeType(): void {
-    serviceLn
+    etablissementService
       .listeType()
       .then(result => {
         result.data.forEach(element => {
@@ -331,9 +331,8 @@ export default class FormProfile extends FormProfileProps {
 
   submitProfil(): void {
     this.updateJsonObject();
-    Logger.debug(JSON.stringify(this.jsonResponse));
-    serviceLn
-      .updateProfile(this.$store.getters.token, this.jsonResponse)
+    etablissementService
+      .updateProfile(this.$store.getters.getToken(), this.jsonResponse)
       .then(() => {
         this.buttonLoading = false;
         this.$router.push({ name: "Home" });

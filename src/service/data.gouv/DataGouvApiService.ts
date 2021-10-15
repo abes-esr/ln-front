@@ -1,14 +1,14 @@
 import AxiosClient from "../../utils/AxiosClient";
 import { JsonCheckSirenResponse } from "@/service/data.gouv/DataGouvJsonDefinition";
-import { HttpRequestError } from "@/exception/HttpRequestError";
-import { SirenNotFoundError } from "@/service/data.gouv/SirenNotFoundError";
+import { SirenNotFoundError } from "@/service/data.gouv/exception/SirenNotFoundError";
+import { DataGouvApiError } from "@/service/data.gouv/exception/DataGouvApiError";
 
 export class DataGouvApiService {
   // Client HTTP
   client: AxiosClient = new AxiosClient("https://entreprise.data.gouv.fr/api");
 
   /**
-   * Appel API pour se logger et obtenir un token d'identification
+   * Appel API pour se logger et obtenir un getToken d'identification
    * @param data Json de login à l'API LicencesNationales
    * @return string : La dénomination de l'entreprise
    * @throws SirenNotFoundError si le numéro SIREN n'existe pas dans data.gouv
@@ -40,7 +40,7 @@ export class DataGouvApiService {
             reject(new SirenNotFoundError("SIREN introuvable"));
           } else {
             reject(
-              new HttpRequestError(
+              new DataGouvApiError(
                 err.response.status,
                 err.response.data.message
               )

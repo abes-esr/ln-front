@@ -132,9 +132,9 @@ export default class Home extends Vue {
   ];
 
   mounted() {
-    this.siren = this.$store.state.user.siren;
+    this.siren = this.$store.getters.userSiren();
     if (this.notification != "") {
-      this.notification = this.$store.getters.notification;
+      this.notification = this.$store.getters.notification();
       this.alert = true;
     }
   }

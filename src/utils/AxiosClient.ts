@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, {AxiosInstance, AxiosResponse} from "axios";
 
 /**
  * Représente un client Axios pour envoyer et recevoir des requêtes HTTP avec
@@ -26,10 +26,14 @@ class AxiosClient {
       config = {
         headers: {
           Authorization: "Bearer " + token
-        }
+        },
+        timeout: 1000 * 10
+      };
+    } else {
+      config = {
+        timeout: 1000 * 10
       };
     }
-
     return this.client.post(url, data, config);
   }
 
@@ -46,11 +50,43 @@ class AxiosClient {
       config = {
         headers: {
           Authorization: "Bearer " + token
-        }
+        },
+        timeout: 1000 * 10
+      };
+    } else {
+      config = {
+        timeout: 1000 * 10
       };
     }
 
     return this.client.put(url, data, config);
+  }
+
+  /**
+   * Appel HTTP GET
+   * @param url URL de la requête HTTP
+   * @param token Token Bearer à ajouter à l'entête
+   */
+  get(url: string, token?: string, param?:any): Promise<AxiosResponse> {
+    // Si un token est renseigné, on le rajoute à l'entête
+    let config;
+    if (token) {
+      config = {
+        headers: {
+          Authorization: "Bearer " + token
+        },
+        params: param,
+        timeout: 1000 * 10
+
+      };
+    } else {
+      config = {
+        params: param,
+        timeout: 1000 * 10
+      };
+    }
+
+    return this.client.get(url, config);
   }
 
   /**
@@ -60,34 +96,23 @@ class AxiosClient {
    * @param token Token Bearer à ajouter à l'entête
    */
   delete(url: string, data: any, token?: string): Promise<AxiosResponse> {
-    // Si un token est renseigné, on le rajoute à l'entête
-    let config;
-    if (token) {
-      config = {
-        Authorization: "Bearer " + token
-      };
-    }
-
-    return this.client.delete(url, { data: data, headers: config });
-  }
-
-  /**
-   * Appel HTTP GET
-   * @param url URL de la requête HTTP
-   * @param token Token Bearer à ajouter à l'entête
-   */
-  get(url: string, token?: string): Promise<AxiosResponse> {
-    // Si un token est renseigné, on le rajoute à l'entête
+    // Si un getToken est renseigné, on le rajoute à l'entête
     let config;
     if (token) {
       config = {
         headers: {
           Authorization: "Bearer " + token
-        }
+        },
+        timeout: 1000 * 10,
+        data: data
+      };
+    } else {
+      config = {
+        timeout: 1000 * 10,
+        data: data
       };
     }
-
-    return this.client.get(url, config);
+    return this.client.delete(url, config);
   }
 }
 
