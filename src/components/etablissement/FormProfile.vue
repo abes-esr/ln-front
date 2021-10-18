@@ -218,7 +218,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { etablissementService } from "@/service/licencesnationales/EtablissementService";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 
 //Si la modification est effectuée par un admin
 //On passe le SIREN du compte à modifier en Prop

@@ -157,7 +157,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
-import { etablissementService } from "@/service/licencesnationales/EtablissementService";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 
 @Component
 export default class ListeEtab extends Vue {

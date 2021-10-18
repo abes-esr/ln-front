@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import FormProfile from "../components/FormProfile.vue";
+import FormProfile from "../components/etablissement/FormProfile.vue";
 
 const ProfileProps = Vue.extend({
   props: {

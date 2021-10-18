@@ -1,4 +1,4 @@
-import { LicencesNationalesApiError } from "@/service/licencesnationales/exception/LicencesNationalesApiError";
+import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 
 export class LicencesNationalesBadRequestApiError extends LicencesNationalesApiError {
   constructor(

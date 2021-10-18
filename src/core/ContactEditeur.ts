@@ -1,4 +1,4 @@
-import { ContactType } from "@/components/CommonDefinition";
+import { ContactType } from "@/core/CommonDefinition";
 
 export class ContactEditeur {
   id: number = -999;

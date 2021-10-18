@@ -37,6 +37,9 @@
                             </v-col>
                           </v-row>
                         </template>
+                        <template v-slot:item.dateCreation="{ item }">
+                          <span>{{ item.dateCreation.toLocaleString() }}</span>
+                        </template>
                         <template v-slot:[`item.action`]="{ item }">
                           <v-icon
                             small
@@ -44,9 +47,41 @@
                             @click="modifierEditeur(item)"
                             >mdi-pencil</v-icon
                           >
-                          <v-icon small @click="supprimerEditeur(item)"
+                          <v-icon small @click="$set(confirmDeleteDialog, item.id, true)"
                             >mdi-delete</v-icon
                           >
+                          <v-dialog
+                              v-model="confirmDeleteDialog[item.id]"
+                              width="500"
+                              :key="item.id"
+                          >
+                            <v-card>
+                              <v-card-title class="text-h5">
+                                Confirmation de suppression
+                              </v-card-title>
+
+                              <v-card-text>
+                                Êtes-vous sûr de vouloir supprimer l'éditeur
+                                {{ item.nom }} ?
+                              </v-card-text>
+
+                              <v-divider></v-divider>
+
+                              <v-card-actions>
+                                <v-btn
+                                    color="primary"
+                                    text
+                                    @click="$set(confirmDeleteDialog, item.id, false)"
+                                >
+                                  Non
+                                </v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" text @click="supprimerEditeur(item)">
+                                  Oui
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
                         </template>
                       </v-data-table>
                     </v-col>
@@ -81,10 +116,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
-import Editeur from "@/components/Editeur";
-import { Action } from "@/components/CommonDefinition";
-import { LicencesNationalesUnauthorizedApiError } from "@/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import { editeurService } from "@/service/licencesnationales/EditeurService";
+import Editeur from "@/core/Editeur";
+import { Action } from "@/core/CommonDefinition";
+import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 
 @Component
 export default class ListeEditeurs extends Vue {
@@ -101,9 +136,10 @@ export default class ListeEditeurs extends Vue {
       value: "dateCreation",
       sortable: true
     },
-    { text: "Editeur", value: "nomEditeur", sortable: true },
+    { text: "Editeur", value: "nom", sortable: true },
     { text: "Action", value: "action", sortable: false }
   ];
+  confirmDeleteDialog: any = {};
 
   get notification() {
     return this.$store.getters.notification();
@@ -168,6 +204,7 @@ export default class ListeEditeurs extends Vue {
 
   supprimerEditeur(item: Editeur): void {
     this.alert = false;
+    this.$set(this.confirmDeleteDialog, item.id, false);
 
     editeurService
       .deleteEditeur(item.id, this.$store.getters.getToken())

@@ -1,5 +1,5 @@
-import {LicencesNationalesApiService} from "@/service/licencesnationales/LicencesNationalesApiService";
-import User from "@/components/User";
+import {LicencesNationalesApiService} from "@/core/service/licencesnationales/LicencesNationalesApiService";
+import User from "@/core/User";
 
 export class AuthentificationService extends LicencesNationalesApiService {
   /**

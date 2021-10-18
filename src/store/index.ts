@@ -2,9 +2,10 @@ import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import { Logger } from "@/utils/Logger";
-import User from "@/components/User";
-import Editeur from "@/components/Editeur";
-import {authService, JsonLoginRequest} from "@/service/licencesnationales/AuthentificationService";
+import User from "@/core/User";
+import Editeur from "@/core/Editeur";
+import {authService, JsonLoginRequest} from "@/core/service/licencesnationales/AuthentificationService";
+import {editeurService} from "@/core/service/licencesnationales/EditeurService";
 
 Vue.use(Vuex);
 
@@ -82,8 +83,25 @@ export default new Vuex.Store({
     setSirenEtabSiAdmin({ commit }, sirenEtabSiAdmin) {
       commit("SET_SIRENETABSIADMIN", sirenEtabSiAdmin);
     },
-    setCurrentEditeur({ commit }, editeur: Editeur) {
-      commit("SET_CURRENT_EDITEUR", editeur);
+    setCurrentEditeur(context, value: Editeur) :Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        if (value.id == -999) {
+          // Nouvel éditeur
+          context.commit("SET_CURRENT_EDITEUR", value); // On sauvegarde dans le store
+          resolve(true);
+        } else {
+          editeurService
+              .getEditeur(value.id, context.state.user.token)
+              .then(item => {
+                context.commit("SET_CURRENT_EDITEUR", item); // On sauvegarde dans le store
+                resolve(true);
+              })
+              .catch(err => {
+                //Si une erreur avec le ws est jetée, on lève un message d'erreur
+                reject(err);
+              });
+        }
+      });
     }
   },
   getters: {
