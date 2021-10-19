@@ -6,7 +6,7 @@ export class Etablissement {
   nom: string = "";
   siren: string = "";
   dateCreation: Date = new Date();
-  typeEtablissement: string = ""; // objet type etablissement ?
+  typeEtablissement: string = "";
   statut: string = "";
   idAbes: string = "";
   contact: ContactEtablissement = new ContactEtablissement();

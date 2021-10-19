@@ -1,5 +1,8 @@
-import {AxiosResponse} from "axios";
-import {LicencesNationalesApiService} from "@/core/service/licencesnationales/LicencesNationalesApiService";
+import { AxiosResponse } from "axios";
+import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
+import Etablissement from "@/core/Etablissement";
+import ContactEtablissement from "@/core/ContactEtablissement";
+import Ip from "@/core/Ip";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**
@@ -26,12 +29,58 @@ export class EtablissementService extends LicencesNationalesApiService {
     return this.client.get("/etablissements/getType");
   }
 
-  getInfosEtab(token: string, siren?: string): Promise<AxiosResponse> {
-    return this.client.get("/etablissements/" + siren, token);
+  getEtablissement(token: string, siren?: string): Promise<Etablissement> {
+    return new Promise((resolve, reject) => {
+      return this.client
+        .get("/etablissements/" + siren, token)
+        .then(result => {
+          const response: JsonEtablissementResponse = result.data;
+          const etablissement: Etablissement = new Etablissement();
+          etablissement.id = response.id;
+          etablissement.nom = response.nom;
+          etablissement.siren = response.siren;
+          etablissement.dateCreation = new Date(response.dateCreation);
+          etablissement.typeEtablissement = response.typeEtablissement;
+          etablissement.statut = response.statut;
+          etablissement.idAbes = response.idAbes;
+          etablissement.contact = response.contact; //todo à tester
+          resolve(etablissement);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
   }
+  //todo: updateprofile ? uniquement le update du profile ou aussi de l'etab ? meme route
+  updateProfile(etablissement: Etablissement, token: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const jsonContact: JsonUpdateContact = {
+        nom: etablissement.contact.nom,
+        prenom: etablissement.contact.prenom,
+        adresse: etablissement.contact.adresse,
+        boitePostale: etablissement.contact.boitePostale,
+        codePostal: etablissement.contact.codePostal,
+        ville: etablissement.contact.ville,
+        cedex: etablissement.contact.cedex,
+        telephone: etablissement.contact.telephone,
+        mail: etablissement.contact.mail
+      };
+      const json: JsonUpdateProfile = {
+        siren: etablissement.siren,
+        contact: jsonContact,
+        role: ""
+        //TODO: role? on met quoi ?
+      };
 
-  updateProfile(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/etablissements/", data, token);
+      return this.client
+        .post("/etablissements/", json, token)
+        .then(result => {
+          resolve(true);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
   }
 
   deleteEtab(token: string, siren: string, data: any): Promise<AxiosResponse> {
@@ -72,6 +121,42 @@ export interface JsonUpdateProfile {
   siren: string;
   contact: JsonUpdateContact;
   role: string;
+}
+
+interface JsonContactEtablissement {
+  id: number;
+  nom: string;
+  prenom: string;
+  adresse: string;
+  boitePostale: string;
+  codePostal: string;
+  ville: string;
+  cedex: string;
+  telephone: string;
+  mail: string;
+  motDePasse: string;
+  role: string;
+}
+
+interface JsonIp {
+  id: number;
+  ip: string;
+  dateCreation: Date;
+  dateModification: Date;
+  commentaires: string;
+  statut: string;
+}
+
+interface JsonEtablissementResponse {
+  id: number;
+  nom: string;
+  siren: string;
+  dateCreation: string;
+  typeEtablissement: string;
+  statut: string;
+  idAbes: string;
+  contact: JsonContactEtablissement;
+  ips: Array<JsonIp>;
 }
 
 export interface JsonCreateAccount {

@@ -7,9 +7,9 @@ export class ContactEtablissement {
   codePostal: string = "";
   ville: string = "";
   cedex: string = "";
-  tel: string = "";
-  email: string = "";
-  passContact: string = "";
+  telephone: string = "";
+  mail: string = "";
+  motDePasse: string = "";
   role: string = "";
 }
 export default ContactEtablissement;
