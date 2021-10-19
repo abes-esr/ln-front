@@ -38,7 +38,6 @@ export class EtablissementService extends LicencesNationalesApiService {
           const response: JsonEtablissementResponse = result.data;
           const etablissement: Etablissement = new Etablissement();
           etablissement.id = response.id;
-          console.log(response);
           etablissement.nom = response.nom;
           etablissement.siren = response.siren;
           etablissement.dateCreation = new Date(response.dateCreation);
@@ -54,7 +53,10 @@ export class EtablissementService extends LicencesNationalesApiService {
     });
   }
 
-  updateProfile(etablissement: Etablissement, token: string): Promise<boolean> {
+  updateEtablissement(
+    etablissement: Etablissement,
+    token: string
+  ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const jsonContact: JsonUpdateContact = {
         nom: etablissement.contact.nom,
@@ -66,11 +68,12 @@ export class EtablissementService extends LicencesNationalesApiService {
         cedex: etablissement.contact.cedex,
         telephone: etablissement.contact.telephone,
         mail: etablissement.contact.mail,
-        role: etablissement.contact.role
+        role: etablissement.contact.role //role du contact de l'etablissement à modifier
       };
       const json: JsonUpdateProfile = {
         siren: etablissement.siren,
         contact: jsonContact,
+        role: "etab" //role de l'utilisateur qui modifie
       };
 
       return this.client
@@ -122,6 +125,7 @@ export interface JsonUpdateContact {
 export interface JsonUpdateProfile {
   siren: string;
   contact: JsonUpdateContact;
+  role: string;
 }
 
 interface JsonContactEtablissement {

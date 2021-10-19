@@ -313,8 +313,9 @@ export default class FormProfile extends FormProfileProps {
   }
 
   submitProfil(): void {
+    this.etablissement.siren = this.sirenLocal;
     etablissementService
-      .updateProfile(this.etablissement, this.$store.getters.getToken())
+      .updateEtablissement(this.etablissement, this.$store.getters.getToken())
       .then(() => {
         this.buttonLoading = false;
         this.$router.push({ name: "Home" });

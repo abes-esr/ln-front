@@ -4,10 +4,13 @@ import createPersistedState from "vuex-persistedstate";
 import { Logger } from "@/utils/Logger";
 import User from "@/core/User";
 import Editeur from "@/core/Editeur";
-import {authService, JsonLoginRequest} from "@/core/service/licencesnationales/AuthentificationService";
-import {editeurService} from "@/core/service/licencesnationales/EditeurService";
+import {
+  authService,
+  JsonLoginRequest
+} from "@/core/service/licencesnationales/AuthentificationService";
+import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import Etablissement from "@/core/Etablissement";
-import {etablissementService} from "@/core/service/licencesnationales/EtablissementService";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 
 Vue.use(Vuex);
 
@@ -55,11 +58,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    login({commit}, data:JsonLoginRequest): Promise<boolean> {
+    login({ commit }, data: JsonLoginRequest): Promise<boolean> {
       return new Promise((resolve, reject) => {
         // On appel le serviceLn LicencesNationales
         authService
-          .login(data.login,data.password)
+          .login(data.login, data.password)
           .then(result => {
             // On sauvegarde l'utilisateur
             commit("SET_USER", result);
@@ -89,7 +92,7 @@ export default new Vuex.Store({
     setSirenEtabSiAdmin({ commit }, sirenEtabSiAdmin) {
       commit("SET_SIRENETABSIADMIN", sirenEtabSiAdmin);
     },
-    setCurrentEditeur(context, value: Editeur) :Promise<boolean> {
+    setCurrentEditeur(context, value: Editeur): Promise<boolean> {
       return new Promise((resolve, reject) => {
         if (value.id == -999) {
           // Nouvel éditeur
@@ -97,35 +100,35 @@ export default new Vuex.Store({
           resolve(true);
         } else {
           editeurService
-              .getEditeur(value.id, context.state.user.token)
-              .then(item => {
-                context.commit("SET_CURRENT_EDITEUR", item); // On sauvegarde dans le store
-                resolve(true);
-              })
-              .catch(err => {
-                //Si une erreur avec le ws est jetée, on lève un message d'erreur
-                reject(err);
-              });
+            .getEditeur(value.id, context.state.user.token)
+            .then(item => {
+              context.commit("SET_CURRENT_EDITEUR", item); // On sauvegarde dans le store
+              resolve(true);
+            })
+            .catch(err => {
+              //Si une erreur avec le ws est jetée, on lève un message d'erreur
+              reject(err);
+            });
         }
       });
     },
-    setCurrentEtablissement(context, value: Etablissement) :Promise<boolean> {
+    setCurrentEtablissement(context, value: Etablissement): Promise<boolean> {
       return new Promise((resolve, reject) => {
         if (value.id == -999) {
-          // Nouvel
+          // Nouvel etablissement
           context.commit("SET_CURRENT_ETABLISSEMENT", value); // On sauvegarde dans le store
           resolve(true);
         } else {
           etablissementService
-              .getEtablissement(value.siren, context.state.user.token,)
-              .then(item => {
-                context.commit("SET_CURRENT_ETABLISSEMENT", item); // On sauvegarde dans le store
-                resolve(true);
-              })
-              .catch(err => {
-                //Si une erreur avec le ws est jetée, on lève un message d'erreur
-                reject(err);
-              });
+            .getEtablissement(value.siren, context.state.user.token)
+            .then(item => {
+              context.commit("SET_CURRENT_ETABLISSEMENT", item); // On sauvegarde dans le store
+              resolve(true);
+            })
+            .catch(err => {
+              //Si une erreur avec le ws est jetée, on lève un message d'erreur
+              reject(err);
+            });
         }
       });
     }
@@ -162,9 +165,8 @@ export default new Vuex.Store({
       return state.currentEditeur;
     },
     getCurrentEtablissement: state => () => {
-      return state.currentEditeur;
+      return state.currentEtablissement;
     }
-
   },
   plugins: [createPersistedState()]
 });
