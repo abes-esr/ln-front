@@ -2,12 +2,16 @@
 .fade-leave-active {
   transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+{
   opacity: 0;
 }
+
 #titleBar {
   cursor: pointer;
 }
+
 #appBar {
   background: rgb(46, 63, 80);
   background: linear-gradient(
@@ -16,16 +20,19 @@
                   rgba(97, 142, 186, 1) 100%
   );
 }
+
 #blueBar {
   width: 100%;
   height: 100%;
   background-color: #252c61;
 }
+
 .v-navigation-drawer__content {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 .v-toolbar__extension {
   padding: 0 !important;
   padding-top: 8px !important;
@@ -33,25 +40,48 @@
   z-index: 0;
   position: static !important;
 }
+
 h1 {
   color: #478dcb;
   font-size: 1.8em;
   font-weight: 900;
 }
+
 h2,
 .v-card__title {
   color: #252c61;
   font-size: 1.5em !important;
   font-weight: 900 !important;
 }
+
 h3,
 h4,
 h5 {
   color: #252c61;
 }
+
 body {
   color: black;
 }
+
 .v-btn {
   color: white !important;
+}
+
+.btn-1 {
+  color: #ffffff;
+  background-color: #cf4a1a !important;
+}
+
+
+#mytable table thead {
+  background-color: #478dcb !important;
+}
+
+#mytable table thead span {
+  color: #ffffff !important;
+}
+
+.multi-line {
+  white-space: pre-line;
 }
