@@ -3,6 +3,7 @@ import { LicencesNationalesApiService } from "@/core/service/licencesnationales/
 import Etablissement from "@/core/Etablissement";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import Ip from "@/core/Ip";
+import {Logger} from "@/utils/Logger";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**
@@ -29,7 +30,7 @@ export class EtablissementService extends LicencesNationalesApiService {
     return this.client.get("/etablissements/getType");
   }
 
-  getEtablissement(token: string, siren?: string): Promise<Etablissement> {
+  getEtablissement(siren: string, token: string): Promise<Etablissement> {
     return new Promise((resolve, reject) => {
       return this.client
         .get("/etablissements/" + siren, token)
@@ -37,13 +38,14 @@ export class EtablissementService extends LicencesNationalesApiService {
           const response: JsonEtablissementResponse = result.data;
           const etablissement: Etablissement = new Etablissement();
           etablissement.id = response.id;
+          console.log(response);
           etablissement.nom = response.nom;
           etablissement.siren = response.siren;
           etablissement.dateCreation = new Date(response.dateCreation);
           etablissement.typeEtablissement = response.typeEtablissement;
           etablissement.statut = response.statut;
           etablissement.idAbes = response.idAbes;
-          etablissement.contact = response.contact; //todo à tester
+          etablissement.contact = response.contact; //todo: à tester
           resolve(etablissement);
         })
         .catch(err => {
@@ -51,7 +53,7 @@ export class EtablissementService extends LicencesNationalesApiService {
         });
     });
   }
-  //todo: updateprofile ? uniquement le update du profile ou aussi de l'etab ? meme route
+
   updateProfile(etablissement: Etablissement, token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const jsonContact: JsonUpdateContact = {
@@ -63,17 +65,16 @@ export class EtablissementService extends LicencesNationalesApiService {
         ville: etablissement.contact.ville,
         cedex: etablissement.contact.cedex,
         telephone: etablissement.contact.telephone,
-        mail: etablissement.contact.mail
+        mail: etablissement.contact.mail,
+        role: etablissement.contact.role
       };
       const json: JsonUpdateProfile = {
         siren: etablissement.siren,
         contact: jsonContact,
-        role: ""
-        //TODO: role? on met quoi ?
       };
 
       return this.client
-        .post("/etablissements/", json, token)
+        .post("/etablissements/"+etablissement.siren, json, token)
         .then(result => {
           resolve(true);
         })
@@ -115,12 +116,12 @@ export interface JsonUpdateContact {
   cedex: string;
   telephone: string;
   mail: string;
+  role: string;
 }
 
 export interface JsonUpdateProfile {
   siren: string;
   contact: JsonUpdateContact;
-  role: string;
 }
 
 interface JsonContactEtablissement {

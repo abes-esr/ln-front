@@ -26,6 +26,7 @@ const routes: Array<RouteConfig> = [
     path: "/profil",
     name: "Profil",
     component: () => import("../views/Profile.vue"),
+    props: { action: Action.MODIFICATION },
     meta: {
       requiresAuth: true
     }
@@ -93,7 +94,7 @@ const routes: Array<RouteConfig> = [
     path: "/modifierEtabAdmin/:sirenParam",
     name: "modifierEtabAdmin",
     component: () => import("../views/Profile.vue"),
-    props: true,
+    props: { action: Action.MODIFICATION },
     meta: {
       requiresAuth: true
     }
@@ -111,7 +112,8 @@ const routes: Array<RouteConfig> = [
   {
     path: "/creationCompte",
     name: "CreationCompte",
-    component: () => import("../views/CreationCompte.vue")
+    component: () => import("../views/CreationCompte.vue"),
+    props: { action: Action.CREATION },
   },
   {
     path: "/donneespersonnelles",

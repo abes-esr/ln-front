@@ -248,7 +248,15 @@ export default class FormProfile extends FormProfileProps {
 
   constructor() {
     super();
-    this.etablissement = this.getCurrentEditeur;
+    this.etablissement = this.getCurrentEtablissement;
+  }
+
+  update() {
+    this.etablissement = this.getCurrentEtablissement;
+  }
+
+  get getCurrentEtablissement(): Etablissement {
+    return this.$store.getters.getCurrentEtablissement
   }
 
   get userSiren(): string {
@@ -280,7 +288,7 @@ export default class FormProfile extends FormProfileProps {
 
   fetchEtab(): void {
     etablissementService
-      .getEtablissement(this.$store.getters.getToken(), this.sirenLocal)
+      .getEtablissement(this.sirenLocal, this.$store.getters.getToken())
       .then(result => {
         this.etablissement = result;
       })
@@ -305,9 +313,8 @@ export default class FormProfile extends FormProfileProps {
   }
 
   submitProfil(): void {
-    this.updateJsonObject();
     etablissementService
-      .updateProfile(this.jsonResponse, this.$store.getters.getToken())
+      .updateProfile(this.etablissement, this.$store.getters.getToken())
       .then(() => {
         this.buttonLoading = false;
         this.$router.push({ name: "Home" });
@@ -317,29 +324,6 @@ export default class FormProfile extends FormProfileProps {
         this.alert = true;
         this.error = err;
       });
-  }
-
-  updateJsonObject(): void {
-    const json: any = {};
-    const contact: any = {};
-    contact.adresse = this.etablissement.contact.adresse;
-    contact.boitePostale = this.etablissement.contact.boitePostale;
-    contact.cedex = this.etablissement.contact.cedex;
-    contact.codePostal = this.etablissement.contact.codePostal;
-    contact.mail = this.etablissement.contact.mail;
-    contact.nom = this.etablissement.contact.nom;
-    contact.prenom = this.etablissement.contact.prenom;
-    contact.telephone = this.etablissement.contact.telephone;
-    contact.ville = this.etablissement.contact.ville;
-    json.siren = this.userSiren;
-    json.contact = contact;
-    json.role = this.isAdmin ? "admin" : "etab";
-    if (this.isAdmin) {
-      json.siren = this.etablissement.siren;
-      json.typeEtablissement = this.etablissement.typeEtablissement;
-      json.nom = this.etablissement.nom;
-    }
-    this.jsonResponse = json;
   }
 }
 </script>

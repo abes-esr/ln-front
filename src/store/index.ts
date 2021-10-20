@@ -6,6 +6,8 @@ import User from "@/core/User";
 import Editeur from "@/core/Editeur";
 import {authService, JsonLoginRequest} from "@/core/service/licencesnationales/AuthentificationService";
 import {editeurService} from "@/core/service/licencesnationales/EditeurService";
+import Etablissement from "@/core/Etablissement";
+import {etablissementService} from "@/core/service/licencesnationales/EtablissementService";
 
 Vue.use(Vuex);
 
@@ -16,7 +18,8 @@ export default new Vuex.Store({
     notification: "",
     creationCompteEffectuee: false,
     sirenEtabSiAdmin: "",
-    currentEditeur: new Editeur()
+    currentEditeur: new Editeur(),
+    currentEtablissement: new Etablissement()
   },
   mutations: {
     SET_USER(state, user: User) {
@@ -46,6 +49,9 @@ export default new Vuex.Store({
     },
     SET_CURRENT_EDITEUR(state, item: Editeur) {
       state.currentEditeur = item;
+    },
+    SET_CURRENT_ETABLISSEMENT(state, item: Etablissement) {
+      state.currentEtablissement = item;
     }
   },
   actions: {
@@ -102,6 +108,26 @@ export default new Vuex.Store({
               });
         }
       });
+    },
+    setCurrentEtablissement(context, value: Etablissement) :Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        if (value.id == -999) {
+          // Nouvel
+          context.commit("SET_CURRENT_ETABLISSEMENT", value); // On sauvegarde dans le store
+          resolve(true);
+        } else {
+          etablissementService
+              .getEtablissement(value.siren, context.state.user.token,)
+              .then(item => {
+                context.commit("SET_CURRENT_ETABLISSEMENT", item); // On sauvegarde dans le store
+                resolve(true);
+              })
+              .catch(err => {
+                //Si une erreur avec le ws est jetée, on lève un message d'erreur
+                reject(err);
+              });
+        }
+      });
     }
   },
   getters: {
@@ -134,7 +160,11 @@ export default new Vuex.Store({
     },
     getCurrentEditeur: state => () => {
       return state.currentEditeur;
+    },
+    getCurrentEtablissement: state => () => {
+      return state.currentEditeur;
     }
+
   },
   plugins: [createPersistedState()]
 });
