@@ -1,10 +1,10 @@
 import ContactEditeur from "@/core/ContactEditeur";
 import { ValueError } from "@/exception/ValueError";
 
-export class Editeur {
+export default class Editeur {
   id: number = -999;
   nom: string = "";
-  identifiantBis: number = 9999;
+  identifiantBis: string = "";
   dateCreation: Date = new Date();
   groupesEtabRelies: Array<string> = [];
   adresse: string = "";
@@ -32,4 +32,3 @@ export class Editeur {
     this.contacts.splice(index, 1);
   }
 }
-export default Editeur;
