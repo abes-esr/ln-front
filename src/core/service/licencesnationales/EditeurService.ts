@@ -215,7 +215,7 @@ export interface JsonCreationContactEditeurRequest {
 
 export interface JsonCreationEditeurRequest {
   nom: string;
-  identifiantBis: number;
+  identifiantBis: string;
   typesEtablissements: Array<string>;
   adresse: string;
   contactsCommerciaux: Array<JsonCreationContactEditeurRequest>;
@@ -239,7 +239,7 @@ export interface JsonContactEditeurResponse {
 export interface JsonEditeurResponse {
   id: number;
   nom: string;
-  identifiantBis: number;
+  identifiantBis: string;
   dateCreation: string;
   typesEtablissements: Array<string>;
   adresse: string;
@@ -258,7 +258,7 @@ export interface JsonModificationContactEditeurRequest {
 export interface JsonModificationEditeurRequest {
   id: number;
   nom: string;
-  identifiantBis: number;
+  identifiantBis: string;
   typesEtablissements: Array<string>;
   adresse: string;
   contactsCommerciaux: Array<JsonModificationContactEditeurRequest>;

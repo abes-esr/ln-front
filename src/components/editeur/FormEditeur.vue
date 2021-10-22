@@ -10,6 +10,9 @@
         </v-card-title>
         <v-card-text>
           <v-card flat>
+            <v-alert dense outlined :value="alert" type="error">
+              {{ error }}
+            </v-alert>
             <v-card-title>Information de l'éditeur</v-card-title>
             <v-card-text>
               <v-row>
@@ -50,7 +53,7 @@
                                 : ''
                             "
                           >
-                            {{ icon }}
+                            {{ iconEtab }}
                           </v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
@@ -102,12 +105,7 @@
                   class="ma-2 white--text"
                   @click="addContact()"
               >
-                <v-icon
-                    left
-                    dark
-                >
-                  mdi-plus
-                </v-icon>
+                <font-awesome-icon :icon="['fas', 'plus']" class="mx-2" />
                 Ajouter un contact
               </v-btn>
             </v-card-actions>
@@ -117,11 +115,10 @@
           <v-row>
             <v-col cols="9"></v-col>
             <v-col>
-              <v-btn @click="clear()">Annuler</v-btn>
-              <v-btn
-                  @click="validate()"
-                  :loading="buttonLoading"
-                  color="success"
+              <v-btn  @click="clear()" color="grey"    class="mx-2"
+              >Vider
+                </v-btn>
+              <v-btn  @click="validate()"     :loading="buttonLoading" class="btn-1 mx-2"
               >Valider
               </v-btn>
             </v-col>
@@ -129,9 +126,6 @@
         </v-card-actions>
       </v-form>
     </v-card>
-    <v-alert dense outlined :value="alert" type="error">
-      {{ error }}
-    </v-alert>
   </div>
 </template>
 
@@ -189,14 +183,7 @@ export default class ComposantEditeur extends Vue {
 
   constructor() {
     super();
-    this.editeur = this.getCurrentEditeur;
-  }
-
-  /**
-   * A la mise à jour du composant
-   */
-  updated() {
-    this.editeur = this.getCurrentEditeur;
+      this.editeur = this.getCurrentEditeur;
   }
 
   get getCurrentEditeur(): Editeur {
@@ -211,7 +198,7 @@ export default class ComposantEditeur extends Vue {
     return this.editeur.groupesEtabRelies.length > 0 && !this.tousTypesEtab;
   }
 
-  get icon() {
+  get iconEtab() {
     if (this.tousTypesEtab) return "mdi-close-box";
     if (this.certainsTypesEtab) return "mdi-minus-box";
     return "mdi-checkbox-blank-outline";
@@ -264,7 +251,7 @@ export default class ComposantEditeur extends Vue {
   addContact(): void {
     Logger.debug("Ajout d'un contact par défaut");
     const contact = new ContactEditeur();
-    this.editeur.addContact(contact);
+    this.editeur.addContact(contact)
   }
 
   removeContact(item: ContactEditeur): void {
@@ -323,29 +310,14 @@ export default class ComposantEditeur extends Vue {
   }
 
   clear() {
+    this.buttonLoading = false;
+    this.alert = false;
     (this.$refs.formEditeur as HTMLFormElement).reset(); // Formulaire editeur
 
     for (let index = 0; index < this.editeur.contacts.length; index++) {
       // Formulaire contact
-      this.$refs["contactForm_" + index][0].reset();
+      this.$refs["contactForm_" + index][0].clear();
     }
-  }
-
-  private fetchEditeur() {
-    editeurService
-        .getEditeur(this.editeur.id, this.$store.getters.getToken())
-        .then(res => {
-          this.editeur = res;
-        })
-        .catch(err => {
-          this.alert = true;
-          Logger.error(err.toString());
-          if (err instanceof LicencesNationalesUnauthorizedApiError) {
-            this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
-          } else {
-            this.error = "Impossible de charger l'éditeur : " + err.message;
-          }
-        });
   }
 }
 </script>

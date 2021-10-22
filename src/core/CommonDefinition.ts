@@ -12,13 +12,12 @@ export interface SegmentPlage {
   value: string;
 }
 
-export interface EditeurItem {
-  id: string;
-  dateCreation: string;
-  nomEditeur: string;
-}
-
 export enum ContactType {
   TECHNIQUE,
   COMMERCIAL
+}
+
+export interface ConfirmPopupOptions {
+  color: string;
+  width: number;
 }
