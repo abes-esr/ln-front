@@ -105,35 +105,37 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    userSiren: state => () => {
+    userSiren: state => ():string => {
       return state.user.siren;
     },
-    userEtab: state => () => {
+    userEtab: state => ():string => {
       return state.user.nameEtab;
     },
-    getToken: state => () => {
+    getToken: state => ():string => {
       return state.user.token;
     },
-    isLoggedIn: state => () => {
+    isLoggedIn: state => ():boolean => {
       return state.user.isLoggedIn;
     },
-    isAdmin: state => () => {
+    isAdmin: state => (): boolean => {
       return state.user.isAdmin;
     },
-    isDark: state => () => {
+    isDark: state => ():boolean => {
       return state.darkTheme;
     },
-    notification: state => () => {
+    notification: state => ():string => {
       return state.notification;
     },
-    creationCompteEffectuee: state => () => {
+    creationCompteEffectuee: state => ():boolean => {
       return state.creationCompteEffectuee;
     },
-    sirenEtabSiAdmin: state => () => {
+    sirenEtabSiAdmin: state => (): string => {
       return state.sirenEtabSiAdmin;
     },
-    getCurrentEditeur: state => () => {
-      return state.currentEditeur;
+    getCurrentEditeur: state => (): Editeur => {
+      const editeur = new Editeur();
+      Object.assign(editeur,state.currentEditeur);
+      return editeur;
     }
   },
   plugins: [createPersistedState()]

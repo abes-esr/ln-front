@@ -5,6 +5,9 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { VueReCaptcha } from "vue-recaptcha-v3";
 import { Logger } from "@/utils/Logger";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 
 // Handle all Vue errors
 Vue.config.errorHandler = error =>
@@ -18,6 +21,9 @@ if (process.env.VUE_APP_RECAPTCHA_KEY_SITE == "") {
 
 Vue.use(VueReCaptcha, { siteKey: process.env.VUE_APP_RECAPTCHA_KEY_SITE });
 
+library.add(fas); // Import de toutes les icones
+Vue.component("font-awesome-icon", FontAwesomeIcon);
+
 new Vue({
   router,
   store,
@@ -30,9 +36,3 @@ export const IpChangeEvent = new Vue();
 export const GetTypeIpFromModifierAccesEvent = new Vue();
 export const AjouterAccesSubmitEvent = new Vue();
 export const FormModuleSegmentsIpPlageEvent = new Vue();
-export const AjouterContactsCommerciauxEditeurEvent = new Vue();
-export const AjouterContactsTechniquesEditeurEvent = new Vue();
-export const ModifierContactsCommerciauxEditeurEvent = new Vue();
-export const ModifierContactsTechniquesEditeurEvent = new Vue();
-export const FormModuleContactCommercialEvent = new Vue();
-export const FormModuleContactTechniqueEvent = new Vue();

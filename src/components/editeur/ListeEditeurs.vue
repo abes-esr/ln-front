@@ -1,114 +1,115 @@
 <template>
   <div>
-    <v-card width="100%">
+    <v-card width="100%" :disabled="disableForm">
+      <confirm-popup ref="confirm"></confirm-popup>
+      <v-card-title>Gestion des Editeurs</v-card-title>
       <v-card-text>
-        <v-row>
-          <v-col lg="12" md="12" xs="12">
-            <v-row>
-              <v-col cols="12" sm="12">
-                <v-card class="mx-auto" tile>
-                  <v-card-title>Liste des Editeurs</v-card-title>
-                  <v-row>
-                    <v-col cols="1" />
-                    <v-col cols="10">
-                      <v-data-table
-                        dense
-                        :headers="headers"
-                        :items="editeurs"
-                        :items-per-page="10"
-                        class="elevation-1"
-                        :search="rechercher"
-                        id="mytable"
-                      >
-                        <template v-slot:header.statut="{ header }">
-                          {{ header.text }}
-                        </template>
-                        <template v-slot:top>
-                          <v-row>
-                            <v-col cols="12" sm="6"></v-col>
-                            <v-col cols="12" sm="6">
-                              <v-text-field
-                                v-model="rechercher"
-                                label="Chercher sur toutes les colonnes"
-                                class="mx-4"
-                                prepend-inner-icon="mdi-magnify"
-                                outlined
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                        </template>
-                        <template v-slot:item.dateCreation="{ item }">
-                          <span>{{ item.dateCreation.toLocaleString() }}</span>
-                        </template>
-                        <template v-slot:[`item.action`]="{ item }">
-                          <v-icon
-                            small
-                            class="mr-2"
-                            @click="modifierEditeur(item)"
-                            >mdi-pencil</v-icon
-                          >
-                          <v-icon small @click="$set(confirmDeleteDialog, item.id, true)"
-                            >mdi-delete</v-icon
-                          >
-                          <v-dialog
-                              v-model="confirmDeleteDialog[item.id]"
-                              width="500"
-                              :key="item.id"
-                          >
-                            <v-card>
-                              <v-card-title class="text-h5">
-                                Confirmation de suppression
-                              </v-card-title>
-
-                              <v-card-text>
-                                Êtes-vous sûr de vouloir supprimer l'éditeur
-                                {{ item.nom }} ?
-                              </v-card-text>
-
-                              <v-divider></v-divider>
-
-                              <v-card-actions>
-                                <v-btn
-                                    color="primary"
-                                    text
-                                    @click="$set(confirmDeleteDialog, item.id, false)"
-                                >
-                                  Non
-                                </v-btn>
-                                <v-spacer></v-spacer>
-                                <v-btn color="primary" text @click="supprimerEditeur(item)">
-                                  Oui
-                                </v-btn>
-                              </v-card-actions>
-                            </v-card>
-                          </v-dialog>
-                        </template>
-                      </v-data-table>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" sm="7"></v-col>
-                    <v-col cols="12" sm="2"> </v-col>
-                    <v-col cols="12" sm="3">
-                      <v-btn @click="ajouterEditeur()" color="warning"
-                        ><br />Nouvel éditeur</v-btn
-                      >
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-col>
+        <v-row class="d-flex flex-row-reverse">
+          <v-btn @click="scissionEditeur()" class="btn-1 mx-2" :disabled="true"
+            >Scission
+            <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2"
+          /></v-btn>
+          <v-btn @click="fusionEditeur()" class="btn-1 mx-2" :disabled="true"
+            >Fusion
+            <font-awesome-icon :icon="['fas', 'object-group']" class="mx-2"
+          /></v-btn>
+          <v-btn @click="ajouterEditeur()" class="btn-1 mx-2"
+            >Créer un éditeur
+            <font-awesome-icon :icon="['fas', 'plus']" class="mx-2"
+          /></v-btn>
+        </v-row>
+        <v-row class="d-flex justify-space-around">
+          <v-alert
+            dense
+            outlined
+            :value="alert"
+            type="error"
+            width="30vw"
+            class="multi-line"
+          >
+            {{ error }}
+          </v-alert>
+        </v-row>
+        <v-row class="d-flex justify-space-around">
+          <v-alert
+            dense
+            outlined
+            :value="notification !== ''"
+            type="success"
+            width="30vw"
+            class="multi-line"
+          >
+            {{ notification }}
+          </v-alert>
+        </v-row>
+        <v-row class="d-flex justify-space-around ma-0">
+          <v-card
+            width="60vw"
+            outlined
+            class="my-6 px-6 justify-center elevation-0"
+          >
+            <v-data-table
+              dense
+              :headers="headers"
+              :items="editeurs"
+              :items-per-page="10"
+              class="elevation-0"
+              :search="rechercher"
+              id="mytable"
+            >
+              <template v-slot:header.statut="{ header }">
+                {{ header.text }}
+              </template>
+              <template v-slot:top>
+                <v-row class="d-flex flex-row-reverse mt-3">
+                  <v-text-field
+                    v-model="rechercher"
+                    label="Chercher dans tous les éditeurs"
+                    class="mx-4"
+                    prepend-inner-icon="mdi-magnify"
+                    outlined
+                    dense
+                  ></v-text-field>
+                  <v-spacer></v-spacer>
+                </v-row>
+                <v-row class="d-flex mt-1 mb-3">
+                  <v-btn
+                    @click="downloadEditeurs()"
+                    color="grey lighten-3"
+                    class="mx-2 text-lowercase btn-2"
+                    ><span class="text-uppercase">T</span>élécharger tous les
+                    éditeurs
+                    <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
+                  /></v-btn>
+                </v-row>
+              </template>
+              <template v-slot:item.dateCreation="{ item }">
+                <span>{{ item.dateCreation.toLocaleDateString() }}</span>
+              </template>
+              <template v-slot:[`item.action`]="{ item }">
+                <v-btn
+                  class="ma-0 pa-0"
+                  color="primary"
+                  icon
+                  @click="modifierEditeur(item)"
+                >
+                  <font-awesome-icon :icon="['fas', 'edit']" />
+                </v-btn>
+                <v-btn
+                  class="ma-0 pa-0 "
+                  color="primary"
+                  icon
+                  @click="supprimerEditeur(item)"
+                >
+                  <font-awesome-icon :icon="['fas', 'trash']" />
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-card>
         </v-row>
       </v-card-text>
     </v-card>
     <br />
-    <v-alert dense outlined :value="alert" type="error">
-      {{ error }}
-    </v-alert>
-    <v-alert dense outlined :value="notification !== ''" type="success">
-      {{ notification }}
-    </v-alert>
   </div>
 </template>
 <style src="./style.css"></style>
@@ -120,9 +121,13 @@ import Editeur from "@/core/Editeur";
 import { Action } from "@/core/CommonDefinition";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
+import ConfirmPopup from "@/components/ConfirmPopup.vue";
 
-@Component
+@Component({
+  components: { ConfirmPopup }
+})
 export default class ListeEditeurs extends Vue {
+  disableForm: boolean = false;
   rechercher: string = "";
   editeurs: Array<Editeur> = [];
   title: string = "";
@@ -131,12 +136,12 @@ export default class ListeEditeurs extends Vue {
   alert: boolean = false;
   headers: Array<any> = [
     {
-      text: "Date de création",
+      text: "Date de création du compte éditeur",
       align: "start",
       value: "dateCreation",
       sortable: true
     },
-    { text: "Editeur", value: "nom", sortable: true },
+    { text: "Nom de l'éditeur", value: "nom", sortable: true },
     { text: "Action", value: "action", sortable: false }
   ];
   confirmDeleteDialog: any = {};
@@ -157,6 +162,8 @@ export default class ListeEditeurs extends Vue {
 
   fetchEditeurs(): void {
     this.alert = false;
+    this.disableForm = false;
+    this.$store.dispatch("setNotification", "");
 
     editeurService
       .getEditeurs(this.$store.getters.getToken())
@@ -167,7 +174,11 @@ export default class ListeEditeurs extends Vue {
         this.alert = true;
         Logger.error(err.toString());
         if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          this.disableForm = true;
           this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
+          setTimeout(() => {
+            this.$router.push({ name: "Home" });
+          }, 2000);
         } else {
           this.error = "Impossible de charger les éditeurs : " + err.message;
         }
@@ -202,20 +213,28 @@ export default class ListeEditeurs extends Vue {
       });
   }
 
-  supprimerEditeur(item: Editeur): void {
+  async supprimerEditeur(item: Editeur) {
     this.alert = false;
-    this.$set(this.confirmDeleteDialog, item.id, false);
 
-    editeurService
-      .deleteEditeur(item.id, this.$store.getters.getToken())
-      .then(response => {
-        this.fetchEditeurs();
-      })
-      .catch(err => {
-        Logger.error(err);
-        this.error = "Impossible de supprimer cet éditeur : " + err.message;
-        this.alert = true;
-      });
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      "Suppression",
+      `Vous êtes sur le point de supprimer le compte de l'éditeur ${item.nom} <br />
+                Etes-vous sûr de vouloir continuer ?`
+    );
+    if (confirmed) {
+      editeurService
+        .deleteEditeur(item.id, this.$store.getters.getToken())
+        .then(response => {
+          this.fetchEditeurs();
+          this.$store.dispatch("setNotification", `L'éditeur ${ item.nom} a bien été supprimé`);
+
+        })
+        .catch(err => {
+          Logger.error(err);
+          this.error = "Impossible de supprimer cet éditeur : " + err.message;
+          this.alert = true;
+        });
+    }
   }
 }
 </script>
