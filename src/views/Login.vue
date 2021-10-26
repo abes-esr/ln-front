@@ -39,7 +39,7 @@
           <v-col cols="4" class="createAccountLinks">
             <a
               v-if="!forgotPasswordVisible"
-              @click="$router.push({ path: '/creationCompte' })"
+              @click="creerCompte"
               ><br />Créer un compte</a
             ></v-col
           ></v-row
@@ -53,11 +53,17 @@
 import { Component, Vue } from "vue-property-decorator";
 import FormLogin from "../components/login/FormLogin.vue";
 import ForgotPassword from "../components/login/ForgotPassword.vue";
+import {Logger} from "@/utils/Logger";
 
 @Component({
   components: { FormLogin, ForgotPassword }
 })
 export default class App extends Vue {
   forgotPasswordVisible: boolean = false;
+  creerCompte(){
+    this.$router.push({ name: "CreationEtablissement" }).catch(err => {
+      Logger.debug("Ca marche pas : " + err);
+    });
+  }
 }
 </script>

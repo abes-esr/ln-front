@@ -1,17 +1,17 @@
 <template>
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
-      <form-creation-compte />
+      <form-etablissement/>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import FormCreationCompte from "../components/etablissement/FormCreationCompte.vue";
+import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
 
 @Component({
-  components: { FormCreationCompte }
+  components: { FormEtablissement }
 })
 export default class CreationCompte extends Vue {}
 </script>

@@ -134,28 +134,28 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    userSiren: state => ():string => {
+    userSiren: state => (): string => {
       return state.user.siren;
     },
-    userEtab: state => ():string => {
+    userEtab: state => (): string => {
       return state.user.nameEtab;
     },
-    getToken: state => ():string => {
+    getToken: state => (): string => {
       return state.user.token;
     },
-    isLoggedIn: state => ():boolean => {
+    isLoggedIn: state => (): boolean => {
       return state.user.isLoggedIn;
     },
     isAdmin: state => (): boolean => {
       return state.user.isAdmin;
     },
-    isDark: state => ():boolean => {
+    isDark: state => (): boolean => {
       return state.darkTheme;
     },
-    notification: state => ():string => {
+    notification: state => (): string => {
       return state.notification;
     },
-    creationCompteEffectuee: state => ():boolean => {
+    creationCompteEffectuee: state => (): boolean => {
       return state.creationCompteEffectuee;
     },
     sirenEtabSiAdmin: state => (): string => {
@@ -166,7 +166,7 @@ export default new Vuex.Store({
       Object.assign(editeur, state.currentEditeur);
       return editeur;
     },
-    getCurrentEtablissement: state => () => {
+    getCurrentEtablissement: state => (): Etablissement => {
       const etablissement = new Etablissement();
       Object.assign(etablissement, state.currentEtablissement);
       return etablissement;

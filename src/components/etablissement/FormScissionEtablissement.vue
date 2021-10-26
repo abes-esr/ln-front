@@ -25,12 +25,12 @@
                       ></v-text-field>
                     </v-card-text>
                   </v-card>
-                  <form-etab
+                  <form-etablissement
                     :bus="bus"
                     v-on:formEtab="send"
                     v-for="n in etablissementNumber"
                     :key="n"
-                  ></form-etab>
+                  ></form-etablissement>
                 </v-col>
               </v-row>
             </v-col>
@@ -81,13 +81,13 @@
 </template>
 <style src="./style.css"></style>
 <script lang="ts">
-import FormEtab from "@/components/etablissement/FormEtab.vue";
+import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
 import { Logger } from "@/utils/Logger";
 import { Component, Vue } from "vue-property-decorator";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 
 @Component({
-  components: { FormEtab }
+  components: { FormEtablissement }
 })
 export default class FormScissionEtablissement extends Vue {
   sirenEtab: string = "";

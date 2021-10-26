@@ -60,18 +60,18 @@
                           <v-icon
                             small
                             class="mr-2"
-                            @click="modifierEtab(item.siren)"
+                            @click="modifierEtab(item)"
                             >mdi-pencil</v-icon
                           >
                           <v-icon
                             small
                             class="mr-2"
-                            @click="listeAcces(item.siren)"
+                            @click="listeAcces(item)"
                             >mdi-ip-network</v-icon
                           >
                           <v-icon
                             small
-                            @click.stop="openDialogSuppression(item.siren)"
+                            @click.stop="openDialogSuppression(item)"
                             >mdi-delete</v-icon
                           >
                         </template>
@@ -158,6 +158,7 @@ import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import Etablissement from "@/core/Etablissement";
 
 @Component
 export default class ListeEtab extends Vue {
@@ -169,7 +170,7 @@ export default class ListeEtab extends Vue {
     "Aucune IP"
   ];
   rechercher: string = "";
-  etab: Array<string> = [];
+  etabs: Array<Etablissement> = [];
   title: string = "";
   id: string = "";
   error: string = "";
@@ -210,7 +211,7 @@ export default class ListeEtab extends Vue {
     return this.$store.getters.userSiren();
   }
 
-  get filteredEtabByStatut(): string[] {
+  get filteredEtabByStatut(): Array<Etablissement> {
     Logger.debug("debut filteredEtabByStatut");
     const conditions = [] as any;
     Logger.debug("this.statut = " + this.statut);
@@ -218,18 +219,18 @@ export default class ListeEtab extends Vue {
       conditions.push(this.filterStatut);
     }
     if (conditions.length > 0) {
-      return this.etab.filter(acces => {
+      return this.etabs.filter(acces => {
         return conditions.every(condition => {
           return condition(acces);
         });
       });
     }
-    return this.etab;
+    return this.etabs;
   }
   mounted() {
     moment.locale("fr");
     this.collecterEtab();
-    this.id = this.getIdEtab(this.etab);
+    this.id = this.getIdEtab(this.etabs);
   }
 
   getIdEtab(etab) {
@@ -244,7 +245,7 @@ export default class ListeEtab extends Vue {
   collecterEtab(): any {
     this.getAll()
       .then(response => {
-        this.etab = response.data.map(this.affichageEtab);
+        this.etabs = response.data.map(this.affichageEtab);
         Logger.debug(response.data);
       })
       .catch(e => {
@@ -304,11 +305,18 @@ export default class ListeEtab extends Vue {
     this.collecterEtab();
   }
 
-  modifierEtab(sirenParam): void {
-    this.$router.push({
-      name: "modifierEtabAdmin",
-      params: { sirenParam: sirenParam }
-    });
+  modifierEtab(item: Etablissement): void {
+    this.alert = false;
+    this.$store
+        .dispatch("setCurrentEtablissement", item)
+        .then(() => {
+          this.$router.push({ name: "Modi" });
+        })
+        .catch(err => {
+          Logger.error(err);
+          this.error = "Impossible de modifier cet éditeur : " + err.message;
+          this.alert = true;
+        });
   }
 }
 </script>

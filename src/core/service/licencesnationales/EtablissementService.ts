@@ -3,15 +3,53 @@ import { LicencesNationalesApiService } from "@/core/service/licencesnationales/
 import Etablissement from "@/core/Etablissement";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import Ip from "@/core/Ip";
-import {Logger} from "@/utils/Logger";
+import { Logger } from "@/utils/Logger";
+import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import Editeur from "@/core/Editeur";
+import { ContactType } from "@/core/CommonDefinition";
+import {
+  JsonCreationContactEditeurRequest,
+  JsonCreationEditeurRequest
+} from "@/core/service/licencesnationales/EditeurService";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**
    * Appel API pour créer un nouveau compte
-   * @param data Json de création d'un nouveau compte à l'API LicencesNationales
+   *
    */
-  creationCompte(data: JsonCreateAccount): Promise<AxiosResponse> {
-    return this.client.put("/etablissements", data);
+  creerEtablissement(
+    etablissement: Etablissement,
+    recaptcha: string
+  ): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const jsonContact: JsonCreateContact = {
+        nom: etablissement.contact.nom,
+        prenom: etablissement.contact.prenom,
+        adresse: etablissement.contact.adresse,
+        boitePostale: etablissement.contact.boitePostale,
+        codePostal: etablissement.contact.codePostal,
+        ville: etablissement.contact.ville,
+        cedex: etablissement.contact.cedex,
+        telephone: etablissement.contact.telephone,
+        mail: etablissement.contact.mail,
+        motDePasse: etablissement.contact.motDePasse
+      };
+      const json: JsonCreateAccount = {
+        nom: etablissement.nom,
+        siren: etablissement.siren,
+        typeEtablissement: etablissement.typeEtablissement,
+        recaptcha: recaptcha,
+        contact: jsonContact
+      };
+      return this.client
+        .put("/etablissements/", json)
+        .then(result => {
+          resolve(true);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {
@@ -44,7 +82,7 @@ export class EtablissementService extends LicencesNationalesApiService {
           etablissement.typeEtablissement = response.typeEtablissement;
           etablissement.statut = response.statut;
           etablissement.idAbes = response.idAbes;
-          etablissement.contact = response.contact; //todo: à tester
+          etablissement.contact = response.contact;
           resolve(etablissement);
         })
         .catch(err => {
@@ -73,11 +111,11 @@ export class EtablissementService extends LicencesNationalesApiService {
       const json: JsonUpdateProfile = {
         siren: etablissement.siren,
         contact: jsonContact,
-        role: "etab" //role de l'utilisateur qui modifie
+        role: "etab" //role de l'utilisateur qui modifie todo isAdmin ? userRole ? changer la signature ?
       };
 
       return this.client
-        .post("/etablissements/"+etablissement.siren, json, token)
+        .post("/etablissements/" + etablissement.siren, json, token)
         .then(result => {
           resolve(true);
         })

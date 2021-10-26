@@ -397,7 +397,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import {Component, Prop, Vue} from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { serviceGouv } from "@/core/service/data.gouv/DataGouvApiService";
 import { SirenNotFoundError } from "@/core/service/data.gouv/exception/SirenNotFoundError";
@@ -405,29 +405,20 @@ import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesn
 import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApiError";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { rulesForms } from "@/core/RulesForm";
+import Etablissement from "@/core/Etablissement";
+import {Action} from "@/core/CommonDefinition";
+import Editeur from "@/core/Editeur";
 
 @Component
-export default class FormCreationCompte extends Vue {
+export default class FormEtablissement extends Vue {
+  etablissement: Etablissement;
+  @Prop() action!: Action;
+  Action: any = Action;
   rulesForms: any = rulesForms;
   show1: boolean = false;
   isValid: Promise<boolean> = this.$recaptchaLoaded();
   token: string = "";
-  nomEtab: string = "";
-  sirenEtab: string = "";
   typesEtab: Array<string> = [];
-  typeEtab: string = "";
-  nomContact: string = "";
-  prenomContact: string = "";
-  adresseContact: string = "";
-  boitePostaleContact: string = "";
-  codePostalContact: string = "";
-  villeContact: string = "";
-  cedexContact: string = "";
-  telContact: string = "";
-  emailContact: string = "";
-  confirmEmailContact: string = "";
-  passContact: string = "";
-  confirmPassContact: string = "";
   checkSirenAPI: string = "En attente de vérification";
   checkSirenColor: string = "grey";
   buttonLoading: boolean = false;
@@ -436,27 +427,17 @@ export default class FormCreationCompte extends Vue {
   dialog: boolean = false;
   dialogAvailable: boolean = false;
 
-  get confirmEmailContactRule() {
-    return () =>
-      this.confirmEmailContact === this.emailContact ||
-      "L'adresse mail de confirmation n'est pas valide";
+  constructor() {
+    super();
+    this.etablissement = this.getCurrentEtablissement;
   }
 
-  get confirmPassContactRule() {
-    return () =>
-      this.confirmPassContact === this.passContact ||
-      "Le mot de passe de confirmation n'est pas valide";
+  update(){
+    this.etablissement = this.getCurrentEtablissement;
   }
 
-  get loggedIn() {
-    return this.$store.state.user.isLoggedIn;
-  }
-
-  mounted() {
-    if (this.loggedIn) {
-      this.$router.push("/profile");
-    }
-    this.fetchListeType();
+  get getCurrentEtablissement(): Etablissement {
+    return this.$store.getters.getCurrentEtablissement();
   }
 
   async recaptcha() {
@@ -470,30 +451,10 @@ export default class FormCreationCompte extends Vue {
     this.validate();
   }
 
-  //si on veut faire la verif du score sur le front et pas le back on peut faire comme ceci :
-  /*isHuman(getToken: any) {
-      const endpoint = `${process.env.VUE_APP_RECAPTCHA_VERIFY_URL}?response=${getToken}&secret=${process.env.VUE_APP_RECAPTCHA_KEY_SITE}`;
-      Logger.debug(
-        "requete axios = " +
-          axios
-            .post(endpoint)
-            .then(
-              ({ data }) =>
-                data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD
-            )
-      );
-      return axios
-        .post(endpoint)
-        .then(
-          ({ data }) =>
-            data.score > process.env.VUE_APP_RECAPTCHA_SCORE_THRESHOLD
-        );
-    },*/
-
   validate(): void {
     this.alert = false;
     this.error = "";
-    //this.recaptcha();
+    this.recaptcha();
     //if (this.isHuman(this.recaptcha()) {
     if (this.token != null) {
       if (
@@ -511,29 +472,12 @@ export default class FormCreationCompte extends Vue {
     this.alert = false;
 
     etablissementService
-      .creationCompte({
-        nom: this.nomEtab,
-        siren: this.sirenEtab,
-        typeEtablissement: this.typeEtab,
-        recaptcha: this.token,
-        contact: {
-          nom: this.nomContact,
-          prenom: this.prenomContact,
-          adresse: this.adresseContact,
-          boitePostale: this.boitePostaleContact,
-          codePostal: this.codePostalContact,
-          ville: this.villeContact,
-          cedex: this.cedexContact,
-          telephone: this.telContact,
-          mail: this.emailContact,
-          motDePasse: this.passContact
-        }
-      })
+      .creerEtablissement(this.etablissement, this.token)
       .then(response => {
         this.buttonLoading = false;
-        Logger.debug("notification = " + response.data);
+        Logger.debug("notification = " + "l'établissement à bien été créé");
         //this.setNotification(response.data);
-        this.$store.dispatch("setNotification", response.data).catch(err => {
+        this.$store.dispatch("setNotification", "l'établissement à bien été créé").catch(err => {
           Logger.error(err);
         });
         this.$store.dispatch("setCreationCompteEffectueeTrue").catch(err => {
@@ -568,10 +512,10 @@ export default class FormCreationCompte extends Vue {
   checkSiren(): void {
     this.checkSirenAPI = "Vérification du SIREN en cours...";
     this.checkSirenColor = "grey";
-    if (this.sirenEtab.length === 9) {
+    if (this.etablissement.siren.length === 9) {
       this.dialogAvailable = true;
       serviceGouv
-        .checkSiren(this.sirenEtab)
+        .checkSiren(this.etablissement.siren)
         .then(() => {
           this.checkSirenAPI = "valide";
           this.checkSirenColor = "green";

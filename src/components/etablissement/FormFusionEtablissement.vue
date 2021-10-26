@@ -35,7 +35,7 @@
                       </v-btn>
                     </v-card-actions>
                   </v-card>
-                  <form-etab :bus="bus" v-on:formEtab="send"></form-etab>
+                  <form-etablissement :bus="bus" v-on:formEtab="send"></form-etablissement>
                 </v-col>
               </v-row>
             </v-col>
@@ -72,9 +72,10 @@ import FormEtab from "@/components/etablissement/FormEtab.vue";
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
 
 @Component({
-  components: { FormEtab }
+  components: { FormEtablissement }
 })
 export default class FormFusionEtablissement extends Vue {
   sirenEtab: Array<string> = [];

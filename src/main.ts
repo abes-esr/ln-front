@@ -5,8 +5,14 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { VueReCaptcha } from "vue-recaptcha-v3";
 import { Logger } from "@/utils/Logger";
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 import { library } from "@fortawesome/fontawesome-svg-core";
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 import { fas } from "@fortawesome/free-solid-svg-icons";
 
 // Handle all Vue errors

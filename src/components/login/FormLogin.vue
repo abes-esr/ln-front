@@ -109,7 +109,6 @@ import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class FormLogin extends Vue {
-
   rulesForms: any = rulesForms;
   siren: string = "";
   password: string = "";

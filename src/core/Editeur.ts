@@ -24,7 +24,9 @@ export default class Editeur {
   }
 
   removeContact(item: ContactEditeur): void {
-    const index = this.contacts.findIndex(x => (x.id === item.id && x.nom === item.nom));
+    const index = this.contacts.findIndex(
+      x => x.id === item.id && x.nom === item.nom
+    );
     if (index == -1) {
       throw new ValueError("Contact " + item + " not found");
     }
