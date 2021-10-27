@@ -22,7 +22,7 @@ export class AuthentificationService extends LicencesNationalesApiService {
           const user:User = new User();
           user.id = response.id;
           user.token = response.accessToken;
-          user.nameEtab = response.nameEtab;
+          user.nameEtab = response.userNameEtab;
           user.siren = response.userSiren;
           user.isAdmin = response.role==="admin"?true:false;
           user.isLoggedIn = true;
@@ -136,7 +136,7 @@ export interface JsonLoginRequest {
 export interface JsonLoginResponse {
   accessToken: string;
   tokenType: string;
-  nameEtab: string;
+  userNameEtab: string;
   isAdmin: boolean;
   userSiren: string;
   id: number;

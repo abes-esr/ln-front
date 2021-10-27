@@ -2,7 +2,7 @@
   <div>
     <v-card width="100%" :disabled="disableForm">
       <confirm-popup ref="confirm"></confirm-popup>
-      <v-card-title>Gestion des Editeurs</v-card-title>
+      <v-card-title><h1>Gestion des Editeurs</h1></v-card-title>
       <v-card-text>
         <v-row class="d-flex flex-row-reverse">
           <v-btn @click="scissionEditeur()" class="btn-1 mx-2" :disabled="true"

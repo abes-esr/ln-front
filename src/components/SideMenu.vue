@@ -1,156 +1,114 @@
 <template>
   <v-navigation-drawer
-      v-if="displayMenu"
-      app
-      clipped
-      styles="width:30wv"
-      flat
-      hide-overlay
-      permanent
-      :visible="displayMenu"
+    v-if="displayMenu"
+    app
+    clipped
+    width="6vw"
+    flat
+    hide-overlay
+    permanent
+    :visible="displayMenu"
   >
-    <v-list dense rounded color="transparent">
-      <v-col cols="1" sm="1"></v-col>
-      <v-col cols="1" sm="1">
-        <v-row>
-          <v-list-item v-on:click="saveTheme()">
-            <v-switch v-model="$vuetify.theme.dark" inset></v-switch>
-            <v-list-item-title>Thème sombre</v-list-item-title>
-          </v-list-item>
-        </v-row>
+    <v-list dense color="transparent">
+      <v-row class="mb-15">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="saveTheme()"
+        >
+          <v-switch v-model="$vuetify.theme.dark" inset></v-switch>
+          <v-list-item-title>Thème sombre</v-list-item-title>
+        </v-list-item>
+      </v-row>
 
-        <v-row>
-          <v-list-item
-            v-on:click="$router.push({ name: 'Home' }).catch(err => {})"
-          >
-            <v-list-item-action>
-              <v-icon>mdi-home</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Accueil</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
+      <v-row class="mb-5">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="allerATableauDeBord()"
+        >
+          <v-list-item-action class="ma-0">
+            <font-awesome-icon :icon="['fas', 'tachometer-alt']" size="2x" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Tableau de bord</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-row>
 
-        <v-row v-if="!isAdmin">
-          <v-list-item
-            v-on:click="$router.push({ name: 'ListeAcces' }).catch(err => {})"
-          >
-            <v-list-item-action>
-              <v-icon>mdi-ip-network</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Mes IPs</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
-        <v-row v-else></v-row>
+      <v-row v-if="isAdmin" class="mb-5">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="allerAListeEtabs()"
+        >
+          <v-list-item-action class="ma-0">
+            <font-awesome-icon :icon="['fas', 'university']" size="2x" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Liste etabs</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-row>
 
-        <v-row v-if="isAdmin">
-          <v-list-item
-            v-on:click="$router.push({ name: 'ListeEtab' }).catch(err => {})"
-          >
-            <v-list-item-action>
-              <v-icon>mdi-format-list-bulleted</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Etablissements</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
-        <v-row v-else></v-row>
+      <v-row v-if="isAdmin" class="mb-5">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="allerAListeEditeurs()"
+        >
+          <v-list-item-action class="ma-0">
+            <font-awesome-icon :icon="['fas', 'list']" size="2x" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Liste éditeurs</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-row>
 
-        <v-row v-if="isAdmin">
-          <v-list-item
-            v-on:click="
-              $router.push({ name: 'ListeEditeurs' }).catch(err => {})
-            "
-          >
-            <v-list-item-action>
-              <v-icon>mdi-format-list-bulleted</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Editeurs</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
-        <v-row v-else></v-row>
+      <v-row v-if="isAdmin" class="mb-5">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="allerAStatitique()"
+        >
+          <v-list-item-action class="ma-0">
+            <font-awesome-icon :icon="['fas', 'chart-bar']" size="2x" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Statistique de l'application</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-row>
 
-        <v-row v-if="!isAdmin">
-          <v-list-item
-            v-on:click="$router.push({ name: 'Profil' }).catch(err => {})"
-          >
-            <v-list-item-action>
-              <v-icon>mdi-account-box</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Modifier profil</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
+      <v-row v-if="isAdmin" class="mb-5">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="allerAHistorique()"
+        >
+          <v-list-item-action class="ma-0">
+            <font-awesome-icon :icon="['fas', 'history']" size="2x" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Historique des actions</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-row>
 
-        <v-row>
-          <v-list-item
-            v-on:click="$router.push({ name: 'Password' }).catch(err => {})"
-          >
-            <v-list-item-action>
-              <v-icon>mdi-lock</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Modifier mon mot de passe</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
-
-        <v-row v-if="isAdmin">
-          <v-list-item
-            v-on:click="
-              $router.push({ name: 'scissionEtablissement' }).catch(err => {})
-            "
-          >
-            <v-list-item-action>
-              <v-icon>mdi-set-split</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Scission établissements</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
-        <v-row v-else></v-row>
-
-        <v-row v-if="isAdmin">
-          <v-list-item
-            v-on:click="
-              $router.push({ name: 'fusionEtablissement' }).catch(err => {})
-            "
-          >
-            <v-list-item-action>
-              <v-icon>mdi-set-merge</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Fusion établissements</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
-        <v-row v-else></v-row>
-
-        <v-row>
-          <v-list-item v-on:click="disconnect()">
-            <v-list-item-action>
-              <v-icon>mdi-logout</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Se déconnecter</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-row>
-      </v-col>
+      <v-row v-if="!isAdmin" class="mb-5">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="allerAListeIPs()"
+        >
+          <v-list-item-action class="ma-0">
+            <font-awesome-icon :icon="['fas', 'sign-out-alt']" size="2x" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Mes IPs</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-row>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 
 @Component
@@ -163,12 +121,30 @@ export default class SideMenu extends Vue {
       Logger.error(err);
     });
   }
-  disconnect(): void {
-    this.$store.dispatch("logout").catch(err => {
-      Logger.error(err);
-    });
 
-    this.$router.push({ name: "Login" });
+  allerAListeEditeurs(): void {
+    this.$router.push({ name: "ListeEditeurs" }).catch(err => { Logger.error(err)});
   }
+
+  allerAListeEtabs(): void {
+    this.$router.push({ name: "ListeEtab" }).catch(err => { Logger.error(err)});
+  }
+
+  allerATableauDeBord(): void {
+    this.$router.push({ name: "Home" }).catch(err => { Logger.error(err)});
+  }
+
+  allerAStatitique(): void {
+    this.$router.push({ name: "Statistique" }).catch(err => { Logger.error(err)});
+  }
+
+  allerAHistorique(): void {
+    this.$router.push({ name: "Historique" }).catch(err => { Logger.error(err)});
+  }
+
+  allerAListeIPs(): void {
+    this.$router.push({ name: "ListeAcces" }).catch(err => { Logger.error(err)});
+  }
+
 }
 </script>
