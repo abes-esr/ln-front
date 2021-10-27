@@ -45,13 +45,17 @@ const routes: Array<RouteConfig> = [
   {
     path: "/creationEtablissement",
     name: "CreationEtablissement",
-    component: () => import("../views/CreationCompte.vue"),
+    component: () =>
+      import("../components/etablissement/FormEtablissement.vue"),
+    props: { action: Action.CREATION }
   },
   {
     path: "/profil",
     name: "Profil",
-    component: () => import("../views/Profile.vue"),
-    props: { action: Action.MODIFICATION },
+    component: () => import("../components/etablissement/FormEtablissement.vue"),
+    props: {
+      action: Action.MODIFICATION
+    },
     meta: {
       requiresAuth: true
     }
@@ -59,9 +63,10 @@ const routes: Array<RouteConfig> = [
   {
     path: "/ModifierEtablissement",
     name: "ModifierEtablissement",
-    component: () => import("../views/Profile.vue"),
+    component: () =>
+      import("../components/etablissement/FormEtablissement.vue"),
     props: {
-      action: Action.MODIFICATION // TODO comment on fait passer le sirenparam?
+      action: Action.MODIFICATION
     },
     meta: {
       requiresAuth: true
