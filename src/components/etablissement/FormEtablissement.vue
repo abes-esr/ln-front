@@ -36,7 +36,7 @@
             </v-alert>
           </v-col>
         </v-row>
-        <div
+        <v-row
             v-if="
             (action === Action.MODIFICATION && isAdmin) ||
               action === Action.CREATION
@@ -140,33 +140,34 @@
                 target="_blank"
                 outlined
             >
-                Trouver le SIREN de votre établissement ?
+              Trouver le SIREN de votre établissement ?
             </v-btn>
           </v-col>
-        </div>
-      </v-card-text>
-      <v-card-text>
-        <contact :action="action" :contact="etablissement.contact"/>
-        <div v-if="action === Action.CREATION">
-          <v-row>
-            <v-col cols="12" md="6" lg="6" xl="6">
-              <v-checkbox
-                  required
-                  :rules="rulesForms.checkboxRules"
-                  label="J'accepte les conditions générales liées à la politique de
+        </v-row>
+        <v-row>
+          <v-card outlined>
+            <v-card-title>Information Contact</v-card-title>
+            <v-card-text>
+              <contact :action="action" :contact="etablissement.contact"/>
+              <v-col cols="12" md="6" lg="6" xl="6" v-if="action === Action.CREATION">
+                <v-checkbox
+                    required
+                    :rules="rulesForms.checkboxRules"
+                    label="J'accepte les conditions générales liées à la politique de
                 confidentialité*"
-              ></v-checkbox>
-              <div class="subtitle-2">
-                Pour connaître et exercer vos droits relatifs à l'utilisation
-                des données collectées par ce formulaire, veuillez consulter la
-                page
-                <a @click="$router.push({ path: '/donneespersonnelles' })"
-                >Données personnelles</a
-                >
-              </div>
-            </v-col>
-          </v-row>
-        </div>
+                ></v-checkbox>
+                <div class="subtitle-2">
+                  Pour connaître et exercer vos droits relatifs à l'utilisation
+                  des données collectées par ce formulaire, veuillez consulter la
+                  page
+                  <a @click="$router.push({ path: '/donneespersonnelles' })"
+                  >Données personnelles</a
+                  >
+                </div>
+              </v-col>
+            </v-card-text>
+          </v-card>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-col cols="12" md="6" lg="6" xl="6">
