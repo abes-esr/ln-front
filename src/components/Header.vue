@@ -1,26 +1,20 @@
 <template>
   <v-app-bar
       color="primary"
-      clipped-left
-      app
       flat
       id="appBar"
       src="@/assets/img/header/graphe-couleur-appli-ln.png"
-      height="150px"
+      max-height="150px"
   >
     <template v-slot:img="{ props }">
       <v-img
           v-bind="props"
           width="500px"
-          style="margin-left: 70vw; height: 30vh;"
+          style="margin-left: 70vw; height: 100%;"
       ></v-img>
     </template>
     <v-layout class="d-flex flex-column" fill-height>
-      <v-container class="justify-start">
-        <v-app-bar-nav-icon
-            v-if="$vuetify.breakpoint.xsOnly"
-            @click="drawer = !drawer"
-        ></v-app-bar-nav-icon>
+      <v-container class="justify-start pa-0" style="height: 100%">
         <v-toolbar-title
             id="titleBar"
             v-on:click="$router.push({ name: 'Home' }).catch(err => {})"
@@ -36,6 +30,7 @@
       <v-container
           v-if="isLoggedIn"
           class="d-flex justify-end mainBar ma-0 pa-0 pr-12"
+          style="max-height: 40px"
       >
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">

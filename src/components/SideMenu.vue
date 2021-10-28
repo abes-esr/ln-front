@@ -1,13 +1,13 @@
 <template>
   <v-navigation-drawer
     v-if="displayMenu"
+    width="100px"
     app
-    clipped
-    width="6vw"
     flat
     hide-overlay
     permanent
     :visible="displayMenu"
+    height="100%"
   >
     <v-list dense color="transparent">
       <v-row class="mb-15">
@@ -15,7 +15,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="saveTheme()"
         >
-          <v-switch v-model="$vuetify.theme.dark" inset></v-switch>
+          <v-switch dense v-model="$vuetify.theme.dark" inset></v-switch>
           <v-list-item-title>Thème sombre</v-list-item-title>
         </v-list-item>
       </v-row>
@@ -25,7 +25,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerATableauDeBord()"
         >
-          <v-list-item-action class="ma-0">
+          <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'tachometer-alt']" size="2x" />
           </v-list-item-action>
           <v-list-item-content>
@@ -39,7 +39,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeEtabs()"
         >
-          <v-list-item-action class="ma-0">
+          <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'university']" size="2x" />
           </v-list-item-action>
           <v-list-item-content>
@@ -53,7 +53,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeEditeurs()"
         >
-          <v-list-item-action class="ma-0">
+          <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'list']" size="2x" />
           </v-list-item-action>
           <v-list-item-content>
@@ -67,7 +67,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAStatitique()"
         >
-          <v-list-item-action class="ma-0">
+          <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'chart-bar']" size="2x" />
           </v-list-item-action>
           <v-list-item-content>
@@ -81,7 +81,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAHistorique()"
         >
-          <v-list-item-action class="ma-0">
+          <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'history']" size="2x" />
           </v-list-item-action>
           <v-list-item-content>
@@ -95,7 +95,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeIPs()"
         >
-          <v-list-item-action class="ma-0">
+          <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'sign-out-alt']" size="2x" />
           </v-list-item-action>
           <v-list-item-content>

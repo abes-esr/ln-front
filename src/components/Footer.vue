@@ -1,13 +1,12 @@
 <template>
-  <v-footer app bottom absolute dark padless flat id="footer">
-    <v-layout fill-height class="d-flex justify-space-between ml-9">
+  <v-footer app dark padless flat id="footer" width="100vw">
+    <v-layout class="d-flex justify-space-between flex-column flex-sm-row pa-2">
       <v-container
-          class="d-flex flex-lg-column justify-space-around align-center"
-          style="height: 150px; width: 30%;"
+          class="d-flex flex-lg-column flex-grow-0 flex-shrink-0 justify-space-around"
+          style="min-height: 150px"
       >
         <v-flex
             class="d-flex flex-column justify-space-around align-stretch"
-            style="width: 40%;"
         >
           <div>
             <font-awesome-icon
@@ -42,25 +41,25 @@
           </v-btn>
         </v-flex>
       </v-container>
-      <v-divider class="mx-4" vertical style="height: auto;"></v-divider>
-      <v-spacer />
-      <v-divider class="mx-4" vertical style="height: auto;"></v-divider>
+      <v-divider class="mx-4 hidden-md-and-down" vertical style="height: auto;"></v-divider>
+      <v-spacer class="hidden-md-and-down" style="flex-grow: 0.5 !important" />
+      <v-divider class="mx-4 " vertical style="height: auto;"></v-divider>
       <v-container
-          class="d-flex justify-space-around align-center align-center"
-          style="width: 30%"
+          class="d-flex justify-space-around align-center flex-grow-0 flex-shrink-0"
+          style="width: 50% ;min-height: 150px"
       >
         <div
-            class="d-flex flex-column justify-space-between"
-            style="height:100% ; width: 30%"
+            class="d-flex flex-column justify-space-between text-right mr-3"
+            style="height:100% ; width: 45%"
         >
-          <h4>Agence bibliographique de l’enseignement supérieur</h4>
+          <h4 class="mb-2">Agence bibliographique de l’enseignement supérieur</h4>
           <div>
             227 av. Jean-Louis Viala CS 84308 34193 Montpellier Cedex 5
           </div>
           <div>Tél : +33 (0)4 67 54 84 10</div>
         </div>
         <div  class="d-flex flex-column justify-space-around"   style="height:100% ; width: 30%">
-          <a href="https://abes.fr/" target="_blank">
+          <a href="https://abes.fr/" target="_blank" class="ma-2">
             <v-img
                 alt="Logo Abes"
                 src="@/assets/img/logo-abes-blanc.svg"
@@ -70,6 +69,7 @@
           <a
               href="https://www.enseignementsup-recherche.gouv.fr/"
               target="_blank"
+              class="ma-2"
           >
             <v-img
                 alt="Logo MESRI"
