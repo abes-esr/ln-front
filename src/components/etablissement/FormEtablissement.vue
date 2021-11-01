@@ -133,58 +133,39 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row>
-          <v-card outlined>
-            <v-card-title>Information Contact</v-card-title>
-            <v-card-text>
-              <contact :action="action" :contact="etablissement.contact" />
-              <v-col
-                cols="12"
-                md="6"
-                lg="6"
-                xl="6"
-                v-if="action === Action.CREATION"
-              >
-                <v-checkbox
-                  required
-                  :rules="rulesForms.checkboxRules"
-                  label="J'accepte les conditions générales liées à la politique de
+        <v-card-title>Information Contact</v-card-title>
+        <v-divider class="mb-4"></v-divider>
+        <contact :action="action" :contact="etablissement.contact" />
+        <v-col cols="12" md="6" lg="6" xl="6" v-if="action === Action.CREATION">
+          <v-checkbox
+            required
+            :rules="rulesForms.checkboxRules"
+            label="J'accepte les conditions générales liées à la politique de
                 confidentialité*"
-                ></v-checkbox>
-                <div class="subtitle-2">
-                  Pour connaître et exercer vos droits relatifs à l'utilisation
-                  des données collectées par ce formulaire, veuillez consulter
-                  la page
-                  <a @click="$router.push({ path: '/donneespersonnelles' })"
-                    >Données personnelles</a
-                  >
-                </div>
-              </v-col>
-            </v-card-text>
-          </v-card>
-        </v-row>
-      </v-card-text>
-      <v-card-actions>
-        <v-col cols="12" md="6" lg="6" xl="6">
-          <v-row>
-            <v-col cols="12" md="6" lg="6" xl="6">
-              <v-btn x-large color="secondary" @click="clear"> Effacer</v-btn>
-            </v-col>
-            <v-col cols="3">
-              <v-btn
-                color="button"
-                :loading="buttonLoading"
-                x-large
-                @click="recaptcha()"
-                >Enregistrer
-                <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
+          ></v-checkbox>
+          <div class="subtitle-2">
+            Pour connaître et exercer vos droits relatifs à l'utilisation des
+            données collectées par ce formulaire, veuillez consulter la page
+            <a @click="$router.push({ path: '/donneespersonnelles' })"
+              >Données personnelles</a
+            >
+          </div>
         </v-col>
-      </v-card-actions>
+        <v-col cols="12" md="6" lg="6" xl="6">
+          <v-spacer></v-spacer>
+          <v-card-actions>
+            <v-btn
+              color="button"
+              :loading="buttonLoading"
+              x-large
+              @click="recaptcha()"
+              >Enregistrer
+              <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-col>
+      </v-card-text>
     </v-form>
-    <br />
     <v-alert dense outlined :value="alert" type="error">
       {{ error }}
     </v-alert>
