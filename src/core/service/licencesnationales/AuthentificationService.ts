@@ -1,4 +1,4 @@
-import {LicencesNationalesApiService} from "@/core/service/licencesnationales/LicencesNationalesApiService";
+import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import User from "@/core/User";
 
 export class AuthentificationService extends LicencesNationalesApiService {
@@ -9,22 +9,22 @@ export class AuthentificationService extends LicencesNationalesApiService {
    * @throws CredentialNotValidError si l'authentification a échoué
    * @throws HttpRequestError pour tout autre erreur
    */
-  login(login:string, password:string): Promise<User> {
+  login(login: string, password: string): Promise<User> {
     return new Promise((resolve, reject) => {
       const json: JsonLoginRequest = {
         login: login,
         password: password
-      }
+      };
       return this.client
         .post("/authentification/connexion", json)
         .then(result => {
           const response: JsonLoginResponse = result.data;
-          const user:User = new User();
+          const user: User = new User();
           user.id = response.id;
           user.token = response.accessToken;
           user.nameEtab = response.userNameEtab;
           user.siren = response.userSiren;
-          user.isAdmin = response.role==="admin"?true:false;
+          user.isAdmin = response.role === "admin" ? true : false;
           user.isLoggedIn = true;
           resolve(user);
         })

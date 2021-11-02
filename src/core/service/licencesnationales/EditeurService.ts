@@ -1,10 +1,9 @@
-import {LicencesNationalesApiService} from "@/core/service/licencesnationales/LicencesNationalesApiService";
+import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import Editeur from "@/core/Editeur";
-import {ContactType} from "@/core/CommonDefinition";
+import { ContactType } from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
 
 export class EditeurService extends LicencesNationalesApiService {
-
   /**
    * Appel API pour créer un editeur
    * @param editeur Editeur à créer
@@ -12,10 +11,7 @@ export class EditeurService extends LicencesNationalesApiService {
    * @return Vrai si la création a fonctionné, sinon on lève une exception
    * @exception LicencesNationalesApiError si l'appel API a échoué
    */
-  createEditeur(
-    editeur: Editeur,
-    token: string
-  ): Promise<boolean> {
+  createEditeur(editeur: Editeur, token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const contactsCommerciaux: Array<JsonCreationContactEditeurRequest> = [];
       const contactsTechniques: Array<JsonCreationContactEditeurRequest> = [];
@@ -23,21 +19,21 @@ export class EditeurService extends LicencesNationalesApiService {
       for (let index = 0; index < editeur.contacts.length; index++) {
         if (editeur.contacts[index].type == ContactType.COMMERCIAL) {
           const jsonContact: JsonCreationContactEditeurRequest = {
-            nom:editeur.contacts[index].nom,
-            prenom:editeur.contacts[index].prenom,
-            mail:editeur.contacts[index].mail
-          }
+            nom: editeur.contacts[index].nom,
+            prenom: editeur.contacts[index].prenom,
+            mail: editeur.contacts[index].mail
+          };
           contactsCommerciaux.push(jsonContact);
         } else if (editeur.contacts[index].type == ContactType.TECHNIQUE) {
           const jsonContact: JsonCreationContactEditeurRequest = {
-            nom:editeur.contacts[index].nom,
-            prenom:editeur.contacts[index].prenom,
-            mail:editeur.contacts[index].mail
-          }
+            nom: editeur.contacts[index].nom,
+            prenom: editeur.contacts[index].prenom,
+            mail: editeur.contacts[index].mail
+          };
           contactsTechniques.push(jsonContact);
         }
       }
-      const json:JsonCreationEditeurRequest = {
+      const json: JsonCreationEditeurRequest = {
         nom: editeur.nom,
         identifiantBis: editeur.identifiantBis,
         typesEtablissements: editeur.groupesEtabRelies,
@@ -47,7 +43,7 @@ export class EditeurService extends LicencesNationalesApiService {
       };
       return this.client
         .put("/editeurs/", json, token)
-        .then(result => {
+        .then(() => {
           resolve(true);
         })
         .catch(err => {
@@ -71,24 +67,24 @@ export class EditeurService extends LicencesNationalesApiService {
       for (let index = 0; index < editeur.contacts.length; index++) {
         if (editeur.contacts[index].type == ContactType.COMMERCIAL) {
           const jsonContact: JsonModificationContactEditeurRequest = {
-            id:editeur.contacts[index].id,
-            nom:editeur.contacts[index].nom,
-            prenom:editeur.contacts[index].prenom,
-            mail:editeur.contacts[index].mail
-          }
+            id: editeur.contacts[index].id,
+            nom: editeur.contacts[index].nom,
+            prenom: editeur.contacts[index].prenom,
+            mail: editeur.contacts[index].mail
+          };
           contactsCommerciaux.push(jsonContact);
         } else if (editeur.contacts[index].type == ContactType.TECHNIQUE) {
           const jsonContact: JsonModificationContactEditeurRequest = {
-            id:editeur.contacts[index].id,
-            nom:editeur.contacts[index].nom,
-            prenom:editeur.contacts[index].prenom,
-            mail:editeur.contacts[index].mail
-          }
+            id: editeur.contacts[index].id,
+            nom: editeur.contacts[index].nom,
+            prenom: editeur.contacts[index].prenom,
+            mail: editeur.contacts[index].mail
+          };
           contactsTechniques.push(jsonContact);
         }
       }
       const json: JsonModificationEditeurRequest = {
-        id:editeur.id,
+        id: editeur.id,
         nom: editeur.nom,
         identifiantBis: editeur.identifiantBis,
         typesEtablissements: editeur.groupesEtabRelies,
@@ -97,15 +93,14 @@ export class EditeurService extends LicencesNationalesApiService {
         contactsTechniques: contactsTechniques
       };
       return this.client
-          .post("/editeurs/" + editeur.id, json, token)
-          .then(result => {
-            resolve(true);
-          })
-          .catch(err => {
-            reject(this.buildException(err));
-          });
+        .post("/editeurs/" + editeur.id, json, token)
+        .then(() => {
+          resolve(true);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
     });
-
   }
 
   /**
@@ -135,7 +130,6 @@ export class EditeurService extends LicencesNationalesApiService {
         });
     });
   }
-
 
   /**
    * Appel API pour récupérer un éditeur
@@ -187,7 +181,6 @@ export class EditeurService extends LicencesNationalesApiService {
     });
   }
 
-
   /**
    * Appel API pour supprimer un éditeur
    * @param id Identifiant de l'éditeur
@@ -198,8 +191,8 @@ export class EditeurService extends LicencesNationalesApiService {
   deleteEditeur(id: number, token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       return this.client
-        .delete("/editeurs/" + id,null, token)
-        .then(result => {
+        .delete("/editeurs/" + id, null, token)
+        .then(() => {
           resolve(true);
         })
         .catch(err => {

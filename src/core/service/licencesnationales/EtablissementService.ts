@@ -1,5 +1,5 @@
-import {AxiosResponse} from "axios";
-import {LicencesNationalesApiService} from "@/core/service/licencesnationales/LicencesNationalesApiService";
+import { AxiosResponse } from "axios";
+import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**

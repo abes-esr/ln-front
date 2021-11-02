@@ -5,7 +5,7 @@
       <side-menu :display-menu="isLoggedIn" :is-admin="isAdmin"></side-menu>
       <v-main class="ma-0 pa-3">
         <transition name="fade">
-          <router-view/>
+          <router-view />
         </transition>
       </v-main>
     </v-layout>
@@ -18,12 +18,12 @@
 <script lang="ts">
 import Vue from "vue";
 import SideMenu from "./components/SideMenu.vue";
-import {Component} from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
 
 @Component({
-  components: {Header, SideMenu, Footer}
+  components: { Header, SideMenu, Footer }
 })
 export default class App extends Vue {
   get isDark(): boolean {

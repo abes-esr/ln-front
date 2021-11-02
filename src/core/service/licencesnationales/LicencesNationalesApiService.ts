@@ -1,9 +1,9 @@
 import AxiosClient from "../../../utils/AxiosClient";
-import {LicencesNationalesApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
-import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
-import {LicencesNationalesUnauthorizedApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import {LicencesNationalesNotFoundApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesNotFoundApiError";
-import {LicencesNationalesInternalErrorApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesInternalErrorApiError";
+import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { LicencesNationalesNotFoundApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesNotFoundApiError";
+import { LicencesNationalesInternalErrorApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesInternalErrorApiError";
 
 export class LicencesNationalesApiService {
   // Client HTTP

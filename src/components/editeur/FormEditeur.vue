@@ -3,10 +3,10 @@
     <v-card witdh="100%" outlined>
       <v-form ref="formEditeur" lazy-validation>
         <v-card-title v-if="action == Action.CREATION"
-        >Créer un éditeur
+          >Créer un éditeur
         </v-card-title>
         <v-card-title v-else-if="action == Action.MODIFICATION"
-        >Modifier un éditeur
+          >Modifier un éditeur
         </v-card-title>
         <v-card-text>
           <v-card flat>
@@ -18,36 +18,36 @@
               <v-row>
                 <v-col cols="12" md="6" lg="6" xl="6">
                   <v-text-field
-                      outlined
-                      label="NOM DE L'EDITEUR"
-                      placeholder="NOM DE L'EDITEUR"
-                      v-model="editeur.nom"
-                      :rules="nomEditeurRules"
-                      required
-                      @keyup.enter="validate()"
+                    outlined
+                    label="NOM DE L'EDITEUR"
+                    placeholder="NOM DE L'EDITEUR"
+                    v-model="editeur.nom"
+                    :rules="nomEditeurRules"
+                    required
+                    @keyup.enter="validate()"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6" lg="6" xl="6">
                   <v-text-field
-                      outlined
-                      label="Identifiant éditeur"
-                      placeholder="Identifiant éditeur"
-                      v-model="editeur.identifiantBis"
+                    outlined
+                    label="Identifiant éditeur"
+                    placeholder="Identifiant éditeur"
+                    v-model="editeur.identifiantBis"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6" lg="6" xl="6">
                   <v-select
-                      v-model="editeur.groupesEtabRelies"
-                      :items="typesEtab"
-                      label="Groupes d'établissements reliés"
-                      multiple
-                      outlined
+                    v-model="editeur.groupesEtabRelies"
+                    :items="typesEtab"
+                    label="Groupes d'établissements reliés"
+                    multiple
+                    outlined
                   >
                     <template v-slot:prepend-item>
                       <v-list-item ripple @click="toggle">
                         <v-list-item-action>
                           <v-icon
-                              :color="
+                            :color="
                               editeur.groupesEtabRelies.length > 0
                                 ? 'indigo darken-4'
                                 : ''
@@ -68,31 +68,33 @@
                 </v-col>
                 <v-col cols="12" md="6" lg="6" xl="6">
                   <v-text-field
-                      outlined
-                      label="Adresse postale"
-                      placeholder="Adresse postale"
-                      v-model="editeur.adresse"
-                      :rules="adresseEditeurRules"
-                      required
-                      @keyup.enter="validate()"
+                    outlined
+                    label="Adresse postale"
+                    placeholder="Adresse postale"
+                    v-model="editeur.adresse"
+                    :rules="adresseEditeurRules"
+                    required
+                    @keyup.enter="validate()"
                   ></v-text-field>
                 </v-col>
               </v-row>
             </v-card-text>
           </v-card>
           <v-card flat>
-            <v-card-title> {{ editeur.contacts.length }} contact(s)</v-card-title>
+            <v-card-title>
+              {{ editeur.contacts.length }} contact(s)</v-card-title
+            >
             <v-card-text>
               <v-row>
                 <v-col cols="12" md="6" lg="6" xl="6">
                   <v-container
-                      v-for="(contact, index) in editeur.contacts"
-                      :key="index"
+                    v-for="(contact, index) in editeur.contacts"
+                    :key="index"
                   >
                     <contact
-                        :ref="'contactForm_' + index"
-                        :contact="contact"
-                        @onChange="removeContact(contact)"
+                      :ref="'contactForm_' + index"
+                      :contact="contact"
+                      @onChange="removeContact(contact)"
                     ></contact>
                   </v-container>
                 </v-col>
@@ -101,9 +103,9 @@
 
             <v-card-actions class="v-card__actions">
               <v-btn
-                  color="primary"
-                  class="ma-2 white--text"
-                  @click="addContact()"
+                color="primary"
+                class="ma-2 white--text"
+                @click="addContact()"
               >
                 <font-awesome-icon :icon="['fas', 'plus']" class="mx-2" />
                 Ajouter un contact
@@ -115,11 +117,12 @@
           <v-row>
             <v-col cols="9"></v-col>
             <v-col>
-              <v-btn  @click="clear()" color="grey"    class="mx-2"
-              >Vider
-                </v-btn>
-              <v-btn  @click="validate()"     :loading="buttonLoading" class="btn-1 mx-2"
-              >Valider
+              <v-btn @click="clear()" color="grey" class="mx-2">Vider </v-btn>
+              <v-btn
+                @click="validate()"
+                :loading="buttonLoading"
+                class="btn-1 mx-2"
+                >Valider
               </v-btn>
             </v-col>
           </v-row>
@@ -130,17 +133,17 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
-import {Logger} from "@/utils/Logger";
-import {Action} from "@/core/CommonDefinition";
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Logger } from "@/utils/Logger";
+import { Action } from "@/core/CommonDefinition";
 import Editeur from "@/core/Editeur";
 import Contact from "@/components/editeur/Contact.vue";
 import ContactEditeur from "@/core/ContactEditeur";
-import {LicencesNationalesUnauthorizedApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import {editeurService} from "@/core/service/licencesnationales/EditeurService";
+import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 
 @Component({
-  components: {Contact}
+  components: { Contact }
 })
 export default class ComposantEditeur extends Vue {
   editeur: Editeur;
@@ -150,8 +153,8 @@ export default class ComposantEditeur extends Vue {
   nomEditeurRules = [
     (v: string) => !!v || "Le nom de l'éditeur est obligatoire",
     (v: string) =>
-        /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-        "Le nom de l'éditeur fourni n'est pas valide"
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      "Le nom de l'éditeur fourni n'est pas valide"
   ];
 
   typesEtab: Array<string> = [
@@ -171,10 +174,10 @@ export default class ComposantEditeur extends Vue {
   ];
   adresseEditeurRules = [
     (v: string) =>
-        !!v || "L'adresse postale de l'établissement est obligatoire",
+      !!v || "L'adresse postale de l'établissement est obligatoire",
     (v: string) =>
-        /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-        "L'adresse postale fournie n'est pas valide"
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      "L'adresse postale fournie n'est pas valide"
   ];
 
   buttonLoading: boolean = false;
@@ -183,7 +186,7 @@ export default class ComposantEditeur extends Vue {
 
   constructor() {
     super();
-      this.editeur = this.getCurrentEditeur;
+    this.editeur = this.getCurrentEditeur;
   }
 
   get getCurrentEditeur(): Editeur {
@@ -251,7 +254,7 @@ export default class ComposantEditeur extends Vue {
   addContact(): void {
     Logger.debug("Ajout d'un contact par défaut");
     const contact = new ContactEditeur();
-    this.editeur.addContact(contact)
+    this.editeur.addContact(contact);
   }
 
   removeContact(item: ContactEditeur): void {
@@ -264,48 +267,48 @@ export default class ComposantEditeur extends Vue {
 
     if (this.action == Action.CREATION) {
       editeurService
-          .createEditeur(this.editeur, this.$store.getters.getToken())
-          .then(response => {
-            this.alert = true;
-            this.buttonLoading = false;
-            this.$store.dispatch("setNotification", "OK").catch(err => {
-              Logger.error(err);
-            });
-            Logger.debug("notification = " + this.$store.state.notification);
-            this.$router.push({path: "/listeEditeurs"});
-          })
-          .catch(err => {
-            this.buttonLoading = false;
-            this.alert = true;
-            Logger.error(err.toString());
-            if (err instanceof LicencesNationalesUnauthorizedApiError) {
-              this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
-            } else {
-              this.error = "Impossible de créer l'éditeur : " + err.message;
-            }
+        .createEditeur(this.editeur, this.$store.getters.getToken())
+        .then(() => {
+          this.alert = true;
+          this.buttonLoading = false;
+          this.$store.dispatch("setNotification", "OK").catch(err => {
+            Logger.error(err);
           });
+          Logger.debug("notification = " + this.$store.state.notification);
+          this.$router.push({ path: "/listeEditeurs" });
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.alert = true;
+          Logger.error(err.toString());
+          if (err instanceof LicencesNationalesUnauthorizedApiError) {
+            this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
+          } else {
+            this.error = "Impossible de créer l'éditeur : " + err.message;
+          }
+        });
     } else if (this.action == Action.MODIFICATION) {
       editeurService
-          .updateEditeur(this.editeur, this.$store.getters.getToken())
-          .then(response => {
-            this.alert = true;
-            this.buttonLoading = false;
-            this.$store.dispatch("setNotification", "OK").catch(err => {
-              Logger.error(err);
-            });
-            Logger.debug("notification = " + this.$store.state.notification);
-            this.$router.push({path: "/listeEditeurs"});
-          })
-          .catch(err => {
-            this.buttonLoading = false;
-            this.alert = true;
-            Logger.error(err.toString());
-            if (err instanceof LicencesNationalesUnauthorizedApiError) {
-              this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
-            } else {
-              this.error = "Impossible de créer l'éditeur : " + err.message;
-            }
+        .updateEditeur(this.editeur, this.$store.getters.getToken())
+        .then(() => {
+          this.alert = true;
+          this.buttonLoading = false;
+          this.$store.dispatch("setNotification", "OK").catch(err => {
+            Logger.error(err);
           });
+          Logger.debug("notification = " + this.$store.state.notification);
+          this.$router.push({ path: "/listeEditeurs" });
+        })
+        .catch(err => {
+          this.buttonLoading = false;
+          this.alert = true;
+          Logger.error(err.toString());
+          if (err instanceof LicencesNationalesUnauthorizedApiError) {
+            this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
+          } else {
+            this.error = "Impossible de créer l'éditeur : " + err.message;
+          }
+        });
     }
   }
 

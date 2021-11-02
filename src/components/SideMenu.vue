@@ -123,28 +123,39 @@ export default class SideMenu extends Vue {
   }
 
   allerAListeEditeurs(): void {
-    this.$router.push({ name: "ListeEditeurs" }).catch(err => { Logger.error(err)});
+    this.$router.push({ name: "ListeEditeurs" }).catch(err => {
+      Logger.error(err);
+    });
   }
 
   allerAListeEtabs(): void {
-    this.$router.push({ name: "ListeEtab" }).catch(err => { Logger.error(err)});
+    this.$router.push({ name: "ListeEtab" }).catch(err => {
+      Logger.error(err);
+    });
   }
 
   allerATableauDeBord(): void {
-    this.$router.push({ name: "Home" }).catch(err => { Logger.error(err)});
+    this.$router.push({ name: "Home" }).catch(err => {
+      Logger.error(err);
+    });
   }
 
   allerAStatitique(): void {
-    this.$router.push({ name: "Statistique" }).catch(err => { Logger.error(err)});
+    this.$router.push({ name: "Statistique" }).catch(err => {
+      Logger.error(err);
+    });
   }
 
   allerAHistorique(): void {
-    this.$router.push({ name: "Historique" }).catch(err => { Logger.error(err)});
+    this.$router.push({ name: "Historique" }).catch(err => {
+      Logger.error(err);
+    });
   }
 
   allerAListeIPs(): void {
-    this.$router.push({ name: "ListeAcces" }).catch(err => { Logger.error(err)});
+    this.$router.push({ name: "ListeAcces" }).catch(err => {
+      Logger.error(err);
+    });
   }
-
 }
 </script>

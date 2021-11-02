@@ -4,7 +4,6 @@ import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import { Action } from "@/core/CommonDefinition";
-import Editeur from "@/core/Editeur";
 
 Vue.use(VueRouter);
 
@@ -47,13 +46,21 @@ const routes: Array<RouteConfig> = [
     path: "/fusionEtablissement",
     name: "fusionEtablissement",
     component: () =>
-      import("../components/etablissement/FormFusionEtablissement.vue")
+      import("../components/etablissement/FormFusionEtablissement.vue"),
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/scissionEtablissement",
     name: "scissionEtablissement",
     component: () =>
-      import("../components/etablissement/FormScissionEtablissement.vue")
+      import("../components/etablissement/FormScissionEtablissement.vue"),
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/listeAcces/:sirenEtabSiAdmin",
@@ -74,14 +81,6 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: "/ajouterAcces2/plage",
-    name: "ajouterAcces2",
-    component: () => import("../components/acces/AjouterAcces.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: "/modifierAcces/:id&:typeAcces",
     name: "ModifierAcces",
     component: () => import("../components/acces/ModifierAcces.vue"),
@@ -95,13 +94,18 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/Profile.vue"),
     props: true,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      isAdmin: true
     }
   },
   {
     path: "/listeEtab",
     name: "ListeEtab",
-    component: () => import("../components/etablissement/ListeEtab.vue")
+    component: () => import("../components/etablissement/ListeEtab.vue"),
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/forgotPassword",
@@ -121,7 +125,11 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeEditeurs",
     name: "ListeEditeurs",
-    component: () => import("../components/editeur/ListeEditeurs.vue")
+    component: () => import("../components/editeur/ListeEditeurs.vue"),
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/nouvelEditeur",
@@ -129,7 +137,8 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/editeur/FormEditeur.vue"),
     props: { action: Action.CREATION },
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      isAdmin: true
     }
   },
   {
@@ -138,7 +147,8 @@ const routes: Array<RouteConfig> = [
     component: () => import("../components/editeur/FormEditeur.vue"),
     props: { action: Action.MODIFICATION },
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      isAdmin: true
     }
   },
 
@@ -160,7 +170,15 @@ router.beforeEach((to, from, next) => {
     if (!store.getters.isLoggedIn()) {
       next({ path: "/login" });
     } else {
-      next();
+      if (to.matched.some(record => record.meta.isAdmin)) {
+        if (!store.getters.isAdmin()) {
+          next({ path: "/" });
+        } else {
+          next();
+        }
+      } else {
+        next();
+      }
     }
   } else {
     next();

@@ -118,7 +118,6 @@ import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import Editeur from "@/core/Editeur";
-import { Action } from "@/core/CommonDefinition";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import ConfirmPopup from "@/components/ConfirmPopup.vue";
@@ -224,10 +223,12 @@ export default class ListeEditeurs extends Vue {
     if (confirmed) {
       editeurService
         .deleteEditeur(item.id, this.$store.getters.getToken())
-        .then(response => {
+        .then(() => {
           this.fetchEditeurs();
-          this.$store.dispatch("setNotification", `L'éditeur ${ item.nom} a bien été supprimé`);
-
+          this.$store.dispatch(
+            "setNotification",
+            `L'éditeur ${item.nom} a bien été supprimé`
+          );
         })
         .catch(err => {
           Logger.error(err);
