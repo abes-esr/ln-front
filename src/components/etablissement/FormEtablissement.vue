@@ -136,34 +136,21 @@
         <v-card-title>Information Contact</v-card-title>
         <v-divider class="mb-4"></v-divider>
         <contact :action="action" :contact="etablissement.contact" />
-        <v-col cols="12" md="6" lg="6" xl="6" v-if="action === Action.CREATION">
-          <v-checkbox
-            required
-            :rules="rulesForms.checkboxRules"
-            label="J'accepte les conditions générales liées à la politique de
-                confidentialité*"
-          ></v-checkbox>
-          <div class="subtitle-2">
-            Pour connaître et exercer vos droits relatifs à l'utilisation des
-            données collectées par ce formulaire, veuillez consulter la page
-            <a @click="$router.push({ path: '/donneespersonnelles' })"
-              >Données personnelles</a
-            >
-          </div>
-        </v-col>
-        <v-col cols="12" md="6" lg="6" xl="6">
+        <v-row>
           <v-spacer></v-spacer>
-          <v-card-actions>
-            <v-btn
-              color="button"
-              :loading="buttonLoading"
-              x-large
-              @click="recaptcha()"
-              >Enregistrer
-              <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-col>
+          <v-col cols="12" md="6" lg="6" xl="6" >
+            <v-card-actions class="align-content-end">
+              <v-btn
+                color="button"
+                :loading="buttonLoading"
+                x-large
+                @click="validate()"
+                >Enregistrer
+                <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-form>
     <v-alert dense outlined :value="alert" type="error">
@@ -225,7 +212,6 @@ export default class FormEtablissement extends Vue {
     this.token = await this.$recaptcha("creationCompte");
     Logger.debug("getToken dans recaptcha() " + this.token);
     // Do stuff with the received getToken.
-    this.validate();
   }
 
   validate(): void {
