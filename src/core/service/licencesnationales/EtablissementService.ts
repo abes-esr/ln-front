@@ -65,7 +65,16 @@ export class EtablissementService extends LicencesNationalesApiService {
   }
 
   listeType(): Promise<AxiosResponse> {
-    return this.client.get("/etablissements/getType");
+    return new Promise((resolve, reject) => {
+      return this.client
+        .get("/etablissements/getType")
+        .then(result => {
+          resolve(result);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
   }
 
   getEtablissement(siren: string, token: string): Promise<Etablissement> {
