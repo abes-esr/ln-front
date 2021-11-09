@@ -135,10 +135,14 @@
         </v-row>
         <v-card-title>Information Contact</v-card-title>
         <v-divider class="mb-4"></v-divider>
-        <contact :action="action" :contact="etablissement.contact" />
+        <contact
+          :ref="'formContact'"
+          :action="action"
+          :contact="etablissement.contact"
+        />
         <v-row>
           <v-spacer></v-spacer>
-          <v-col cols="12" md="6" lg="6" xl="6" >
+          <v-col cols="12" md="6" lg="6" xl="6">
             <v-card-actions class="align-content-end">
               <v-btn
                 color="button"
@@ -191,6 +195,10 @@ export default class FormEtablissement extends Vue {
   dialog: boolean = false;
   dialogAvailable: boolean = false;
 
+  mounted(){
+    this.fetchListeType();
+  }
+
   constructor() {
     super();
     this.etablissement = this.getCurrentEtablissement;
@@ -218,13 +226,16 @@ export default class FormEtablissement extends Vue {
     this.alert = false;
     this.error = "";
     this.recaptcha();
-    //if (this.isHuman(this.recaptcha()) {
+
+    const isFormValide = (this.$refs.formCreationCompte as Vue & {
+      validate: () => boolean;
+    }).validate();
+    const isSubFormValide = (this.$refs.formContact as Vue & {
+      validate: () => boolean;
+    }).validate();
     if (this.token != null) {
-      if (
-        (this.$refs.formCreationCompte as Vue & {
-          validate: () => boolean;
-        }).validate()
-      ) {
+      Logger.debug("is valid? " + isFormValide + "  -  " + isSubFormValide);
+      if (isFormValide && isSubFormValide) {
         this.creationCompte();
       }
     }
