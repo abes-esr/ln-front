@@ -31,9 +31,9 @@
                       :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                       label="Créez votre nouveau mot de passe"
                       placeholder="Mot de passe"
-                      :disabled="disabled == 1"
+                      :disabled="disabled === 1"
                       v-model="passContact"
-                      :rules="passContactRules"
+                      :rules="rulesForms.passwordRules"
                       :type="show1 ? 'text' : 'password'"
                       required
                       @keyup.enter="validate()"
@@ -49,10 +49,12 @@
                       :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                       label="Confirmez votre nouveau mot de passe [contrôle de conformité]"
                       placeholder="Confirmation"
-                      :disabled="disabled == 1"
+                      :disabled="disabled === 1"
                       v-model="confirmPassContact"
                       :rules="
-                        confirmPassContactRules.concat(confirmPassContactRule)
+                        rulesForms.confirmPassContactRules.concat(
+                          confirmPassContactRule
+                        )
                       "
                       :type="show1 ? 'text' : 'password'"
                       required
@@ -92,7 +94,7 @@
                         x-large
                         color="grey"
                         @click="clear"
-                        :disabled="disabled == 1"
+                        :disabled="disabled === 1"
                         >Effacer
                       </v-btn>
                     </v-col>
@@ -101,7 +103,7 @@
                       <v-btn
                         color="success"
                         :loading="buttonLoading"
-                        :disabled="disabled == 1"
+                        :disabled="disabled === 1"
                         x-large
                         @click="recaptcha()"
                         >Envoyer
@@ -124,9 +126,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class FormReinitialisationPass extends Vue {
+
+  rulesForms: any = rulesForms;
   resetToken: string = "";
   disabled: number = 0;
   show1: boolean = false;
@@ -134,17 +139,7 @@ export default class FormReinitialisationPass extends Vue {
   tokenrecaptchaValid: Promise<boolean> = this.$recaptchaLoaded();
   tokenrecaptcha: string = "";
   passContact: string = "";
-  passContactRules = [
-    (v: string) => !!v || "Le mot de passe du contact est obligatoire",
-    (v: string) =>
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-        v
-      ) || "Le mot de passe fourni n'est pas valide"
-  ];
   confirmPassContact: string = "";
-  confirmPassContactRules = [
-    (v: string) => !!v || "Vous devez confirmer le mot de passe du contact"
-  ];
   buttonLoading: boolean = false;
   alert: boolean = false;
   retourKo: boolean = false;

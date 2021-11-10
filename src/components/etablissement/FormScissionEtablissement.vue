@@ -91,10 +91,6 @@ import { etablissementService } from "@/core/service/licencesnationales/Etabliss
 })
 export default class FormScissionEtablissement extends Vue {
   sirenEtab: string = "";
-  sirenEtabRules = [
-    (v: string) => !!v || "SIREN obligatoire",
-    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-  ];
   bus: Vue = new Vue();
   etablissementNumber: number = 2;
   etablissementDTOS: Array<string> = [];

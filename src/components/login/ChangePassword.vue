@@ -16,7 +16,7 @@
                     :type="show ? 'text' : 'password'"
                     :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                     v-model="oldPassword"
-                    :rules="passwordRules"
+                    :rules="rulesForms.passwordObligatoryRules"
                     required
                     @click:append="show = !show"
                     @keyup.enter="validate()"
@@ -28,7 +28,7 @@
                     :type="show ? 'text' : 'password'"
                     :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                     v-model="newPassword"
-                    :rules="passwordRules"
+                    :rules="rulesForms.passwordRules"
                     required
                     @click:append="show = !show"
                     @keyup.enter="validate()"
@@ -84,9 +84,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class ChangePassword extends Vue {
+
+  rulesForms: any = rulesForms;
   alert: boolean = false;
   show: boolean = false;
   message: string = "";
@@ -94,14 +97,7 @@ export default class ChangePassword extends Vue {
   oldPassword: string = "";
   newPassword: string = "";
   newPasswordConfirm: string = "";
-  passwordRules = [
-    (v: string) => !!v || "Champ obligatoire",
-    (v: string) =>
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-        v
-      ) ||
-      "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial, et faire 8 caractères minimum"
-  ];
+
   retourKo: boolean = false;
 
   validate(): void {

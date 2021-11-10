@@ -11,7 +11,7 @@
                 label="NOM DE L'ETABLISSEMENT"
                 placeholder="NOM DE L'ETABLISSEMENT"
                 v-model="nomEtab"
-                :rules="nomEtabRules"
+                :rules="rulesForms.nomEtabRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -20,7 +20,7 @@
                 label="SIREN"
                 placeholder="SIREN"
                 v-model="sirenEtab"
-                :rules="sirenEtabRules"
+                :rules="rulesForms.sirenEtabRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -31,7 +31,7 @@
                 v-model="typeEtab"
                 :items="typesEtab"
                 label="Type de l'établissement"
-                :rules="typeEtabRules"
+                :rules="rulesForms.typeEtabRules"
                 required
               ></v-select>
             </v-col>
@@ -44,7 +44,7 @@
                 label="Nom"
                 placeholder="Nom"
                 v-model="nomContact"
-                :rules="nomContactRules"
+                :rules="rulesForms.nomContactRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -53,7 +53,7 @@
                 label="Prénom"
                 placeholder="Prénom"
                 v-model="prenomContact"
-                :rules="prenomContactRules"
+                :rules="rulesForms.prenomContactRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -62,7 +62,7 @@
                 label="Adresse postale"
                 placeholder="Adresse postale"
                 v-model="adresseContact"
-                :rules="adresseContactRules"
+                :rules="rulesForms.adresseContactRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -78,7 +78,7 @@
                 label="Code postal"
                 placeholder="Code postal"
                 v-model="codePostalContact"
-                :rules="codePostalContactRules"
+                :rules="rulesForms.codePostalContactRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -87,7 +87,7 @@
                 label="Ville"
                 placeholder="Ville"
                 v-model="villeContact"
-                :rules="villeContactRules"
+                :rules="rulesForms.villeContactRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -105,7 +105,7 @@
                 label="Téléphone"
                 placeholder="Téléphone"
                 v-model="telContact"
-                :rules="telContactRules"
+                :rules="rulesForms.telContactRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -114,7 +114,7 @@
                 label="Adresse e-mail"
                 placeholder="Adresse e-mail"
                 v-model="emailContact"
-                :rules="emailContactRules"
+                :rules="rulesForms.emailContactRules"
                 required
                 @keyup.enter="validate()"
               ></v-text-field>
@@ -136,7 +136,7 @@
                 label="Mot de passe"
                 placeholder="Mot de passe"
                 v-model="passContact"
-                :rules="passContactRules"
+                :rules="rulesForms.passwordRules"
                 type="password"
                 required
                 @keyup.enter="validate()"
@@ -146,6 +146,7 @@
                 label="Confirmez votre mot de passe"
                 placeholder="Confirmez votre mot de passe"
                 v-model="confirmPassContact"
+                :rules="rulesForms.passwordObligatoryRules"
                 type="password"
                 required
                 @keyup.enter="validate()"
@@ -161,104 +162,28 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class FormEtab extends Vue {
+  rulesForms: any = rulesForms;
   nomEtab: string = "";
-  nomEtabRules = [
-    (v: string) => !!v || "Le nom de l'établissement est obligatoire",
-    (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-      "Le nom d'établissement fourni n'est pas valide"
-  ];
-
   sirenEtab: string = "";
-  sirenEtabRules = [
-    (v: string) => !!v || "SIREN obligatoire",
-    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-  ];
-
   typesEtab: Array<string> = [];
 
   typeEtab: string = "";
-  typeEtabRules = [
-    (v: string) => !!v || "Le type de l'établissement est obligatoire"
-  ];
-
   nomContact: string = "";
-  nomContactRules = [
-    (v: string) => !!v || "Le nom du contact est obligatoire",
-    (v: string) =>
-      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-        v
-      ) || "Le nom fourni n'est pas valide"
-  ];
-
   prenomContact: string = "";
-  prenomContactRules = [
-    (v: string) => !!v || "Le prénom du contact est obligatoire",
-    (v: string) =>
-      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-        v
-      ) || "Le prénom fourni n'est pas valide"
-  ];
-
   adresseContact: string = "";
-  adresseContactRules = [
-    (v: string) =>
-      !!v || "L'adresse postale de l'établissement est obligatoire",
-    (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-      "L'adresse postale fournie n'est pas valide"
-  ];
-
   boitePostaleContact: string = "";
   codePostalContact: string = "";
-  codePostalContactRules = [
-    (v: string) => !!v || "Le code postal de l'établissement est obligatoire",
-    (v: string) => /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
-  ];
-
   villeContact: string = "";
-  villeContactRules = [
-    (v: string) => !!v || "La ville de l'établissement est obligatoire",
-    (v: string) =>
-      /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/.test(v) ||
-      "La ville fournie n'est pas valide"
-  ];
-
   cedexContact: string = "";
   telContact: string = "";
-  telContactRules = [
-    (v: string) => !!v || "Le téléphone du contact est obligatoire",
-    (v: string) =>
-      /^\d{10}$/.test(v) || "Veuillez entrer 10 chiffres sans espace"
-  ];
-
   emailContact: string = "";
-  emailContactRules = [
-    (v: string) => !!v || "L'adresse mail du contact est obligatoire",
-    (v: string) =>
-      /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||
-      "L'adresse mail fournie n'est pas valide"
-  ];
   confirmEmailContact: string = "";
-  confirmEmailContactRules = [
-    (v: string) => !!v || "Vous devez confirmer l'adresse mail du contact"
-  ];
-
   passContact: string = "";
-  passContactRules = [
-    (v: string) => !!v || "Le mot de passe du contact est obligatoire",
-    (v: string) =>
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-        v
-      ) || "Le mot de passe fourni n'est pas valide"
-  ];
   confirmPassContact: string = "";
-  confirmPassContactRules = [
-    (v: string) => !!v || "Vous devez confirmer le mot de passe du contact"
-  ];
   @Prop() bus: any;
 
   validAndSend(): void {
