@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import store from "../store/index";
+import {Logger} from "@/utils/Logger";
 
 /**
  * Représente un client Axios pour envoyer et recevoir des requêtes HTTP avec
@@ -12,22 +13,6 @@ class AxiosClient {
     this.client = axios.create({
       baseURL: url
     });
-
-    this.client.interceptors.response.use(
-      function(response) {
-        return response;
-      },
-      function(error) {
-        console.log(error.response.status);
-        if (
-          error.response.status === 401 &&
-          error.response.data.message.includes("Expired")
-        ) {
-          store.dispatch("logout");
-        }
-        return Promise.reject(error);
-      }
-    );
   }
 
   /**
