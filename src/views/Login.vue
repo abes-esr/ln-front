@@ -48,7 +48,7 @@
     </v-row>
   </v-container>
 </template>
-<style src="./style.css"></style>
+<style scoped src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import FormLogin from "../components/login/FormLogin.vue";

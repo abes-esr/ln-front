@@ -31,7 +31,7 @@ p {
     background-color: #e8eaf0 !important;
 }
 
-.v-card__text {
+.login-card {
     border: 1px solid lightgrey;
     border-radius: 1rem;
     padding:1rem;

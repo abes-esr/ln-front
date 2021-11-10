@@ -44,7 +44,7 @@
               style="min-height: auto;"
             >
               <v-list-item-content class="align-self-auto menu-slot">
-                <v-btn dark color="black" @click="allerAMonProfil()" plain>
+                <v-btn disabled color="black" @click="allerAMonProfil()" plain>
                   <font-awesome-icon
                     :icon="['fas', 'id-card']"
                     size="1x"
@@ -55,7 +55,6 @@
               </v-list-item-content>
               <v-list-item-content class="align-self-auto menu-slot">
                 <v-btn
-                  dark
                   color="black"
                   @click="allerAModifierMotDePasse()"
                   plain

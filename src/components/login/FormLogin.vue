@@ -16,7 +16,7 @@
     <v-card witdh="100%" flat>
       <v-form ref="form" lazy-validation>
         <v-card-title>S'authentifier</v-card-title>
-        <v-card-text>
+        <v-card-text class="login-card" >
           <v-row>
             <v-col cols="1" />
             <v-col cols="10">
