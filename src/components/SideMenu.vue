@@ -35,7 +35,7 @@
       </v-row>
 
       <v-row v-if="isAdmin" class="mb-5">
-        <v-list-item
+        <v-list-item disabled
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeEtabs()"
         >
@@ -63,7 +63,7 @@
       </v-row>
 
       <v-row v-if="isAdmin" class="mb-5">
-        <v-list-item
+        <v-list-item disabled
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAStatitique()"
         >
@@ -77,7 +77,7 @@
       </v-row>
 
       <v-row v-if="isAdmin" class="mb-5">
-        <v-list-item
+        <v-list-item disabled
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAHistorique()"
         >
@@ -91,7 +91,7 @@
       </v-row>
 
       <v-row v-if="!isAdmin" class="mb-5">
-        <v-list-item
+        <v-list-item disabled
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeIPs()"
         >

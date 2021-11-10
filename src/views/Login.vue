@@ -37,11 +37,11 @@
             >
           </v-col>
           <v-col cols="4" class="createAccountLinks">
-            <a
+            <!--<a
               v-if="!forgotPasswordVisible"
               @click="$router.push({ path: '/creationCompte' })"
-              ><br />Créer un compte</a
-            ></v-col
+              ><br />Créer un compte</a>-->
+            </v-col
           ></v-row
         >
       </v-col>

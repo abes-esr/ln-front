@@ -1,10 +1,9 @@
 <template>
   <div>
-    <v-alert border="left" type="info" dense outlined>
-      <h4>
+    <v-alert border="left" type="info" dense outlined class="v-info">
+      <h4 class="mb-1" >
         Application réservée aux établissements bénéficiaires
       </h4>
-      <br />
       <p id="WarningLogin">
         <strong>Important : </strong>L'accès aux corpus sous licences nationales
         est reservé aux établissements bénéficiaires selon les conditions
@@ -14,7 +13,7 @@
         des accès.
       </p>
     </v-alert>
-    <v-card witdh="100%" outlined>
+    <v-card witdh="100%" flat>
       <v-form ref="form" lazy-validation>
         <v-card-title>S'authentifier</v-card-title>
         <v-card-text>
@@ -70,24 +69,22 @@
               ></v-text-field>
             </v-col>
           </v-row>
-        </v-card-text>
-        <v-card-actions>
           <v-row>
             <v-col>
               <v-btn
-                color="button"
-                style="float: right;"
-                :loading="buttonLoading"
-                :disabled="!isValid"
-                @click="login()"
-                >Se connecter
+                  color="button"
+                  style="float: right;"
+                  :loading="buttonLoading"
+                  :disabled="!isValid"
+                  @click="login()"
+              >Se connecter
                 <v-icon style="padding-left: 5px;"
-                  >mdi-arrow-right-circle-outline
+                >mdi-arrow-right-circle-outline
                 </v-icon>
               </v-btn>
             </v-col>
           </v-row>
-        </v-card-actions>
+        </v-card-text>
       </v-form>
     </v-card>
     <br />
@@ -99,7 +96,7 @@
     </v-alert>
   </div>
 </template>
-
+<style scoped src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 

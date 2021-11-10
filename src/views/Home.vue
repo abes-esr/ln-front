@@ -1,9 +1,5 @@
 <template>
   <div class="home">
-    <br />
-    <h1>Ceci n'est pas une page d'accueil.</h1>
-    <small>C'est un placeholder</small>
-    <br />
     <v-card-title>Bienvenu siren = {{ siren }}</v-card-title>
     <v-row>
       <v-col cols="1" />
@@ -16,12 +12,6 @@
     <v-row>
       <v-col cols="1"></v-col>
       <v-col cols="10">
-        <v-data-table
-          :headers="headers"
-          :items="desserts"
-          :items-per-page="5"
-          class="elevation-1"
-        ></v-data-table>
       </v-col>
     </v-row>
   </div>
