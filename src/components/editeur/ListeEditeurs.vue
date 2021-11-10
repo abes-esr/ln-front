@@ -73,7 +73,7 @@
                   <v-spacer></v-spacer>
                 </v-row>
                 <v-row class="d-flex mt-1 mb-3">
-                  <v-btn
+                  <v-btn disabled
                     @click="downloadEditeurs()"
                     color="grey lighten-3"
                     class="mx-2 text-lowercase btn-2"
