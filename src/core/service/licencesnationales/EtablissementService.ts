@@ -19,7 +19,7 @@ export class EtablissementService extends LicencesNationalesApiService {
    */
   creerEtablissement(
     etablissement: Etablissement,
-    recaptcha: string
+    tokenrecaptcha: string
   ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const jsonContact: JsonCreateContact = {
@@ -38,11 +38,11 @@ export class EtablissementService extends LicencesNationalesApiService {
         nom: etablissement.nom,
         siren: etablissement.siren,
         typeEtablissement: etablissement.typeEtablissement,
-        recaptcha: recaptcha,
+        recaptcha: tokenrecaptcha,
         contact: jsonContact
       };
       return this.client
-        .put("/etablissements/", json)
+        .put("/etablissements", json)
         .then(result => {
           resolve(true);
         })

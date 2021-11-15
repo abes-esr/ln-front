@@ -144,6 +144,7 @@
           <v-spacer></v-spacer>
           <v-col cols="12" md="6" lg="6" xl="6">
             <v-card-actions class="align-content-end">
+              <v-btn x-large color="secondary" @click="clear"> Effacer</v-btn>
               <v-btn
                 color="button"
                 :loading="buttonLoading"
@@ -185,7 +186,7 @@ export default class FormEtablissement extends Vue {
   Action: any = Action;
   rulesForms: any = rulesForms;
   isAdmin: boolean = this.$store.getters.isAdmin();
-  token: string = "";
+  tokenrecaptcha: string = "";
   typesEtab: Array<string> = [];
   checkSirenAPI: string = "En attente de vérification";
   checkSirenColor: string = "grey";
@@ -195,7 +196,7 @@ export default class FormEtablissement extends Vue {
   dialog: boolean = false;
   dialogAvailable: boolean = false;
 
-  mounted(){
+  mounted() {
     this.fetchListeType();
   }
 
@@ -217,15 +218,16 @@ export default class FormEtablissement extends Vue {
     await this.$recaptchaLoaded();
 
     // Execute reCAPTCHA with action "creationCompte".
-    this.token = await this.$recaptcha("creationCompte");
-    Logger.debug("getToken dans recaptcha() " + this.token);
+    this.tokenrecaptcha = await this.$recaptcha("creationCompte");
+    Logger.debug("getToken dans recaptcha() " + this.tokenrecaptcha);
     // Do stuff with the received getToken.
   }
 
-  validate(): void {
+  async validate() {
     this.alert = false;
     this.error = "";
-    this.recaptcha();
+    await this.recaptcha();
+    Logger.info(this.tokenrecaptcha);
 
     const isFormValide = (this.$refs.formCreationCompte as Vue & {
       validate: () => boolean;
@@ -233,8 +235,7 @@ export default class FormEtablissement extends Vue {
     const isSubFormValide = (this.$refs.formContact as Vue & {
       validate: () => boolean;
     }).validate();
-    if (this.token != null) {
-      Logger.debug("is valid? " + isFormValide + "  -  " + isSubFormValide);
+    if (this.tokenrecaptcha != null) {
       if (isFormValide && isSubFormValide) {
         this.creationCompte();
       }
@@ -246,7 +247,7 @@ export default class FormEtablissement extends Vue {
     this.alert = false;
 
     etablissementService
-      .creerEtablissement(this.etablissement, this.token)
+      .creerEtablissement(this.etablissement, this.tokenrecaptcha)
       .then(response => {
         this.buttonLoading = false;
         Logger.debug("notification = " + "l'établissement à bien été créé");
@@ -326,6 +327,9 @@ export default class FormEtablissement extends Vue {
 
   clear() {
     (this.$refs.formCreationCompte as HTMLFormElement).reset();
+    (this.$refs.formContact as Vue & {
+      clear: () => boolean;
+    }).clear();
   }
 }
 </script>
