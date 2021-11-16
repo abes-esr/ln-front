@@ -1,6 +1,5 @@
 <template>
   <v-form ref="form" lazy-validation>
-    <!--   todo faire un v-if action.Modif et action.creation-->
     <v-row>
       <v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
@@ -96,47 +95,49 @@
           required
           @keyup.enter="validate()"
         ></v-text-field>
-        <v-alert border="left" type="info" outlined>
-          Votre mot de passe doit contenir au minimum 8 caractères dont une
-          lettre majuscule, une lettre minuscule, un chiffre et un caractère
-          spécial parmis @ $ ! % * ? &
-        </v-alert>
-        <v-text-field
-          outlined
-          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-          label="Mot de passe"
-          placeholder="Mot de passe"
-          v-model="contact.motDePasse"
-          :rules="rulesForms.passwordRules"
-          :type="show1 ? 'text' : 'password'"
-          required
-          @keyup.enter="validate()"
-          @click:append="show1 = !show1"
-        ></v-text-field>
-        <v-text-field
-          outlined
-          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-          label="Confirmez votre mot de passe"
-          placeholder="Confirmez votre mot de passe"
-          v-model="motDePassConfirmation"
-          :rules="rulesForms.confirmPassContactRules"
-          :type="show1 ? 'text' : 'password'"
-          required
-          @keyup.enter="validate()"
-          @click:append="show1 = !show1"
-        ></v-text-field>
-        <v-checkbox
-          required
-          :rules="rulesForms.checkboxRules"
-          label="J'accepte les conditions générales liées à la politique de
+        <div v-if="action === Action.CREATION">
+          <v-alert border="left" type="info" outlined>
+            Votre mot de passe doit contenir au minimum 8 caractères dont une
+            lettre majuscule, une lettre minuscule, un chiffre et un caractère
+            spécial parmis @ $ ! % * ? &
+          </v-alert>
+          <v-text-field
+            outlined
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            label="Mot de passe"
+            placeholder="Mot de passe"
+            v-model="contact.motDePasse"
+            :rules="rulesForms.passwordRules"
+            :type="show1 ? 'text' : 'password'"
+            required
+            @keyup.enter="validate()"
+            @click:append="show1 = !show1"
+          ></v-text-field>
+          <v-text-field
+            outlined
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            label="Confirmez votre mot de passe"
+            placeholder="Confirmez votre mot de passe"
+            v-model="motDePassConfirmation"
+            :rules="rulesForms.confirmPassContactRules"
+            :type="show1 ? 'text' : 'password'"
+            required
+            @keyup.enter="validate()"
+            @click:append="show1 = !show1"
+          ></v-text-field>
+          <v-checkbox
+            required
+            :rules="rulesForms.checkboxRules"
+            label="J'accepte les conditions générales liées à la politique de
                 confidentialité*"
-        ></v-checkbox>
-        <div class="subtitle-2">
-          Pour connaître et exercer vos droits relatifs à l'utilisation des
-          données collectées par ce formulaire, veuillez consulter la page
-          <a @click="$router.push({ path: '/donneespersonnelles' })"
-            >Données personnelles</a
-          >
+          ></v-checkbox>
+          <div class="subtitle-2">
+            Pour connaître et exercer vos droits relatifs à l'utilisation des
+            données collectées par ce formulaire, veuillez consulter la page
+            <a @click="$router.push({ path: '/donneespersonnelles' })"
+              >Données personnelles</a
+            >
+          </div>
         </div>
       </v-col>
     </v-row>

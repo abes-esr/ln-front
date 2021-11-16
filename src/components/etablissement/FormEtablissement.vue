@@ -1,7 +1,10 @@
 <template>
   <v-card>
     <v-form ref="formCreationCompte" lazy-validation>
-      <v-card-subtitle @click="$router.push({ path: '/login' })">
+      <v-card-subtitle
+        v-if="action === Action.CREATION"
+        @click="$router.push({ path: '/login' })"
+      >
         Votre établissement a déjà un compte ? S'authentifier
       </v-card-subtitle>
       <v-card-title v-if="action === Action.CREATION" class="pl-3">
@@ -36,115 +39,133 @@
             </v-alert>
           </v-col>
         </v-row>
-        <v-row
+        <div
           v-if="
             (action === Action.MODIFICATION && isAdmin) ||
               action === Action.CREATION
           "
         >
-          <v-card-title>Informations de l'établissement</v-card-title>
-        </v-row>
-        <v-row>
-          <v-divider></v-divider>
-        </v-row>
-        <v-row class="pt-1">
-          <v-col cols="12" md="6" lg="6" xl="6">
-            <v-text-field
-              outlined
-              label="Nom de l'établissement"
-              placeholder="Nom de l'établissement"
-              maxlength="80"
-              v-model="etablissement.nom"
-              :rules="rulesForms.nomEtabRules"
-              required
-              @keyup.enter="validate()"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6" lg="6" xl="6">
-            <v-select
-              outlined
-              v-model="etablissement.typeEtablissement"
-              :items="typesEtab"
-              label="Type de l'établissement"
-              :rules="rulesForms.typeEtabRules"
-              required
-            ></v-select>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="6" lg="6" xl="6">
-            <v-text-field
-              outlined
-              label="SIREN"
-              placeholder="SIREN"
-              maxlength="9"
-              v-model="etablissement.siren"
-              :rules="rulesForms.sirenEtabRules"
-              required
-              @input="checkSiren()"
-              @keyup.enter="validate()"
-            ></v-text-field>
-            <v-chip class="ma-2" :color="checkSirenColor" text-color="white"
-              >SIREN : {{ checkSirenAPI }}
-            </v-chip>
-            <!-- POPUP CONFIRMATION SIREN -->
-            <v-dialog v-model="dialog" persistent max-width="450">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  :disabled="!dialogAvailable"
-                  rounded
-                  outlined
-                  v-bind="attrs"
-                  v-on="on"
-                  color="primary"
-                  >Valider
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title class="headline">
-                  Votre SIREN est-il correct ?
-                </v-card-title>
-                <v-card-text
-                  >Le SIREN renseigné correspond à l'établissement suivant :
-                  <b>{{ checkSirenAPI }}</b></v-card-text
-                >
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" text @click="dialog = false">
-                    Non
+          <v-row>
+            <v-card-title>Informations de l'établissement</v-card-title>
+          </v-row>
+          <v-row>
+            <v-divider></v-divider>
+          </v-row>
+          <v-row class="pt-1">
+            <v-col cols="12" md="6" lg="6" xl="6">
+              <v-text-field
+                outlined
+                label="Nom de l'établissement"
+                placeholder="Nom de l'établissement"
+                maxlength="80"
+                v-model="etablissement.nom"
+                :rules="rulesForms.nomEtabRules"
+                required
+                @keyup.enter="validate()"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6" lg="6" xl="6">
+              <v-select
+                outlined
+                v-model="etablissement.typeEtablissement"
+                :items="typesEtab"
+                label="Type de l'établissement"
+                :rules="rulesForms.typeEtabRules"
+                required
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="6" lg="6" xl="6">
+              <v-text-field
+                outlined
+                label="SIREN"
+                placeholder="SIREN"
+                maxlength="9"
+                v-model="etablissement.siren"
+                :rules="rulesForms.sirenEtabRules"
+                required
+                @input="checkSiren()"
+                @keyup.enter="validate()"
+              ></v-text-field>
+              <v-chip class="ma-2" :color="checkSirenColor" text-color="white"
+                >SIREN : {{ checkSirenAPI }}
+              </v-chip>
+              <!-- POPUP CONFIRMATION SIREN -->
+              <v-dialog v-model="dialog" persistent max-width="450">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    :disabled="!dialogAvailable"
+                    rounded
+                    outlined
+                    v-bind="attrs"
+                    v-on="on"
+                    color="primary"
+                    >Valider
                   </v-btn>
-                  <v-btn color="green darken-1" text @click="dialog = false">
-                    Oui
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <!-- FIN POPUP CONFIRMATION SIREN -->
-          </v-col>
-          <v-col cols="12" md="6" lg="6" xl="6">
-            <v-btn
-              color="primary"
-              rounded
-              href="https://www.sirene.fr/sirene/public/static/recherche"
-              target="_blank"
-              outlined
-            >
-              Trouver le SIREN de votre établissement ?
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-card-title>Information Contact</v-card-title>
+                </template>
+                <v-card>
+                  <v-card-title class="headline">
+                    Votre SIREN est-il correct ?
+                  </v-card-title>
+                  <v-card-text
+                    >Le SIREN renseigné correspond à l'établissement suivant :
+                    <b>{{ checkSirenAPI }}</b></v-card-text
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="dialog = false">
+                      Non
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="dialog = false">
+                      Oui
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <!-- FIN POPUP CONFIRMATION SIREN -->
+            </v-col>
+            <v-col cols="12" md="6" lg="6" xl="6">
+              <v-btn
+                color="primary"
+                rounded
+                href="https://www.sirene.fr/sirene/public/static/recherche"
+                target="_blank"
+                outlined
+              >
+                Trouver le SIREN de votre établissement ?
+              </v-btn>
+            </v-col>
+          </v-row>
+        </div>
+
+        <v-card-title
+          v-if="
+            (action === Action.MODIFICATION && isAdmin) ||
+              action === Action.CREATION
+          "
+        >
+          Information Contact
+        </v-card-title>
+        <v-card-title v-if="action === Action.MODIFICATION && !isAdmin"
+          >Mes information</v-card-title
+        >
         <v-divider class="mb-4"></v-divider>
         <contact
           :ref="'formContact'"
           :action="action"
           :contact="etablissement.contact"
         />
-        <v-row>
-          <v-spacer></v-spacer>
-          <v-col cols="12" md="6" lg="6" xl="6">
-            <v-card-actions class="align-content-end">
+      </v-card-text>
+      <v-card-actions>
+        <v-col cols="7"></v-col>
+        <v-col>
+          <v-row>
+            <v-col cols="4"></v-col>
+            <v-col cols="3">
               <v-btn x-large color="secondary" @click="clear"> Effacer</v-btn>
+            </v-col>
+            <v-col cols="3">
               <v-btn
                 color="button"
                 :loading="buttonLoading"
@@ -153,10 +174,10 @@
                 >Enregistrer
                 <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
               </v-btn>
-            </v-card-actions>
-          </v-col>
-        </v-row>
-      </v-card-text>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-card-actions>
     </v-form>
     <v-alert dense outlined :value="alert" type="error">
       {{ error }}
@@ -227,7 +248,6 @@ export default class FormEtablissement extends Vue {
     this.alert = false;
     this.error = "";
     await this.recaptcha();
-    Logger.info(this.tokenrecaptcha);
 
     const isFormValide = (this.$refs.formCreationCompte as Vue & {
       validate: () => boolean;
