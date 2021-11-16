@@ -43,7 +43,7 @@ export class EditeurService extends LicencesNationalesApiService {
       };
       return this.client
         .put("/editeurs/", json, token)
-        .then(result => {
+        .then(() => {
           resolve(true);
         })
         .catch(err => {
@@ -53,7 +53,7 @@ export class EditeurService extends LicencesNationalesApiService {
   }
 
   /**
-   * Appel API pour mettre à jour un editeur
+   * Appel API pour mettre àjour un editeur
    * @param editeur Editeur à mettre àjour
    * @param token Jeton de session
    * @return Vrai si la modification a fonctionné, sinon on lève une exception
@@ -94,7 +94,7 @@ export class EditeurService extends LicencesNationalesApiService {
       };
       return this.client
         .post("/editeurs/" + editeur.id, json, token)
-        .then(result => {
+        .then(() => {
           resolve(true);
         })
         .catch(err => {
@@ -192,7 +192,7 @@ export class EditeurService extends LicencesNationalesApiService {
     return new Promise((resolve, reject) => {
       return this.client
         .delete("/editeurs/" + id, null, token)
-        .then(result => {
+        .then(() => {
           resolve(true);
         })
         .catch(err => {

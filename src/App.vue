@@ -1,12 +1,14 @@
 <template>
   <v-app>
-    <side-menu :display-menu="isLoggedIn" :is-admin="isAdmin"></side-menu>
     <Header></Header>
-    <v-main>
-      <transition name="fade">
-        <router-view />
-      </transition>
-    </v-main>
+    <v-layout class="flex-shrink-0">
+      <side-menu :display-menu="isLoggedIn" :is-admin="isAdmin"></side-menu>
+      <v-main class="ma-0 pa-3">
+        <transition name="fade">
+          <router-view />
+        </transition>
+      </v-main>
+    </v-layout>
     <Footer></Footer>
   </v-app>
 </template>

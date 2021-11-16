@@ -1,80 +1,87 @@
 <template>
-  <v-footer app bottom absolute dark padless flat id="footer">
-    <v-layout fill-height class="d-flex justify-space-between ml-9">
+  <v-footer app dark padless flat id="footer" width="100vw">
+    <v-layout class="d-flex justify-space-between flex-column flex-sm-row pa-2">
       <v-container
-          class="d-flex flex-lg-column justify-space-around align-center"
-          style="height: 150px; width: 30%;"
+        class="d-flex flex-lg-column flex-grow-0 flex-shrink-0 justify-space-around"
+        style="min-height: 150px"
       >
-        <v-flex
-            class="d-flex flex-column justify-space-around align-stretch"
-            style="width: 40%;"
-        >
+        <v-flex class="d-flex flex-column justify-space-around align-stretch">
           <div>
             <font-awesome-icon
-                :icon="['fas', 'external-link-alt']"
-                class="mx-2"
+              :icon="['fas', 'external-link-alt']"
+              class="mx-2"
             />
             Accès direct
           </div>
           <v-btn
-              href="https://stp.abes.fr/node/3?origine=LicencesNationales"
-              target="_blank"
-              class="btn-1 mx-2 d-flex justify-space-between no-text-transform"
-          >Assistance
+            href="https://stp.abes.fr/node/3?origine=LicencesNationales"
+            target="_blank"
+            class="btn-1 mx-2 d-flex justify-space-between no-text-transform"
+            >Assistance
             <font-awesome-icon :icon="['fas', 'comments']" class="mx-2" />
           </v-btn>
           <v-btn
-              href="https://www.licencesnationales.fr/"
-              target="_blank"
-              class="btn-1 mx-2 d-flex justify-space-between no-text-transform"
-          >Site Licences nationales
+            href="https://www.licencesnationales.fr/"
+            target="_blank"
+            class="btn-1 mx-2 d-flex justify-space-between no-text-transform"
+            >Site Licences nationales
             <font-awesome-icon
-                :icon="['fas', 'arrow-circle-right']"
-                class="mx-2"
+              :icon="['fas', 'arrow-circle-right']"
+              class="mx-2"
             />
           </v-btn>
           <v-btn
-              href="http://documentation.abes.fr/aidelicencesnationales/index.html"
-              target="_blank"
-              class="btn-1 mx-2 d-flex justify-space-between no-text-transform"
-          >Documentation Licences nationales
+            href="http://documentation.abes.fr/aidelicencesnationales/index.html"
+            target="_blank"
+            class="btn-1 mx-2 d-flex justify-space-between no-text-transform"
+            >Documentation Licences nationales
             <font-awesome-icon :icon="['fas', 'question']" class="mx-2" />
           </v-btn>
         </v-flex>
       </v-container>
-      <v-divider class="mx-4" vertical style="height: auto;"></v-divider>
-      <v-spacer />
-      <v-divider class="mx-4" vertical style="height: auto;"></v-divider>
+      <v-divider
+        class="mx-4 hidden-md-and-down"
+        vertical
+        style="height: auto;"
+      ></v-divider>
+      <v-spacer class="hidden-md-and-down" style="flex-grow: 0.5 !important" />
+      <v-divider class="mx-4 " vertical style="height: auto;"></v-divider>
       <v-container
-          class="d-flex justify-space-around align-center align-center"
-          style="width: 30%"
+        class="d-flex justify-space-around align-center flex-grow-0 flex-shrink-0"
+        style="width: 50% ;min-height: 150px"
       >
         <div
-            class="d-flex flex-column justify-space-between"
-            style="height:100% ; width: 30%"
+          class="d-flex flex-column justify-space-between text-right mr-3"
+          style="height:100% ; width: 45%"
         >
-          <h4>Agence bibliographique de l’enseignement supérieur</h4>
+          <h4 class="mb-2">
+            Agence bibliographique de l’enseignement supérieur
+          </h4>
           <div>
             227 av. Jean-Louis Viala CS 84308 34193 Montpellier Cedex 5
           </div>
           <div>Tél : +33 (0)4 67 54 84 10</div>
         </div>
-        <div  class="d-flex flex-column justify-space-around"   style="height:100% ; width: 30%">
-          <a href="https://abes.fr/" target="_blank">
+        <div
+          class="d-flex flex-column justify-space-around"
+          style="height:100% ; width: 30%"
+        >
+          <a href="https://abes.fr/" target="_blank" class="ma-2">
             <v-img
-                alt="Logo Abes"
-                src="@/assets/img/logo-abes-blanc.svg"
-                max-width="60px"
+              alt="Logo Abes"
+              src="@/assets/img/logo-abes-blanc.svg"
+              max-width="60px"
             ></v-img>
           </a>
           <a
-              href="https://www.enseignementsup-recherche.gouv.fr/"
-              target="_blank"
+            href="https://www.enseignementsup-recherche.gouv.fr/"
+            target="_blank"
+            class="ma-2"
           >
             <v-img
-                alt="Logo MESRI"
-                src="@/assets/img/logo-mesri-2020.svg"
-                max-width="60px"
+              alt="Logo MESRI"
+              src="@/assets/img/logo-mesri-2020.svg"
+              max-width="60px"
             ></v-img>
           </a>
         </div>
@@ -84,10 +91,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Logger } from "@/utils/Logger";
+import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class Footer extends Vue {
-}
+export default class Footer extends Vue {}
 </script>

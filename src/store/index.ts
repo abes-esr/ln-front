@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
-import { Logger } from "@/utils/Logger";
 import User from "@/core/User";
 import Editeur from "@/core/Editeur";
 import {

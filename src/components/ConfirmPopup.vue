@@ -19,8 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Logger } from "@/utils/Logger";
+import { Component, Vue } from "vue-property-decorator";
 import { ConfirmPopupOptions } from "@/core/CommonDefinition";
 
 @Component
