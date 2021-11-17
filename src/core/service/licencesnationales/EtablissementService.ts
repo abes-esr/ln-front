@@ -1,16 +1,6 @@
 import { AxiosResponse } from "axios";
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import Etablissement from "@/core/Etablissement";
-import ContactEtablissement from "@/core/ContactEtablissement";
-import Ip from "@/core/Ip";
-import { Logger } from "@/utils/Logger";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import Editeur from "@/core/Editeur";
-import { ContactType } from "@/core/CommonDefinition";
-import {
-  JsonCreationContactEditeurRequest,
-  JsonCreationEditeurRequest
-} from "@/core/service/licencesnationales/EditeurService";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**

@@ -91,9 +91,10 @@
           label="Confirmez votre adresse e-mail"
           placeholder="Confirmez votre adresse e-mail"
           v-model="emailConfirmation"
-          :rules="rulesForms.confirmEmailContactRules"
+          :rules="rulesForms.confirmEmailContactRules && valideEmailConfirmation"
           required
           @keyup.enter="validate()"
+          autocomplet="false"
         ></v-text-field>
         <div v-if="action === Action.CREATION">
           <v-alert border="left" type="info" outlined>
@@ -119,11 +120,12 @@
             label="Confirmez votre mot de passe"
             placeholder="Confirmez votre mot de passe"
             v-model="motDePassConfirmation"
-            :rules="rulesForms.confirmPassContactRules"
+            :rules="rulesForms.confirmPassContactRules && valideMotDePassConfirmation"
             :type="show1 ? 'text' : 'password'"
             required
             @keyup.enter="validate()"
             @click:append="show1 = !show1"
+            autocomplet="false"
           ></v-text-field>
           <v-checkbox
             required
@@ -157,7 +159,13 @@ export default class Contact extends Vue {
   Action: any = Action;
   rulesForms: any = rulesForms;
   motDePassConfirmation: string = "";
+  valideMotDePassConfirmation =  [
+    (v: string) => v == this.contact.motDePasse || "Le mot de passe de comfirmation doit etre le même"
+  ];
   emailConfirmation: string = "";
+  valideEmailConfirmation =  [
+    (v: string) => v == this.contact.mail || "Le mail de comfirmation doit etre le même"
+  ];
   show1: boolean = false;
   constructor() {
     super();

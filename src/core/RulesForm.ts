@@ -44,7 +44,7 @@ export class rulesForm {
 
   codePostalContactRules = [
     (v: string) => !!v || "Le code postal de l'établissement est obligatoire",
-    (v: string) => /^\d{5}$/.test(v) || "Le code postal fourni n'est pas valide"
+    (v: string) => /^\d{5}$/.test(v) || "Le code postal doit contenir 5 chiffres uniquement"
   ];
 
   villeContactRules = [
@@ -74,7 +74,8 @@ export class rulesForm {
   // ];
 
   confirmEmailContactRules = [
-    (v: string) => !!v || "Vous devez confirmer l'adresse mail du contact"
+    (v: string) => !!v || "Vous devez confirmer l'adresse mail du contact",
+    (v: string) => /.+@.+\..+/.test(v) || "Adresse mail invalide"
   ];
 
   passwordRules = [
@@ -84,13 +85,19 @@ export class rulesForm {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
         v
       ) ||
-      "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial, et faire 8 caractères minimum"
+      "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial parmis @ $ ! % * ? &, et faire 8 caractères minimum"
   ];
 
   passwordObligatoryRules = [(v: string) => !!v || "Mot de passe obligatoire"];
 
   confirmPassContactRules = [
-    (v: string) => !!v || "Vous devez confirmer le mot de passe du contact"
+    (v: string) => !!v || "Vous devez confirmer le mot de passe du contact",
+    (v: string) => v.length >= 5 || "Minimum 8 caractères",
+    (v: string) =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+            v
+        ) ||
+        "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial parmis @ $ ! % * ? &, et faire 8 caractères minimum"
   ];
 
   checkboxRules = [(v: boolean) => v || "Veuillez accepter avant de valider"];
