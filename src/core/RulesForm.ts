@@ -90,16 +90,6 @@ export class rulesForm {
 
   passwordObligatoryRules = [(v: string) => !!v || "Mot de passe obligatoire"];
 
-  confirmPassContactRules = [
-    (v: string) => !!v || "Vous devez confirmer le mot de passe du contact",
-    (v: string) => v.length >= 5 || "Minimum 8 caractères",
-    (v: string) =>
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-            v
-        ) ||
-        "Le mot de passe doit contenir des lettres dont au moins une majuscule, au moins un chiffre et un caractère spécial parmis @ $ ! % * ? &, et faire 8 caractères minimum"
-  ];
-
   checkboxRules = [(v: boolean) => v || "Veuillez accepter avant de valider"];
 
   loginRules = [
