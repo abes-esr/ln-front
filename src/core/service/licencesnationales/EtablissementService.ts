@@ -54,12 +54,15 @@ export class EtablissementService extends LicencesNationalesApiService {
     return this.client.get("/etablissements/", token);
   }
 
-  listeType(): Promise<AxiosResponse> {
+  listeType(): Promise<Array<string>> {
     return new Promise((resolve, reject) => {
       return this.client
         .get("/etablissements/getType")
         .then(result => {
-          resolve(result);
+          const response: Array<JsonTypeEtablissement> = result.data;
+          const typesEtablissement: Array<string> = [];
+          response.forEach(element => typesEtablissement.push(element.libelle));
+          resolve(typesEtablissement);
         })
         .catch(err => {
           reject(this.buildException(err));
@@ -207,4 +210,8 @@ export interface JsonCreateAccount {
   typeEtablissement: string;
   recaptcha: unknown;
   contact: JsonCreateContact;
+}
+
+export interface JsonTypeEtablissement {
+  libelle: string;
 }

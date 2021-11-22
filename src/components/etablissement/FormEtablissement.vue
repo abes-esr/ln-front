@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-form ref="formCreationCompte" lazy-validation>
+    <v-form ref="formCreationCompte" lazy-validation :disabled="isDisableForm">
       <v-card-subtitle
         v-if="action === Action.CREATION"
         @click="$router.push({ path: '/login' })"
@@ -10,6 +10,9 @@
       <v-card-title v-if="action === Action.CREATION" class="pl-3">
         Créer le compte de votre établissement
       </v-card-title>
+      <h1 v-if="isDisableForm">
+        Inaccessiple pour le moment, veuillez reessayer ultérieurement
+      </h1>
       <v-card-text>
         <v-row v-if="action === Action.CREATION">
           <v-col cols="12" md="6" lg="6" xl="6">
@@ -197,6 +200,7 @@ import { rulesForms } from "@/core/RulesForm";
 import Etablissement from "@/core/Etablissement";
 import { Action } from "@/core/CommonDefinition";
 import Contact from "@/components/etablissement/Contact.vue";
+import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 
 @Component({
   components: { Contact }
@@ -216,6 +220,7 @@ export default class FormEtablissement extends Vue {
   error: string = "";
   dialog: boolean = false;
   dialogAvailable: boolean = false;
+  isDisableForm: boolean = false;
 
   mounted() {
     this.fetchListeType();
@@ -338,11 +343,25 @@ export default class FormEtablissement extends Vue {
   }
 
   fetchListeType(): void {
-    etablissementService.listeType().then(result => {
-      result.data.forEach(element => {
-        this.typesEtab.push(element.libelle);
+    this.alert = false;
+    this.error = "";
+    etablissementService
+      .listeType()
+      .then(result => {
+        this.typesEtab = result;
+      })
+      .catch(err => {
+        this.alert = true;
+        if (err instanceof LicencesNationalesApiError) {
+          this.isDisableForm = true;
+          this.error =
+            "Fonctionnalité momentanement indisponible : " + err.message;
+          Logger.error(err.toString());
+        } else {
+          Logger.error(err.toString());
+          this.error = "Impossible d'exécuter l'action : " + err.message;
+        }
       });
-    });
   }
 
   clear() {
