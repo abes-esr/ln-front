@@ -92,7 +92,9 @@
           label="Confirmez votre adresse e-mail"
           placeholder="Confirmez votre adresse e-mail"
           v-model="emailConfirmation"
-          :rules="rulesForms.confirmEmailContactRules && valideEmailConfirmation"
+          :rules="
+            rulesForms.confirmEmailContactRules.concat(rulesMailConfirmation)
+          "
           required
           @keyup.enter="validate()"
           autocomplete="new-mail"
@@ -122,7 +124,9 @@
             label="Confirmez votre mot de passe"
             placeholder="Confirmez votre mot de passe"
             v-model="motDePassConfirmation"
-            :rules="rulesForms.confirmPassContactRules && valideMotDePassConfirmation"
+            :rules="
+              rulesForms.passwordRules.concat(rulesMotDePasseConfirmation)
+            "
             :type="show1 ? 'text' : 'password'"
             required
             @keyup.enter="validate()"
@@ -161,16 +165,23 @@ export default class Contact extends Vue {
   Action: any = Action;
   rulesForms: any = rulesForms;
   motDePassConfirmation: string = "";
-  valideMotDePassConfirmation =  [
-    (v: string) => v == this.contact.motDePasse || "Le mot de passe de comfirmation doit etre le même"
-  ];
   emailConfirmation: string = "";
-  valideEmailConfirmation =  [
-    (v: string) => v == this.contact.mail || "Le mail de comfirmation doit etre le même"
-  ];
   show1: boolean = false;
+
   constructor() {
     super();
+  }
+
+  get rulesMotDePasseConfirmation() {
+    return () =>
+      this.motDePassConfirmation === this.contact.motDePasse ||
+      "Le mot de passe de confirmation n'est pas valide";
+  }
+
+  get rulesMailConfirmation() {
+    return () =>
+      this.emailConfirmation === this.contact.mail ||
+      "Le mail de confirmation n'est pas valide";
   }
 
   validate(): boolean {
