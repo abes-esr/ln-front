@@ -11,5 +11,18 @@ export class ContactEtablissement {
   mail: string = "";
   motDePasse: string = "";
   role: string = "";
+
+  reset():void {
+    this.nom = "";
+    this.prenom = "";
+    this.adresse = "";
+    this.boitePostale = "";
+    this.codePostal = "";
+    this.ville = "";
+    this.cedex = "";
+    this.telephone = "";
+    this.mail = "";
+    this.motDePasse = "";
+  }
 }
 export default ContactEtablissement;

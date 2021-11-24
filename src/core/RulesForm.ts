@@ -2,7 +2,7 @@
 export class rulesForm {
   nomEtabRules = [
     (v: string) => !!v || "Le nom de l'établissement est obligatoire",
-    (v: string) => v.length >= 5 || "Minimum 5 caractères",
+    (v: string) => !!v && v.length >= 5 || "Minimum 5 caractères",
     (v: string) =>
       /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]){5,80}$/.test(v) ||
       "Le nom d'établissement fourni n'est pas valide"
@@ -36,7 +36,7 @@ export class rulesForm {
   adresseContactRules = [
     (v: string) =>
       !!v || "L'adresse postale de l'établissement est obligatoire",
-    (v: string) => v.length >= 5 || "Minimum 5 caractères",
+    (v: string) => !!v && v.length >= 5 || "Minimum 5 caractères",
     (v: string) =>
       /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
       "L'adresse postale fournie n'est pas valide"
@@ -80,7 +80,7 @@ export class rulesForm {
 
   passwordRules = [
     (v: string) => !!v || "Le mot de passe du contact est obligatoire",
-    (v: string) => v.length >= 5 || "Minimum 8 caractères",
+    (v: string) => !!v && v.length >= 5 || "Minimum 8 caractères",
     (v: string) =>
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
         v

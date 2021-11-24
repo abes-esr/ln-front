@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-form ref="formCreationCompte" lazy-validation :disabled="isDisableForm">
+  <v-card :disabled="!isDisableForm">
+    <v-form ref="formCreationCompte" lazy-validation>
       <v-card-subtitle
         v-if="action === Action.CREATION"
         @click="$router.push({ path: '/login' })"
@@ -231,10 +231,6 @@ export default class FormEtablissement extends Vue {
     this.etablissement = this.getCurrentEtablissement;
   }
 
-  update() {
-    this.etablissement = this.getCurrentEtablissement;
-  }
-
   get getCurrentEtablissement(): Etablissement {
     return this.$store.getters.getCurrentEtablissement();
   }
@@ -312,34 +308,36 @@ export default class FormEtablissement extends Vue {
    * Fonction de vérification du numéro SIREN
    */
   checkSiren(): void {
-    this.checkSirenAPI = "Vérification du SIREN en cours...";
-    this.checkSirenColor = "grey";
-    if (this.etablissement.siren.length === 9) {
-      this.dialogAvailable = true;
-      serviceGouv
-        .checkSiren(this.etablissement.siren)
-        .then(() => {
-          this.checkSirenAPI = "valide";
-          this.checkSirenColor = "green";
-        })
-        .catch(err => {
-          Logger.error(err);
-          if (err instanceof SirenNotFoundError) {
-            this.checkSirenAPI = "inconnu";
-            this.checkSirenColor = "red";
-          } else if (err instanceof DataGouvApiError) {
-            this.checkSirenAPI =
-              "Impossible de contacter le service de vérification du numéro SIREN";
-            this.checkSirenColor = "red";
-          } else {
-            this.checkSirenAPI = "Erreur interne : " + err.message;
-            this.checkSirenColor = "red";
-          }
-        });
-    } else {
-      this.dialogAvailable = false;
+    if (this.etablissement.siren) {
+      this.checkSirenAPI = "Vérification du SIREN en cours...";
+      this.checkSirenColor = "grey";
+      if (this.etablissement.siren.length === 9) {
+        this.dialogAvailable = true;
+        serviceGouv
+          .checkSiren(this.etablissement.siren)
+          .then(() => {
+            this.checkSirenAPI = "valide";
+            this.checkSirenColor = "green";
+          })
+          .catch(err => {
+            Logger.error(err);
+            if (err instanceof SirenNotFoundError) {
+              this.checkSirenAPI = "inconnu";
+              this.checkSirenColor = "red";
+            } else if (err instanceof DataGouvApiError) {
+              this.checkSirenAPI =
+                "Impossible de contacter le service de vérification du numéro SIREN";
+              this.checkSirenColor = "red";
+            } else {
+              this.checkSirenAPI = "Erreur interne : " + err.message;
+              this.checkSirenColor = "red";
+            }
+          });
+      } else {
+        this.dialogAvailable = false;
+      }
+      this.checkSirenAPI = "En attente de vérification";
     }
-    this.checkSirenAPI = "En attente de vérification";
   }
 
   fetchListeType(): void {
@@ -365,7 +363,8 @@ export default class FormEtablissement extends Vue {
   }
 
   clear() {
-    (this.$refs.formCreationCompte as HTMLFormElement).reset();
+    (this.$refs.formCreationCompte as HTMLFormElement).resetValidation();
+    this.etablissement.reset();
     (this.$refs.formContact as Vue & {
       clear: () => boolean;
     }).clear();

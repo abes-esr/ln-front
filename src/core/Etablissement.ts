@@ -35,5 +35,12 @@ export class Etablissement {
     // On supprime l'indice
     this.ips.splice(index, 1);
   }
+
+  reset():void {
+    this.nom = "";
+    this.siren = "";
+    this.typeEtablissement = "";
+    this.contact.reset();
+  }
 }
 export default Etablissement;

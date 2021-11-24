@@ -54,6 +54,7 @@ import { Component, Vue } from "vue-property-decorator";
 import FormLogin from "../components/login/FormLogin.vue";
 import ForgotPassword from "../components/login/ForgotPassword.vue";
 import {Logger} from "@/utils/Logger";
+import Etablissement from "@/core/Etablissement";
 
 @Component({
   components: { FormLogin, ForgotPassword }
@@ -61,9 +62,16 @@ import {Logger} from "@/utils/Logger";
 export default class App extends Vue {
   forgotPasswordVisible: boolean = false;
   creerCompte(){
-    this.$router.push({ name: "CreationEtablissement" }).catch(err => {
-      Logger.debug("Ca marche pas : " + err);
-    });
+    this.$store
+        .dispatch("setCurrentEtablissement", new Etablissement())
+        .then(() => {
+          this.$router.push({ name: "CreationEtablissement" });
+        })
+        .catch(err => {
+          Logger.error(err);
+          // this.error = "Impossible de créer un nouvel éditeur : " + err.message;
+          // this.alert = true;
+        });
   }
 }
 </script>
