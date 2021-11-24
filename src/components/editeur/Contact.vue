@@ -58,23 +58,23 @@ import ContactEditeur from "@/core/ContactEditeur";
 export default class Contact extends Vue {
   @Prop() contact!: ContactEditeur;
   nomContactRules = [
-    (v: string) => !!v || "Le nom du contact est obligatoire",
+    (v: string) => !!v.trim() || "Le nom du contact est obligatoire",
     (v: string) =>
       /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-        v
+          v.trim()
       ) || "Le nom fourni n'est pas valide"
   ];
   prenomContactRules = [
-    (v: any) => !!v || "Le prénom du contact est obligatoire",
+    (v: any) => !!v.trim() || "Le prénom du contact est obligatoire",
     (v: any) =>
       /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-        v
+          v.trim()
       ) || "Le prénom fourni n'est pas valide"
   ];
   emailContactRules = [
-    (v: any) => !!v || "L'adresse mail du contact est obligatoire",
+    (v: any) => !!v.trim() || "L'adresse mail du contact est obligatoire",
     (v: any) =>
-      /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||
+      /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v.trim()) ||
       "L'adresse mail fournie n'est pas valide"
   ];
 

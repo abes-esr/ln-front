@@ -133,14 +133,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Logger } from "@/utils/Logger";
-import { Action } from "@/core/CommonDefinition";
+import {Component, Prop, Vue} from "vue-property-decorator";
+import {Logger} from "@/utils/Logger";
+import {Action, ContactType} from "@/core/CommonDefinition";
 import Editeur from "@/core/Editeur";
 import Contact from "@/components/editeur/Contact.vue";
 import ContactEditeur from "@/core/ContactEditeur";
-import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import { editeurService } from "@/core/service/licencesnationales/EditeurService";
+import {LicencesNationalesUnauthorizedApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import {editeurService} from "@/core/service/licencesnationales/EditeurService";
 
 @Component({
   components: { Contact }
@@ -151,9 +151,9 @@ export default class ComposantEditeur extends Vue {
   Action: any = Action;
 
   nomEditeurRules = [
-    (v: string) => !!v || "Le nom de l'éditeur est obligatoire",
+    (v: string) => !!v.trim() || "Le nom de l'éditeur est obligatoire",
     (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v.trim()) ||
       "Le nom de l'éditeur fourni n'est pas valide"
   ];
 
@@ -174,9 +174,9 @@ export default class ComposantEditeur extends Vue {
   ];
   adresseEditeurRules = [
     (v: string) =>
-      !!v || "L'adresse postale de l'établissement est obligatoire",
+      !!v.trim() || "L'adresse postale de l'établissement est obligatoire",
     (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
+      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v.trim()) ||
       "L'adresse postale fournie n'est pas valide"
   ];
 
@@ -227,23 +227,30 @@ export default class ComposantEditeur extends Vue {
     }).validate();
 
     // On vérifie les formulaires contacts
-    if (this.editeur.contacts.length == 0) {
+    let isSubFormValide: boolean = false;
+    let countContactTechnique: number = 0;
+    let countContactCommercial: number = 0;
+    for (let index = 0; index < this.editeur.contacts.length; index++) {
+      if (this.editeur.contacts[index].type == ContactType.TECHNIQUE) {
+        countContactTechnique++;
+      } else if (this.editeur.contacts[index].type == ContactType.COMMERCIAL) {
+        countContactCommercial++;
+      }
+      isSubFormValide = this.$refs["contactForm_" + index][0].validate();
+
+      if (!isValide || !isSubFormValide) {
+        // Si le formulaire éditeur n'était pas valide, on garde à non valide
+        isValide = false;
+      } else {
+        isValide = true;
+      }
+    }
+
+    if (countContactCommercial === 0 || countContactTechnique === 0) {
       isValide = false;
       this.buttonLoading = false;
-      this.error = "Vous devez saisir au moins un contact";
+      this.error = "Vous devez saisir au moins un contact technique et un contact commercial";
       this.alert = true;
-    } else {
-      let isSubFormValide: boolean = false;
-      for (let index = 0; index < this.editeur.contacts.length; index++) {
-        isSubFormValide = this.$refs["contactForm_" + index][0].validate();
-
-        if (!isValide || !isSubFormValide) {
-          // Si le formulaire éditeur n'était pas valide, on garde à non valide
-          isValide = false;
-        } else {
-          isValide = true;
-        }
-      }
     }
 
     if (isValide) {

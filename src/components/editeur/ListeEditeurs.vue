@@ -52,7 +52,8 @@
               dense
               :headers="headers"
               :items="editeurs"
-              :items-per-page="10"
+              :items-per-page=25
+              :footer-props="{'items-per-page-options':[25, 50, 100,-1]}"
               class="elevation-0"
               :search="rechercher"
               id="mytable"
