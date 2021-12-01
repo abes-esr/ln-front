@@ -177,12 +177,11 @@ export default class FormReinitialisationPass extends Vue {
     return new Promise((resolve, reject) => {
       this.alert = false;
       authService
-        .verifierValiditeToken({
-          token: this.resetToken
-        })
+        .verifierValiditeToken( this.resetToken
+        )
         .then(response => {
           this.buttonLoading = false;
-          resolve(response.estValid);
+          resolve(response);
         })
         .catch(err => {
           this.buttonLoading = false;

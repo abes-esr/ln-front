@@ -2,6 +2,20 @@
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
+        <v-alert border="left" type="info" dense outlined>
+          <h4>
+            Application réservée aux établissements bénéficiaires
+          </h4>
+          <br />
+          <p id="WarningLogin">
+            <strong>Important : </strong>L'accès aux corpus sous licences nationales
+            est reservé aux établissements bénéficiaires selon les conditions
+            spécifiques négociées avec chaque éditeur. Pour permettre la déclaration
+            des adresses IP autorisées, l'Abes met à la disposition des
+            professionnels de la documentation cette application dédiée à la gestion
+            des accès.
+          </p>
+        </v-alert>
         <transition name="fade">
           <form-login v-if="!forgotPasswordVisible" />
         </transition>
@@ -51,13 +65,14 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import FormLogin from "../components/login/FormLogin.vue";
-import ForgotPassword from "../components/login/ForgotPassword.vue";
+import FormLogin from "../components/authentification/login/FormLogin.vue";
+import ForgotPassword from "../components/authentification/login/ForgotPassword.vue";
 import {Logger} from "@/utils/Logger";
 import Etablissement from "@/core/Etablissement";
+import MessageBox from "@/components/common/MessageBox.vue";
 
 @Component({
-  components: { FormLogin, ForgotPassword }
+  components: {FormLogin, ForgotPassword }
 })
 export default class App extends Vue {
   forgotPasswordVisible: boolean = false;

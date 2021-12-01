@@ -16,8 +16,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 
 // Handle all Vue errors
-Vue.config.errorHandler = error =>
-  Logger.error(error.message, error.constructor.name);
+/*Vue.config.errorHandler = error =>
+  Logger.error(error.message, error.constructor.name);*/
 
 Vue.config.productionTip = false;
 

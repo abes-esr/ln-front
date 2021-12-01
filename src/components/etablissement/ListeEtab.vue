@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card width="100%">
+    <v-card width="100%" :disabled="disableForm">
       <v-card-text>
         <v-row>
           <v-col lg="12" md="12" xs="12">
@@ -21,7 +21,7 @@
                         id="mytable"
                       >
                         <template v-slot:header.statut="{ header }">
-                          {{ header.text }}
+                          {{ header.texte }}
                           <v-menu offset-y :close-on-content-click="false">
                             <template v-slot:activator="{ on, attrs }">
                               <v-btn icon v-bind="attrs" v-on="on">
@@ -107,14 +107,6 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <br />
-    <v-alert dense outlined :value="alert" type="error">
-      {{ error }}
-    </v-alert>
-    <v-alert dense outlined :value="notification !== ''" type="success">
-      {{ notification }}
-    </v-alert>
-
     <!-- Popup de suppression -->
     <div class="text-center">
       <v-dialog v-model="dialog" width="500">
@@ -196,9 +188,13 @@ import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import Etablissement from "@/core/Etablissement";
+import {Message, MessageType} from "@/core/CommonDefinition";
+import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import {LicencesNationalesUnauthorizedApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 
 @Component
 export default class ListeEtab extends Vue {
+  disableForm: boolean = false;
   statut: string = "";
   selectStatut: Array<string> = [
     "Nouveau",
@@ -210,8 +206,6 @@ export default class ListeEtab extends Vue {
   etabs: Array<Etablissement> = [];
   title: string = "";
   id: string = "";
-  error: string = "";
-  alert: boolean = false;
   derniereDateModificationIpTemp: string = "";
   headers = [
     {
@@ -243,9 +237,6 @@ export default class ListeEtab extends Vue {
   currentSirenToValid: string = "";
   motifSuppression: string = "";
 
-  get notification() {
-    return this.$store.getters.notification();
-  }
   get getUserSiren() {
     return this.$store.getters.userSiren();
   }
@@ -279,16 +270,34 @@ export default class ListeEtab extends Vue {
     return statutRecherche.statut.toString().includes(this.statut);
   }
   getAll(): any {
-    return etablissementService.listeEtab(this.$store.getters.getToken());
+    return etablissementService.getEtablissements(this.$store.getters.getToken());
   }
   collecterEtab(): any {
+    this.$store.dispatch("closeDisplayedMessage");
     this.getAll()
       .then(response => {
         this.etabs = response.data.map(this.affichageEtab);
         Logger.debug(response.data);
       })
-      .catch(e => {
-        Logger.error(e);
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          this.disableForm = true;
+          message.texte = "Vous n'êtes pas autorisé à effectuer cette opération";
+          setTimeout(() => {
+            this.$router.push({ name: "Home" });
+          });
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
       });
   }
 
@@ -322,20 +331,29 @@ export default class ListeEtab extends Vue {
   }
 
   supprimerEtab(): void {
+    this.$store.dispatch("closeDisplayedMessage");
     etablissementService
-      .deleteEtab(this.$store.getters.getToken(), this.currentSirenToDelete, {
-        motif: this.motifSuppression
-      })
+      .deleteEtab(this.$store.getters.getToken(), this.currentSirenToDelete, this.motifSuppression      )
       .then(response => {
         this.refreshList();
-        Logger.debug("notification = " + response.data);
-        this.$store.dispatch("setNotification", response.data).catch(err => {
+        this.$store.dispatch("setNotification", "ok").catch(err => {
           Logger.error(err);
         });
       })
       .catch(err => {
-        this.error = err.response.data;
-        this.alert = true;
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
       });
     this.currentSirenToDelete = "";
     this.motifSuppression = "";
@@ -352,16 +370,26 @@ export default class ListeEtab extends Vue {
   }
 
   modifierEtab(item: Etablissement): void {
-    this.alert = false;
+    this.$store.dispatch("closeDisplayedMessage");
     this.$store
         .dispatch("setCurrentEtablissement", item)
         .then(() => {
           this.$router.push({ name: "Modi" });
         })
         .catch(err => {
-          Logger.error(err);
-          this.error = "Impossible de modifier cet éditeur : " + err.message;
-          this.alert = true;
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
+          } else {
+            message.texte = "Impossible d'exécuter l'action : " + err.message;
+          }
+          message.isSticky = true;
+
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
         });
   }
 }

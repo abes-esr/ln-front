@@ -10,9 +10,7 @@
         </v-card-title>
         <v-card-text>
           <v-card flat>
-            <v-alert dense outlined :value="alert" type="error">
-              {{ error }}
-            </v-alert>
+            <MessageBox></MessageBox>
             <v-card-title>Information de l'éditeur</v-card-title>
             <v-card-text>
               <v-row>
@@ -141,9 +139,10 @@ import Contact from "@/components/editeur/Contact.vue";
 import ContactEditeur from "@/core/ContactEditeur";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
+import MessageBox from "@/components/common/MessageBox.vue";
 
 @Component({
-  components: { Contact }
+  components: {MessageBox, Contact }
 })
 export default class ComposantEditeur extends Vue {
   editeur: Editeur;

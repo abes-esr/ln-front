@@ -79,7 +79,7 @@ import FormEtablissement from "@/components/etablissement/FormEtablissement.vue"
 })
 export default class FormFusionEtablissement extends Vue {
   sirenEtab: Array<string> = [];
-  sirenEtabRules = [
+  siren = [
     (v: string) => !!v || "SIREN obligatoire",
     (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
   ];

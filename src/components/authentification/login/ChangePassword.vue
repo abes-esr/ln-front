@@ -9,45 +9,7 @@
               <v-row>
                 <v-col cols="1" />
                 <v-col cols="8">
-                  <v-text-field
-                    outlined
-                    label="Ancien mot de passe"
-                    placeholder="Ancien mot de passe"
-                    :type="show ? 'text' : 'password'"
-                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                    v-model="oldPassword"
-                    :rules="rulesForms.passwordObligatoryRules"
-                    required
-                    @click:append="show = !show"
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                  <v-text-field
-                    outlined
-                    label="Nouveau mot de passe"
-                    placeholder="Nouveau mot de passe"
-                    :type="show ? 'text' : 'password'"
-                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                    v-model="newPassword"
-                    :rules="rulesForms.passwordRules"
-                    required
-                    @click:append="show = !show"
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                  <v-text-field
-                    outlined
-                    label="Confirmer le nouveau mot de passe"
-                    placeholder="Confirmer le nouveau mot de passe"
-                    :type="show ? 'text' : 'password'"
-                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                    v-model="newPasswordConfirm"
-                    :rules="[
-                      newPassword === newPasswordConfirm ||
-                        'Les mots de passe doivent correspondre'
-                    ]"
-                    required
-                    @click:append="show = !show"
-                    @keyup.enter="validate()"
-                  ></v-text-field>
+                <MotDePasse ref="motDePasse" :action="Action.MODIFICATION" :ancien-mot-de-passe="this.newPassword" :nouveau-mot-de-passe="this.newPassword"></MotDePasse>
                 </v-col>
               </v-row>
             </v-col>
@@ -85,10 +47,13 @@ import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
 import { rulesForms } from "@/core/RulesForm";
-
-@Component
+import MotDePasse from "@/components/authentification/MotDePasse.vue";
+import { Action } from "@/core/CommonDefinition";
+@Component({
+  components: {MotDePasse}
+})
 export default class ChangePassword extends Vue {
-
+  Action: any = Action;
   rulesForms: any = rulesForms;
   alert: boolean = false;
   show: boolean = false;
@@ -96,14 +61,13 @@ export default class ChangePassword extends Vue {
   buttonLoading: boolean = false;
   oldPassword: string = "";
   newPassword: string = "";
-  newPasswordConfirm: string = "";
 
   retourKo: boolean = false;
 
   validate(): void {
     this.alert = false;
     this.message = "";
-    if ((this.$refs.form as Vue & { validate: () => boolean }).validate())
+    if ((this.$refs.form as Vue & { validate: () => boolean }).validate() && (this.$refs.motDePasse as Vue & { validate: () => boolean }).validate() )
       this.submit();
   }
 

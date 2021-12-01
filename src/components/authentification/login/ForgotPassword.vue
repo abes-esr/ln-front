@@ -4,6 +4,7 @@
       <v-card-title>Mot de passe oublié</v-card-title>
       <v-card-subtitle
         >Remplissez un des deux champs ci-dessous
+        <MessageBox></MessageBox>
       </v-card-subtitle>
       <v-radio-group v-model="sirenRadio">
         <v-card-text>
@@ -52,17 +53,6 @@
           </v-row>
         </v-card-text>
       </v-radio-group>
-      <v-row>
-        <v-col cols="1" />
-        <v-col cols="10">
-          <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
-            {{ message }}
-          </v-alert>
-          <v-alert v-else dense outlined :value="alert" type="success">
-            {{ message }}
-          </v-alert>
-        </v-col>
-      </v-row>
       <v-card-actions>
         <v-row>
           <v-col>
@@ -90,8 +80,11 @@ import { Logger } from "@/utils/Logger";
 import { rulesForms } from "@/core/RulesForm";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import {Message, MessageType} from "@/core/CommonDefinition";
+import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import MessageBox from "@/components/common/MessageBox.vue";
 
-@Component
+@Component({ components: { MessageBox } })
 export default class ForgotPassword extends Vue {
 
   rulesForms: any = rulesForms;
@@ -101,10 +94,6 @@ export default class ForgotPassword extends Vue {
   mail: string = "";
   sirenRadio: boolean = true;
   buttonLoading: boolean = false;
-  alert: boolean = false;
-  alertOK: boolean = false;
-  retourKo: boolean = false;
-  message: string = "";
 
   async recaptcha() {
     // (optional) Wait until recaptcha has been loaded.
@@ -118,9 +107,8 @@ export default class ForgotPassword extends Vue {
   }
 
   validate(): void {
-    this.alert = false;
-    this.message = "";
-    this.retourKo = false;
+  this.buttonLoading = true;
+  this.$store.dispatch("closeDisplayedMessage");
     if (this.sirenRadio) {
       if (
         (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
@@ -131,25 +119,31 @@ export default class ForgotPassword extends Vue {
             recaptcha: this.token
           })
           .then(response => {
-            this.buttonLoading = false;
-            this.message = response.message;
-            this.alert = true;
+            const message: Message = new Message();
+            message.type = MessageType.INFORMATION;
+            message.texte = response.message;
+            message.isSticky = true;
+            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+              Logger.error(err);
+            });
           })
           .catch(err => {
-            this.buttonLoading = false;
-            this.alert = true;
-            this.retourKo = true;
-
-            if (err instanceof LicencesNationalesUnauthorizedApiError) {
-              this.message =
-                "Vous n'êtes pas autorisé à effectuer cette opération.: " +
-                err.message;
-              Logger.error(err.toString());
+            Logger.error(err.toString());
+            const message: Message = new Message();
+            message.type = MessageType.ERREUR;
+            if (err instanceof LicencesNationalesBadRequestApiError) {
+              message.texte = err.message;
             } else {
-              Logger.error(err.toString());
-              this.message = "Impossible d'exécuter l'action : " + err.message;
+              message.texte = "Impossible d'exécuter l'action : " + err.message;
             }
-          });
+            message.isSticky = true;
+
+            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+              Logger.error(err.toString());
+            });
+          }).finally(() => {
+          this.buttonLoading = false;
+        });
     } else {
       if ((this.$refs.formMail as Vue & { validate: () => boolean }).validate())
         authService
@@ -158,24 +152,28 @@ export default class ForgotPassword extends Vue {
             recaptcha: this.token
           })
           .then(response => {
-            this.buttonLoading = false;
-            this.message = response.message;
-            this.alert = true;
+            const message: Message = new Message();
+            message.type = MessageType.INFORMATION;
+            message.texte = response.message;
+            message.isSticky = true;
+            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+              Logger.error(err);
+            });
           })
           .catch(err => {
-            this.buttonLoading = false;
-            this.alert = true;
-            this.retourKo = true;
-
-            if (err instanceof LicencesNationalesUnauthorizedApiError) {
-              this.message =
-                "Vous n'êtes pas autorisé à effectuer cette opération.: " +
-                err.message;
-              Logger.error(err.toString());
+            Logger.error(err.toString());
+            const message: Message = new Message();
+            message.type = MessageType.ERREUR;
+            if (err instanceof LicencesNationalesBadRequestApiError) {
+              message.texte = err.message;
             } else {
-              Logger.error(err.toString());
-              this.message = "Impossible d'exécuter l'action : " + err.message;
+              message.texte = "Impossible d'exécuter l'action : " + err.message;
             }
+            message.isSticky = true;
+
+            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+              Logger.error(err.toString());
+            });
           });
     }
   }

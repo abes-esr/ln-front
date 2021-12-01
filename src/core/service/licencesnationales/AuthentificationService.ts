@@ -1,5 +1,6 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import User from "@/core/User";
+import {Logger} from "@/utils/Logger";
 
 export class AuthentificationService extends LicencesNationalesApiService {
   /**
@@ -91,14 +92,21 @@ export class AuthentificationService extends LicencesNationalesApiService {
   }
 
   verifierValiditeToken(
-    data: JsonVerifierValiditeTokenRequest
-  ): Promise<JsonVerifierValiditeTokenResponse> {
+    token: string
+  ): Promise<boolean> {
     return new Promise((resolve, reject) => {
+        const json: JsonVerifierValiditeTokenRequest = {
+            token: token
+        }
       return this.client
-        .post("/authentification/verifierValiditeToken", data)
+        .post("/authentification/verifierValiditeToken", json)
         .then(result => {
           const response: JsonVerifierValiditeTokenResponse = result.data;
-          resolve(response);
+          if (response.estValide) {
+              resolve(true);
+          } else {
+              resolve(false);
+          }
         })
         .catch(err => {
           reject(this.buildException(err));
@@ -172,7 +180,7 @@ export interface JsonVerifierValiditeTokenRequest {
 }
 
 export interface JsonVerifierValiditeTokenResponse {
-  estValid: boolean;
+  estValide: boolean;
 }
 
 export interface JsonModifierMotDePasseRequest {

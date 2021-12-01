@@ -3,7 +3,9 @@ import store from "../store/index";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
-import { Action } from "@/core/CommonDefinition";
+import { Action, Message, MessageType } from "@/core/CommonDefinition";
+import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { Logger } from "@/utils/Logger";
 
 Vue.use(VueRouter);
 
@@ -33,12 +35,16 @@ const routes: Array<RouteConfig> = [
   {
     path: "/reinitialisationPass",
     name: "ReinitialisationPass",
-    component: () => import("../components/login/FormReinitialisationPass.vue")
+    component: () =>
+      import(
+        "../components/authentification/login/FormReinitialisationPass.vue"
+      )
   },
   {
     path: "/forgotPassword",
     name: "ForgotPassword",
-    component: () => import("../components/login/ForgotPassword.vue")
+    component: () =>
+      import("../components/authentification/login/ForgotPassword.vue")
   },
   //Etablissement
   {
@@ -51,7 +57,8 @@ const routes: Array<RouteConfig> = [
   {
     path: "/profil",
     name: "Profil",
-    component: () => import("../components/etablissement/FormEtablissement.vue"),
+    component: () =>
+      import("../components/etablissement/FormEtablissement.vue"),
     props: {
       action: Action.MODIFICATION
     },
@@ -105,7 +112,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/listeAcces/:sirenEtabSiAdmin",
     name: "ListeAcces",
-    component: () => import("../components/acces/ListeAcces.vue"),
+    component: () => import("../components/ip/ListeAcces.vue"),
     props: true,
     meta: {
       requiresAuth: true
@@ -115,7 +122,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/ajouterAcces2/ip",
     name: "ajouterAcces2",
-    component: () => import("../components/acces/AjouterAcces.vue"),
+    component: () => import("../components/ip/AjouterAcces.vue"),
     meta: {
       requiresAuth: true
     }
@@ -123,7 +130,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/modifierAcces/:id&:typeAcces",
     name: "ModifierAcces",
-    component: () => import("../components/acces/ModifierAcces.vue"),
+    component: () => import("../components/ip/ModifierAcces.vue"),
     meta: {
       requiresAuth: true
     }
@@ -179,6 +186,7 @@ router.afterEach(to => {
 });
 
 router.beforeEach((to, from, next) => {
+  store.dispatch("closeDisplayedMessage");
   if (
     to.matched.some(record => record.meta.requiresAuth) &&
     !store.getters.isLoggedIn()
@@ -200,6 +208,38 @@ router.beforeEach((to, from, next) => {
     next({
       path: "/home"
     });
+  } else if (to.matched.some(record => record.meta.requiresAuth)) {
+    authService
+      .verifierValiditeToken(store.getters.getToken())
+      .then(response => {
+        if (!response) {
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = "Votre session a expiré";
+          message.isSticky = true;
+          store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          store.dispatch("logout").catch(err => {
+            Logger.error(err.toString());
+          });
+        } else {
+          next();
+        }
+      })
+      .catch(err => {
+        // On déconnecte l'utilisateur au cas où...;
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        message.texte = err.message+ '. Vous avez été déconnecté';
+        message.isSticky = true;
+        store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        store.dispatch("logout").catch(err => {
+          Logger.error(err.toString());
+        });
+      });
   } else {
     next();
   }

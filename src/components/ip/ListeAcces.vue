@@ -20,7 +20,7 @@
                         :search="rechercher"
                       >
                         <template v-slot:header.statut="{ header }">
-                          {{ header.text }}
+                          {{ header.texte }}
                           <v-menu offset-y :close-on-content-click="false">
                             <template v-slot:activator="{ on, attrs }">
                               <v-btn icon v-bind="attrs" v-on="on">
@@ -234,7 +234,7 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   affichageAcces(acces) {
-    Logger.debug("debut affichage acces");
+    Logger.debug("debut affichage ip");
     return {
       id: acces.id,
       dateCreation: moment(acces.dateCreation).format("L"),

@@ -71,7 +71,7 @@ export default class Contact extends Vue {
         v
       ) || "Le prénom fourni n'est pas valide"
   ];
-  emailContactRules = [
+  email = [
     (v: any) => !!v || "L'adresse mail du contact est obligatoire",
     (v: any) =>
       /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||

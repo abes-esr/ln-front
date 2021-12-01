@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import ChangePassword from "@/components/login/ChangePassword.vue";
+import ChangePassword from "@/components/authentification/login/ChangePassword.vue";
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({

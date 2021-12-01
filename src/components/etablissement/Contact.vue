@@ -83,7 +83,7 @@
             label="Mail de contact"
             placeholder="Mail de contact"
             v-model="contact.mail"
-            :rules="rulesForms.emailContactRules.concat(rulesMailConfirmation)"
+            :rules="rulesForms.email.concat(rulesMailConfirmation)"
             required
             @keyup="checkConfirmationMail()"
             @keyup.enter="validate()"
@@ -94,54 +94,19 @@
             label="Confirmez votre adresse e-mail"
             placeholder="Confirmez votre adresse e-mail"
             v-model="emailConfirmation"
-            :rules="
-              rulesForms.confirmEmailContactRules.concat(rulesMailConfirmation)
-            "
+            :rules="rulesForms.email.concat(rulesMailConfirmation)"
             required
             @keyup="checkConfirmationMail()"
             @keyup.enter="validate()"
             autocomplete="new-mail"
           ></v-text-field>
         </v-form>
-        <v-form ref="motdepasse" v-if="action === Action.CREATION">
-          <v-alert border="left" type="info" outlined>
-            Votre mot de passe doit contenir au minimum 8 caractères dont une
-            lettre majuscule, une lettre minuscule, un chiffre et un caractère
-            spécial parmis @ $ ! % * ? &
-          </v-alert>
-          <v-text-field
-            outlined
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            label="Mot de passe"
-            placeholder="Mot de passe"
-            v-model="contact.motDePasse"
-            :rules="
-              rulesForms.passwordRules.concat(rulesMotDePasseConfirmation)
-            "
-            :type="show1 ? 'text' : 'password'"
-            required
-            @keyup.enter="validate()"
-            @keyup="checkConfirmationMotDePasse()"
-            @click:append="show1 = !show1"
-            autocomplete="new-password"
-          ></v-text-field>
-          <v-text-field
-            outlined
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            label="Confirmez votre mot de passe"
-            placeholder="Confirmez votre mot de passe"
-            v-model="motDePassConfirmation"
-            :rules="
-              rulesForms.passwordRules.concat(rulesMotDePasseConfirmation)
-            "
-            :type="show1 ? 'text' : 'password'"
-            required
-            @keyup.enter="validate()"
-            @keyup="checkConfirmationMotDePasse()"
-            @click:append="show1 = !show1"
-            autocomplete="new-password"
-          ></v-text-field>
-        </v-form>
+        <MotDePasse
+          ref="motdepasse"
+          v-if="action === Action.CREATION"
+          :action="Action.CREATION"
+          :nouveau-mot-de-passe="contact.motDePasse"
+        ></MotDePasse>
         <div v-if="action === Action.CREATION">
           <v-checkbox
             required
@@ -163,12 +128,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
 import ContactEtablissement from "@/core/ContactEtablissement";
+import MotDePasse from "@/components/authentification/MotDePasse.vue";
+import { Logger } from "@/utils/Logger";
 
-@Component
+@Component({
+  components: { MotDePasse }
+})
 export default class Contact extends Vue {
   @Prop() contact!: ContactEtablissement;
   @Prop() action!: Action;
@@ -196,6 +165,13 @@ export default class Contact extends Vue {
       "Le mail de confirmation n'est pas valide";
   }
 
+  @Watch("contact.mail")
+  motDepasse(value: string): void {
+    if (this.contact.mail != "") {
+      (this.$refs.mail as Vue & { validate: () => boolean }).validate();
+    }
+  }
+
   checkConfirmationMotDePasse(): void {
     if (this.motDePassConfirmation != "") {
       (this.$refs.motdepasse as Vue & { validate: () => boolean }).validate();
@@ -209,15 +185,23 @@ export default class Contact extends Vue {
   }
 
   validate(): boolean {
-    return (
-      (this.$refs.motdepasse as Vue & { validate: () => boolean }).validate() &&
-      (this.$refs.mail as Vue & { validate: () => boolean }).validate() &&
-      (this.$refs.form as Vue & { validate: () => boolean }).validate()
-    );
+    const isFormValide = (this.$refs.form as Vue & {
+      validate: () => boolean;
+    }).validate();
+    const isMotDePasseValide = (this.$refs.motdepasse as Vue & {
+      validate: () => boolean;
+    }).validate();
+    const isMailValide = (this.$refs.mail as Vue & {
+      validate: () => boolean;
+    }).validate();
+
+    return isFormValide && isMotDePasseValide && isMailValide;
   }
 
   clear(): void {
+    (this.$refs.motdepasse as MotDePasse).clear();
     (this.$refs.form as HTMLFormElement).resetValidation();
+    (this.$refs.mail as HTMLFormElement).resetValidation();
     this.contact.reset();
   }
 }

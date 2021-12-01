@@ -17,10 +17,10 @@
 </style>
 <script lang="ts">
 import Vue from "vue";
-import SideMenu from "./components/SideMenu.vue";
+import SideMenu from "./components/common/SideMenu.vue";
 import { Component } from "vue-property-decorator";
-import Footer from "@/components/Footer.vue";
-import Header from "@/components/Header.vue";
+import Footer from "@/components/common/Footer.vue";
+import Header from "@/components/common/Header.vue";
 
 @Component({
   components: { Header, SideMenu, Footer }

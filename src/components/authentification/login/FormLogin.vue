@@ -1,0 +1,134 @@
+<template>
+  <v-card witdh="100%" outlined>
+
+    <v-form ref="form" lazy-validation>
+      <v-card-title>S'authentifier</v-card-title>
+      <v-card-subtitle> <MessageBox></MessageBox></v-card-subtitle>
+      <v-card-text>
+        <v-row>
+          <v-col cols="1" />
+          <v-col cols="10">
+            <v-text-field
+              ref="login"
+              outlined
+              label="SIREN"
+              placeholder="SIREN"
+              maxlength="9"
+              v-model="siren"
+              :rules="rulesForms.siren"
+              append-icon="mdi-information"
+              required
+              @keyup="validate()"
+            >
+              <template v-slot:append>
+                <a
+                  class="noUnderlineLink"
+                  href="https://www.sirene.fr/sirene/public/static/recherche"
+                  target="_blank"
+                >
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-icon v-on="on">
+                        mdi-information
+                      </v-icon>
+                    </template>
+                    Trouver le numéro SIREN de votre établissement
+                  </v-tooltip>
+                </a></template
+              >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="1" />
+          <v-col cols="10">
+            <v-text-field
+              ref="password"
+              outlined
+              label="Mot de passe"
+              placeholder="Mot de passe"
+              :type="show ? 'text' : 'password'"
+              :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+              v-model="password"
+              :rules="rulesForms.motDePasse"
+              required
+              @click:append="show = !show"
+              @keyup="validate()"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-row>
+          <v-col>
+            <v-btn
+              color="button"
+              style="float: right;"
+              :loading="buttonLoading"
+              @click="login()"
+              >Se connecter
+              <v-icon style="padding-left: 5px;"
+                >mdi-arrow-right-circle-outline
+              </v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-actions>
+    </v-form>
+  </v-card>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+import { Logger } from "@/utils/Logger";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { rulesForms } from "@/core/RulesForm";
+import { Message, MessageType } from "@/core/CommonDefinition";
+import MessageBox from "@/components/common/MessageBox.vue";
+
+@Component({ components: { MessageBox } })
+export default class FormLogin extends Vue {
+  rulesForms: any = rulesForms;
+  siren: string = "";
+  password: string = "";
+  buttonLoading: boolean = false;
+  isValid: boolean = false;
+  show: boolean = false;
+  creationCompteEffectuee: boolean = false;
+
+  validate(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.isValid = !!(
+      (this.$refs.login as Vue & { valid: () => boolean }).valid &&
+      (this.$refs.password as Vue & { valid: () => boolean }).valid
+    );
+  }
+
+  login(): void {
+    this.buttonLoading = true;
+    this.$store.dispatch("closeDisplayedMessage");
+
+    this.$store
+      .dispatch("login", { login: this.siren, password: this.password })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+      }).finally(() => {
+      this.buttonLoading = false;
+    });
+  }
+}
+</script>
+<style scoped src="./style.css"></style>
