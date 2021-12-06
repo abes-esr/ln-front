@@ -1,17 +1,15 @@
 <template>
-  <v-card witdh="100%" outlined>
-
-    <v-form ref="form" lazy-validation>
-      <v-card-title>S'authentifier</v-card-title>
-      <v-card-subtitle> <MessageBox></MessageBox></v-card-subtitle>
-      <v-card-text>
+  <v-card elevation="0">
+    <v-card-title class="pa-0">S'authentifier</v-card-title>
+    <MessageBox></MessageBox>
+    <v-card-text class="rounded pa-3">
+      <v-form ref="form" lazy-validation>
         <v-row>
           <v-col cols="1" />
           <v-col cols="10">
             <v-text-field
               ref="login"
               outlined
-              label="SIREN"
               placeholder="SIREN"
               maxlength="9"
               v-model="siren"
@@ -45,7 +43,6 @@
             <v-text-field
               ref="password"
               outlined
-              label="Mot de passe"
               placeholder="Mot de passe"
               :type="show ? 'text' : 'password'"
               :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -57,24 +54,27 @@
             ></v-text-field>
           </v-col>
         </v-row>
-      </v-card-text>
-      <v-card-actions>
         <v-row>
+          <v-col cols="8">
+            <a
+                v-if="!forgotPasswordVisible"
+                @click="forgotPasswordVisible = !forgotPasswordVisible"
+            >Mot de passe ou identifiant oublié ?</a
+            >
+          </v-col>
           <v-col>
             <v-btn
-              color="button"
-              style="float: right;"
-              :loading="buttonLoading"
-              @click="login()"
-              >Se connecter
-              <v-icon style="padding-left: 5px;"
-                >mdi-arrow-right-circle-outline
+                :loading="buttonLoading"
+                @click="login()"
+            >Se connecter
+              <v-icon
+              >mdi-arrow-right-circle-outline
               </v-icon>
             </v-btn>
           </v-col>
         </v-row>
-      </v-card-actions>
-    </v-form>
+      </v-form>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -125,10 +125,13 @@ export default class FormLogin extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
-      }).finally(() => {
-      this.buttonLoading = false;
-    });
+      })
+      .finally(() => {
+        this.buttonLoading = false;
+      });
   }
 }
 </script>
-<style scoped src="./style.css"></style>
+<style scoped lang="scss">
+
+</style>

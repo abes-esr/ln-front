@@ -25,7 +25,8 @@ export interface ConfirmPopupOptions {
 export enum MessageType {
   ERREUR,
   INFORMATION,
-  AVERTISSEMENT
+  AVERTISSEMENT,
+  VALIDATION
 }
 
 export class Message {

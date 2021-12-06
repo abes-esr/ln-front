@@ -25,7 +25,7 @@
       :placeholder="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'"
       :type="show ? 'text' : 'password'"
       :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      v-model="nouveauMotDePasse"
+      v-model="NouveauMotDePasse"
       :rules="regleFormulaire.motDePasse.concat(regleMotDePasse)"
       required
       @click:append="show = !show"
@@ -63,6 +63,9 @@ export default class MotDePasse extends Vue {
   @Prop() nouveauMotDePasse!: string;
   confirmationNouveauMotDePasse: string = "";
   show: boolean = false;
+
+  get NouveauMotDePasse () { return this.nouveauMotDePasse;}
+  set NouveauMotDePasse (value) { this.$emit('update:nouveauMotDePasse', value) }
 
   get regleMotDePasse() {
     return () => this.confirmationNouveauMotDePasse === "" ||

@@ -106,6 +106,7 @@
           v-if="action === Action.CREATION"
           :action="Action.CREATION"
           :nouveau-mot-de-passe="contact.motDePasse"
+          @update:nouveauMotDePasse="updateMotDePasse"
         ></MotDePasse>
         <div v-if="action === Action.CREATION">
           <v-checkbox
@@ -143,19 +144,10 @@ export default class Contact extends Vue {
   @Prop() action!: Action;
   Action: any = Action;
   rulesForms: any = rulesForms;
-  motDePassConfirmation: string = "";
   emailConfirmation: string = "";
-  show1: boolean = false;
 
   constructor() {
     super();
-  }
-
-  get rulesMotDePasseConfirmation() {
-    return () =>
-      this.motDePassConfirmation === this.contact.motDePasse ||
-      this.motDePassConfirmation === "" ||
-      "Le mot de passe de confirmation n'est pas valide";
   }
 
   get rulesMailConfirmation() {
@@ -163,19 +155,6 @@ export default class Contact extends Vue {
       this.emailConfirmation === this.contact.mail ||
       this.emailConfirmation === "" ||
       "Le mail de confirmation n'est pas valide";
-  }
-
-  @Watch("contact.mail")
-  motDepasse(value: string): void {
-    if (this.contact.mail != "") {
-      (this.$refs.mail as Vue & { validate: () => boolean }).validate();
-    }
-  }
-
-  checkConfirmationMotDePasse(): void {
-    if (this.motDePassConfirmation != "") {
-      (this.$refs.motdepasse as Vue & { validate: () => boolean }).validate();
-    }
   }
 
   checkConfirmationMail(): void {
@@ -203,6 +182,10 @@ export default class Contact extends Vue {
     (this.$refs.form as HTMLFormElement).resetValidation();
     (this.$refs.mail as HTMLFormElement).resetValidation();
     this.contact.reset();
+  }
+
+  updateMotDePasse(value: string) {
+    this.contact.motDePasse = value;
   }
 }
 </script>

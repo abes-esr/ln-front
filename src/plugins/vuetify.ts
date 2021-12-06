@@ -9,20 +9,4 @@ export default new Vuetify({
     locales: { fr },
     current: "fr"
   },
-  theme: {
-    themes: {
-      light: {
-        primary: "#295494",
-        secondary: "#252C61",
-        accent: "#980827",
-        button: "#cf491f"
-      },
-      dark: {
-        primary: "#404552",
-        secondary: "#383c4a",
-        accent: "#980827",
-        button: "#cf491f"
-      }
-    }
-  }
 });

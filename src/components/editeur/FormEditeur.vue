@@ -133,13 +133,14 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import { Action } from "@/core/CommonDefinition";
+import {Action, ContactType, Message, MessageType} from "@/core/CommonDefinition";
 import Editeur from "@/core/Editeur";
 import Contact from "@/components/editeur/Contact.vue";
 import ContactEditeur from "@/core/ContactEditeur";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import MessageBox from "@/components/common/MessageBox.vue";
+import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component({
   components: {MessageBox, Contact }
@@ -180,8 +181,6 @@ export default class ComposantEditeur extends Vue {
   ];
 
   buttonLoading: boolean = false;
-  alert: boolean = false;
-  error: string = "";
 
   constructor() {
     super();
@@ -217,36 +216,55 @@ export default class ComposantEditeur extends Vue {
   }
 
   validate(): void {
-    this.error = "";
-    this.alert = false;
+    this.$store.dispatch("closeDisplayedMessage");
 
     // On vérifie le formulaire éditeur
     let isValide: boolean = (this.$refs.formEditeur as Vue & {
       validate: () => boolean;
     }).validate();
 
-    // On vérifie les formulaires contacts
-    if (this.editeur.contacts.length == 0) {
-      isValide = false;
-      this.buttonLoading = false;
-      this.error = "Vous devez saisir au moins un contact";
-      this.alert = true;
-    } else {
-      let isSubFormValide: boolean = false;
-      for (let index = 0; index < this.editeur.contacts.length; index++) {
-        isSubFormValide = this.$refs["contactForm_" + index][0].validate();
+    const message: Message = new Message();
+    message.type = MessageType.ERREUR;
+    message.isSticky = true;
 
-        if (!isValide || !isSubFormValide) {
-          // Si le formulaire éditeur n'était pas valide, on garde à non valide
-          isValide = false;
-        } else {
-          isValide = true;
-        }
+    // On vérifie les formulaires contacts
+    let isSubFormValide: boolean = false;
+    let countContactTechnique: number = 0;
+    let countContactCommercial: number = 0;
+    for (let index = 0; index < this.editeur.contacts.length; index++) {
+      if (this.editeur.contacts[index].type == ContactType.TECHNIQUE) {
+        countContactTechnique++;
+      } else if (this.editeur.contacts[index].type == ContactType.COMMERCIAL) {
+        countContactCommercial++;
       }
+      isSubFormValide = this.$refs["contactForm_" + index][0].validate();
+      if (!isValide || !isSubFormValide) {
+        // Si le formulaire éditeur n'était pas valide, on garde à non valide
+        isValide = false;
+      } else {
+        isValide = true;
+      }
+    }
+    if (countContactCommercial === 0 || countContactTechnique === 0) {
+      isValide = false;
+      message.texte = " - Vous devez saisir au moins un contact technique et un contact commercial";
     }
 
     if (isValide) {
       this.send();
+    } else {
+      this.buttonLoading = false;
+      message.texte =   `Des champs ne remplissent pas les conditions :
+      ${message.texte}`;
+      message.isMultiline = true;
+      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+        Logger.error(err.toString());
+      });
+      // On glisse sur le message d'erreur
+      const messageBox = document.getElementById("messageBox");
+      if(messageBox) {
+        window.scrollTo(0, messageBox.offsetTop);
+      }
     }
   }
 
@@ -262,50 +280,83 @@ export default class ComposantEditeur extends Vue {
 
   send(): void {
     this.buttonLoading = true;
-    this.alert = false;
 
     if (this.action == Action.CREATION) {
       editeurService
         .createEditeur(this.editeur, this.$store.getters.getToken())
         .then(() => {
-          this.alert = true;
           this.buttonLoading = false;
-          this.$store.dispatch("setNotification", "OK").catch(err => {
-            Logger.error(err);
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = `L'éditeur a bien été créé`;
+          message.isSticky = false;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
           });
-          Logger.debug("notification = " + this.$store.state.notification);
-          this.$router.push({ path: "/listeEditeurs" });
+          // On glisse jusqu'au message
+          const messageBox = document.getElementById("messageBox");
+          if(messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+          // On redirige après 2 secondes
+          setTimeout(() => {
+            this.$router.push({ path: "/listeEditeurs" });
+          }, 2000);
         })
         .catch(err => {
           this.buttonLoading = false;
-          this.alert = true;
           Logger.error(err.toString());
-          if (err instanceof LicencesNationalesUnauthorizedApiError) {
-            this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
-          } else {
-            this.error = "Impossible de créer l'éditeur : " + err.message;
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = `Impossible d'exécuter l'action :
+           ${ err.message}`;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse jusqu'au message
+          const messageBox = document.getElementById("messageBox");
+          if(messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
           }
         });
     } else if (this.action == Action.MODIFICATION) {
       editeurService
         .updateEditeur(this.editeur, this.$store.getters.getToken())
         .then(() => {
-          this.alert = true;
           this.buttonLoading = false;
-          this.$store.dispatch("setNotification", "OK").catch(err => {
-            Logger.error(err);
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = `L'éditeur a bien été modifié`;
+          message.isSticky = false;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
           });
-          Logger.debug("notification = " + this.$store.state.notification);
-          this.$router.push({ path: "/listeEditeurs" });
+          // On glisse jusqu'au message
+          const messageBox = document.getElementById("messageBox");
+          if(messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+          // On redirige après 2 secondes
+          setTimeout(() => {
+            this.$router.push({ path: "/listeEditeurs" });
+          }, 2000);
         })
         .catch(err => {
           this.buttonLoading = false;
-          this.alert = true;
           Logger.error(err.toString());
-          if (err instanceof LicencesNationalesUnauthorizedApiError) {
-            this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
-          } else {
-            this.error = "Impossible de créer l'éditeur : " + err.message;
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = `Impossible d'exécuter l'action :
+           ${ err.message}`;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse jusqu'au message
+          const messageBox = document.getElementById("messageBox");
+          if(messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
           }
         });
     }
@@ -313,13 +364,18 @@ export default class ComposantEditeur extends Vue {
 
   clear() {
     this.buttonLoading = false;
-    this.alert = false;
-    (this.$refs.formEditeur as HTMLFormElement).reset(); // Formulaire editeur
-
+    this.$store.dispatch("closeDisplayedMessage");
+    // Reset des formulaires de contact
     for (let index = 0; index < this.editeur.contacts.length; index++) {
       // Formulaire contact
       this.$refs["contactForm_" + index][0].clear();
     }
+    // Reset du formulaire éditeur
+    (this.$refs.formEditeur as HTMLFormElement).resetValidation();
+
+    this.editeur = this.getCurrentEditeur;
+    Logger.debug(JSON.stringify(this.editeur.contacts))
+    window.scrollTo(0, 0);
   }
 }
 </script>

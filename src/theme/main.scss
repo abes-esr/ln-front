@@ -1,10 +1,57 @@
+.theme--light {
+  $couleur-1: #cf491f; // Orange foncé
+  $couleur-2: #478dcb; // Bleu clair
+  $couleur-3: #252c61; // Bleu foncé
+  $couleur-4: #b8b8b9; // Gris clair
+  $couleur-5:#949597; // Gris
+
+  $bouton-1: #00b600; // Vert clair
+  $bouton-2: #252c61; //Bleu foncé
+  $bouton-3: #e3040d; //Rouge
+
+  $message-couleur-1: #e3040d; // Rouge
+  $message-couleur-2: #eca30f; //Orange clair
+  $message-couleur-3: #00b600; //Vert clair
+
+
+  $message-arriere-plan-1:  #fac8c0; // Rouge
+  $message-arriere-plan-2:  rgba( $message-couleur-2, 0.15); //Orange clair
+  $message-arriere-plan-3:  rgba($message-couleur-3, 0.15); //Vert clair
+  $message-arrire-plan-4: #f6988a;
+
+  @import "light";
+}
+
+.theme--dark {
+  $couleur-1: #cf491f;
+  $couleur-2: #478dcb;
+  $couleur-3: #252c61;
+
+  @import "dark";
+}
+
+#messageBox .v-btn {
+  background-color: transparent !important;
+  border-left:0;
+}
+
+a {
+  text-decoration: underline;
+}
+
+.bouton-simple {
+  text-transform: none;
+  letter-spacing: inherit !important;
+  text-decoration: underline;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
 }
 
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
-{
+ {
   opacity: 0;
 }
 
@@ -14,15 +61,15 @@
 
 #appBar {
   background: linear-gradient(
-                  90deg,
-                  rgba(46, 63, 80, 1) 20%,
-                  rgba(97, 142, 186, 1) 100%
+    90deg,
+    rgba(46, 63, 80, 1) 20%,
+    rgba(97, 142, 186, 1) 100%
   );
 }
 
 header {
   height: auto !important;
-  left:0 !important;
+  left: 0 !important;
   position: relative !important;
 }
 
@@ -37,7 +84,7 @@ nav {
   max-height: 100% !important;
   position: relative !important;
   flex: 0 0 80px;
-  flex-direction: row!important;
+  flex-direction: row !important;
   width: 20vw;
 }
 
@@ -53,9 +100,9 @@ main {
 }
 
 #appBar .v-toolbar__content {
-  height:100% !important;
+  height: 100% !important;
   width: 100vw;
-  padding:0;
+  padding: 0;
 }
 
 #appBar .v-toolbar__image {
@@ -65,11 +112,11 @@ main {
 #appBar .v-toolbar__extension {
 }
 
-nav .v-list-item{
-  width:100%;
+nav .v-list-item {
+  width: 100%;
   min-width: 100%;
-  height:auto !important;
-  min-height: auto!important;
+  height: auto !important;
+  min-height: auto !important;
 }
 
 nav .v-list-item__title {
@@ -77,31 +124,28 @@ nav .v-list-item__title {
   overflow-wrap: break-word;
   word-break: break-all;
   word-wrap: break-word;
-  white-space:normal;
+  white-space: normal;
   text-align: center;
 }
 
 nav svg {
-  color:#757575;
+  color: #757575;
 }
 
 #footer {
   position: relative !important;
-  background-color: #6262624A;
-  background: linear-gradient(
-                  90deg,
-                  #32465b 20%,
-                  #5f97ce 100%
-  );
+  background-color: #6262624a;
+  background: linear-gradient(90deg, #32465b 20%, #5f97ce 100%);
 }
 
-#footer,  #footer .v-btn__content {
+#footer,
+#footer .v-btn__content {
   font-size: 0.6rem !important;
   text-transform: capitalize;
   overflow-wrap: break-word !important;
   word-wrap: break-word;
-  white-space:normal !important;
-  flex:1 0 100%;
+  white-space: normal !important;
+  flex: 1 0 100%;
 }
 
 #footer .v-btn:not(.v-btn--round).v-size--default {
@@ -110,12 +154,12 @@ nav svg {
 }
 
 #footer .v-divider--vertical {
-  margin:0.5rem 0 0.5rem 0;
-  border-color:#ffffff;
+  margin: 0.5rem 0 0.5rem 0;
+  border-color: #ffffff;
 }
 
 #footer .container {
-  width:auto !important;
+  width: auto !important;
 }
 
 h1 {
@@ -129,14 +173,6 @@ h2,
   color: #252c61;
   font-size: 1.5em !important;
   font-weight: 900 !important;
-}
-
-h3,
-h4,
-h5 {
-  color: #ffffff !important;
-  font-size: 1.15em;
-  line-height: 1.3em;
 }
 
 body {
@@ -156,7 +192,6 @@ body {
   color: #252c61 !important;
 }
 
-
 #mytable table thead {
   background-color: #478dcb !important;
 }
@@ -170,6 +205,5 @@ body {
 }
 
 .menu-slot:hover {
-  background: #BDBDBD;
-
+  background: #bdbdbd;
 }

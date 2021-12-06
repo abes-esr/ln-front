@@ -287,6 +287,19 @@ export default class FormEtablissement extends Vue {
     if (this.tokenrecaptcha != null) {
       if (isFormValide && isSubFormValide) {
         this.creationCompte();
+      } else {
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        message.texte = "Des champs ne remplissent pas les conditions";
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if(messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
       }
     }
   }
@@ -294,6 +307,8 @@ export default class FormEtablissement extends Vue {
   creationCompte(): void {
     this.buttonLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
+
+    Logger.debug(JSON.stringify(this.etablissement));
 
     etablissementService
       .creerEtablissement(this.etablissement, this.tokenrecaptcha)
@@ -321,6 +336,11 @@ export default class FormEtablissement extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if(messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
       });
   }
 
@@ -362,9 +382,11 @@ export default class FormEtablissement extends Vue {
   }
 
   clear() {
+    this.$store.dispatch("closeDisplayedMessage");
     (this.$refs.formCreationCompte as HTMLFormElement).resetValidation();
     this.etablissement.reset();
     (this.$refs.formContact as Contact).clear();
+    window.scrollTo(0, 0);
   }
 }
 </script>

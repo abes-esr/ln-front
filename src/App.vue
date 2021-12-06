@@ -13,7 +13,7 @@
   </v-app>
 </template>
 <style lang="scss">
-@import "./assets/styles/main.scss";
+@import "./theme/main.scss";
 </style>
 <script lang="ts">
 import Vue from "vue";
