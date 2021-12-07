@@ -20,7 +20,7 @@
           </p>
         </v-alert>
         <transition name="fade">
-          <form-login v-if="!forgotPasswordVisible" />
+          <form-login v-if="!forgotPasswordVisible" @onChange="afficherMotDePasseOublie()" />
         </transition>
 
         <transition name="fade">
@@ -30,7 +30,7 @@
         <transition name="fade">
           <a
             v-if="forgotPasswordVisible"
-            @click="forgotPasswordVisible = !forgotPasswordVisible"
+            @click="afficherConnexion()"
             >Revenir au formulaire de connexion</a
           >
         </transition>
@@ -48,7 +48,7 @@
             href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
             target="_blank"
             >Vérifier l'éligibilité
-            <font-awesome-icon :icon="['fas', 'question']" class="mx-2" />
+            <font-awesome-icon :icon="['fas', 'question-circle']" class="mx-2" />
           </v-btn>
 
           <v-btn
@@ -56,7 +56,7 @@
             v-if="!forgotPasswordVisible"
             @click="creerCompte"
             >Créer un compte
-            <font-awesome-icon :icon="['fas', 'plus']" class="mx-2" />
+            <font-awesome-icon :icon="['fas', 'plus-circle']" class="mx-2" />
           </v-btn>
         </div>
       </v-col>
@@ -76,7 +76,7 @@ import MessageBox from "@/components/common/MessageBox.vue";
 })
 export default class App extends Vue {
   forgotPasswordVisible: boolean = false;
-  creerCompte() {
+  creerCompte(): void {
     this.$store
       .dispatch("setCurrentEtablissement", new Etablissement())
       .then(() => {
@@ -87,6 +87,16 @@ export default class App extends Vue {
         // this.error = "Impossible de créer un nouvel éditeur : " + err.message;
         // this.alert = true;
       });
+  }
+
+  afficherMotDePasseOublie() : void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.forgotPasswordVisible = true;
+  }
+
+  afficherConnexion(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.forgotPasswordVisible = false;
   }
 }
 </script>

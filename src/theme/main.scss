@@ -4,6 +4,10 @@
   $couleur-3: #252c61; // Bleu foncé
   $couleur-4: #b8b8b9; // Gris clair
   $couleur-5:#949597; // Gris
+  $couleur-6:#ffffff; // Blanc
+  $couleur-7:  #000000; // Noir
+  $couleur-8: #00b600; // Vert clair
+  $couleur-9: #e3040d; //Rouge
 
   $bouton-1: #00b600; // Vert clair
   $bouton-2: #252c61; //Bleu foncé
@@ -14,25 +18,61 @@
   $message-couleur-3: #00b600; //Vert clair
 
 
-  $message-arriere-plan-1:  #fac8c0; // Rouge
-  $message-arriere-plan-2:  rgba( $message-couleur-2, 0.15); //Orange clair
-  $message-arriere-plan-3:  rgba($message-couleur-3, 0.15); //Vert clair
-  $message-arrire-plan-4: #f6988a;
+  $couleur-arriere-plan-1:  #fac8c0; // Rouge
+  $couleur-arriere-plan-2:  rgba( $message-couleur-2, 0.15); //Orange clair
+  $couleur-arriere-plan-3:  rgba($message-couleur-3, 0.15); //Vert clair
+  $couleur-arriere-plan-4: #f6988a;
+  $couleur-arriere-plan-5:  #122638;
+  $couleur-arriere-plan-6:  #ffffff; // Blanc
+  $couleur-arriere-plan-7:  #000000; // Noir
+  $couleur-arriere-plan-8 : #6262624a;
+  $couleur-arriere-plan-9: #32465b;
+  $couleur-arriere-plan-10:#5f97ce;
 
-  @import "light";
+  @import "style";
 }
 
 .theme--dark {
-  $couleur-1: #cf491f;
-  $couleur-2: #478dcb;
-  $couleur-3: #252c61;
+  $couleur-1: #949597; // Orange foncé
+  $couleur-2: #ffffff; // Bleu clair
+  $couleur-3: #ffffff; // Bleu foncé
+  $couleur-4: #b8b8b9; // Gris clair
+  $couleur-5:#949597; // Gris
+  $couleur-6:#ffffff; // Blanc
+  $couleur-7:  #000000;
+  $couleur-8: #00b600; // Vert clair
+  $couleur-9: #e3040d; //Rouge
 
-  @import "dark";
+  $bouton-1: #00b600; // Vert clair
+  $bouton-2: #252c61; //Bleu foncé
+  $bouton-3: #ffffff; //Rouge
+
+  $message-couleur-1: #e3040d; // Rouge
+  $message-couleur-2: #eca30f; //Orange clair
+  $message-couleur-3: #00b600; //Vert clair
+
+  $couleur-arriere-plan-1:  #fac8c0; // Rouge
+  $couleur-arriere-plan-2:  rgba( $message-couleur-2, 0.15); //Orange clair
+  $couleur-arriere-plan-3:  rgba($message-couleur-3, 0.15); //Vert clair
+  $couleur-arriere-plan-4: #f6988a;
+  $couleur-arriere-plan-5:  #000000;
+  $couleur-arriere-plan-6:  #000000; // Noir
+  $couleur-arriere-plan-7:  #ffffff; // Blanc
+  $couleur-arriere-plan-8 : #000000;
+  $couleur-arriere-plan-9: #7d7979;
+  $couleur-arriere-plan-10:#7d7979;
+
+  @import "style";
 }
+
 
 #messageBox .v-btn {
   background-color: transparent !important;
   border-left:0;
+}
+
+.icone-information, .icone-erreur, .icone-validation, .icone-avertissement  {
+  float:left;
 }
 
 a {
@@ -43,6 +83,10 @@ a {
   text-transform: none;
   letter-spacing: inherit !important;
   text-decoration: underline;
+}
+
+.bouton-simple .mdi {
+  text-decoration: none !important
 }
 
 .fade-enter-active,
@@ -132,35 +176,6 @@ nav svg {
   color: #757575;
 }
 
-#footer {
-  position: relative !important;
-  background-color: #6262624a;
-  background: linear-gradient(90deg, #32465b 20%, #5f97ce 100%);
-}
-
-#footer,
-#footer .v-btn__content {
-  font-size: 0.6rem !important;
-  text-transform: capitalize;
-  overflow-wrap: break-word !important;
-  word-wrap: break-word;
-  white-space: normal !important;
-  flex: 1 0 100%;
-}
-
-#footer .v-btn:not(.v-btn--round).v-size--default {
-  height: auto;
-  min-height: 20px;
-}
-
-#footer .v-divider--vertical {
-  margin: 0.5rem 0 0.5rem 0;
-  border-color: #ffffff;
-}
-
-#footer .container {
-  width: auto !important;
-}
 
 h1 {
   color: #478dcb;
@@ -206,4 +221,8 @@ body {
 
 .menu-slot:hover {
   background: #bdbdbd;
+}
+
+.no-text-transform {
+  text-transform: none !important;
 }

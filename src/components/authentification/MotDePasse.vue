@@ -1,6 +1,10 @@
 <template>
-  <v-form ref="form" lazy-validation>
-    <v-alert border="left" type="info" outlined>
+  <v-form ref="form" lazy-validation :disabled="isDisableForm">
+    <v-alert outlined>
+      <font-awesome-icon
+          :icon="['fas', 'info-circle']"
+          class="fa-2x mr-5 mb-1 mt-2 icone-information"
+      />
       Votre mot de passe doit contenir au minimum 8 caractères, une
       lettre majuscule, une lettre minuscule, un chiffre et un caractère
       spécial parmis @ $ ! % * ? &
@@ -63,6 +67,7 @@ export default class MotDePasse extends Vue {
   @Prop() nouveauMotDePasse!: string;
   confirmationNouveauMotDePasse: string = "";
   show: boolean = false;
+  @Prop() isDisableForm!: boolean;
 
   get NouveauMotDePasse () { return this.nouveauMotDePasse;}
   set NouveauMotDePasse (value) { this.$emit('update:nouveauMotDePasse', value) }
@@ -93,6 +98,7 @@ export default class MotDePasse extends Vue {
 
   clear(): void {
     (this.$refs.form as HTMLFormElement).resetValidation();
+    this.confirmationNouveauMotDePasse = "";
   }
 }
 </script>

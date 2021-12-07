@@ -56,10 +56,8 @@
         </v-row>
         <v-row>
           <v-col cols="8">
-            <a
-                v-if="!forgotPasswordVisible"
-                @click="forgotPasswordVisible = !forgotPasswordVisible"
-            >Mot de passe ou identifiant oublié ?</a
+            <a         @click="afficherMotDePasseOulie()"
+            >Mot de passe oublié ?</a
             >
           </v-col>
           <v-col>
@@ -129,6 +127,10 @@ export default class FormLogin extends Vue {
       .finally(() => {
         this.buttonLoading = false;
       });
+  }
+
+  afficherMotDePasseOulie(): void {
+    this.$emit('onChange'); // On notifie le composant parent
   }
 }
 </script>

@@ -11,6 +11,21 @@
       :icon="['fas', 'ban']"
       class="fa-lg mr-5 mb-1 mt-2 icone-erreur"
     />
+    <font-awesome-icon
+        v-if="getSnackbarType == MessageType.VALIDATION"
+        :icon="['fas', 'check-circle']"
+        class="fa-lg mr-5 mb-1 mt-2 icone-validation"
+    />
+    <font-awesome-icon
+        v-if="getSnackbarType == MessageType.AVERTISSEMENT"
+        :icon="['fas', 'ban']"
+        class="fa-lg mr-5 mb-1 mt-2 icone-avertissement"
+    />
+    <font-awesome-icon
+        v-if="getSnackbarType == MessageType.INFORMATION"
+        :icon="['fas', 'ban']"
+        class="fa-lg mr-5 mb-1 mt-2 icone-information"
+    />
     <span v-for="m in getSnackbarText" v-bind:key="m">{{ m }}</span>
 
     <template v-slot:close="{ attrs }">
@@ -61,7 +76,7 @@ export default class Message extends Vue {
     if (!this.$store.getters.getDisplayedMessage().isSticky) {
       setTimeout(() => {
         this.closeSnackBar();
-      }, 2000);
+      }, 6000);
     }
     return this.$store.getters.getDisplayedMessage().isDisplayed;
   }
@@ -71,8 +86,7 @@ export default class Message extends Vue {
   }
 
   get getSnackbarText(): Array<string> {
-    return "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum".split("\n");
-    //return this.$store.getters.getDisplayedMessage().texte.split("\n");
+    return this.$store.getters.getDisplayedMessage().texte.split("\n");
   }
 
   get getSnackbarType(): MessageType {

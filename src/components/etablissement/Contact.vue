@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
+  <v-form ref="form" lazy-validation :disabled="isDisableForm">
     <v-row>
       <v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
@@ -77,7 +77,7 @@
           required
           @keyup.enter="validate()"
         ></v-text-field>
-        <v-form ref="mail" v-if="action === Action.CREATION">
+        <v-form ref="mail" v-if="action === Action.CREATION" :disabled="isDisableForm">
           <v-text-field
             outlined
             label="Mail de contact"
@@ -107,6 +107,7 @@
           :action="Action.CREATION"
           :nouveau-mot-de-passe="contact.motDePasse"
           @update:nouveauMotDePasse="updateMotDePasse"
+          :isDisableForm="isDisableForm"
         ></MotDePasse>
         <div v-if="action === Action.CREATION">
           <v-checkbox
@@ -115,7 +116,7 @@
             label="J'accepte les conditions générales liées à la politique de
                 confidentialité*"
           ></v-checkbox>
-          <div class="subtitle-2">
+          <div>
             Pour connaître et exercer vos droits relatifs à l'utilisation des
             données collectées par ce formulaire, veuillez consulter la page
             <a @click="$router.push({ path: '/donneespersonnelles' })"
@@ -142,6 +143,7 @@ import { Logger } from "@/utils/Logger";
 export default class Contact extends Vue {
   @Prop() contact!: ContactEtablissement;
   @Prop() action!: Action;
+  @Prop() isDisableForm!: boolean;
   Action: any = Action;
   rulesForms: any = rulesForms;
   emailConfirmation: string = "";

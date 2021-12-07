@@ -1,65 +1,77 @@
 <template>
-  <div>
-    <MessageBox></MessageBox>
-    <v-card :disabled="isDisableForm">
-      <v-form ref="formCreationCompte" lazy-validation>
-        <v-card-subtitle
-          v-if="action === Action.CREATION"
-          @click="$router.push({ path: '/login' })"
+  <v-card class="elevation-0">
+    <v-form
+      ref="formCreationCompte"
+      lazy-validation
+      class="elevation-0"
+      :disabled="isDisableForm"
+    >
+      <v-card-title v-if="action === Action.CREATION" class="pl-3">
+        Créer le compte de votre établissement
+      </v-card-title>
+      <v-card-subtitle
+        v-if="action === Action.CREATION"
+        @click="$router.push({ path: '/login' })"
+      >
+        Votre établissement a déjà un compte ?
+        <v-btn class="bouton-simple elevation-0"
+          >S'authentifier
+          <v-icon>mdi-arrow-right-circle-outline </v-icon></v-btn
         >
-          Votre établissement a déjà un compte ? S'authentifier
-        </v-card-subtitle>
-        <v-card-title v-if="action === Action.CREATION" class="pl-3">
-          Créer le compte de votre établissement
-        </v-card-title>
-        <v-card-text>
-          <v-row v-if="action === Action.CREATION">
-            <v-col cols="12" md="6" lg="6" xl="6">
-              <v-alert border="left" type="info" outlined>
-                <h4 class="mb-1">
-                  Avant de créer cotre compte, vérifier l'éligibilité de votre
-                  établissement
-                </h4>
-                <p>
-                  <strong>Attention : </strong>L'accès aux corpus sous licences
-                  nationales est reservé aux établissements bénéficiaires selon
-                  les conditions spécifiques négociées avec chaque éditeur. Pour
-                  permettre la déclaration des adresses IP autorisées, l'Abes
-                  met à la disposition des professionnels de la documentation
-                  cette application dédiée à la gestion des accès.
-                  <a
-                    href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-                    target="_blank"
-                    >Vérifier l'éligibilité de votre établissement.</a
-                  >
-                </p>
-                <v-checkbox
-                  required
-                  :rules="rulesForms.checkboxRules"
-                  label="Je confirme que mon établissement est éligible"
-                ></v-checkbox>
-              </v-alert>
-            </v-col>
+      </v-card-subtitle>
+      <v-card-text>
+        <v-col cols="12" md="6" lg="6" xl="6"><MessageBox></MessageBox> </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
+        <v-row v-if="action === Action.CREATION">
+          <v-col cols="12" md="6" lg="6" xl="6">
+            <v-alert outlined>
+              <font-awesome-icon
+                :icon="['fas', 'exclamation-triangle']"
+                class="mx-2 icone-attention"
+              />
+              <h4 class="mb-1">
+                Avant de créer cotre compte, vérifier l'éligibilité de votre
+                établissement
+              </h4>
+              <p>
+                <strong>Attention : </strong>L'accès aux corpus sous licences
+                nationales est reservé aux établissements bénéficiaires selon
+                les conditions spécifiques négociées avec chaque éditeur. Pour
+                permettre la déclaration des adresses IP autorisées, l'Abes met
+                à la disposition des professionnels de la documentation cette
+                application dédiée à la gestion des accès.
+                <a
+                  href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  target="_blank"
+                  >Vérifier l'éligibilité de votre établissement.</a
+                >
+              </p>
+              <v-checkbox
+                required
+                :rules="rulesForms.checkboxRules"
+                label="Je confirme que mon établissement est éligible"
+              ></v-checkbox>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <div
+          class="mx-9"
+          v-if="
+            (action === Action.MODIFICATION && isAdmin) ||
+              action === Action.CREATION
+          "
+        >
+          <v-row>
+            <v-card-title>Informations de l'établissement</v-card-title>
           </v-row>
-          <div
-            v-if="
-              (action === Action.MODIFICATION && isAdmin) ||
-                action === Action.CREATION
-            "
-          >
+          <v-divider class="mb-4"></v-divider>
+          <div class="mx-9">
             <v-row>
-              <v-card-title>Informations de l'établissement</v-card-title>
-            </v-row>
-            <v-row>
-              <v-divider></v-divider>
-            </v-row>
-            <v-row class="pt-1">
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-text-field
                   outlined
                   label="Nom de l'établissement"
                   placeholder="Nom de l'établissement"
-                  maxlength="80"
                   v-model="etablissement.nom"
                   :rules="rulesForms.nomEtabRules"
                   required
@@ -90,71 +102,31 @@
                   @input="checkSiren()"
                   @keyup.enter="validate()"
                 ></v-text-field>
-                <v-chip class="ma-2" :color="checkSirenColor" text-color="white"
+                <v-chip class="ma-2" :class="checkSirenColor" label
                   >SIREN : {{ checkSirenAPI }}
                 </v-chip>
-                <!-- POPUP CONFIRMATION SIREN -->
-                <v-dialog v-model="dialog" persistent max-width="450">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      :disabled="!dialogAvailable"
-                      rounded
-                      outlined
-                      v-bind="attrs"
-                      v-on="on"
-                      color="primary"
-                      >Valider
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-card-title class="headline">
-                      Votre SIREN est-il correct ?
-                    </v-card-title>
-                    <v-card-text
-                      >Le SIREN renseigné correspond à l'établissement suivant :
-                      <b>{{ checkSirenAPI }}</b></v-card-text
-                    >
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="green darken-1"
-                        text
-                        @click="dialog = false"
-                      >
-                        Non
-                      </v-btn>
-                      <v-btn
-                        color="green darken-1"
-                        text
-                        @click="dialog = false"
-                      >
-                        Oui
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <!-- FIN POPUP CONFIRMATION SIREN -->
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-btn
-                  color="primary"
-                  rounded
-                  href="https://www.sirene.fr/sirene/public/static/recherche"
-                  target="_blank"
-                  outlined
-                >
+                <v-alert outlined>
+                  <font-awesome-icon
+                    :icon="['fas', 'info-circle']"
+                    class="fa-2x mr-5 mb-1 icone-information"
+                  />
                   Trouver le SIREN de votre établissement ?
-                </v-btn>
+                </v-alert>
               </v-col>
             </v-row>
           </div>
+        </div>
 
-          <v-card-title
-            v-if="
-              (action === Action.MODIFICATION && isAdmin) ||
-                action === Action.CREATION
-            "
-          >
+        <div
+          class="mx-9"
+          v-if="
+            (action === Action.MODIFICATION && isAdmin) ||
+              action === Action.CREATION
+          "
+        >
+          <v-card-title>
             Information Contact
           </v-card-title>
           <v-card-title v-if="action === Action.MODIFICATION && !isAdmin"
@@ -165,32 +137,41 @@
             ref="formContact"
             :action="action"
             :contact="etablissement.contact"
+            :isDisableForm="isDisableForm"
+            class="mx-9"
           />
-        </v-card-text>
-        <v-card-actions>
-          <v-col cols="7"></v-col>
-          <v-col>
-            <v-row>
-              <v-col cols="4"></v-col>
-              <v-col cols="3">
-                <v-btn x-large color="secondary" @click="clear"> Effacer</v-btn>
-              </v-col>
-              <v-col cols="3">
-                <v-btn
-                  color="button"
-                  :loading="buttonLoading"
-                  x-large
-                  @click="validate()"
-                  >Enregistrer
-                  <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-card-actions>
-      </v-form>
-    </v-card>
-  </div>
+        </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer class="hidden-sm-and-down"></v-spacer>
+        <v-col
+          cols="12"
+          md="3"
+          lg="3"
+          xl="3"
+          class="d-flex justify-space-around mr-16"
+        >
+          <v-btn
+            x-large
+            @click="clear"
+            class="bouton-annuler"
+            :disabled="isDisableForm"
+          >
+            Annuler</v-btn
+          >
+          <v-btn
+            color="button"
+            :loading="buttonLoading"
+            :disabled="isDisableForm"
+            x-large
+            @click="validate()"
+            >Enregistrer
+            <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+          </v-btn>
+        </v-col>
+      </v-card-actions>
+    </v-form>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -297,7 +278,7 @@ export default class FormEtablissement extends Vue {
         });
         // On glisse sur le message d'erreur
         const messageBox = document.getElementById("messageBox");
-        if(messageBox) {
+        if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
         }
       }
@@ -307,27 +288,28 @@ export default class FormEtablissement extends Vue {
   creationCompte(): void {
     this.buttonLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
-
-    Logger.debug(JSON.stringify(this.etablissement));
-
     etablissementService
       .creerEtablissement(this.etablissement, this.tokenrecaptcha)
       .then(response => {
-        this.buttonLoading = false;
-        this.buttonLoading = false;
         const message: Message = new Message();
-        message.type = MessageType.INFORMATION;
+        message.type = MessageType.VALIDATION;
         message.texte = "Votre compte a bien été créé";
-        message.isSticky = false;
+        message.isSticky = true;
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
-        this.$router.push({ path: "/login" }).catch(err => {
-          Logger.error(err.toString());
-        });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+        setTimeout(() => {
+          this.$router.push({ path: "/login" }).catch(err => {
+            Logger.error(err.toString());
+          });
+        }, 4000);
       })
       .catch(err => {
-        this.buttonLoading = false;
         Logger.error(err.toString());
         const message: Message = new Message();
         message.type = MessageType.ERREUR;
@@ -338,9 +320,12 @@ export default class FormEtablissement extends Vue {
         });
         // On glisse sur le message d'erreur
         const messageBox = document.getElementById("messageBox");
-        if(messageBox) {
+        if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
         }
+      })
+      .finally(() => {
+        this.buttonLoading = false;
       });
   }
 
@@ -351,24 +336,24 @@ export default class FormEtablissement extends Vue {
     this.$store.dispatch("closeDisplayedMessage");
     if (this.etablissement.siren) {
       this.checkSirenAPI = "Vérification du SIREN en cours...";
-      this.checkSirenColor = "grey";
+      this.checkSirenColor = "siren-default";
       if (this.etablissement.siren.length === 9) {
         this.dialogAvailable = true;
         serviceGouv
           .checkSiren(this.etablissement.siren)
           .then(() => {
             this.checkSirenAPI = "valide";
-            this.checkSirenColor = "green";
+            this.checkSirenColor = "siren-ok";
           })
           .catch(err => {
             Logger.error(err);
             if (err instanceof SirenNotFoundError) {
               this.checkSirenAPI = "inconnu";
-              this.checkSirenColor = "red";
+              this.checkSirenColor = "siren-erreur";
             } else if (err instanceof DataGouvApiError) {
               this.checkSirenAPI =
                 "Impossible de contacter le service de vérification du numéro SIREN";
-              this.checkSirenColor = "red";
+              this.checkSirenColor = "siren-erreur";
             } else {
               this.checkSirenAPI = "Erreur interne : " + err.message;
               this.checkSirenColor = "red";
@@ -390,4 +375,12 @@ export default class FormEtablissement extends Vue {
   }
 }
 </script>
-<style src="../authentification/login/style.css"></style>
+<style scoped lang="scss">
+.v-card__text {
+  border: 0;
+}
+
+.v-card__title {
+  width: 100%;
+}
+</style>

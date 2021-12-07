@@ -3,118 +3,60 @@
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
         <div>
-          <v-card v-if="tokenValid">
-            <v-alert dense outlined type="error">
-              La durée de validité de ce lien est dépassée. Mot de passe oublié
-              :
-              <router-link :to="{ path: 'forgotPassword' }"
-                >cliquez ici
-              </router-link>
-            </v-alert>
-          </v-card>
-          <v-card witdh="100%" outlined v-else>
-            <v-form ref="formReinitialisationPass" lazy-validation>
+          <v-card class="elevation-0">
+            <v-form
+              ref="formReinitialisationPass"
+              lazy-validation
+              class="elevation-0"
+              :disabled="tokenValid"
+            >
               <v-card-title
                 >Réinitialisation de votre mot de passe
               </v-card-title>
+              <MessageBox></MessageBox>
               <v-card-text>
-                <v-row>
-                  <v-col cols="1" />
-                  <v-col cols="10">
-                    <v-alert border="left" color="grey" dark>
-                      Votre mot de passe doit contenir au minimum 8 caractères
-                      dont une lettre majuscule, une lettre minuscule, un
-                      chiffre et un caractère spécial parmis @ $ ! % * ? &
-                    </v-alert>
-                    <v-text-field
-                      outlined
-                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      label="Créez votre nouveau mot de passe"
-                      placeholder="Mot de passe"
-                      :disabled="disabled === 1"
-                      v-model="passContact"
-                      :rules="rulesForms.passwordRules"
-                      :type="show1 ? 'text' : 'password'"
-                      required
-                      @keyup.enter="validate()"
-                      @click:append="show1 = !show1"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="1" />
-                  <v-col cols="10">
-                    <v-text-field
-                      outlined
-                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                      label="Confirmez votre nouveau mot de passe [contrôle de conformité]"
-                      placeholder="Confirmation"
-                      :disabled="disabled === 1"
-                      v-model="confirmPassContact"
-                      :rules="
-                        rulesForms.confirmPassContactRules.concat(
-                          confirmPassContactRule
-                        )
-                      "
-                      :type="show1 ? 'text' : 'password'"
-                      required
-                      @keyup.enter="validate()"
-                      @click:append="show1 = !show1"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="1" />
-                  <v-col cols="10"></v-col>
-                </v-row>
+                <MotDePasse
+                  ref="motDePasse"
+                  :action="Action.CREATION"
+                  :nouveau-mot-de-passe="this.newPassword"
+                  @update:nouveauMotDePasse="updateMotDePasse"
+                  class="ma-3"
+                ></MotDePasse>
               </v-card-text>
-              <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
-                  <v-alert
-                    v-if="retourKo"
-                    dense
-                    outlined
-                    :value="alert"
-                    type="error"
-                  >
-                    {{ message }}
-                  </v-alert>
-                  <v-alert v-else dense outlined :value="alert" type="success">
-                    {{ message }}
-                  </v-alert>
-                </v-col>
-              </v-row>
               <v-card-actions>
-                <v-col cols="5"></v-col>
-                <v-col cols="5">
-                  <v-row justify="space-between">
-                    <v-col>
-                      <v-btn
-                        x-large
-                        color="grey"
-                        @click="clear"
-                        :disabled="disabled === 1"
-                        >Effacer
-                      </v-btn>
-                    </v-col>
-                    <v-col cols="1"></v-col>
-                    <v-col cols="4">
-                      <v-btn
-                        color="success"
-                        :loading="buttonLoading"
-                        :disabled="disabled === 1"
-                        x-large
-                        @click="recaptcha()"
-                        >Envoyer
-                      </v-btn>
-                    </v-col>
-                  </v-row>
+                <v-spacer class="hidden-sm-and-down"></v-spacer>
+                <v-col
+                  cols="12"
+                  md="8"
+                  lg="8"
+                  xl="8"
+                  class="d-flex justify-space-around"
+                >
+                  <v-btn
+                    x-large
+                    @click="clear"
+                    class="bouton-annuler"
+                    :disabled="isDisableForm"
+                  >
+                    Annuler</v-btn
+                  >
+                  <v-btn
+                    :loading="buttonLoading"
+                    :disabled="isDisableForm"
+                    x-large
+                    @click="recaptcha()"
+                    >Enregistrer
+                    <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+                  </v-btn>
                 </v-col>
+              </v-card-actions>
+              <v-card-actions>
+                <a @click="allerAMotDePasseOublie()"
+                  >Revenir au formulaire de connexion</a
+                >
               </v-card-actions>
             </v-form>
           </v-card>
-          <br />
         </div>
       </v-col>
     </v-row>
@@ -127,28 +69,26 @@ import { Logger } from "@/utils/Logger";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
 import { rulesForms } from "@/core/RulesForm";
-
-@Component
+import { Message, MessageType } from "@/core/CommonDefinition";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import MessageBox from "@/components/common/MessageBox.vue";
+import { Action } from "@/core/CommonDefinition";
+import MotDePasse from "@/components/authentification/MotDePasse.vue";
+@Component({
+  components: { MotDePasse, MessageBox }
+})
 export default class FormReinitialisationPass extends Vue {
-
-  rulesForms: any = rulesForms;
+  Action: any = Action;
   resetToken: string = "";
-  disabled: number = 0;
-  show1: boolean = false;
+  isDisableForm: boolean = false;
   tokenValid: boolean = true;
   tokenrecaptchaValid: Promise<boolean> = this.$recaptchaLoaded();
   tokenrecaptcha: string = "";
-  passContact: string = "";
-  confirmPassContact: string = "";
+  newPassword: string = "";
   buttonLoading: boolean = false;
-  alert: boolean = false;
-  retourKo: boolean = false;
-  message: string = "";
 
   mounted() {
-    if (this.loggedIn) {
-      this.$router.push("/profile");
-    }
+    this.$store.dispatch("closeDisplayedMessage");
 
     this.resetToken = window.location.href.substr(
       window.location.href.lastIndexOf("=") + 1
@@ -158,15 +98,32 @@ export default class FormReinitialisationPass extends Vue {
       .then(result => {
         this.tokenValid = result;
       })
-      .catch(() => {
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
         this.tokenValid = false;
+      })
+      .finally(() => {
+        if (!this.tokenValid) {
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = "  La durée de validité de ce lien est dépassée.";
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+        }
       });
-  }
-
-  get confirmPassContactRule() {
-    return () =>
-      this.confirmPassContact === this.passContact ||
-      "Le mot de passe de confirmation n'est pas valide";
   }
 
   get loggedIn() {
@@ -175,96 +132,131 @@ export default class FormReinitialisationPass extends Vue {
 
   get isTokenValid(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.alert = false;
       authService
-        .verifierValiditeToken( this.resetToken
-        )
+        .verifierValiditeToken(this.resetToken)
         .then(response => {
-          this.buttonLoading = false;
           resolve(response);
         })
         .catch(err => {
-          this.buttonLoading = false;
-          this.alert = true;
-          this.retourKo = true;
-
-          if (err instanceof LicencesNationalesUnauthorizedApiError) {
-            this.message =
-              "Vous n'êtes pas autorisé à effectuer cette opération.: " +
-              err.message;
-            Logger.error(err.toString());
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
           } else {
-            Logger.error(err.toString());
-            this.message = "Impossible d'exécuter l'action : " + err.message;
+            message.texte = "Impossible d'exécuter l'action : " + err.message;
           }
+          message.isSticky = true;
+
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
           reject(false);
+        })
+        .finally(() => {
+          this.buttonLoading = false;
         });
     });
   }
 
-  async recaptcha() {
-    // (optional) Wait until recaptcha has been loaded.
-    await this.$recaptchaLoaded();
-
-    // Execute reCAPTCHA with action "reinitialisationPass".
-    this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
-    Logger.debug("getToken dans recaptcha() " + this.tokenrecaptcha);
-    // Do stuff with the received getToken.
-    this.validate();
+  updateMotDePasse(value: string) {
+    this.newPassword = value;
   }
 
-  validate(): void {
-    this.alert = false;
-    this.message = "";
-    this.retourKo = false;
-
-    if (this.tokenrecaptcha != null) {
-      if (
-        (this.$refs.formReinitialisationPass as Vue & {
-          validate: () => boolean;
-        }).validate()
-      ) {
-        this.reinitialisationPass();
+  async recaptcha() {
+    await this.$recaptchaLoaded();
+    this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
+    if (this.validate()) {
+      this.reinitialisationPass()
+    } else {
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      message.texte = "Des champs ne remplissent pas les conditions";
+      message.isSticky = true;
+      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+        Logger.error(err.toString());
+      });
+      // On glisse sur le message d'erreur
+      const messageBox = document.getElementById("messageBox");
+      if (messageBox) {
+        window.scrollTo(0, messageBox.offsetTop);
       }
     }
   }
 
+  validate(): boolean {
+    const isFormValide = (this.$refs.formReinitialisationPass as Vue & {
+      validate: () => boolean;
+    }).validate();
+    const isMotDePasseValide = (this.$refs.motDePasse as Vue & {
+      validate: () => boolean;
+    }).validate();
+
+    return isFormValide && isMotDePasseValide;
+  }
+
   reinitialisationPass(): void {
     this.buttonLoading = true;
-    this.alert = false;
+    this.$store.dispatch("closeDisplayedMessage");
+
     authService
       .reinitialiserMotDePasse({
-        nouveauMotDePasse: this.passContact,
+        nouveauMotDePasse: this.newPassword,
         recaptcha: this.tokenrecaptcha,
         token: this.resetToken
       })
       .then(response => {
-        this.buttonLoading = false;
-        this.message = response.message;
-        this.alert = true;
+        const message: Message = new Message();
+        message.type = MessageType.VALIDATION;
+        message.texte = response.message;
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err);
+        });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
         setTimeout(() => {
           this.$router.push({ name: "Login" });
-        }, 2000);
+        }, 4000);
       })
       .catch(err => {
-        this.buttonLoading = false;
-        this.alert = true;
-        this.retourKo = true;
-
-        if (err instanceof LicencesNationalesUnauthorizedApiError) {
-          this.message =
-            "Vous n'êtes pas autorisé à effectuer cette opération.: " +
-            err.message;
-          Logger.error(err.toString());
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
         } else {
-          Logger.error(err.toString());
-          this.message = "Impossible d'exécuter l'action : " + err.message;
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
         }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      })
+      .finally(() => {
+        this.buttonLoading = false;
       });
   }
 
+  allerAMotDePasseOublie(): void {
+    this.$router.push({ name: "Login" }).catch(err => {
+      Logger.error(err);
+    });
+  }
+
   clear() {
-    (this.$refs.formReinitialisationPass as HTMLFormElement).reset();
+    (this.$refs.motDePasse as MotDePasse).clear();
+    (this.$refs.formReinitialisationPass as HTMLFormElement).resetValidation();
+    this.newPassword = "";
   }
 }
 </script>
