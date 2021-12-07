@@ -16,7 +16,7 @@
           label="Nom"
           placeholder="Nom"
           v-model="contact.nom"
-          :rules="nomContactRules"
+          :rules="rulesForms.nomContactRules"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -25,7 +25,7 @@
           label="Prénom"
           placeholder="Prénom"
           v-model="contact.prenom"
-          :rules="prenomContactRules"
+          :rules="rulesForms.prenomContactRules"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -34,7 +34,7 @@
           label="Adresse e-mail"
           placeholder="Adresse e-mail"
           v-model="contact.mail"
-          :rules="emailContactRules"
+          :rules="rulesForms.email"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -53,30 +53,12 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { ContactType } from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component
 export default class Contact extends Vue {
   @Prop() contact!: ContactEditeur;
-  nomContactRules = [
-    (v: string) => !!v || "Le nom du contact est obligatoire",
-    (v: string) =>
-      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-        v
-      ) || "Le nom fourni n'est pas valide"
-  ];
-  prenomContactRules = [
-    (v: any) => !!v || "Le prénom du contact est obligatoire",
-    (v: any) =>
-      /^([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[A-Za-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$/.test(
-        v
-      ) || "Le prénom fourni n'est pas valide"
-  ];
-  emailContactRules = [
-    (v: any) => !!v || "L'adresse mail du contact est obligatoire",
-    (v: any) =>
-      /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) ||
-      "L'adresse mail fournie n'est pas valide"
-  ];
+  rulesForms: any = rulesForms;
 
   typeContactCandidates: Array<ContactType> = [
     ContactType.TECHNIQUE,
@@ -102,7 +84,7 @@ export default class Contact extends Vue {
   }
 
   clear(): void {
-    (this.$refs.form as HTMLFormElement).reset();
+    (this.$refs.form as HTMLFormElement).resetValidation();
   }
 }
 </script>

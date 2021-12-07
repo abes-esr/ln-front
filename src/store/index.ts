@@ -8,6 +8,12 @@ import {
   JsonLoginRequest
 } from "@/core/service/licencesnationales/AuthentificationService";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
+import Etablissement from "@/core/Etablissement";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import ContactEtablissement from "@/core/ContactEtablissement";
+import router from "@/router";
+import {Message} from "@/core/CommonDefinition";
+import {Logger} from "@/utils/Logger";
 
 Vue.use(Vuex);
 
@@ -15,10 +21,11 @@ export default new Vuex.Store({
   state: {
     user: new User(),
     darkTheme: false,
-    notification: "",
+    message: new Message(),
     creationCompteEffectuee: false,
     sirenEtabSiAdmin: "",
-    currentEditeur: new Editeur()
+    currentEditeur: new Editeur(),
+    currentEtablissement: new Etablissement()
   },
   mutations: {
     SET_USER(state, user: User) {
@@ -40,15 +47,18 @@ export default new Vuex.Store({
     SET_CREATION_COMPTE_FALSE(state) {
       state.creationCompteEffectuee = false;
     },
-    SET_NOTIFICATION(state, notif) {
-      state.notification = notif;
-    },
     SET_SIRENETABSIADMIN(state, sirenEtabSiAdmin) {
       state.sirenEtabSiAdmin = sirenEtabSiAdmin;
     },
     SET_CURRENT_EDITEUR(state, item: Editeur) {
       state.currentEditeur = item;
-    }
+    },
+    SET_CURRENT_ETABLISSEMENT(state, item: Etablissement) {
+      state.currentEtablissement = item;
+    },
+    mutationSnackBarDisplay(state, value: boolean) {
+      state.message.isDisplayed = value;
+    },
   },
   actions: {
     login({ commit }, data: JsonLoginRequest): Promise<boolean> {
@@ -59,6 +69,7 @@ export default new Vuex.Store({
           .then(result => {
             // On sauvegarde l'utilisateur
             commit("SET_USER", result);
+            router.push({ name: "Home" })
             resolve(true);
           })
           .catch(err => {
@@ -69,6 +80,7 @@ export default new Vuex.Store({
     },
     logout({ commit }) {
       commit("SET_LOGOUT");
+      router.push({ name: "Login" })
     },
     changeTheme({ commit }) {
       commit("SET_THEME");
@@ -79,8 +91,18 @@ export default new Vuex.Store({
     setCreationCompteEffectueeFalse({ commit }) {
       commit("SET_CREATION_COMPTE_FALSE");
     },
-    setNotification({ commit }, notif) {
-      commit("SET_NOTIFICATION", notif);
+    //*******************
+    //       Composants
+    //*******************
+    openDisplayedMessage(context, value: Message) {
+      context.state.message.isDisplayed = true;
+      context.state.message.isSticky = value.isSticky;
+      context.state.message.isMultiline = value.isMultiline;
+      context.state.message.type = value.type;
+      context.state.message.texte = value.texte;
+    },
+    closeDisplayedMessage(context) {
+      context.commit('mutationSnackBarDisplay', false);
     },
     setSirenEtabSiAdmin({ commit }, sirenEtabSiAdmin) {
       commit("SET_SIRENETABSIADMIN", sirenEtabSiAdmin);
@@ -96,6 +118,26 @@ export default new Vuex.Store({
             .getEditeur(value.id, context.state.user.token)
             .then(item => {
               context.commit("SET_CURRENT_EDITEUR", item); // On sauvegarde dans le store
+              resolve(true);
+            })
+            .catch(err => {
+              //Si une erreur avec le ws est jetée, on lève un message d'erreur
+              reject(err);
+            });
+        }
+      });
+    },
+    setCurrentEtablissement(context, value: Etablissement): Promise<boolean> {
+      return new Promise((resolve, reject) => {
+        if (value.id == -999) {
+          // Nouvel etablissement
+          context.commit("SET_CURRENT_ETABLISSEMENT", value); // On sauvegarde dans le store
+          resolve(true);
+        } else {
+          etablissementService
+            .getEtablissement(value.siren, context.state.user.token)
+            .then(item => {
+              context.commit("SET_CURRENT_ETABLISSEMENT", item); // On sauvegarde dans le store
               resolve(true);
             })
             .catch(err => {
@@ -125,8 +167,10 @@ export default new Vuex.Store({
     isDark: state => (): boolean => {
       return state.darkTheme;
     },
-    notification: state => (): string => {
-      return state.notification;
+    getDisplayedMessage: state => (): Message => {
+      const message = new Message();
+      Object.assign(message, state.message);
+      return message;
     },
     creationCompteEffectuee: state => (): boolean => {
       return state.creationCompteEffectuee;
@@ -138,6 +182,16 @@ export default new Vuex.Store({
       const editeur = new Editeur();
       Object.assign(editeur, state.currentEditeur);
       return editeur;
+    },
+    getCurrentEtablissement: state => (): Etablissement => {
+      const etablissement = new Etablissement();
+      Object.assign(etablissement, state.currentEtablissement);
+
+      const contact:ContactEtablissement = new ContactEtablissement();
+      Object.assign(contact,state.currentEtablissement.contact);
+      etablissement.contact = contact;
+
+      return etablissement;
     }
   },
   plugins: [createPersistedState()]

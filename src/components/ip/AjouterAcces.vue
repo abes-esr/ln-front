@@ -73,7 +73,7 @@
                   <v-col>
                     <v-btn
                       v-if="arrayArrays.length > 0"
-                      color="success"
+                      type="success"
                       :loading="buttonLoading"
                       x-large
                       @click="validate()"
@@ -96,7 +96,7 @@
 <style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import ModuleSegmentsIpPlage from "@/components/acces/ModuleSegmentsIpPlage.vue";
+import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
 import { Logger } from "@/utils/Logger";
 
 @Component({

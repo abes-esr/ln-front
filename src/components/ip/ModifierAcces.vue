@@ -110,7 +110,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import ModuleSegmentsIpPlage from "@/components/acces/ModuleSegmentsIpPlage.vue";
+import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
 import {
   GetTypeIpFromModifierAccesEvent,
   IpChangeEvent,

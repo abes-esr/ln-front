@@ -21,3 +21,18 @@ export interface ConfirmPopupOptions {
   color: string;
   width: number;
 }
+
+export enum MessageType {
+  ERREUR,
+  INFORMATION,
+  AVERTISSEMENT,
+  VALIDATION
+}
+
+export class Message {
+  isDisplayed = false;
+  isSticky = false;
+  isMultiline = true;
+  type: MessageType = MessageType.INFORMATION;
+  texte = '';
+}

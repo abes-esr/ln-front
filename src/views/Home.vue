@@ -3,6 +3,7 @@
     <br />
     <h1>Ceci n'est pas une page d'accueil.</h1>
     <small>C'est un placeholder</small>
+    <MessageBox></MessageBox>
     <br />
     <v-card-title>Bienvenu siren = {{ siren }}</v-card-title>
     <v-row>
@@ -29,8 +30,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-
-@Component
+import MessageBox from "@/components/common/MessageBox.vue";
+@Component({
+  components: {MessageBox}
+})
 export default class Home extends Vue {
   siren: string = "";
   alert: boolean = false;

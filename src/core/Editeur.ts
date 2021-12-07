@@ -33,4 +33,14 @@ export default class Editeur {
     // On supprime l'indice
     this.contacts.splice(index, 1);
   }
+
+  clear(): void {
+    this.id = -999;
+    this.nom = "";
+    this.identifiantBis = "";
+    this.dateCreation = new Date();
+    this.groupesEtabRelies = [];
+    this.adresse = "";
+    this.contacts= [];
+  }
 }

@@ -88,6 +88,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
+import Etablissement from "@/core/Etablissement";
+import {etablissementService} from "@/core/service/licencesnationales/EtablissementService";
 
 @Component
 export default class Header extends Vue {
@@ -121,9 +123,16 @@ export default class Header extends Vue {
   }
 
   allerAMonProfil(): void {
-    this.$router.push({ name: "Profil" }).catch(err => {
-      Logger.error(err);
-    });
+    this.$store
+        .dispatch("setCurrentEtablissement", etablissementService.getEtablissement(this.$store.getters.userSiren(),this.$store.getters.getToken()))
+        .then(() => {
+          this.$router.push({ name: "Profil" });
+        })
+        .catch(err => {
+          Logger.error(err);
+          // this.error = "Impossible de créer un nouvel éditeur : " + err.message;
+          // this.alert = true;
+        });
   }
 }
 </script>

@@ -1,0 +1,129 @@
+h1,
+h4 {
+  color: $couleur-1;
+}
+
+.v-application--wrap {
+  background-color: $couleur-arriere-plan-6;
+}
+.v-alert--outlined {
+  border-color: $couleur-4 !important;
+}
+
+.icone-attention {
+  color: $couleur-1;
+}
+
+.icone-fermer {
+  color: $couleur-5;
+}
+
+.icone-erreur {
+  color: $message-couleur-1;
+}
+
+.icone-information {
+  color: $couleur-2;
+}
+
+.icone-validation {
+  color: $couleur-8;
+}
+
+.v-card__title {
+  color: $couleur-2;
+}
+
+.v-card__text {
+  border: 1px solid $couleur-4;
+}
+
+.erreur--text {
+  color: $couleur-arriere-plan-7;
+  background-color: $couleur-arriere-plan-1 !important;
+  border-left:0.5rem solid $couleur-arriere-plan-4;
+}
+
+.validation--text {
+  color: $couleur-8;
+  background-color: $couleur-arriere-plan-3 !important;
+  border-left:0.5rem solid $couleur-arriere-plan-3;
+}
+
+.mdi-information {
+  color:$couleur-2;
+}
+
+.v-btn {
+  background-color:$couleur-1 !important;
+}
+
+a {
+  color: $couleur-arriere-plan-7 !important;
+}
+
+#noAccount {
+  color:$couleur-3;
+}
+
+.bouton-simple {
+  color:$couleur-3 !important;
+  background-color: transparent !important;
+}
+
+#footer, .footer-btn, #footer div, .footer-top h4 {
+  color: $couleur-arriere-plan-6 !important;
+}
+
+.footer-top {
+  background-color: $couleur-arriere-plan-8;
+  background: linear-gradient(90deg,  $couleur-arriere-plan-9 20%, $couleur-arriere-plan-10 100%);
+}
+
+.footer-bottom {
+  background-color: $couleur-arriere-plan-5;
+  border-top:1px solid $couleur-4;
+  border-left:0;
+  border-right:0;
+  border-bottom: 0;
+}
+
+#footer .v-divider {
+  border-color: $couleur-arriere-plan-6 !important;
+}
+
+.footer-btn {
+  color: $couleur-6 !important;
+}
+
+.v-divider {
+  border-color: $couleur-7 !important;
+}
+
+.v-card__title {
+  color: $couleur-3 !important;
+}
+
+.v-chip {
+  color: $couleur-6 !important;
+}
+
+.siren-erreur {
+  background-color: $couleur-9 !important;
+}
+
+.siren-ok {
+  background-color: $couleur-8 !important;
+}
+
+.siren-default {
+  background-color: $couleur-3 !important;
+}
+
+.bouton-annuler {
+  background-color: $couleur-4 !important;
+}
+
+#appBar .menu-slot {
+  background: $couleur-arriere-plan-5 !important;
+}

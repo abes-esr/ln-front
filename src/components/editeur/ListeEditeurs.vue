@@ -2,6 +2,7 @@
   <div>
     <v-card width="100%" :disabled="disableForm">
       <confirm-popup ref="confirm"></confirm-popup>
+
       <v-card-title><h1>Gestion des Editeurs</h1></v-card-title>
       <v-card-text>
         <v-row class="d-flex flex-row-reverse">
@@ -19,28 +20,7 @@
           /></v-btn>
         </v-row>
         <v-row class="d-flex justify-space-around">
-          <v-alert
-            dense
-            outlined
-            :value="alert"
-            type="error"
-            width="30vw"
-            class="multi-line"
-          >
-            {{ error }}
-          </v-alert>
-        </v-row>
-        <v-row class="d-flex justify-space-around">
-          <v-alert
-            dense
-            outlined
-            :value="notification !== ''"
-            type="success"
-            width="30vw"
-            class="multi-line"
-          >
-            {{ notification }}
-          </v-alert>
+          <MessageBox></MessageBox>
         </v-row>
         <v-row class="d-flex justify-space-around ma-0">
           <v-card
@@ -58,7 +38,7 @@
               id="mytable"
             >
               <template v-slot:header.statut="{ header }">
-                {{ header.text }}
+                {{ header.texte }}
               </template>
               <template v-slot:top>
                 <v-row class="d-flex flex-row-reverse mt-3">
@@ -109,7 +89,6 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <br />
   </div>
 </template>
 <style src="./style.css"></style>
@@ -120,10 +99,13 @@ import { Logger } from "@/utils/Logger";
 import Editeur from "@/core/Editeur";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
-import ConfirmPopup from "@/components/ConfirmPopup.vue";
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
+import MessageBox from "@/components/common/MessageBox.vue";
+import {Message, MessageType} from "@/core/CommonDefinition";
+import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component({
-  components: { ConfirmPopup }
+  components: {MessageBox, ConfirmPopup }
 })
 export default class ListeEditeurs extends Vue {
   disableForm: boolean = false;
@@ -131,8 +113,6 @@ export default class ListeEditeurs extends Vue {
   editeurs: Array<Editeur> = [];
   title: string = "";
   id: string = "";
-  error: string = "";
-  alert: boolean = false;
   headers: Array<any> = [
     {
       text: "Date de création du compte éditeur",
@@ -145,10 +125,6 @@ export default class ListeEditeurs extends Vue {
   ];
   confirmDeleteDialog: any = {};
 
-  get notification() {
-    return this.$store.getters.notification();
-  }
-
   mounted() {
     moment.locale("fr");
     this.fetchEditeurs();
@@ -160,9 +136,8 @@ export default class ListeEditeurs extends Vue {
   }
 
   fetchEditeurs(): void {
-    this.alert = false;
     this.disableForm = false;
-    this.$store.dispatch("setNotification", "");
+    this.$store.dispatch("closeDisplayedMessage");
 
     editeurService
       .getEditeurs(this.$store.getters.getToken())
@@ -170,50 +145,77 @@ export default class ListeEditeurs extends Vue {
         this.editeurs = res;
       })
       .catch(err => {
-        this.alert = true;
         Logger.error(err.toString());
-        if (err instanceof LicencesNationalesUnauthorizedApiError) {
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
           this.disableForm = true;
-          this.error = "Vous n'êtes pas autorisé à effectuer cette opération";
+          message.texte = "Vous n'êtes pas autorisé à effectuer cette opération";
           setTimeout(() => {
             this.$router.push({ name: "Home" });
-          }, 2000);
+          });
         } else {
-          this.error = "Impossible de charger les éditeurs : " + err.message;
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
         }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
       });
   }
 
   ajouterEditeur(): void {
-    this.alert = false;
+    this.$store.dispatch("closeDisplayedMessage");
     this.$store
       .dispatch("setCurrentEditeur", new Editeur())
       .then(() => {
         this.$router.push({ name: "NouvelEditeur" });
       })
       .catch(err => {
-        Logger.error(err);
-        this.error = "Impossible de créer un nouvel éditeur : " + err.message;
-        this.alert = true;
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
       });
   }
 
   modifierEditeur(item: Editeur): void {
-    this.alert = false;
+    this.$store.dispatch("closeDisplayedMessage");
     this.$store
       .dispatch("setCurrentEditeur", item)
       .then(() => {
         this.$router.push({ name: "ModifierEditeur" });
       })
       .catch(err => {
-        Logger.error(err);
-        this.error = "Impossible de modifier cet éditeur : " + err.message;
-        this.alert = true;
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
       });
   }
 
   async supprimerEditeur(item: Editeur) {
-    this.alert = false;
+    this.$store.dispatch("closeDisplayedMessage");
 
     const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
       "Suppression",
@@ -231,9 +233,19 @@ export default class ListeEditeurs extends Vue {
           );
         })
         .catch(err => {
-          Logger.error(err);
-          this.error = "Impossible de supprimer cet éditeur : " + err.message;
-          this.alert = true;
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
+          } else {
+            message.texte = "Impossible d'exécuter l'action : " + err.message;
+          }
+          message.isSticky = true;
+
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
         });
     }
   }
