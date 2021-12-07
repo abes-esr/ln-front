@@ -99,12 +99,13 @@ export default class ForgotPassword extends Vue {
   }
 
   validate(): void {
-    this.$store.dispatch("closeDisplayedMessage");
+
     if (this.sirenRadio) {
       if (
         (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
       ) {
         this.buttonLoading = true;
+        this.$store.dispatch("closeDisplayedMessage");
         authService
           .motDePasseOublieSiren({
             siren: this.siren,
@@ -153,6 +154,7 @@ export default class ForgotPassword extends Vue {
         (this.$refs.formMail as Vue & { validate: () => boolean }).validate()
       ) {
         this.buttonLoading = true;
+        this.$store.dispatch("closeDisplayedMessage");
         authService
           .motDePasseOublieEmail({
             email: this.mail,

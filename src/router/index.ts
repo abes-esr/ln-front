@@ -186,7 +186,6 @@ router.afterEach(to => {
 });
 
 router.beforeEach((to, from, next) => {
-  store.dispatch("closeDisplayedMessage");
   if (
     to.matched.some(record => record.meta.requiresAuth) &&
     !store.getters.isLoggedIn()
