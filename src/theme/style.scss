@@ -1,4 +1,7 @@
-h1,
+h1 {
+  color: $couleur-2;
+}
+
 h4 {
   color: $couleur-1;
 }
@@ -6,6 +9,16 @@ h4 {
 .v-application--wrap {
   background-color: $couleur-arriere-plan-6;
 }
+
+#appBar {
+  background-color: $couleur-arriere-plan-8;
+  background: linear-gradient(90deg,  $couleur-arriere-plan-9 20%, $couleur-arriere-plan-10 100%);
+}
+
+.mainBar {
+  background-color:  $couleur-arriere-plan-5;
+}
+
 .v-alert--outlined {
   border-color: $couleur-4 !important;
 }
@@ -24,6 +37,14 @@ h4 {
 
 .icone-information {
   color: $couleur-2;
+}
+
+.icone-avertissement {
+  color: $couleur-2;
+}
+
+.icone-standard {
+  color: $couleur-1;
 }
 
 .icone-validation {
@@ -124,6 +145,48 @@ a {
   background-color: $couleur-4 !important;
 }
 
-#appBar .menu-slot {
-  background: $couleur-arriere-plan-5 !important;
+.v-btn {
+  color: $couleur-6;
 }
+
+.btn-1 {
+  color: $couleur-6;
+  background-color: $couleur-1 !important;
+}
+
+.btn-2 {
+  color: $couleur-6;
+  background-color: $couleur-3 !important;
+}
+
+.btn-3 {
+  color: $couleur-6 !important;
+  background-color: $couleur-arriere-plan-5 !important;
+}
+
+#mytable table thead {
+  background-color: #478dcb !important;
+}
+
+#mytable table thead span {
+  color: #ffffff !important;
+}
+
+.menu-slot:hover {
+  background: #bdbdbd;
+}
+
+nav svg {
+  color: #757575;
+}
+
+.v-text-field input[readonly="readonly"] {
+  background-color: $couleur-4 !important;
+}
+
+.v-select__slot input[readonly="readonly"] {
+  background-color: $couleur-6 !important;
+}
+
+
+

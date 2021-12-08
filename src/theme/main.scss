@@ -3,9 +3,9 @@
   $couleur-2: #478dcb; // Bleu clair
   $couleur-3: #252c61; // Bleu foncé
   $couleur-4: #b8b8b9; // Gris clair
-  $couleur-5:#949597; // Gris
-  $couleur-6:#ffffff; // Blanc
-  $couleur-7:  #000000; // Noir
+  $couleur-5: #949597; // Gris
+  $couleur-6: #ffffff; // Blanc
+  $couleur-7: #000000; // Noir
   $couleur-8: #00b600; // Vert clair
   $couleur-9: #e3040d; //Rouge
 
@@ -17,29 +17,28 @@
   $message-couleur-2: #eca30f; //Orange clair
   $message-couleur-3: #00b600; //Vert clair
 
-
-  $couleur-arriere-plan-1:  #fac8c0; // Rouge
-  $couleur-arriere-plan-2:  rgba( $message-couleur-2, 0.15); //Orange clair
-  $couleur-arriere-plan-3:  rgba($message-couleur-3, 0.15); //Vert clair
+  $couleur-arriere-plan-1: #fac8c0; // Rouge
+  $couleur-arriere-plan-2: rgba($message-couleur-2, 0.15); //Orange clair
+  $couleur-arriere-plan-3: rgba($message-couleur-3, 0.15); //Vert clair
   $couleur-arriere-plan-4: #f6988a;
-  $couleur-arriere-plan-5:  #122638;
-  $couleur-arriere-plan-6:  #ffffff; // Blanc
-  $couleur-arriere-plan-7:  #000000; // Noir
-  $couleur-arriere-plan-8 : #6262624a;
+  $couleur-arriere-plan-5: #122638;
+  $couleur-arriere-plan-6: #ffffff; // Blanc
+  $couleur-arriere-plan-7: #000000; // Noir
+  $couleur-arriere-plan-8: #6262624a;
   $couleur-arriere-plan-9: #32465b;
-  $couleur-arriere-plan-10:#5f97ce;
+  $couleur-arriere-plan-10: #5f97ce;
 
   @import "style";
 }
 
 .theme--dark {
-  $couleur-1: #949597; // Orange foncé
+  $couleur-1: #ffffff; // Orange foncé
   $couleur-2: #ffffff; // Bleu clair
   $couleur-3: #ffffff; // Bleu foncé
   $couleur-4: #b8b8b9; // Gris clair
-  $couleur-5:#949597; // Gris
-  $couleur-6:#ffffff; // Blanc
-  $couleur-7:  #000000;
+  $couleur-5: #949597; // Gris
+  $couleur-6: #000000; // Noir
+  $couleur-7: #000000;
   $couleur-8: #00b600; // Vert clair
   $couleur-9: #e3040d; //Rouge
 
@@ -51,28 +50,30 @@
   $message-couleur-2: #eca30f; //Orange clair
   $message-couleur-3: #00b600; //Vert clair
 
-  $couleur-arriere-plan-1:  #fac8c0; // Rouge
-  $couleur-arriere-plan-2:  rgba( $message-couleur-2, 0.15); //Orange clair
-  $couleur-arriere-plan-3:  rgba($message-couleur-3, 0.15); //Vert clair
+  $couleur-arriere-plan-1: #fac8c0; // Rouge
+  $couleur-arriere-plan-2: rgba($message-couleur-2, 0.15); //Orange clair
+  $couleur-arriere-plan-3: rgba($message-couleur-3, 0.15); //Vert clair
   $couleur-arriere-plan-4: #f6988a;
-  $couleur-arriere-plan-5:  #000000;
-  $couleur-arriere-plan-6:  #000000; // Noir
-  $couleur-arriere-plan-7:  #ffffff; // Blanc
-  $couleur-arriere-plan-8 : #000000;
+  $couleur-arriere-plan-5: #b8b8b9;
+  $couleur-arriere-plan-6: #000000; // Noir
+  $couleur-arriere-plan-7: #ffffff; // Blanc
+  $couleur-arriere-plan-8: #000000;
   $couleur-arriere-plan-9: #7d7979;
-  $couleur-arriere-plan-10:#7d7979;
+  $couleur-arriere-plan-10: #7d7979;
 
   @import "style";
 }
 
-
 #messageBox .v-btn {
   background-color: transparent !important;
-  border-left:0;
+  border-left: 0;
 }
 
-.icone-information, .icone-erreur, .icone-validation, .icone-avertissement  {
-  float:left;
+.icone-information,
+.icone-erreur,
+.icone-validation,
+.icone-avertissement {
+  float: left;
 }
 
 a {
@@ -86,7 +87,7 @@ a {
 }
 
 .bouton-simple .mdi {
-  text-decoration: none !important
+  text-decoration: none !important;
 }
 
 .fade-enter-active,
@@ -103,14 +104,6 @@ a {
   cursor: pointer;
 }
 
-#appBar {
-  background: linear-gradient(
-    90deg,
-    rgba(46, 63, 80, 1) 20%,
-    rgba(97, 142, 186, 1) 100%
-  );
-}
-
 header {
   height: auto !important;
   left: 0 !important;
@@ -121,7 +114,6 @@ header {
   height: 100%;
   width: 100vw;
   max-width: 100vw;
-  background-color: #122638;
 }
 
 nav {
@@ -153,9 +145,6 @@ main {
   z-index: -2 !important;
 }
 
-#appBar .v-toolbar__extension {
-}
-
 nav .v-list-item {
   width: 100%;
   min-width: 100%;
@@ -172,55 +161,17 @@ nav .v-list-item__title {
   text-align: center;
 }
 
-nav svg {
-  color: #757575;
-}
-
-
 h1 {
-  color: #478dcb;
-  font-size: 1.2em;
   font-weight: 900;
 }
 
-h2,
 .v-card__title {
-  color: #252c61;
   font-size: 1.5em !important;
   font-weight: 900 !important;
 }
 
-body {
-  color: black;
-}
-
-.v-btn {
-  color: white !important;
-}
-
-.btn-1 {
-  color: #ffffff;
-  background-color: #cf4a1a !important;
-}
-
-.btn-2 {
-  color: #252c61 !important;
-}
-
-#mytable table thead {
-  background-color: #478dcb !important;
-}
-
-#mytable table thead span {
-  color: #ffffff !important;
-}
-
 .multi-line {
   white-space: pre-line;
-}
-
-.menu-slot:hover {
-  background: #bdbdbd;
 }
 
 .no-text-transform {

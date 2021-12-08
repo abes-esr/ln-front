@@ -32,49 +32,31 @@
         class="d-flex justify-end mainBar ma-0 pa-0 pr-12"
         style="max-height: 40px"
       >
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn text outlined v-bind="attrs" v-on="on" class="menu-slot">
-              Bienvenue {{ loggedInUsername }}
-            </v-btn>
-          </template>
-          <v-list dense>
-            <v-list-item
-              class="d-flex flex-column align-stretch justify-start "
-              style="min-height: auto;"
-            >
-              <v-list-item-content class="align-self-auto menu-slot">
-                <v-btn dark color="black" @click="allerAMonProfil()" plain>
-                  <font-awesome-icon
-                    :icon="['fas', 'id-card']"
-                    size="1x"
-                    class="mx-2"
-                  />
-                  Modifier mon profil
-                </v-btn>
-              </v-list-item-content>
-              <v-list-item-content class="align-self-auto menu-slot">
-                <v-btn
-                  dark
-                  color="black"
-                  @click="allerAModifierMotDePasse()"
-                  plain
-                >
-                  <font-awesome-icon
-                    :icon="['fas', 'key']"
-                    size="1x"
-                    class="mx-2"
-                  />
-                  Modifier mon mot de passe
-                </v-btn>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <div class="menu-slot btn-3 d-flex align-center mr-3">   Bienvenue {{ loggedInUsername }}</div>
         <v-divider vertical dark></v-divider>
         <v-tooltip top max-width="20vw" open-delay="100">
           <template v-slot:activator="{ on }">
-            <v-btn @click="seDeconnecter()" class="menu-slot" plain v-on="on">
+            <v-btn  href="https://stp.abes.fr/node/3?origine=LicencesNationales"
+                    target="_blank" class="menu-slot btn-3" plain v-on="on">
+              <font-awesome-icon :icon="['fas', 'comments']" size="2x" />
+            </v-btn>
+          </template>
+          <span>Assistance</span>
+        </v-tooltip>
+        <v-divider vertical dark></v-divider>
+        <v-tooltip top max-width="20vw" open-delay="100">
+          <template v-slot:activator="{ on }">
+            <v-btn  href="http://documentation.abes.fr/aidelicencesnationales/index.html"
+                    target="_blank" class="menu-slot btn-3" plain v-on="on">
+              <font-awesome-icon :icon="['fas', 'question']" size="2x" />
+            </v-btn>
+          </template>
+          <span>Documentation</span>
+        </v-tooltip>
+        <v-divider vertical dark></v-divider>
+        <v-tooltip top max-width="20vw" open-delay="100">
+          <template v-slot:activator="{ on }">
+            <v-btn @click="seDeconnecter()" class="menu-slot btn-3" plain v-on="on">
               <font-awesome-icon :icon="['fas', 'sign-out-alt']" size="2x" />
             </v-btn>
           </template>
@@ -104,7 +86,6 @@ export default class Header extends Vue {
   }
 
   get loggedInUsername(): string {
-    Logger.debug("username=" + this.$store.getters.userEtab());
     return this.$store.getters.userEtab();
   }
 
@@ -114,25 +95,6 @@ export default class Header extends Vue {
     });
 
     this.$router.push({ name: "Login" });
-  }
-
-  allerAModifierMotDePasse(): void {
-    this.$router.push({ name: "Password" }).catch(err => {
-      Logger.error(err);
-    });
-  }
-
-  allerAMonProfil(): void {
-    this.$store
-        .dispatch("setCurrentEtablissement", etablissementService.getEtablissement(this.$store.getters.userSiren(),this.$store.getters.getToken()))
-        .then(() => {
-          this.$router.push({ name: "Profil" });
-        })
-        .catch(err => {
-          Logger.error(err);
-          // this.error = "Impossible de créer un nouvel éditeur : " + err.message;
-          // this.alert = true;
-        });
   }
 }
 </script>

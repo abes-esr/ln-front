@@ -2,12 +2,12 @@
   <v-form ref="form" lazy-validation :disabled="isDisableForm">
     <v-alert outlined>
       <font-awesome-icon
-          :icon="['fas', 'info-circle']"
-          class="fa-2x mr-5 mb-1 mt-2 icone-information"
+        :icon="['fas', 'info-circle']"
+        class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
-      Votre mot de passe doit contenir au minimum 8 caractères, une
-      lettre majuscule, une lettre minuscule, un chiffre et un caractère
-      spécial parmis @ $ ! % * ? &
+      Votre mot de passe doit contenir au minimum 8 caractères, une lettre
+      majuscule, une lettre minuscule, un chiffre et un caractère spécial parmis
+      @ $ ! % * ? &
     </v-alert>
     <v-text-field
       v-if="action === Action.MODIFICATION"
@@ -16,7 +16,7 @@
       placeholder="Ancien mot de passe"
       :type="show ? 'text' : 'password'"
       :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      v-model="ancienMotDePasse"
+      v-model="AncienMotDePasse"
       :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)"
       required
       @click:append="show = !show"
@@ -25,8 +25,12 @@
     ></v-text-field>
     <v-text-field
       outlined
-      :label="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'"
-      :placeholder="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'"
+      :label="
+        action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
+      "
+      :placeholder="
+        action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
+      "
       :type="show ? 'text' : 'password'"
       :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
       v-model="NouveauMotDePasse"
@@ -38,8 +42,16 @@
     ></v-text-field>
     <v-text-field
       outlined
-      :label="action === Action.CREATION ? 'Confirmation du mot de passe' : 'Confirmation du nouveau mot de passe'"
-      :placeholder="action === Action.CREATION ? 'Confirmation du mot de passe' : 'Confirmation du nouveau mot de passe'"
+      :label="
+        action === Action.CREATION
+          ? 'Confirmation du mot de passe'
+          : 'Confirmation du nouveau mot de passe'
+      "
+      :placeholder="
+        action === Action.CREATION
+          ? 'Confirmation du mot de passe'
+          : 'Confirmation du nouveau mot de passe'
+      "
       :type="show ? 'text' : 'password'"
       :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
       v-model="confirmationNouveauMotDePasse"
@@ -56,7 +68,7 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
-import {Logger} from "@/utils/Logger";
+import { Logger } from "@/utils/Logger";
 
 @Component
 export default class MotDePasse extends Vue {
@@ -69,11 +81,23 @@ export default class MotDePasse extends Vue {
   show: boolean = false;
   @Prop() isDisableForm!: boolean;
 
-  get NouveauMotDePasse () { return this.nouveauMotDePasse;}
-  set NouveauMotDePasse (value) { this.$emit('update:nouveauMotDePasse', value) }
+  get AncienMotDePasse() {
+    return this.ancienMotDePasse;
+  }
+  set AncienMotDePasse(value: string) {
+    this.$emit("update:ancienMotDePasse", value);
+  }
+
+  get NouveauMotDePasse() {
+    return this.nouveauMotDePasse;
+  }
+  set NouveauMotDePasse(value: string) {
+    this.$emit("update:nouveauMotDePasse", value);
+  }
 
   get regleMotDePasse() {
-    return () => this.confirmationNouveauMotDePasse === "" ||
+    return () =>
+      this.confirmationNouveauMotDePasse === "" ||
       this.nouveauMotDePasse === this.confirmationNouveauMotDePasse ||
       "Le mot de passe ne correspond pas au mot de passe confirmation";
   }

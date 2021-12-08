@@ -36,7 +36,13 @@ export class LicencesNationalesApiService {
             err.response.data.path,
             err.response.data.debugMessage
           );
-        } else if (err.response.status == 500) {
+        } else if (err.response.status == 405) {
+        return new LicencesNationalesNotFoundApiError(
+            err.response.data.message,
+            err.response.data.path,
+            err.response.data.debugMessage
+        );
+      } else if (err.response.status == 500) {
           return new LicencesNationalesInternalErrorApiError(
             err.response.data.error,
             err.response.data.path,

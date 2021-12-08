@@ -1,6 +1,6 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import User from "@/core/User";
-import {Logger} from "@/utils/Logger";
+import { Logger } from "@/utils/Logger";
 
 export class AuthentificationService extends LicencesNationalesApiService {
   /**
@@ -91,21 +91,19 @@ export class AuthentificationService extends LicencesNationalesApiService {
     });
   }
 
-  verifierValiditeToken(
-    token: string
-  ): Promise<boolean> {
+  verifierValiditeToken(token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        const json: JsonVerifierValiditeTokenRequest = {
-            token: token
-        }
+      const json: JsonVerifierValiditeTokenRequest = {
+        token: token
+      };
       return this.client
         .post("/authentification/verifierValiditeToken", json)
         .then(result => {
           const response: JsonVerifierValiditeTokenResponse = result.data;
           if (response.estValide) {
-              resolve(true);
+            resolve(true);
           } else {
-              resolve(false);
+            resolve(false);
           }
         })
         .catch(err => {
@@ -115,15 +113,20 @@ export class AuthentificationService extends LicencesNationalesApiService {
   }
 
   changePassword(
-    data: JsonModifierMotDePasseRequest,
+    ancien: string,
+    nouveau: string,
     token: string
-  ): Promise<JsonModifierMotDePasseResponse> {
+  ): Promise<boolean> {
+    const json: JsonModifierMotDePasseRequest = {
+      ancienMotDePasse: ancien,
+      nouveauMotDePasse: nouveau
+    };
     return new Promise((resolve, reject) => {
       return this.client
-        .post("/authentification/modifierMotDePasse", data, token)
+        .post("/authentification/modifierMotDePasse", json, token)
         .then(result => {
           const response: JsonModifierMotDePasseResponse = result.data;
-          resolve(response);
+          resolve(true);
         })
         .catch(err => {
           reject(this.buildException(err));

@@ -9,6 +9,9 @@
       <v-card-title v-if="action === Action.CREATION" class="pl-3">
         Créer le compte de votre établissement
       </v-card-title>
+      <h1 v-if="action === Action.MODIFICATION" class="pl-3">
+        Etablissement {{ etablissement.nom }}
+      </h1>
       <v-card-subtitle
         v-if="action === Action.CREATION"
         @click="$router.push({ path: '/login' })"
@@ -24,7 +27,7 @@
         <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
         <v-row v-if="action === Action.CREATION">
           <v-col cols="12" md="6" lg="6" xl="6">
-            <v-alert outlined>
+            <v-alert dense outlined>
               <font-awesome-icon
                 :icon="['fas', 'exclamation-triangle']"
                 class="mx-2 icone-attention"
@@ -88,8 +91,6 @@
                   required
                 ></v-select>
               </v-col>
-            </v-row>
-            <v-row>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-text-field
                   outlined
@@ -101,12 +102,23 @@
                   required
                   @input="checkSiren()"
                   @keyup.enter="validate()"
+                  :readonly="action == Action.MODIFICATION"
                 ></v-text-field>
-                <v-chip class="ma-2" :class="checkSirenColor" label
+                <v-chip
+                  class="ma-2"
+                  :class="checkSirenColor"
+                  label
+                  v-if="action == Action.CREATION"
                   >SIREN : {{ checkSirenAPI }}
                 </v-chip>
               </v-col>
-              <v-col cols="12" md="6" lg="6" xl="6">
+              <v-col
+                cols="12"
+                md="6"
+                lg="6"
+                xl="6"
+                v-if="action == Action.CREATION"
+              >
                 <v-alert outlined>
                   <font-awesome-icon
                     :icon="['fas', 'info-circle']"
@@ -115,23 +127,28 @@
                   Trouver le SIREN de votre établissement ?
                 </v-alert>
               </v-col>
+              <v-col
+                cols="12"
+                md="6"
+                lg="6"
+                xl="6"
+                v-if="action == Action.MODIFICATION"
+              >
+                <v-text-field
+                  outlined
+                  label="ID Abes"
+                  placeholder="ID Abes"
+                  v-model="etablissement.idAbes"
+                  readonly
+                ></v-text-field>
+              </v-col>
             </v-row>
           </div>
         </div>
-
-        <div
-          class="mx-9"
-          v-if="
-            (action === Action.MODIFICATION && isAdmin) ||
-              action === Action.CREATION
-          "
-        >
+        <div class="mx-9">
           <v-card-title>
             Information Contact
           </v-card-title>
-          <v-card-title v-if="action === Action.MODIFICATION && !isAdmin"
-            >Mes information</v-card-title
-          >
           <v-divider class="mb-4"></v-divider>
           <contact
             ref="formContact"
@@ -149,7 +166,7 @@
           md="3"
           lg="3"
           xl="3"
-          class="d-flex justify-space-around mr-16"
+          class="d-flex justify-space-around mr-16 flex-wrap"
         >
           <v-btn
             x-large
@@ -214,6 +231,7 @@ export default class FormEtablissement extends Vue {
     super();
     this.etablissement = this.getCurrentEtablissement;
     this.fetchListeType();
+    window.scrollTo(0, 0);
   }
 
   get getCurrentEtablissement(): Etablissement {
@@ -256,7 +274,9 @@ export default class FormEtablissement extends Vue {
   }
 
   async validate() {
+    this.buttonLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
+
     await this.recaptcha();
 
     const isFormValide = (this.$refs.formCreationCompte as Vue & {
@@ -267,7 +287,7 @@ export default class FormEtablissement extends Vue {
 
     if (this.tokenrecaptcha != null) {
       if (isFormValide && isSubFormValide) {
-        this.creationCompte();
+        this.send();
       } else {
         const message: Message = new Message();
         message.type = MessageType.ERREUR;
@@ -283,50 +303,97 @@ export default class FormEtablissement extends Vue {
         }
       }
     }
+    this.buttonLoading = false;
   }
 
-  creationCompte(): void {
+  send(): void {
     this.buttonLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
-    etablissementService
-      .creerEtablissement(this.etablissement, this.tokenrecaptcha)
-      .then(response => {
-        const message: Message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = "Votre compte a bien été créé";
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        // On glisse sur le message d'erreur
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-        setTimeout(() => {
-          this.$router.push({ path: "/login" }).catch(err => {
+
+    if (this.action == Action.CREATION) {
+      etablissementService
+        .creerEtablissement(this.etablissement, this.tokenrecaptcha)
+        .then(response => {
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = "Votre compte a bien été créé";
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
-        }, 4000);
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.message;
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+          setTimeout(() => {
+            this.$store.dispatch("closeDisplayedMessage");
+            this.$router.push({ name: "Home" }).catch(err => {
+              Logger.error(err.toString());
+            });
+          }, 4000);
+        })
+        .catch(err => {
           Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = err.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .finally(() => {
+          this.buttonLoading = false;
         });
-        // On glisse sur le message d'erreur
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-      })
-      .finally(() => {
-        this.buttonLoading = false;
-      });
+    } else if (this.action == Action.MODIFICATION) {
+      etablissementService
+        .updateEtablissement(this.etablissement, this.$store.getters.getToken())
+        .then(response => {
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = "Votre compte a bien été modifié";
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+          setTimeout(() => {
+            this.$store.dispatch("closeDisplayedMessage");
+            this.$router.push({ name: "Home" }).catch(err => {
+              Logger.error(err.toString());
+            });
+          }, 4000);
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          Logger.debug(JSON.stringify(err))
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = err.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .finally(() => {
+          this.buttonLoading = false;
+        });
+    }
   }
 
   /**
@@ -365,13 +432,22 @@ export default class FormEtablissement extends Vue {
       this.checkSirenAPI = "En attente de vérification";
     }
   }
-
   clear() {
     this.$store.dispatch("closeDisplayedMessage");
     (this.$refs.formCreationCompte as HTMLFormElement).resetValidation();
-    this.etablissement.reset();
     (this.$refs.formContact as Contact).clear();
-    window.scrollTo(0, 0);
+
+    if (this.action != Action.CREATION) {
+      this.$store.dispatch("setCurrentEtablissement", this.etablissement);
+      this.$store.dispatch("closeDisplayedMessage");
+      this.$router.push({ name: "Home" }).catch(err => {
+        Logger.error(err);
+      });
+    } else {
+      this.etablissement.reset();
+      window.scrollTo(0, 0);
+    }
+
   }
 }
 </script>
@@ -382,5 +458,9 @@ export default class FormEtablissement extends Vue {
 
 .v-card__title {
   width: 100%;
+}
+
+.icone-attention {
+  float:left;
 }
 </style>
