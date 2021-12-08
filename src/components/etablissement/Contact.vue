@@ -11,6 +11,8 @@
           required
           @keyup.enter="validate()"
         ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
           outlined
           label="Prénom"
@@ -20,6 +22,8 @@
           required
           @keyup.enter="validate()"
         ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
           outlined
           label="Adresse"
@@ -30,6 +34,8 @@
           required
           @keyup.enter="validate()"
         ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
           outlined
           label="Boite Postal"
@@ -37,7 +43,8 @@
           v-model="contact.boitePostale"
           required
           @keyup.enter="validate()"
-        ></v-text-field>
+        ></v-text-field> </v-col
+      ><v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
           outlined
           label="Code Postal"
@@ -48,6 +55,8 @@
           required
           @keyup.enter="validate()"
         ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
           outlined
           label="Ville"
@@ -57,6 +66,8 @@
           required
           @keyup.enter="validate()"
         ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
           outlined
           label="CEDEX"
@@ -77,7 +88,9 @@
           required
           @keyup.enter="validate()"
         ></v-text-field>
-        <v-form ref="mail" v-if="action === Action.CREATION" :disabled="isDisableForm">
+      </v-col>
+      <v-col cols="12" md="6" lg="6" xl="6">
+        <v-form ref="mail" :disabled="isDisableForm">
           <v-text-field
             outlined
             label="Mail de contact"
@@ -101,14 +114,19 @@
             autocomplete="new-mail"
           ></v-text-field>
         </v-form>
+      </v-col>
+      <v-col cols="12" md="6" lg="6" xl="6">
         <MotDePasse
           ref="motdepasse"
           v-if="action === Action.CREATION"
           :action="Action.CREATION"
           :nouveau-mot-de-passe="contact.motDePasse"
-          @update:nouveauMotDePasse="updateMotDePasse"
+          @update:nouveauMotDePasse="updateMotDePasse()"
           :isDisableForm="isDisableForm"
         ></MotDePasse>
+      </v-col>
+      <v-col cols="12" md="6" lg="6" xl="6"></v-col>
+      <v-col cols="12" md="6" lg="6" xl="6">
         <div v-if="action === Action.CREATION">
           <v-checkbox
             required
@@ -130,7 +148,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
 import ContactEtablissement from "@/core/ContactEtablissement";
@@ -147,9 +165,11 @@ export default class Contact extends Vue {
   Action: any = Action;
   rulesForms: any = rulesForms;
   emailConfirmation: string = "";
+  ancienMail: string = "";
 
   constructor() {
     super();
+    this.ancienMail = this.contact.mail;
   }
 
   get rulesMailConfirmation() {
@@ -169,18 +189,28 @@ export default class Contact extends Vue {
     const isFormValide = (this.$refs.form as Vue & {
       validate: () => boolean;
     }).validate();
-    const isMotDePasseValide = (this.$refs.motdepasse as Vue & {
-      validate: () => boolean;
-    }).validate();
-    const isMailValide = (this.$refs.mail as Vue & {
-      validate: () => boolean;
-    }).validate();
+
+    let isMotDePasseValide = true;
+    if (this.$refs.motdepasse) {
+      isMotDePasseValide = (this.$refs.motdepasse as Vue & {
+        validate: () => boolean;
+      }).validate();
+    }
+
+    let isMailValide = true;
+    if (this.ancienMail != this.contact.mail) {
+      isMailValide = (this.$refs.mail as Vue & {
+        validate: () => boolean;
+      }).validate();
+    }
 
     return isFormValide && isMotDePasseValide && isMailValide;
   }
 
   clear(): void {
-    (this.$refs.motdepasse as MotDePasse).clear();
+    if (this.$refs.motdepasse) {
+      (this.$refs.motdepasse as MotDePasse).clear();
+    }
     (this.$refs.form as HTMLFormElement).resetValidation();
     (this.$refs.mail as HTMLFormElement).resetValidation();
     this.contact.reset();

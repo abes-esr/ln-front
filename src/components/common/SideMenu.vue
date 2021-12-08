@@ -43,7 +43,7 @@
             <font-awesome-icon :icon="['fas', 'university']" size="2x" />
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Liste etabs</v-list-item-title>
+            <v-list-item-title>Liste des établissements</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-row>
@@ -57,7 +57,7 @@
             <font-awesome-icon :icon="['fas', 'list']" size="2x" />
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Liste éditeurs</v-list-item-title>
+            <v-list-item-title>Liste des éditeurs</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-row>

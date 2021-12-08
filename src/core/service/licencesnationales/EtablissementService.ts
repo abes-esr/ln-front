@@ -103,7 +103,8 @@ export class EtablissementService extends LicencesNationalesApiService {
           etablissement.id = response.id;
           etablissement.nom = response.nom;
           etablissement.siren = response.siren;
-          etablissement.dateCreation = new Date(response.dateCreation);
+          //etablissement.dateCreation = new Date(response.dateCreation);
+          etablissement.dateCreation = new Date();
           etablissement.typeEtablissement = response.typeEtablissement;
           etablissement.statut = response.statut;
           etablissement.idAbes = response.idAbes;

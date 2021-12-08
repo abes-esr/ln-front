@@ -20,6 +20,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     user: new User(),
+    etablissementConnecte: new Etablissement(),
     darkTheme: false,
     message: new Message(),
     creationCompteEffectuee: false,
@@ -30,6 +31,9 @@ export default new Vuex.Store({
   mutations: {
     SET_USER(state, user: User) {
       state.user = user;
+    },
+    SET_ETABLISSEMENT_CONNECTE(state, item: Etablissement) {
+      state.etablissementConnecte = item;
     },
     SET_LOGOUT(state) {
       state.user.token = "";
@@ -61,16 +65,25 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    login({ commit }, data: JsonLoginRequest): Promise<boolean> {
+    login(context, data: JsonLoginRequest): Promise<boolean> {
       return new Promise((resolve, reject) => {
         // On appel le serviceLn LicencesNationales
         authService
           .login(data.login, data.password)
           .then(result => {
             // On sauvegarde l'utilisateur
-            commit("SET_USER", result);
-            router.push({ name: "Home" })
-            resolve(true);
+            context.commit("SET_USER", result);
+            etablissementService
+                .getEtablissement(context.state.user.siren, context.state.user.token)
+                .then(item => {
+                  context.commit("SET_ETABLISSEMENT_CONNECTE", item); // On sauvegarde dans le store
+                  router.push({ name: "Home" })
+                  resolve(true);
+                })
+                .catch(err => {
+                  //Si une erreur avec le ws est jetée, on lève un message d'erreur
+                  reject(err);
+                });
           })
           .catch(err => {
             //Si une erreur avec le ws est jetée, on lève un message d'erreur
@@ -149,6 +162,17 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    getEtablissementConnecte: state => (): Etablissement => {
+      const etablissement = new Etablissement();
+      Object.assign(etablissement, state.etablissementConnecte);
+      etablissement.dateCreation = new Date(etablissement.dateCreation);
+
+      const contact:ContactEtablissement = new ContactEtablissement();
+      Object.assign(contact,state.etablissementConnecte.contact);
+      etablissement.contact = contact;
+
+      return etablissement;
+    },
     userSiren: state => (): string => {
       return state.user.siren;
     },

@@ -1,11 +1,10 @@
 import Vue from "vue";
 import store from "../store/index";
-import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
+import VueRouter, {RouteConfig} from "vue-router";
 import Login from "../views/Login.vue";
-import { Action, Message, MessageType } from "@/core/CommonDefinition";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { Logger } from "@/utils/Logger";
+import {Action, Message, MessageType} from "@/core/CommonDefinition";
+import {authService} from "@/core/service/licencesnationales/AuthentificationService";
+import {Logger} from "@/utils/Logger";
 
 Vue.use(VueRouter);
 
@@ -13,7 +12,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    component: () => import("../views/TableauDeBord.vue"),
     meta: {
       requiresAuth: true
     }

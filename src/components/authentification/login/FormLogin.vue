@@ -62,6 +62,7 @@
           </v-col>
           <v-col>
             <v-btn
+                class="btn-1"
                 :loading="buttonLoading"
                 @click="login()"
             >Se connecter
