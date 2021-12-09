@@ -109,10 +109,9 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: "/listeAcces/:sirenEtabSiAdmin",
-    name: "ListeAcces",
+    path: "/listeAcces/",
+    name: "ListeIP",
     component: () => import("../components/ip/ListeAcces.vue"),
-    props: true,
     meta: {
       requiresAuth: true
     }

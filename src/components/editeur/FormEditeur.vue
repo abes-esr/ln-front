@@ -1,13 +1,12 @@
 <template>
-  <div>
-    <v-card witdh="100%" outlined>
+    <v-card flat>
       <v-form ref="formEditeur" lazy-validation>
-        <v-card-title v-if="action == Action.CREATION"
+        <h1 v-if="action == Action.CREATION"
           >Créer un éditeur
-        </v-card-title>
-        <v-card-title v-else-if="action == Action.MODIFICATION"
+        </h1>
+        <h1 v-else-if="action == Action.MODIFICATION"
           >Modifier un éditeur
-        </v-card-title>
+        </h1>
         <v-card-text>
           <v-card flat>
             <MessageBox></MessageBox>
@@ -127,7 +126,6 @@
         </v-card-actions>
       </v-form>
     </v-card>
-  </div>
 </template>
 
 <script lang="ts">

@@ -148,12 +148,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { rulesForms } from "@/core/RulesForm";
-import { Action } from "@/core/CommonDefinition";
+import {Component, Prop, Vue} from "vue-property-decorator";
+import {rulesForms} from "@/core/RulesForm";
+import {Action} from "@/core/CommonDefinition";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import MotDePasse from "@/components/authentification/MotDePasse.vue";
-import { Logger } from "@/utils/Logger";
 
 @Component({
   components: { MotDePasse }
@@ -198,7 +197,7 @@ export default class Contact extends Vue {
     }
 
     let isMailValide = true;
-    if (this.ancienMail != this.contact.mail) {
+    if (this.action == Action.CREATION || this.ancienMail != this.contact.mail) {
       isMailValide = (this.$refs.mail as Vue & {
         validate: () => boolean;
       }).validate();

@@ -1,198 +1,122 @@
 <template>
-  <div>
-    <v-card width="100%" :disabled="disableForm">
-      <v-card-text>
-        <v-row>
-          <v-col lg="12" md="12" xs="12">
-            <v-row>
-              <v-col cols="12" sm="12">
-                <v-card class="mx-auto" tile>
-                  <v-card-title>Liste des Etablissements</v-card-title>
-                  <v-row>
-                    <v-col cols="1" />
-                    <v-col cols="10">
-                      <v-data-table
-                        dense
-                        :headers="headers"
-                        :items="filteredEtabByStatut"
-                        :items-per-page="30"
-                        class="elevation-1"
-                        :search="rechercher"
-                        id="mytable"
-                      >
-                        <template v-slot:header.statut="{ header }">
-                          {{ header.texte }}
-                          <v-menu offset-y :close-on-content-click="false">
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-btn icon v-bind="attrs" v-on="on">
-                                <v-icon small :color="statut ? 'primary' : ''">
-                                  mdi-filter
-                                </v-icon>
-                              </v-btn>
-                            </template>
-                            <div style="background-color: white; width: 280px">
-                              <v-card-actions
-                                ><v-select
-                                  v-model="statut"
-                                  label="Selectionnez le statut"
-                                  outlined
-                                  :items="selectStatut"
-                                ></v-select
-                              ></v-card-actions>
-                            </div>
-                          </v-menu>
-                        </template>
-                        <template v-slot:top>
-                          <v-row>
-                            <v-col cols="12" sm="6"></v-col>
-                            <v-col cols="12" sm="6">
-                              <v-text-field
-                                v-model="rechercher"
-                                label="Chercher sur toutes les colonnes"
-                                class="mx-4"
-                                prepend-inner-icon="mdi-magnify"
-                                outlined
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                        </template>
-                        <template v-slot:[`item.action`]="{ item }">
-                          <v-icon
-                            small
-                            class="mr-2"
-                            @click="modifierEtab(item)"
-                            >mdi-pencil</v-icon
-                          >
-                          <v-icon
-                            small
-                            class="mr-2"
-                            @click="listeAcces(item)"
-                            >mdi-ip-network</v-icon
-                          >
-                          <v-icon
-                            small
-                            @click.stop="openDialogSuppression(item)"
-                            >mdi-delete</v-icon
-                          >
-                          <v-icon
-                            small
-                            @click.stop="openDialogValid(item.siren)"
-                            >mdi-check</v-icon
-                          >
-                        </template>
-                      </v-data-table>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" sm="7"></v-col>
-                    <v-col cols="12" sm="2">
-                      <v-btn
-                        @click="$router.push({ path: '/ajouterEtab' })"
-                        color="warning"
-                        ><br />Ajouter un établissement</v-btn
-                      >
-                    </v-col>
-                    <v-col cols="12" sm="3">
-                      <v-btn
-                        @click="$router.push({ path: '/ajoutEditeur' })"
-                        color="warning"
-                        ><br />Ajouter un éditeur</v-btn
-                      >
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-    <!-- Popup de suppression -->
-    <div class="text-center">
-      <v-dialog v-model="dialog" width="500">
-        <v-card>
-          <v-card-title class="headline grey lighten-2">
-            Supprimer un établissement
-          </v-card-title>
-
-          <v-card-text>
-            Vous êtes sur le point de supprimer l'établissement :
-            {{ currentSirenToDelete }}. Êtes vous sûr ? Veuillez indiquer le
-            motif de la suppresion :
-            <v-textarea
+  <v-card flat :disabled="disableForm">
+    <h1>Gestion des comptes établissements</h1>
+    <MessageBox></MessageBox>
+    <v-card-title>
+      <v-row class="d-flex flex-row-reverse">
+        <v-btn @click="allerAScionnerEtab()" class="btn-1 mx-2"
+          >Scission
+          <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2"
+        /></v-btn>
+        <v-btn @click="allerAFusionnerEtab" class="btn-1 mx-2"
+          >Fusion
+          <font-awesome-icon :icon="['fas', 'object-group']" class="mx-2"
+        /></v-btn>
+        <v-btn @click="ajouterEtablissement()" class="btn-1 mx-2"
+          >Créer un établissement
+          <font-awesome-icon :icon="['fas', 'plus']" class="mx-2"
+        /></v-btn>
+      </v-row>
+    </v-card-title>
+    <v-card-text class="mt-3">
+      <v-data-table
+        dense
+        :headers="headers"
+        :items="filteredEtabByStatut"
+        :items-per-page="25"
+        :footer-props="{ 'items-per-page-options': [25, 50, 100, -1] }"
+        class="elevation-0 ma-3"
+        :search="rechercher"
+        id="mytable"
+      >
+        >
+        <template v-slot:top>
+          <div class="d-flex align-content-end justify-end">
+            <v-text-field
+              v-model="rechercher"
+              label="Chercher sur toutes les colonnes"
+              class="mx-4 search-bar"
+              prepend-inner-icon="mdi-magnify"
               outlined
-              label="Motif suppression"
-              v-model="motifSuppression"
-            ></v-textarea>
-          </v-card-text>
-
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="dialog = false">
-              Annuler
-            </v-btn>
-            <v-btn
-              color="primary"
-              text
-              @click="
-                dialog = false;
-                supprimerEtab();
-              "
-            >
-              Valider
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
-
-    <!-- Popup de validation -->
-    <div class="text-center">
-      <v-dialog v-model="dialogValid" width="500">
-        <v-card>
-          <v-card-title class="headline grey lighten-2">
-            Valider un établissement
-          </v-card-title>
-          <v-card-text>
-            Vous êtes sur le point de valider l'établissement :
-            {{ currentSirenToValid }}. Êtes vous sûr ?
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="dialogValid = false">
-              Annuler
-            </v-btn>
-            <v-btn
-              color="primary"
-              text
-              @click="
-                dialog = false;
-                validerEtab();
-              "
-            >
-              Valider
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
-  </div>
+              dense
+            ></v-text-field>
+          </div>
+        </template>
+        <template v-slot:header.typeEtablissement="{ header }">
+          {{ header.texte }}
+          <v-menu offset-y :close-on-content-click="false">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn text class="bouton-simple" v-bind="attrs" v-on="on">
+                Type d'établissement
+                <v-icon small :color="statut ? 'primary' : ''">
+                  mdi-filter
+                </v-icon>
+              </v-btn>
+            </template>
+            <div style="background-color: white; width: 280px">
+              <v-card-actions
+                ><v-select
+                  v-model="selectedType"
+                  label="Selectionnez le type d'établissement"
+                  outlined
+                  :items="typesEtab"
+                ></v-select
+              ></v-card-actions>
+            </div>
+          </v-menu>
+        </template>
+        <template v-slot:header.statut="{ header }">
+          {{ header.texte }}
+          <v-menu offset-y :close-on-content-click="false">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn text class="bouton-simple" v-bind="attrs" v-on="on">
+                Statut
+                <v-icon small :color="statut ? 'primary' : ''">
+                  mdi-filter
+                </v-icon>
+              </v-btn>
+            </template>
+            <div style="background-color: white; width: 280px">
+              <v-card-actions
+                ><v-select
+                  v-model="statut"
+                  label="Selectionnez le statut"
+                  outlined
+                  :items="selectStatut"
+                ></v-select
+              ></v-card-actions>
+            </div>
+          </v-menu>
+        </template>
+        <template v-slot:item.dateCreation="{ item }">
+          <span>{{ item.dateCreation.toLocaleDateString() }}</span>
+        </template>
+        <template v-slot:item.nom="{ item }">
+          <a class="bouton-simple" @click="allerAAfficherEtab(item)"><strong>{{ item.nom }}</strong></a>
+        </template>
+        <template v-slot:[`item.action`]="{ item }">
+          <v-icon large class="mr-2" @click="allerAIPs(item)"
+            >mdi-ip-network</v-icon
+          >
+        </template>
+      </v-data-table>
+    </v-card-text>
+  </v-card>
 </template>
-<style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import Etablissement from "@/core/Etablissement";
-import {Message, MessageType} from "@/core/CommonDefinition";
-import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
-import {LicencesNationalesUnauthorizedApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import { Message, MessageType } from "@/core/CommonDefinition";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import MessageBox from "@/components/common/MessageBox.vue";
+import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 
-@Component
+@Component({
+  components: { MessageBox }
+})
 export default class ListeEtab extends Vue {
   disableForm: boolean = false;
   statut: string = "";
@@ -204,9 +128,11 @@ export default class ListeEtab extends Vue {
   ];
   rechercher: string = "";
   etabs: Array<Etablissement> = [];
+  selectedType: string = "";
+  typesEtab: Array<string> = [];
+  isDisableForm: boolean = false;
   title: string = "";
   id: string = "";
-  derniereDateModificationIpTemp: string = "";
   headers = [
     {
       text: "Date de création",
@@ -214,83 +140,66 @@ export default class ListeEtab extends Vue {
       value: "dateCreation",
       sortable: true
     },
-    { text: "ID Abes", value: "idAbes", sortable: true },
+    { text: "Identifiant Abes", value: "idAbes", sortable: true },
     { text: "SIREN", value: "siren", sortable: true },
-    { text: "Etablissement", value: "nom", sortable: true },
+    { text: "Nom de l'établissement", value: "nom", sortable: true },
     {
       text: "Type d'établissement",
       value: "typeEtablissement",
       sortable: true
     },
     {
-      text: "Dernière date de modification",
+      text: "Dernière date de modification des IPs",
       value: "derniereDateModificationIp",
       sortable: true
     },
     { text: "Statut", value: "statut", sortable: true },
-    { text: "Action", value: "action", sortable: false }
+    { text: "Liste des IPs", value: "action", sortable: false }
   ];
 
-  dialog: boolean = false;
-  dialogValid: boolean = false;
-  currentSirenToDelete: string = "";
-  currentSirenToValid: string = "";
-  motifSuppression: string = "";
-
-  get getUserSiren() {
-    return this.$store.getters.userSiren();
+  constructor() {
+    super();
+    this.collecterEtab();
+    this.fetchListeType();
   }
 
   get filteredEtabByStatut(): Array<Etablissement> {
-    Logger.debug("debut filteredEtabByStatut");
     const conditions = [] as any;
-    Logger.debug("this.statut = " + this.statut);
     if (this.statut) {
       conditions.push(this.filterStatut);
     }
+    if (this.selectedType) {
+      conditions.push(this.selectedType);
+    }
+
     if (conditions.length > 0) {
       return this.etabs.filter(acces => {
         return conditions.every(condition => {
-          return condition(acces);
+          return (
+            acces.typeEtablissement == condition || acces.statut == condition
+          );
         });
       });
     }
     return this.etabs;
   }
-  mounted() {
-    moment.locale("fr");
-    this.collecterEtab();
-    this.id = this.getIdEtab(this.etabs);
-  }
 
-  getIdEtab(etab) {
-    return etab.id;
-  }
-  filterStatut(statutRecherche) {
-    return statutRecherche.statut.toString().includes(this.statut);
-  }
-  getAll(): any {
-    return etablissementService.getEtablissements(this.$store.getters.getToken());
-  }
-  collecterEtab(): any {
+  async fetchListeType() {
     this.$store.dispatch("closeDisplayedMessage");
-    this.getAll()
-      .then(response => {
-        this.etabs = response.data.map(this.affichageEtab);
-        Logger.debug(response.data);
+    await etablissementService
+      .listeType()
+      .then(result => {
+        this.isDisableForm = false;
+        this.typesEtab = result;
       })
       .catch(err => {
         Logger.error(err.toString());
         const message: Message = new Message();
         message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
-          this.disableForm = true;
-          message.texte = "Vous n'êtes pas autorisé à effectuer cette opération";
-          setTimeout(() => {
-            this.$router.push({ name: "Home" });
-          });
+        if (err instanceof LicencesNationalesApiError) {
+          this.isDisableForm = true;
+          message.texte =
+            "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
         } else {
           message.texte = "Impossible d'exécuter l'action : " + err.message;
         }
@@ -301,42 +210,12 @@ export default class ListeEtab extends Vue {
       });
   }
 
-  affichageEtab(etab) {
-    if (moment(etab.derniereDateModificationIp).format("L") !== "Invalid date")
-      this.derniereDateModificationIpTemp = moment(
-        etab.derniereDateModificationIp
-      ).format("L");
-    else this.derniereDateModificationIpTemp = "";
-    return {
-      id: etab.id,
-      dateCreation: moment(etab.dateCreation).format("L"),
-      idAbes: etab.idAbes,
-      siren: etab.siren,
-      nom: etab.nom,
-      derniereDateModificationIp: this.derniereDateModificationIpTemp,
-      typeEtablissement: etab.typeEtablissement,
-      statut: etab.valide ? "Validé" : "En validation"
-    };
-  }
-
-  listeAcces(siren?): void {
-    this.$router.push({
-      name: "ListeAcces",
-      params: { sirenEtabSiAdmin: siren }
-    });
-  }
-  openDialogSuppression(siren): void {
-    this.dialog = true;
-    this.currentSirenToDelete = siren;
-  }
-
-  supprimerEtab(): void {
+  ajouterEtablissement(): void {
     this.$store.dispatch("closeDisplayedMessage");
-    etablissementService
-      .deleteEtab(this.$store.getters.getToken(), this.currentSirenToDelete, this.motifSuppression      )
-      .then(response => {
-        this.refreshList();
-        this.$store.dispatch("setNotification", "ok").catch(err => {
+    this.$store
+      .dispatch("setCurrentEtablissement", new Etablissement())
+      .then(() => {
+        this.$router.push({ name: "CreationEtablissement" }).catch(err => {
           Logger.error(err);
         });
       })
@@ -354,43 +233,124 @@ export default class ListeEtab extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
       });
-    this.currentSirenToDelete = "";
-    this.motifSuppression = "";
   }
 
-  openDialogValid(siren): void {
-    this.dialogValid = true;
-    this.currentSirenToValid = siren;
-  }
-  //validerEtab(): void {}
-
-  refreshList(): void {
-    this.collecterEtab();
+  allerAFusionnerEtab(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.$router.push({ name: "fusionEtablissement" }).catch(err => {
+      Logger.error(err);
+    });
   }
 
-  modifierEtab(item: Etablissement): void {
+  allerAScionnerEtab(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.$router.push({ name: "scissionEtablissement" }).catch(err => {
+      Logger.error(err);
+    });
+  }
+
+  filterStatut(statutRecherche) {
+    return statutRecherche.statut.toString().includes(this.statut);
+  }
+
+  collecterEtab(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    etablissementService
+      .getEtablissements(this.$store.getters.getToken())
+      .then(response => {
+        this.etabs = response;
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          this.disableForm = true;
+          message.texte =
+            "Vous n'êtes pas autorisé à effectuer cette opération";
+          setTimeout(() => {
+            this.$router.push({ name: "Home" });
+          });
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+      });
+  }
+
+  allerAIPs(item: Etablissement): void {
+    Logger.debug("icici");
     this.$store.dispatch("closeDisplayedMessage");
     this.$store
-        .dispatch("setCurrentEtablissement", item)
-        .then(() => {
-          this.$router.push({ name: "Modi" });
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else {
-            message.texte = "Impossible d'exécuter l'action : " + err.message;
-          }
-          message.isSticky = true;
+      .dispatch("setCurrentEtablissement", item)
+      .then(() => {
+        this.$router.push({ name: "ListeIP" });
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
 
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
         });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      });
+  }
+
+  allerAAfficherEtab(item: Etablissement): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.$store
+      .dispatch("setCurrentEtablissement", item)
+      .then(() => {
+        this.$router.push({ name: "AfficherEtablissement" });
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      });
   }
 }
 </script>
+<style scoped lang="scss">
+.search-bar {
+  flex: 0 0 20%;
+}
+</style>
