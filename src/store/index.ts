@@ -210,6 +210,7 @@ export default new Vuex.Store({
     getCurrentEtablissement: state => (): Etablissement => {
       const etablissement = new Etablissement();
       Object.assign(etablissement, state.currentEtablissement);
+      etablissement.dateCreation = new Date(etablissement.dateCreation);
 
       const contact:ContactEtablissement = new ContactEtablissement();
       Object.assign(contact,state.currentEtablissement.contact);

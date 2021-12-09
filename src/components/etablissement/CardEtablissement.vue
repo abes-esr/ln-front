@@ -1,7 +1,14 @@
 <template>
   <v-card flat>
     <h1>Etablissement {{ etablissement.nom }}</h1>
+    <v-col
+        cols="12"
+        md="6"
+        lg="6"
+        xl="6"
+    >
     <MessageBox></MessageBox>
+    </v-col>
     <v-container class="mx-9 elevation-0">
       <v-col
         cols="12"
@@ -73,6 +80,14 @@
               <div>
                 <h3 class="d-inline">Type :</h3>
                 {{ etablissement.typeEtablissement }}
+              </div>
+              <div>
+                <h3 class="d-inline">Status :</h3>
+                {{ etablissement.statut }}
+              </div>
+              <div>
+                <h3 class="d-inline">Status des IPs:</h3>
+                {{ etablissement.statut }}
               </div>
             </div>
           </v-card-text>
@@ -148,7 +163,7 @@
           class="d-flex justify-space-around mr-16 flex-wrap"
         >
           <v-btn @click="clear" class="bouton-annuler"> Annuler</v-btn>
-          <v-btn color="bouton-valider" @click="validerEtablissement()"
+          <v-btn color="bouton-valider" @click="validerEtablissement()" :loading="buttonLoading"
             >Valider
           </v-btn>
         </v-col>
@@ -163,6 +178,7 @@ import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
 import {Action, Message, MessageType} from "@/core/CommonDefinition";
 import {Logger} from "@/utils/Logger";
+import {etablissementService} from "@/core/service/licencesnationales/EtablissementService";
 
 @Component({
   components: { MessageBox }
@@ -171,6 +187,7 @@ export default class CardEtablissement extends Vue {
   etablissement: Etablissement;
   Action: any = Action;
   isAdmin: boolean = this.$store.getters.isAdmin();
+  buttonLoading: boolean = false;
 
   constructor() {
     super();
@@ -209,7 +226,42 @@ export default class CardEtablissement extends Vue {
   }
 
   validerEtablissement(): void {
-    //
+    this.buttonLoading = true;
+    this.$store.dispatch("closeDisplayedMessage");
+      etablissementService
+          .validerEtablissement(this.etablissement.siren, this.$store.getters.getToken())
+          .then(response => {
+            const message: Message = new Message();
+            message.type = MessageType.VALIDATION;
+            message.texte = "Votre compte a bien été créé";
+            message.isSticky = true;
+            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+              Logger.error(err.toString());
+            });
+            // On glisse sur le message d'erreur
+            const messageBox = document.getElementById("messageBox");
+            if (messageBox) {
+              window.scrollTo(0, messageBox.offsetTop);
+            }
+          })
+          .catch(err => {
+            Logger.error(err.toString());
+            const message: Message = new Message();
+            message.type = MessageType.ERREUR;
+            message.texte = err.message;
+            message.isSticky = true;
+            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+              Logger.error(err.toString());
+            });
+            // On glisse sur le message d'erreur
+            const messageBox = document.getElementById("messageBox");
+            if (messageBox) {
+              window.scrollTo(0, messageBox.offsetTop);
+            }
+          })
+          .finally(() => {
+            this.buttonLoading = false;
+          });
   }
 
   clear() {
