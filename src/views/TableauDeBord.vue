@@ -3,11 +3,24 @@
     <h1>Tableau de bord {{ etablissement.nom }}</h1>
     <MessageBox></MessageBox>
     <v-container class="mx-9 elevation-0">
-      <v-card-title class="px-0">Information du compte  <font-awesome-icon
-          :icon="['fas', 'download']"
-          class="mx-2 fa-sm"
-      /></v-card-title>
-      <span>Compte créé le : {{ etablissement.dateCreation.toLocaleDateString() }}</span>
+      <v-card-title class="px-0"
+        >Information du compte
+        <v-tooltip top max-width="20vw" open-delay="100">
+          <template v-slot:activator="{ on }">
+            <v-btn icon class="bouton-simple" v-on="on">
+              <font-awesome-icon
+                :icon="['fas', 'download']"
+                class="mx-2 fa-lg"
+              />
+            </v-btn>
+          </template>
+          <span>Télécharger les infos du compte</span>
+        </v-tooltip>
+      </v-card-title>
+      <span
+        >Compte créé le :
+        {{ etablissement.dateCreation.toLocaleDateString() }}</span
+      >
       <v-row class="d-flex justify-space-between flex-wrap">
         <v-col
           cols="12"
@@ -20,11 +33,16 @@
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex justify-space-between align-center">
               <h2 class="my-3">Etablissement</h2>
-              <font-awesome-icon
-                :icon="['fas', 'lock']"
-                class="fa-2x mx-2"
-                v-if="!isAdmin"
-              />
+              <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
+                <template v-slot:activator="{ on }">
+                  <font-awesome-icon
+                    v-on="on"
+                    :icon="['fas', 'lock']"
+                    class="fa-2x mx-2"
+                  />
+                </template>
+                <span>Non modifiable par l'utilisateur</span>
+              </v-tooltip>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
               <div>
@@ -111,12 +129,12 @@
               </div>
             </div>
             <v-row class="text-right">
-              <v-col>
-                <v-btn class="btn-2" @click="allerAMonProfil()"
+              <v-col cols="12">
+                <v-btn class="btn-2 " @click="allerAMonProfil()"
                   >Modifier mon contact</v-btn
                 ></v-col
               >
-              <v-col>
+              <v-col cols="12">
                 <v-btn class="btn-2" @click="allerAModifierMotDePasse()"
                   >Modifier mon mot de passe</v-btn
                 ></v-col
@@ -132,7 +150,10 @@
           class="d-flex align-content-start justify-center flex-wrap"
         >
           <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
-            <font-awesome-icon :icon="['fas', 'bell']" class="fa-lg mx-2 icone-standard" />
+            <font-awesome-icon
+              :icon="['fas', 'bell']"
+              class="fa-lg mx-2 icone-standard"
+            />
             Notifications</v-card-title
           >
           <v-card-text class="d-flex justify-space-between flex-column">
@@ -199,5 +220,10 @@ export default class Home extends Vue {
 .titre-block {
   width: 100%;
   min-height: 60px;
+}
+
+.multi-line span {
+  min-height: 1rem;
+  word-break: break-all;
 }
 </style>

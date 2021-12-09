@@ -14,7 +14,7 @@
       </h1>
       <v-card-subtitle
         v-if="action === Action.CREATION"
-        @click="$router.push({ path: '/login' })"
+        @click="allerAConnexion"
       >
         Votre établissement a déjà un compte ?
         <v-btn class="bouton-simple elevation-0"
@@ -262,6 +262,13 @@ export default class FormEtablissement extends Vue {
           Logger.error(err.toString());
         });
       });
+  }
+
+  allerAConnexion(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.$router.push({ name: "Login" }).catch(err => {
+      Logger.error(err);
+    });
   }
 
   async recaptcha() {

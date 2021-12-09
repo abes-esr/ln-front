@@ -1,97 +1,83 @@
 <template>
-  <div>
-    <v-card width="100%" :disabled="disableForm">
-      <confirm-popup ref="confirm"></confirm-popup>
-
-      <v-card-title><h1>Gestion des Editeurs</h1></v-card-title>
-      <v-card-text>
-        <v-row class="d-flex flex-row-reverse">
-          <v-btn @click="scissionEditeur()" class="btn-1 mx-2" :disabled="true"
-            >Scission
-            <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2"
-          /></v-btn>
-          <v-btn @click="fusionEditeur()" class="btn-1 mx-2" :disabled="true"
-            >Fusion
-            <font-awesome-icon :icon="['fas', 'object-group']" class="mx-2"
-          /></v-btn>
-          <v-btn @click="ajouterEditeur()" class="btn-1 mx-2"
-            >Créer un éditeur
-            <font-awesome-icon :icon="['fas', 'plus']" class="mx-2"
-          /></v-btn>
-        </v-row>
-        <v-row class="d-flex justify-space-around">
-          <MessageBox></MessageBox>
-        </v-row>
-        <v-row class="d-flex justify-space-around ma-0">
-          <v-card
-            width="60vw"
-            outlined
-            class="my-6 px-6 justify-center elevation-0"
-          >
-            <v-data-table
+  <v-card flat :disabled="disableForm">
+    <h1>Gestion des éditeurs</h1>
+    <MessageBox></MessageBox>
+    <confirm-popup ref="confirm"></confirm-popup>
+    <v-card-title>
+      <v-row class="d-flex flex-row-reverse">
+        <v-btn @click="scissionEditeur()" class="btn-1 mx-2" :disabled="true"
+          >Scission
+          <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2"
+        /></v-btn>
+        <v-btn @click="fusionEditeur()" class="btn-1 mx-2" :disabled="true"
+          >Fusion
+          <font-awesome-icon :icon="['fas', 'object-group']" class="mx-2"
+        /></v-btn>
+        <v-btn @click="ajouterEditeur()" class="btn-1 mx-2"
+          >Créer un éditeur
+          <font-awesome-icon :icon="['fas', 'plus']" class="mx-2"
+        /></v-btn>
+      </v-row>
+    </v-card-title>
+    <v-card-text  class="mt-3">
+      <v-data-table
+        dense
+        :headers="headers"
+        :items="editeurs"
+        :items-per-page="25"
+        :footer-props="{ 'items-per-page-options': [25, 50, 100, -1] }"
+        class="elevation-0 ma-3"
+        :search="rechercher"
+        id="mytable"
+      >
+        <template v-slot:header.statut="{ header }">
+          {{ header.texte }}
+        </template>
+        <template v-slot:top>
+          <v-row class="d-flex flex-row-reverse mt-3">
+            <v-text-field
+              v-model="rechercher"
+              label="Chercher dans tous les éditeurs"
+              class="mx-4 search-bar"
+              prepend-inner-icon="mdi-magnify"
+              outlined
               dense
-              :headers="headers"
-              :items="editeurs"
-              :items-per-page="10"
-              class="elevation-0"
-              :search="rechercher"
-              id="mytable"
-            >
-              <template v-slot:header.statut="{ header }">
-                {{ header.texte }}
-              </template>
-              <template v-slot:top>
-                <v-row class="d-flex flex-row-reverse mt-3">
-                  <v-text-field
-                    v-model="rechercher"
-                    label="Chercher dans tous les éditeurs"
-                    class="mx-4"
-                    prepend-inner-icon="mdi-magnify"
-                    outlined
-                    dense
-                  ></v-text-field>
-                  <v-spacer></v-spacer>
-                </v-row>
-                <v-row class="d-flex mt-1 mb-3">
-                  <v-btn
-                    @click="downloadEditeurs()"
-                    color="grey lighten-3"
-                    class="mx-2 text-lowercase btn-2"
-                    ><span class="text-uppercase">T</span>élécharger tous les
-                    éditeurs
-                    <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
-                  /></v-btn>
-                </v-row>
-              </template>
-              <template v-slot:item.dateCreation="{ item }">
-                <span>{{ item.dateCreation.toLocaleDateString() }}</span>
-              </template>
-              <template v-slot:[`item.action`]="{ item }">
-                <v-btn
-                  class="ma-0 pa-0"
-                  color="primary"
-                  icon
-                  @click="modifierEditeur(item)"
-                >
-                  <font-awesome-icon :icon="['fas', 'edit']" />
-                </v-btn>
-                <v-btn
-                  class="ma-0 pa-0 "
-                  color="primary"
-                  icon
-                  @click="supprimerEditeur(item)"
-                >
-                  <font-awesome-icon :icon="['fas', 'trash']" />
-                </v-btn>
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-row>
-      </v-card-text>
-    </v-card>
-  </div>
+            ></v-text-field>
+            <v-spacer></v-spacer>
+          </v-row>
+          <v-row class="d-flex mt-1 mb-3">
+            <v-btn
+                text
+              @click="downloadEditeurs()"
+              class="mx-2 text-lowercase bouton-simple"
+              ><span class="text-uppercase">T</span>élécharger tous les éditeurs
+              <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
+            /></v-btn>
+          </v-row>
+        </template>
+        <template v-slot:item.dateCreation="{ item }">
+          <span>{{ item.dateCreation.toLocaleDateString() }}</span>
+        </template>
+        <template v-slot:[`item.action`]="{ item }">
+          <v-btn
+            class="ma-0 pa-0 bouton-simple"
+            icon
+            @click="modifierEditeur(item)"
+          >
+            <font-awesome-icon :icon="['fas', 'edit']" />
+          </v-btn>
+          <v-btn
+            class="ma-0 pa-0 bouton-simple "
+            icon
+            @click="supprimerEditeur(item)"
+          >
+            <font-awesome-icon :icon="['fas', 'trash']" />
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-card-text>
+  </v-card>
 </template>
-<style src="./style.css"></style>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import moment from "moment";
@@ -101,11 +87,11 @@ import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesn
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import MessageBox from "@/components/common/MessageBox.vue";
-import {Message, MessageType} from "@/core/CommonDefinition";
-import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { Message, MessageType } from "@/core/CommonDefinition";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component({
-  components: {MessageBox, ConfirmPopup }
+  components: { MessageBox, ConfirmPopup }
 })
 export default class ListeEditeurs extends Vue {
   disableForm: boolean = false;
@@ -152,7 +138,8 @@ export default class ListeEditeurs extends Vue {
           message.texte = err.message;
         } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
           this.disableForm = true;
-          message.texte = "Vous n'êtes pas autorisé à effectuer cette opération";
+          message.texte =
+            "Vous n'êtes pas autorisé à effectuer cette opération";
           setTimeout(() => {
             this.$router.push({ name: "Home" });
           });
@@ -251,3 +238,8 @@ export default class ListeEditeurs extends Vue {
   }
 }
 </script>
+<style scoped lang="scss">
+.search-bar {
+  flex:0 0 20%;
+}
+</style>

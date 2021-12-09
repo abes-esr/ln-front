@@ -15,7 +15,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="saveTheme()"
         >
-          <v-switch dense v-model="$vuetify.theme.dark" inset></v-switch>
+          <v-switch dense v-model="$vuetify.theme.dark" inset class="theme-selector"></v-switch>
           <v-list-item-title>Thème sombre</v-list-item-title>
         </v-list-item>
       </v-row>

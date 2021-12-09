@@ -165,11 +165,12 @@ a {
 }
 
 #mytable table thead {
-  background-color: #478dcb !important;
+  color: $couleur-6 !important;
+  background-color: $couleur-2 !important;
 }
 
 #mytable table thead span {
-  color: #ffffff !important;
+  color: $couleur-6 !important;
 }
 
 .menu-slot:hover {
@@ -186,6 +187,21 @@ nav svg {
 
 .v-select__slot input[readonly="readonly"] {
   background-color: $couleur-6 !important;
+}
+
+.v-data-footer__icons-before .v-btn, .v-data-footer__icons-after .v-btn {
+  background-color: $couleur-6 !important;
+}
+
+.v-data-footer__icons-before .v-btn .v-icon, .v-data-footer__icons-after .v-btn .v-icon {
+  color: $couleur-5 !important;
+}
+.theme-selector .v-input--switch__track{
+  color: $couleur-3 !important;
+}
+
+.theme-selector .v-input--switch__thumb {
+  color: $couleur-5 !important;
 }
 
 

@@ -1,7 +1,7 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import Etablissement from "@/core/Etablissement";
 import ContactEtablissement from "@/core/ContactEtablissement";
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from "axios";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**
@@ -79,7 +79,8 @@ export class EtablissementService extends LicencesNationalesApiService {
             etablissement.id = element.id;
             etablissement.nom = element.nom;
             etablissement.siren = element.siren;
-            etablissement.dateCreation = new Date(element.dateCreation);
+            // etablissement.dateCreation = new Date(element.dateCreation);
+            etablissement.dateCreation = new Date();
             etablissement.typeEtablissement = element.typeEtablissement;
             etablissement.statut = element.statut;
             etablissement.idAbes = element.idAbes;
@@ -165,7 +166,11 @@ export class EtablissementService extends LicencesNationalesApiService {
     });
   }
 
-  deleteEtab(token: string, siren: string, commentaire:string): Promise<boolean> {
+  deleteEtab(
+    token: string,
+    siren: string,
+    commentaire: string
+  ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       return this.client
         .delete("/etablissements/" + siren, null, token)
