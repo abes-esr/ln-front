@@ -35,5 +35,5 @@ export class Message {
   isSticky = false;
   isMultiline = true;
   type: MessageType = MessageType.INFORMATION;
-  texte = '';
+  texte = "";
 }

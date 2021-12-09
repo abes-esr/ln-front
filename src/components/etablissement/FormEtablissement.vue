@@ -196,7 +196,6 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { serviceGouv } from "@/core/service/data.gouv/DataGouvApiService";
 import { SirenNotFoundError } from "@/core/service/data.gouv/exception/SirenNotFoundError";
-import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApiError";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { rulesForms } from "@/core/RulesForm";
@@ -205,7 +204,6 @@ import { Action, Message, MessageType } from "@/core/CommonDefinition";
 import Contact from "@/components/etablissement/Contact.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import MessageBox from "@/components/common/MessageBox.vue";
-import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component({
   components: { MessageBox, Contact }
@@ -271,13 +269,12 @@ export default class FormEtablissement extends Vue {
     });
   }
 
+  /**
+   * Récupère le token Google
+   * */
   async recaptcha() {
-    // (optional) Wait until recaptcha has been loaded.
     await this.$recaptchaLoaded();
-
-    // Execute reCAPTCHA with action "creationCompte".
     this.tokenrecaptcha = await this.$recaptcha("creationCompte");
-    // Do stuff with the received getToken.
   }
 
   async validate() {
@@ -383,7 +380,7 @@ export default class FormEtablissement extends Vue {
         })
         .catch(err => {
           Logger.error(err.toString());
-          Logger.debug(JSON.stringify(err))
+          Logger.debug(JSON.stringify(err));
           const message: Message = new Message();
           message.type = MessageType.ERREUR;
           message.texte = err.message;
@@ -454,7 +451,6 @@ export default class FormEtablissement extends Vue {
       this.etablissement.reset();
       window.scrollTo(0, 0);
     }
-
   }
 }
 </script>
@@ -468,6 +464,6 @@ export default class FormEtablissement extends Vue {
 }
 
 .icone-attention {
-  float:left;
+  float: left;
 }
 </style>

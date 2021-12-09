@@ -12,19 +12,19 @@
       class="fa-lg mr-5 mb-1 mt-2 icone-erreur"
     />
     <font-awesome-icon
-        v-if="getSnackbarType == MessageType.VALIDATION"
-        :icon="['fas', 'check-circle']"
-        class="fa-lg mr-5 mb-1 mt-2 icone-validation"
+      v-if="getSnackbarType == MessageType.VALIDATION"
+      :icon="['fas', 'check-circle']"
+      class="fa-lg mr-5 mb-1 mt-2 icone-validation"
     />
     <font-awesome-icon
-        v-if="getSnackbarType == MessageType.AVERTISSEMENT"
-        :icon="['fas', 'ban']"
-        class="fa-lg mr-5 mb-1 mt-2 icone-avertissement"
+      v-if="getSnackbarType == MessageType.AVERTISSEMENT"
+      :icon="['fas', 'ban']"
+      class="fa-lg mr-5 mb-1 mt-2 icone-avertissement"
     />
     <font-awesome-icon
-        v-if="getSnackbarType == MessageType.INFORMATION"
-        :icon="['fas', 'ban']"
-        class="fa-lg mr-5 mb-1 mt-2 icone-information"
+      v-if="getSnackbarType == MessageType.INFORMATION"
+      :icon="['fas', 'ban']"
+      class="fa-lg mr-5 mb-1 mt-2 icone-information"
     />
     <span v-for="m in getSnackbarText" v-bind:key="m">{{ m }}</span>
 
@@ -47,7 +47,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { MessageType } from "@/core/CommonDefinition";
-import { Logger } from "@/utils/Logger";
 
 @Component
 export default class Message extends Vue {

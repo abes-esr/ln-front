@@ -1,8 +1,8 @@
 <template>
-  <v-card witdh="100%" outlined>
+  <v-card witdh="50%" outlined>
     <v-form ref="form" :outline="true" lazy-validation>
-      <v-card-text>
-        <v-radio-group row v-model="contact.type">
+      <v-card-text class="mb-0 pb-0">
+        <v-radio-group row v-model="contact.type" class="d-flex justify-center">
           <v-radio
             v-for="type in typeContactCandidates"
             :key="type"
@@ -16,7 +16,7 @@
           label="Nom"
           placeholder="Nom"
           v-model="contact.nom"
-          :rules="rulesForms.nomContactRules"
+          :rules="rulesForms.nom"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -25,7 +25,7 @@
           label="Prénom"
           placeholder="Prénom"
           v-model="contact.prenom"
-          :rules="rulesForms.prenomContactRules"
+          :rules="rulesForms.prenom"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -40,7 +40,7 @@
         ></v-text-field>
       </v-card-text>
       <v-card-actions class="pa-0">
-        <v-btn class="ma-0 pa-0" color="primary" icon x-large @click="remove()">
+        <v-btn class="ma-0 pa-0 bouton-simple" icon x-large @click="remove()">
           <font-awesome-icon :icon="['fas', 'trash']" />
         </v-btn>
         <v-spacer></v-spacer>
@@ -61,8 +61,8 @@ export default class Contact extends Vue {
   rulesForms: any = rulesForms;
 
   typeContactCandidates: Array<ContactType> = [
-    ContactType.TECHNIQUE,
-    ContactType.COMMERCIAL
+    ContactType.COMMERCIAL,
+    ContactType.TECHNIQUE
   ];
   typeContactCandidatesLabel: Array<string> = [];
 
@@ -88,3 +88,16 @@ export default class Contact extends Vue {
   }
 }
 </script>
+<style scoped lang="scss">
+.v-card__text {
+  border: 0;
+}
+
+.v-card__title {
+  width: 100%;
+}
+
+.v-input--radio-group__input {
+  justify-content: center;
+}
+</style>
