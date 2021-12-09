@@ -13,6 +13,7 @@ export class Etablissement {
   idAbes: string = "";
   contact: ContactEtablissement = new ContactEtablissement();
   ips: Array<Ip> = [];
+  statutIP: string = "";
 
   addIp(item: Ip): void {
     this.ips.push(item);
