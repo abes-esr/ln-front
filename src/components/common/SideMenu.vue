@@ -15,7 +15,12 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="saveTheme()"
         >
-          <v-switch dense v-model="$vuetify.theme.dark" inset class="theme-selector"></v-switch>
+          <v-switch
+            dense
+            v-model="$vuetify.theme.dark"
+            inset
+            class="theme-selector"
+          ></v-switch>
           <v-list-item-title>Thème sombre</v-list-item-title>
         </v-list-item>
       </v-row>
@@ -66,6 +71,7 @@
         <v-list-item
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAStatitique()"
+          :disabled="true"
         >
           <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'chart-bar']" size="2x" />
@@ -80,6 +86,7 @@
         <v-list-item
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAHistorique()"
+          :disabled="true"
         >
           <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'history']" size="2x" />

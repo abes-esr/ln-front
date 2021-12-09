@@ -7,7 +7,7 @@
           label="Nom"
           placeholder="Nom"
           v-model="contact.nom"
-          :rules="rulesForms.nomContactRules"
+          :rules="rulesForms.nom"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -18,7 +18,7 @@
           label="Prénom"
           placeholder="Prénom"
           v-model="contact.prenom"
-          :rules="rulesForms.prenomContactRules"
+          :rules="rulesForms.prenom"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -30,7 +30,7 @@
           placeholder="Adresse"
           maxlength="80"
           v-model="contact.adresse"
-          :rules="rulesForms.adresseContactRules"
+          :rules="rulesForms.adresse"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -51,7 +51,7 @@
           placeholder="Code Postal"
           maxlength="5"
           v-model="contact.codePostal"
-          :rules="rulesForms.codePostalContactRules"
+          :rules="rulesForms.codePostal"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -62,7 +62,7 @@
           label="Ville"
           placeholder="Ville"
           v-model="contact.ville"
-          :rules="rulesForms.villeContactRules"
+          :rules="rulesForms.ville"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -84,7 +84,7 @@
           placeholder="Téléphone"
           maxlength="10"
           v-model="contact.telephone"
-          :rules="rulesForms.telContactRules"
+          :rules="rulesForms.tel"
           required
           @keyup.enter="validate()"
         ></v-text-field>
@@ -148,9 +148,9 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
-import {rulesForms} from "@/core/RulesForm";
-import {Action} from "@/core/CommonDefinition";
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { rulesForms } from "@/core/RulesForm";
+import { Action } from "@/core/CommonDefinition";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import MotDePasse from "@/components/authentification/MotDePasse.vue";
 
@@ -197,7 +197,10 @@ export default class Contact extends Vue {
     }
 
     let isMailValide = true;
-    if (this.action == Action.CREATION || this.ancienMail != this.contact.mail) {
+    if (
+      this.action == Action.CREATION ||
+      this.ancienMail != this.contact.mail
+    ) {
       isMailValide = (this.$refs.mail as Vue & {
         validate: () => boolean;
       }).validate();

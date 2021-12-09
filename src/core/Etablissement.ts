@@ -1,7 +1,6 @@
 import ContactEtablissement from "@/core/ContactEtablissement";
 import Ip from "@/core/Ip";
-import ContactEditeur from "@/core/ContactEditeur";
-import {ValueError} from "@/exception/ValueError";
+import { ValueError } from "@/exception/ValueError";
 
 export class Etablissement {
   id: number = -999;
@@ -29,7 +28,7 @@ export class Etablissement {
   }
 
   removeIp(item: Ip): void {
-    const index = this.ips.findIndex(x => (x.id === item.id && x.ip === item.ip));
+    const index = this.ips.findIndex(x => x.id === item.id && x.ip === item.ip);
     if (index == -1) {
       throw new ValueError("Ip " + item + " not found");
     }
@@ -37,7 +36,7 @@ export class Etablissement {
     this.ips.splice(index, 1);
   }
 
-  reset():void {
+  reset(): void {
     this.nom = "";
     this.siren = "";
     this.typeEtablissement = "";

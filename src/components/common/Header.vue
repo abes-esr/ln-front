@@ -32,12 +32,19 @@
         class="d-flex justify-end mainBar ma-0 pa-0 pr-12"
         style="max-height: 40px"
       >
-        <div class="menu-slot btn-3 d-flex align-center mr-3">   Bienvenue {{ loggedInUsername }}</div>
+        <div class="menu-slot btn-3 d-flex align-center mr-3">
+          Bienvenue {{ loggedInUsername }}
+        </div>
         <v-divider vertical dark></v-divider>
         <v-tooltip top max-width="20vw" open-delay="100">
           <template v-slot:activator="{ on }">
-            <v-btn  href="https://stp.abes.fr/node/3?origine=LicencesNationales"
-                    target="_blank" class="menu-slot btn-3" plain v-on="on">
+            <v-btn
+              href="https://stp.abes.fr/node/3?origine=LicencesNationales"
+              target="_blank"
+              class="menu-slot btn-3"
+              plain
+              v-on="on"
+            >
               <font-awesome-icon :icon="['fas', 'comments']" size="2x" />
             </v-btn>
           </template>
@@ -46,8 +53,13 @@
         <v-divider vertical dark></v-divider>
         <v-tooltip top max-width="20vw" open-delay="100">
           <template v-slot:activator="{ on }">
-            <v-btn  href="http://documentation.abes.fr/aidelicencesnationales/index.html"
-                    target="_blank" class="menu-slot btn-3" plain v-on="on">
+            <v-btn
+              href="http://documentation.abes.fr/aidelicencesnationales/index.html"
+              target="_blank"
+              class="menu-slot btn-3"
+              plain
+              v-on="on"
+            >
               <font-awesome-icon :icon="['fas', 'question']" size="2x" />
             </v-btn>
           </template>
@@ -56,7 +68,12 @@
         <v-divider vertical dark></v-divider>
         <v-tooltip top max-width="20vw" open-delay="100">
           <template v-slot:activator="{ on }">
-            <v-btn @click="seDeconnecter()" class="menu-slot btn-3" plain v-on="on">
+            <v-btn
+              @click="seDeconnecter()"
+              class="menu-slot btn-3"
+              plain
+              v-on="on"
+            >
               <font-awesome-icon :icon="['fas', 'sign-out-alt']" size="2x" />
             </v-btn>
           </template>
@@ -70,8 +87,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import Etablissement from "@/core/Etablissement";
-import {etablissementService} from "@/core/service/licencesnationales/EtablissementService";
 
 @Component
 export default class Header extends Vue {

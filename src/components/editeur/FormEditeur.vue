@@ -1,187 +1,186 @@
 <template>
-    <v-card flat>
-      <v-form ref="formEditeur" lazy-validation>
-        <h1 v-if="action == Action.CREATION"
-          >Créer un éditeur
-        </h1>
-        <h1 v-else-if="action == Action.MODIFICATION"
-          >Modifier un éditeur
-        </h1>
-        <v-card-text>
-          <v-card flat>
-            <MessageBox></MessageBox>
-            <v-card-title>Information de l'éditeur</v-card-title>
-            <v-card-text>
-              <v-row>
-                <v-col cols="12" md="6" lg="6" xl="6">
-                  <v-text-field
-                    outlined
-                    label="NOM DE L'EDITEUR"
-                    placeholder="NOM DE L'EDITEUR"
-                    v-model="editeur.nom"
-                    :rules="nomEditeurRules"
-                    required
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6" lg="6" xl="6">
-                  <v-text-field
-                    outlined
-                    label="Identifiant éditeur"
-                    placeholder="Identifiant éditeur"
-                    v-model="editeur.identifiantBis"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6" lg="6" xl="6">
-                  <v-select
-                    v-model="editeur.groupesEtabRelies"
-                    :items="typesEtab"
-                    label="Groupes d'établissements reliés"
-                    multiple
-                    outlined
-                  >
-                    <template v-slot:prepend-item>
-                      <v-list-item ripple @click="toggle">
-                        <v-list-item-action>
-                          <v-icon
-                            :color="
-                              editeur.groupesEtabRelies.length > 0
-                                ? 'indigo darken-4'
-                                : ''
-                            "
-                          >
-                            {{ iconEtab }}
-                          </v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            Tout sélectionner
-                          </v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-divider class="mt-2"></v-divider>
-                    </template>
-                  </v-select>
-                </v-col>
-                <v-col cols="12" md="6" lg="6" xl="6">
-                  <v-text-field
-                    outlined
-                    label="Adresse postale"
-                    placeholder="Adresse postale"
-                    v-model="editeur.adresse"
-                    :rules="adresseEditeurRules"
-                    required
-                    @keyup.enter="validate()"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-          <v-card flat>
-            <v-card-title>
-              {{ editeur.contacts.length }} contact(s)</v-card-title
-            >
-            <v-card-text>
-              <v-row>
-                <v-col cols="12" md="6" lg="6" xl="6">
-                  <v-container
-                    v-for="(contact, index) in editeur.contacts"
-                    :key="index"
-                  >
-                    <contact
-                      :ref="'contactForm_' + index"
-                      :contact="contact"
-                      @onChange="removeContact(contact)"
-                    ></contact>
-                  </v-container>
-                </v-col>
-              </v-row>
-            </v-card-text>
-
-            <v-card-actions class="v-card__actions">
-              <v-btn
-                color="primary"
-                class="ma-2 white--text"
-                @click="addContact()"
-              >
-                <font-awesome-icon :icon="['fas', 'plus']" class="mx-2" />
-                Ajouter un contact
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-card-text>
-        <v-card-actions class="v-card__actions">
+  <v-card class="elevation-0">
+    <v-form
+      ref="formEditeur"
+      lazy-validation
+      class="elevation-0"
+      :disabled="isDisableForm"
+    >
+      <h1 v-if="action == Action.CREATION">Créer un éditeur</h1>
+      <h1 v-else-if="action == Action.MODIFICATION">Modifier un éditeur</h1>
+      <v-card-text class="elevation-0">
+        <v-col cols="12" md="6" lg="6" xl="6"><MessageBox></MessageBox> </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
+        <div class="mx-9">
           <v-row>
-            <v-col cols="9"></v-col>
-            <v-col>
-              <v-btn @click="clear()" color="grey" class="mx-2">Vider </v-btn>
-              <v-btn
-                @click="validate()"
-                :loading="buttonLoading"
-                class="btn-1 mx-2"
-                >Valider
-              </v-btn>
+            <v-card-title>Information de l'éditeur</v-card-title>
+          </v-row>
+          <v-divider class="mb-4"></v-divider>
+          <div class="mx-9">
+            <v-row>
+              <v-col cols="12" md="6" lg="6" xl="6">
+                <v-text-field
+                  outlined
+                  label="NOM DE L'EDITEUR"
+                  placeholder="NOM DE L'EDITEUR"
+                  v-model="editeur.nom"
+                  :rules="rulesForms.nom"
+                  required
+                  @keyup.enter="validate()"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6" lg="6" xl="6">
+                <v-text-field
+                  outlined
+                  label="Identifiant éditeur"
+                  placeholder="Identifiant éditeur"
+                  v-model="editeur.identifiantBis"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6" lg="6" xl="6">
+                <v-select
+                  v-model="editeur.groupesEtabRelies"
+                  :items="typesEtab"
+                  label="Groupes d'établissements reliés"
+                  multiple
+                  outlined
+                >
+                  <template v-slot:prepend-item>
+                    <v-list-item ripple @click="toggle">
+                      <v-list-item-action>
+                        <v-icon
+                          :color="
+                            editeur.groupesEtabRelies.length > 0
+                              ? 'indigo darken-4'
+                              : ''
+                          "
+                        >
+                          {{ iconEtab }}
+                        </v-icon>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          Tout sélectionner
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-divider class="mt-2"></v-divider>
+                  </template>
+                </v-select>
+              </v-col>
+              <v-col cols="12" md="6" lg="6" xl="6">
+                <v-text-field
+                  outlined
+                  label="Adresse postale"
+                  placeholder="Adresse postale"
+                  v-model="editeur.adresse"
+                  :rules="rulesForms.adresse"
+                  required
+                  @keyup.enter="validate()"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </div>
+        </div>
+        <div class="mx-9">
+          <v-card-title>
+            Information Contact
+          </v-card-title>
+          <v-divider class="mb-4"></v-divider>
+          <v-row>
+            <v-col
+              cols="12"
+              md="3"
+              lg="3"
+              xl="3"
+              v-for="(contact, index) in editeur.contacts"
+              :key="index"
+            >
+              <contact
+                :ref="'contactForm_' + index"
+                :contact="contact"
+                @onChange="removeContact(contact)"
+              ></contact>
             </v-col>
           </v-row>
-        </v-card-actions>
-      </v-form>
-    </v-card>
+        </div>
+        <v-card flat>
+          <v-card-title> {{ editeur.contacts.length }} contact(s)</v-card-title>
+          <v-card-text> </v-card-text>
+
+          <v-card-actions class="v-card__actions">
+            <v-btn class="ma-2 btn-2" @click="addContact()">
+              <font-awesome-icon :icon="['fas', 'plus']" class="mx-2" />
+              Ajouter un contact
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer class="hidden-sm-and-down"></v-spacer>
+        <v-col
+          cols="12"
+          md="3"
+          lg="3"
+          xl="3"
+          class="d-flex justify-space-around mr-16 flex-wrap"
+        >
+          <v-btn
+            x-large
+            @click="clear"
+            class="bouton-annuler"
+            :disabled="isDisableForm"
+          >
+            Annuler</v-btn
+          >
+          <v-btn
+            color="button"
+            :loading="buttonLoading"
+            :disabled="isDisableForm"
+            x-large
+            @click="validate()"
+            >Enregistrer
+            <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+          </v-btn>
+        </v-col>
+      </v-card-actions>
+    </v-form>
+  </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import {Action, ContactType, Message, MessageType} from "@/core/CommonDefinition";
+import {
+  Action,
+  ContactType,
+  Message,
+  MessageType
+} from "@/core/CommonDefinition";
 import Editeur from "@/core/Editeur";
 import Contact from "@/components/editeur/Contact.vue";
 import ContactEditeur from "@/core/ContactEditeur";
-import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import MessageBox from "@/components/common/MessageBox.vue";
-import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component({
-  components: {MessageBox, Contact }
+  components: { MessageBox, Contact }
 })
 export default class ComposantEditeur extends Vue {
   editeur: Editeur;
   @Prop() action!: Action;
   Action: any = Action;
-
-  nomEditeurRules = [
-    (v: string) => !!v || "Le nom de l'éditeur est obligatoire",
-    (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-      "Le nom de l'éditeur fourni n'est pas valide"
-  ];
-
-  typesEtab: Array<string> = [
-    "Universités, grandes écoles, écoles de formation spécialisées",
-    "CHR-CHU",
-    "Etablissements de santé (autres que CHR-CHU)",
-    "Ecoles françaises à l'étranger",
-    "Etablissements publics administratifs",
-    "Organismes de recherche",
-    "Etablissements publics de coopération scientifique",
-    "Etablissements publics de coopération culturelle",
-    "Etablissements publics à caractère industriel et commercial",
-    "Fondation reconnues d'utilité publique",
-    "GIP",
-    "Réseau Latitude France",
-    "Bibliothèques de lecture publique"
-  ];
-  adresseEditeurRules = [
-    (v: string) =>
-      !!v || "L'adresse postale de l'établissement est obligatoire",
-    (v: string) =>
-      /^([0-9A-Za-z'àâéèêôùûçÀÂÉÈÔÙÛÇ,\s-]{5,80})$/.test(v) ||
-      "L'adresse postale fournie n'est pas valide"
-  ];
-
+  rulesForms: any = rulesForms;
+  typesEtab: Array<string> = [];
   buttonLoading: boolean = false;
+  isDisableForm: boolean = false;
 
   constructor() {
     super();
+    this.fetchListeType();
     this.editeur = this.getCurrentEditeur;
   }
 
@@ -211,6 +210,32 @@ export default class ComposantEditeur extends Vue {
         this.editeur.groupesEtabRelies = this.typesEtab.slice();
       }
     });
+  }
+
+  async fetchListeType() {
+    this.$store.dispatch("closeDisplayedMessage");
+    await etablissementService
+      .listeType()
+      .then(result => {
+        this.isDisableForm = false;
+        this.typesEtab = result;
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesApiError) {
+          this.isDisableForm = true;
+          message.texte =
+            "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+      });
   }
 
   validate(): void {
@@ -245,14 +270,15 @@ export default class ComposantEditeur extends Vue {
     }
     if (countContactCommercial === 0 || countContactTechnique === 0) {
       isValide = false;
-      message.texte = " - Vous devez saisir au moins un contact technique et un contact commercial";
+      message.texte =
+        " - Vous devez saisir au moins un contact technique et un contact commercial";
     }
 
     if (isValide) {
       this.send();
     } else {
       this.buttonLoading = false;
-      message.texte =   `Des champs ne remplissent pas les conditions :
+      message.texte = `Des champs ne remplissent pas les conditions :
       ${message.texte}`;
       message.isMultiline = true;
       this.$store.dispatch("openDisplayedMessage", message).catch(err => {
@@ -260,7 +286,7 @@ export default class ComposantEditeur extends Vue {
       });
       // On glisse sur le message d'erreur
       const messageBox = document.getElementById("messageBox");
-      if(messageBox) {
+      if (messageBox) {
         window.scrollTo(0, messageBox.offsetTop);
       }
     }
@@ -293,11 +319,12 @@ export default class ComposantEditeur extends Vue {
           });
           // On glisse jusqu'au message
           const messageBox = document.getElementById("messageBox");
-          if(messageBox) {
+          if (messageBox) {
             window.scrollTo(0, messageBox.offsetTop);
           }
           // On redirige après 2 secondes
           setTimeout(() => {
+            this.$store.dispatch("closeDisplayedMessage");
             this.$router.push({ path: "/listeEditeurs" });
           }, 2000);
         })
@@ -307,14 +334,14 @@ export default class ComposantEditeur extends Vue {
           const message: Message = new Message();
           message.type = MessageType.ERREUR;
           message.texte = `Impossible d'exécuter l'action :
-           ${ err.message}`;
+           ${err.message}`;
           message.isSticky = true;
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
           // On glisse jusqu'au message
           const messageBox = document.getElementById("messageBox");
-          if(messageBox) {
+          if (messageBox) {
             window.scrollTo(0, messageBox.offsetTop);
           }
         });
@@ -332,11 +359,12 @@ export default class ComposantEditeur extends Vue {
           });
           // On glisse jusqu'au message
           const messageBox = document.getElementById("messageBox");
-          if(messageBox) {
+          if (messageBox) {
             window.scrollTo(0, messageBox.offsetTop);
           }
           // On redirige après 2 secondes
           setTimeout(() => {
+            this.$store.dispatch("closeDisplayedMessage");
             this.$router.push({ path: "/listeEditeurs" });
           }, 2000);
         })
@@ -346,14 +374,14 @@ export default class ComposantEditeur extends Vue {
           const message: Message = new Message();
           message.type = MessageType.ERREUR;
           message.texte = `Impossible d'exécuter l'action :
-           ${ err.message}`;
+           ${err.message}`;
           message.isSticky = true;
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
           // On glisse jusqu'au message
           const messageBox = document.getElementById("messageBox");
-          if(messageBox) {
+          if (messageBox) {
             window.scrollTo(0, messageBox.offsetTop);
           }
         });
@@ -372,8 +400,17 @@ export default class ComposantEditeur extends Vue {
     (this.$refs.formEditeur as HTMLFormElement).resetValidation();
 
     this.editeur = this.getCurrentEditeur;
-    Logger.debug(JSON.stringify(this.editeur.contacts))
+    Logger.debug(JSON.stringify(this.editeur.contacts));
     window.scrollTo(0, 0);
   }
 }
 </script>
+<style scoped lang="scss">
+.v-card__text {
+  border: 0;
+}
+
+.v-card__title {
+  width: 100%;
+}
+</style>

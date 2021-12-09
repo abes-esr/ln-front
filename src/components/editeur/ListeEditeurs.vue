@@ -1,8 +1,10 @@
 <template>
   <v-card flat :disabled="disableForm">
     <h1>Gestion des éditeurs</h1>
-    <MessageBox></MessageBox>
-    <confirm-popup ref="confirm"></confirm-popup>
+    <v-col cols="12" md="6" lg="6" xl="6">
+      <MessageBox></MessageBox>
+      <ConfirmPopup ref="confirm"></ConfirmPopup>
+    </v-col>
     <v-card-title>
       <v-row class="d-flex flex-row-reverse">
         <v-btn @click="scissionEditeur()" class="btn-1 mx-2" :disabled="true"
@@ -19,7 +21,7 @@
         /></v-btn>
       </v-row>
     </v-card-title>
-    <v-card-text  class="mt-3">
+    <v-card-text class="mt-3">
       <v-data-table
         dense
         :headers="headers"
@@ -47,7 +49,7 @@
           </v-row>
           <v-row class="d-flex mt-1 mb-3">
             <v-btn
-                text
+              text
               @click="downloadEditeurs()"
               class="mx-2 text-lowercase bouton-simple"
               ><span class="text-uppercase">T</span>élécharger tous les éditeurs
@@ -80,7 +82,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import Editeur from "@/core/Editeur";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
@@ -97,8 +98,6 @@ export default class ListeEditeurs extends Vue {
   disableForm: boolean = false;
   rechercher: string = "";
   editeurs: Array<Editeur> = [];
-  title: string = "";
-  id: string = "";
   headers: Array<any> = [
     {
       text: "Date de création du compte éditeur",
@@ -110,21 +109,27 @@ export default class ListeEditeurs extends Vue {
     { text: "Action", value: "action", sortable: false }
   ];
   confirmDeleteDialog: any = {};
+  isAdmin: boolean = this.$store.getters.isAdmin();
 
-  mounted() {
-    moment.locale("fr");
+  constructor() {
+    super();
+    if (!this.isAdmin) {
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      message.texte =
+        "Vous n'êtes pas autorisé à exécuter l'action ListeEditeur";
+      message.isSticky = true;
+      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+        Logger.error(err.toString());
+      });
+      this.$router.push({ name: "Home" }).catch(err => {
+        Logger.error(err);
+      });
+    }
     this.fetchEditeurs();
-    this.id = this.getIdEditeur(this.editeurs);
-  }
-
-  getIdEditeur(editeur): string {
-    return editeur.id;
   }
 
   fetchEditeurs(): void {
-    this.disableForm = false;
-    this.$store.dispatch("closeDisplayedMessage");
-
     editeurService
       .getEditeurs(this.$store.getters.getToken())
       .then(res => {
@@ -205,19 +210,27 @@ export default class ListeEditeurs extends Vue {
     this.$store.dispatch("closeDisplayedMessage");
 
     const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
-      "Suppression",
-      `Vous êtes sur le point de supprimer le compte de l'éditeur ${item.nom} <br />
+      `Vous êtes sur le point de supprimer le compte de l'éditeur ${item.nom}
+
                 Etes-vous sûr de vouloir continuer ?`
     );
     if (confirmed) {
       editeurService
         .deleteEditeur(item.id, this.$store.getters.getToken())
         .then(() => {
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = `L'éditeur ${item.nom} a bien été supprimé`;
+          message.isSticky = false;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse jusqu'au message
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
           this.fetchEditeurs();
-          this.$store.dispatch(
-            "setNotification",
-            `L'éditeur ${item.nom} a bien été supprimé`
-          );
         })
         .catch(err => {
           Logger.error(err.toString());
@@ -240,6 +253,6 @@ export default class ListeEditeurs extends Vue {
 </script>
 <style scoped lang="scss">
 .search-bar {
-  flex:0 0 20%;
+  flex: 0 0 20%;
 }
 </style>

@@ -1,14 +1,18 @@
 <template>
-  <v-dialog v-model="dialog" class="elevation-0 popup" :max-width="options.width" @keydown.esc="cancel">
-    <v-card flat  class="confirmPopup">
-
-      <v-card-text class="pa-3 popup-texte"
-      > <font-awesome-icon
+  <v-dialog
+    v-model="dialog"
+    class="elevation-0 popup"
+    :max-width="options.width"
+    @keydown.esc="cancel"
+  >
+    <v-card flat class="confirmPopup">
+      <v-card-text class="pa-3 popup-texte">
+        <font-awesome-icon
           :icon="['fas', 'exclamation-triangle']"
           class="mx-2 fa-2x icone-attention"
-      /><div  v-if="message"
-              class="popup-message"
-              v-html="message"></div> </v-card-text>
+        />
+        <div v-if="message" class="popup-message" v-html="message"></div>
+      </v-card-text>
       <v-card-actions class="pt-0 ma-3">
         <v-spacer></v-spacer>
         <v-btn text class="bouton-annuler" @click="cancel">Annuler</v-btn>
@@ -32,10 +36,10 @@ export default class ConfirmPopup extends Vue {
   reject: any = null;
   options: ConfirmPopupOptions = {
     color: "error",
-    width: '30vw'
+    width: "30vw"
   };
 
-  open( message, options?) {
+  open(message, options?) {
     this.dialog = true;
     this.message = message;
     this.options = Object.assign(this.options, options);
@@ -58,7 +62,7 @@ export default class ConfirmPopup extends Vue {
 </script>
 <style scoped lang="scss">
 .icone-attention {
-  float:left;
+  float: left;
 }
 
 .popup-texte {
@@ -73,6 +77,4 @@ export default class ConfirmPopup extends Vue {
   min-height: 1rem;
   white-space: pre-wrap;
 }
-
 </style>
-

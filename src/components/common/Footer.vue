@@ -1,59 +1,63 @@
 <template>
-  <v-footer padless id="footer" >
-    <v-card
-        class="flex"
-        flat
-        tile
-    >
+  <v-footer padless id="footer">
+    <v-card class="flex" flat tile>
       <v-card-title class="teal footer-top align-center pa-0">
-       <v-col cols="12" md="4" lg="3" xl="3" >
-         <div class="left-container d-flex flex-column justify-space-between">
-          <div class="raccourci">
-            <font-awesome-icon
+        <v-col cols="12" md="4" lg="3" xl="3">
+          <div class="left-container d-flex flex-column justify-space-between">
+            <div class="raccourci">
+              <font-awesome-icon
                 :icon="['fas', 'external-link-alt']"
                 class="mx-2"
-            />
-            <span class="texte">Accès direct</span>
-          </div>
-          <v-btn
+              />
+              <span class="texte">Accès direct</span>
+            </div>
+            <v-btn
               href="https://stp.abes.fr/node/3?origine=LicencesNationales"
               target="_blank"
               class="footer-btn mx-2 text-center no-text-transform"
-          >
-            <span class="texte">Assistance</span>
-            <font-awesome-icon :icon="['fas', 'comments']" class="mx-2" />
-          </v-btn>
-          <v-btn
+            >
+              <span class="texte">Assistance</span>
+              <font-awesome-icon :icon="['fas', 'comments']" class="mx-2" />
+            </v-btn>
+            <v-btn
               href="https://www.licencesnationales.fr/"
               target="_blank"
               class="footer-btn mx-2 text-center no-text-transform"
-          ><span class="texte">Site Licences nationales</span>
-            <font-awesome-icon
+              ><span class="texte">Site Licences nationales</span>
+              <font-awesome-icon
                 :icon="['fas', 'arrow-circle-right']"
                 class="mx-2"
-            />
-          </v-btn>
-          <v-btn
+              />
+            </v-btn>
+            <v-btn
               href="http://documentation.abes.fr/aidelicencesnationales/index.html"
               target="_blank"
               class="footer-btn mx-2 text-center no-text-transform"
-          ><span class="texte">Documentation Licences nationales</span>
-            <font-awesome-icon :icon="['fas', 'question']" class="mx-2" />
-          </v-btn>
-         </div>
-       </v-col>
+              ><span class="texte">Documentation Licences nationales</span>
+              <font-awesome-icon :icon="['fas', 'question']" class="mx-2" />
+            </v-btn>
+          </div>
+        </v-col>
         <v-divider
-            class="mx-4 hidden-sm-and-down"
-            vertical
-            style="height: auto;"
+          class="mx-4 hidden-sm-and-down"
+          vertical
+          style="height: auto;"
         ></v-divider>
         <v-spacer />
-        <v-divider class="mx-4 " :vertical="this.$vuetify.breakpoint.mdAndUp" style="height: auto;"></v-divider>
-        <v-col cols="12" md="4" lg="4" xl="4"
-            class="d-flex justify-space-around align-center"
+        <v-divider
+          class="mx-4 "
+          :vertical="this.$vuetify.breakpoint.mdAndUp"
+          style="height: auto;"
+        ></v-divider>
+        <v-col
+          cols="12"
+          md="4"
+          lg="4"
+          xl="4"
+          class="d-flex justify-space-around align-center"
         >
           <div
-              class="d-flex flex-column justify-space-between text-right mr-3 right-container"
+            class="d-flex flex-column justify-space-between text-right mr-3 right-container"
           >
             <h4 class="mb-2 no-text-transform">
               Agence bibliographique de l’enseignement supérieur
@@ -64,25 +68,25 @@
             <div>Tél : +33 (0)4 67 54 84 10</div>
           </div>
           <div
-              class="d-flex flex-column justify-space-around"
-              style="height:100% ; width: 30%"
+            class="d-flex flex-column justify-space-around"
+            style="height:100% ; width: 30%"
           >
             <a href="https://abes.fr/" target="_blank" class="ma-2">
               <v-img
-                  alt="Logo Abes"
-                  src="@/assets/img/logo-abes-blanc.svg"
-                  max-width="60px"
+                alt="Logo Abes"
+                src="@/assets/img/logo-abes-blanc.svg"
+                max-width="60px"
               ></v-img>
             </a>
             <a
-                href="https://www.enseignementsup-recherche.gouv.fr/"
-                target="_blank"
-                class="ma-2"
+              href="https://www.enseignementsup-recherche.gouv.fr/"
+              target="_blank"
+              class="ma-2"
             >
               <v-img
-                  alt="Logo MESRI"
-                  src="@/assets/img/logo-mesri-2020.svg"
-                  max-width="60px"
+                alt="Logo MESRI"
+                src="@/assets/img/logo-mesri-2020.svg"
+                max-width="60px"
               ></v-img>
             </a>
           </div>
@@ -126,9 +130,8 @@ export default class Footer extends Vue {}
   width: auto !important;
 }
 
-@import '~vuetify/src/styles/settings/_variables';
+@import "~vuetify/src/styles/settings/_variables";
 @media #{map-get($display-breakpoints, 'md-and-up')} {
-
   .left-container .v-btn {
     width: 250px;
   }
@@ -136,7 +139,7 @@ export default class Footer extends Vue {}
 
 .left-container {
   min-height: 200px;
-  padding-left:4vw;
+  padding-left: 4vw;
 }
 
 .right-container {
@@ -169,7 +172,8 @@ export default class Footer extends Vue {}
   font-size: 12px;
 }
 
-.footer-top, .footer-bottom {
+.footer-top,
+.footer-bottom {
   width: 100%;
 }
 

@@ -2,7 +2,7 @@ import { LicencesNationalesApiService } from "@/core/service/licencesnationales/
 import Etablissement from "@/core/Etablissement";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import { AxiosResponse } from "axios";
-import {DateUtils} from "@/utils/DateUtils";
+import { DateUtils } from "@/utils/DateUtils";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**
@@ -72,7 +72,11 @@ export class EtablissementService extends LicencesNationalesApiService {
             etablissement.id = element.id;
             etablissement.nom = element.nom;
             etablissement.siren = element.siren;
-            etablissement.dateCreation = DateUtils.stringToDate(element.dateCreation,"dd-MM-yyyy","-");
+            etablissement.dateCreation = DateUtils.stringToDate(
+              element.dateCreation,
+              "dd-MM-yyyy",
+              "-"
+            );
             etablissement.typeEtablissement = element.typeEtablissement;
             etablissement.statut = element.statut;
             etablissement.statutIP = element.statutIP;
@@ -97,7 +101,11 @@ export class EtablissementService extends LicencesNationalesApiService {
           etablissement.id = response.id;
           etablissement.nom = response.nom;
           etablissement.siren = response.siren;
-          etablissement.dateCreation = DateUtils.stringToDate(response.dateCreation,"dd-MM-yyyy","-");
+          etablissement.dateCreation = DateUtils.stringToDate(
+            response.dateCreation,
+            "dd-MM-yyyy",
+            "-"
+          );
           etablissement.typeEtablissement = response.typeEtablissement;
           etablissement.statut = response.statut;
           etablissement.statutIP = response.statutIP;
@@ -159,10 +167,7 @@ export class EtablissementService extends LicencesNationalesApiService {
     });
   }
 
-  deleteEtab(
-    siren: string,
-    token: string,
-  ): Promise<boolean> {
+  deleteEtab(siren: string, token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       return this.client
         .delete("/etablissements/" + siren, null, token)
@@ -175,19 +180,16 @@ export class EtablissementService extends LicencesNationalesApiService {
     });
   }
 
-  validerEtablissement(
-      siren: string,
-      token: string,
-  ): Promise<boolean> {
+  validerEtablissement(siren: string, token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       return this.client
-          .post("/etablissements/validation/" + siren, null,token)
-          .then(() => {
-            resolve(true);
-          })
-          .catch(err => {
-            reject(this.buildException(err));
-          });
+        .post("/etablissements/validation/" + siren, null, token)
+        .then(() => {
+          resolve(true);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
     });
   }
 

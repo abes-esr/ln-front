@@ -12,8 +12,7 @@ import Etablissement from "@/core/Etablissement";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import router from "@/router";
-import {Message} from "@/core/CommonDefinition";
-import {Logger} from "@/utils/Logger";
+import { Message } from "@/core/CommonDefinition";
 
 Vue.use(Vuex);
 
@@ -62,7 +61,7 @@ export default new Vuex.Store({
     },
     mutationSnackBarDisplay(state, value: boolean) {
       state.message.isDisplayed = value;
-    },
+    }
   },
   actions: {
     login(context, data: JsonLoginRequest): Promise<boolean> {
@@ -74,16 +73,19 @@ export default new Vuex.Store({
             // On sauvegarde l'utilisateur
             context.commit("SET_USER", result);
             etablissementService
-                .getEtablissement(context.state.user.siren, context.state.user.token)
-                .then(item => {
-                  context.commit("SET_ETABLISSEMENT_CONNECTE", item); // On sauvegarde dans le store
-                  router.push({ name: "Home" })
-                  resolve(true);
-                })
-                .catch(err => {
-                  //Si une erreur avec le ws est jetée, on lève un message d'erreur
-                  reject(err);
-                });
+              .getEtablissement(
+                context.state.user.siren,
+                context.state.user.token
+              )
+              .then(item => {
+                context.commit("SET_ETABLISSEMENT_CONNECTE", item); // On sauvegarde dans le store
+                router.push({ name: "Home" });
+                resolve(true);
+              })
+              .catch(err => {
+                //Si une erreur avec le ws est jetée, on lève un message d'erreur
+                reject(err);
+              });
           })
           .catch(err => {
             //Si une erreur avec le ws est jetée, on lève un message d'erreur
@@ -93,7 +95,7 @@ export default new Vuex.Store({
     },
     logout({ commit }) {
       commit("SET_LOGOUT");
-      router.push({ name: "Login" })
+      router.push({ name: "Login" });
     },
     changeTheme({ commit }) {
       commit("SET_THEME");
@@ -115,7 +117,7 @@ export default new Vuex.Store({
       context.state.message.texte = value.texte;
     },
     closeDisplayedMessage(context) {
-      context.commit('mutationSnackBarDisplay', false);
+      context.commit("mutationSnackBarDisplay", false);
     },
     setSirenEtabSiAdmin({ commit }, sirenEtabSiAdmin) {
       commit("SET_SIRENETABSIADMIN", sirenEtabSiAdmin);
@@ -167,8 +169,8 @@ export default new Vuex.Store({
       Object.assign(etablissement, state.etablissementConnecte);
       etablissement.dateCreation = new Date(etablissement.dateCreation);
 
-      const contact:ContactEtablissement = new ContactEtablissement();
-      Object.assign(contact,state.etablissementConnecte.contact);
+      const contact: ContactEtablissement = new ContactEtablissement();
+      Object.assign(contact, state.etablissementConnecte.contact);
       etablissement.contact = contact;
 
       return etablissement;
@@ -212,8 +214,8 @@ export default new Vuex.Store({
       Object.assign(etablissement, state.currentEtablissement);
       etablissement.dateCreation = new Date(etablissement.dateCreation);
 
-      const contact:ContactEtablissement = new ContactEtablissement();
-      Object.assign(contact,state.currentEtablissement.contact);
+      const contact: ContactEtablissement = new ContactEtablissement();
+      Object.assign(contact, state.currentEtablissement.contact);
       etablissement.contact = contact;
 
       return etablissement;

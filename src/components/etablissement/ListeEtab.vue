@@ -92,7 +92,9 @@
           <span>{{ item.dateCreation.toLocaleDateString() }}</span>
         </template>
         <template v-slot:item.nom="{ item }">
-          <a class="bouton-simple" @click="allerAAfficherEtab(item)"><strong>{{ item.nom }}</strong></a>
+          <a class="bouton-simple" @click="allerAAfficherEtab(item)"
+            ><strong>{{ item.nom }}</strong></a
+          >
         </template>
         <template v-slot:[`item.action`]="{ item }">
           <v-icon large class="mr-2" @click="allerAIPs(item)"
@@ -163,7 +165,8 @@ export default class ListeEtab extends Vue {
     if (!this.isAdmin) {
       const message: Message = new Message();
       message.type = MessageType.ERREUR;
-      message.texte = "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnts";
+      message.texte =
+        "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnts";
       message.isSticky = true;
       this.$store.dispatch("openDisplayedMessage", message).catch(err => {
         Logger.error(err.toString());
