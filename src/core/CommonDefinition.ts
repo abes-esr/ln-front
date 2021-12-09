@@ -20,7 +20,7 @@ export enum ContactType {
 
 export interface ConfirmPopupOptions {
   color: string;
-  width: number;
+  width: string;
 }
 
 export enum MessageType {

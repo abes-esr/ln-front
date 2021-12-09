@@ -1,13 +1,9 @@
 <template>
   <v-card flat>
     <h1>Etablissement {{ etablissement.nom }}</h1>
-    <v-col
-        cols="12"
-        md="6"
-        lg="6"
-        xl="6"
-    >
-    <MessageBox></MessageBox>
+    <v-col cols="12" md="6" lg="6" xl="6">
+      <MessageBox></MessageBox>
+      <ConfirmPopup ref="confirm"></ConfirmPopup>
     </v-col>
     <v-container class="mx-9 elevation-0">
       <v-col
@@ -31,7 +27,7 @@
 
         <v-btn class="btn-2 mt-3" @click="allerAIPs()"
           >Voir la liste des IPs
-          <v-icon class="ml-2" >mdi-ip-network</v-icon></v-btn
+          <v-icon class="ml-2">mdi-ip-network</v-icon></v-btn
         >
       </v-col>
       <span class="d-block"
@@ -150,6 +146,7 @@
           <v-btn
             color="button"
             class="bouton-supprimer"
+            :loading="buttonSuppresionLoading"
             @click="supprimerEtablissement()"
             >Supprimer le compte
           </v-btn></v-col
@@ -163,7 +160,10 @@
           class="d-flex justify-space-around mr-16 flex-wrap"
         >
           <v-btn @click="clear" class="bouton-annuler"> Annuler</v-btn>
-          <v-btn color="bouton-valider" @click="validerEtablissement()" :loading="buttonLoading"
+          <v-btn
+            color="bouton-valider"
+            @click="validerEtablissement()"
+            :loading="buttonValidationLoading"
             >Valider
           </v-btn>
         </v-col>
@@ -173,21 +173,23 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
-import {Action, Message, MessageType} from "@/core/CommonDefinition";
-import {Logger} from "@/utils/Logger";
-import {etablissementService} from "@/core/service/licencesnationales/EtablissementService";
+import { Action, Message, MessageType } from "@/core/CommonDefinition";
+import { Logger } from "@/utils/Logger";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 
 @Component({
-  components: { MessageBox }
+  components: { ConfirmPopup, MessageBox }
 })
 export default class CardEtablissement extends Vue {
   etablissement: Etablissement;
   Action: any = Action;
   isAdmin: boolean = this.$store.getters.isAdmin();
-  buttonLoading: boolean = false;
+  buttonValidationLoading: boolean = false;
+  buttonSuppresionLoading: boolean = false;
 
   constructor() {
     super();
@@ -196,7 +198,8 @@ export default class CardEtablissement extends Vue {
     if (!this.isAdmin) {
       const message: Message = new Message();
       message.type = MessageType.ERREUR;
-      message.texte = "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnt";
+      message.texte =
+        "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnt";
       message.isSticky = true;
       this.$store.dispatch("openDisplayedMessage", message).catch(err => {
         Logger.error(err.toString());
@@ -221,47 +224,112 @@ export default class CardEtablissement extends Vue {
     this.$router.push({ name: "ListeIP" });
   }
 
-  supprimerEtablissement(): void {
-    //
+  async supprimerEtablissement() {
+    this.buttonSuppresionLoading = true;
+    this.$store.dispatch("closeDisplayedMessage");
+
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `ATTENTION : Vous êtes sur le point de supprimer définitivement le compte de l'établissement ${this.etablissement.nom} avec toutes les informations associés (les des IPs,...)
+
+
+      Etes-vous sûr de vouloir effectuer cette ation ?`
+    );
+    if (confirmed) {
+      etablissementService
+        .deleteEtab(this.etablissement.siren, this.$store.getters.getToken())
+        .then(response => {
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = "Le compte a bien été créé supprimé";
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+          setTimeout(() => {
+            this.$store.dispatch("closeDisplayedMessage");
+            this.$router.push({ name: "ListeEtab" }).catch(err => {
+              Logger.error(err.toString());
+            });
+          }, 4000);
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = err.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .finally(() => {
+          this.buttonSuppresionLoading = false;
+        });
+    } else {
+      this.buttonSuppresionLoading = false;
+    }
   }
 
-  validerEtablissement(): void {
-    this.buttonLoading = true;
+  async validerEtablissement() {
+    this.buttonValidationLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
+
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `Vous êtes sur le point de valider le compte de l'établissement ${this.etablissement.nom}
+
+      Etes-vous sûr de vouloir effectuer cette ation ?`
+    );
+    if (confirmed) {
       etablissementService
-          .validerEtablissement(this.etablissement.siren, this.$store.getters.getToken())
-          .then(response => {
-            const message: Message = new Message();
-            message.type = MessageType.VALIDATION;
-            message.texte = "Votre compte a bien été créé";
-            message.isSticky = true;
-            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-              Logger.error(err.toString());
-            });
-            // On glisse sur le message d'erreur
-            const messageBox = document.getElementById("messageBox");
-            if (messageBox) {
-              window.scrollTo(0, messageBox.offsetTop);
-            }
-          })
-          .catch(err => {
+        .validerEtablissement(
+          this.etablissement.siren,
+          this.$store.getters.getToken()
+        )
+        .then(response => {
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = "Votre compte a bien été créé";
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
-            const message: Message = new Message();
-            message.type = MessageType.ERREUR;
-            message.texte = err.message;
-            message.isSticky = true;
-            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-              Logger.error(err.toString());
-            });
-            // On glisse sur le message d'erreur
-            const messageBox = document.getElementById("messageBox");
-            if (messageBox) {
-              window.scrollTo(0, messageBox.offsetTop);
-            }
-          })
-          .finally(() => {
-            this.buttonLoading = false;
           });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = err.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .finally(() => {
+          this.buttonValidationLoading = false;
+        });
+    } else {
+      this.buttonValidationLoading = false;
+    }
   }
 
   clear() {

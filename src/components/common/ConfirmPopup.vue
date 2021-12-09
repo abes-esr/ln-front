@@ -1,18 +1,18 @@
 <template>
-  <v-dialog v-model="dialog" :max-width="options.width" @keydown.esc="cancel">
-    <v-card>
-      <v-toolbar dark :color="options.color" dense flat>
-        <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
-      </v-toolbar>
-      <v-card-text
-        v-if="message"
-        class="pa-4 text-center"
-        v-html="message"
-      ></v-card-text>
-      <v-card-actions class="pt-0">
+  <v-dialog v-model="dialog" class="elevation-0 popup" :max-width="options.width" @keydown.esc="cancel">
+    <v-card flat  class="confirmPopup">
+
+      <v-card-text class="pa-3 popup-texte"
+      > <font-awesome-icon
+          :icon="['fas', 'exclamation-triangle']"
+          class="mx-2 fa-2x icone-attention"
+      /><div  v-if="message"
+              class="popup-message"
+              v-html="message"></div> </v-card-text>
+      <v-card-actions class="pt-0 ma-3">
         <v-spacer></v-spacer>
-        <v-btn text color="primary" @click="cancel">Annuler</v-btn>
-        <v-btn depressed :color="options.color" @click="agree">Oui</v-btn>
+        <v-btn text class="bouton-annuler" @click="cancel">Annuler</v-btn>
+        <v-btn depressed class="bouton-valider" @click="agree">Valider</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -24,19 +24,19 @@ import { ConfirmPopupOptions } from "@/core/CommonDefinition";
 
 @Component
 export default class ConfirmPopup extends Vue {
-  title: string = "";
+  icon: string = "";
   message: string = "";
+
   dialog: boolean = false;
   resolve: any = null;
   reject: any = null;
   options: ConfirmPopupOptions = {
     color: "error",
-    width: 300
+    width: '30vw'
   };
 
-  open(title, message, options?) {
+  open( message, options?) {
     this.dialog = true;
-    this.title = title;
     this.message = message;
     this.options = Object.assign(this.options, options);
     return new Promise((resolve, reject) => {
@@ -56,3 +56,23 @@ export default class ConfirmPopup extends Vue {
   }
 }
 </script>
+<style scoped lang="scss">
+.icone-attention {
+  float:left;
+}
+
+.popup-texte {
+  border: 0;
+}
+
+.popup-message {
+  font-size: 1.3rem;
+}
+
+.popup-texte div {
+  min-height: 1rem;
+  white-space: pre-wrap;
+}
+
+</style>
+
