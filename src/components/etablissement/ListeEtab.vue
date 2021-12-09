@@ -118,6 +118,7 @@ import { LicencesNationalesApiError } from "@/core/service/licencesnationales/ex
   components: { MessageBox }
 })
 export default class ListeEtab extends Vue {
+  isAdmin: boolean = this.$store.getters.isAdmin();
   disableForm: boolean = false;
   statut: string = "";
   selectStatut: Array<string> = [
@@ -159,6 +160,19 @@ export default class ListeEtab extends Vue {
 
   constructor() {
     super();
+    if (!this.isAdmin) {
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      message.texte = "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnts";
+      message.isSticky = true;
+      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+        Logger.error(err.toString());
+      });
+      this.$router.push({ name: "Home" }).catch(err => {
+        Logger.error(err);
+      });
+    }
+
     this.collecterEtab();
     this.fetchListeType();
   }
@@ -290,7 +304,6 @@ export default class ListeEtab extends Vue {
   }
 
   allerAIPs(item: Etablissement): void {
-    Logger.debug("icici");
     this.$store.dispatch("closeDisplayedMessage");
     this.$store
       .dispatch("setCurrentEtablissement", item)

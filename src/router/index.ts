@@ -66,6 +66,12 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: "/afficherEtablissement",
+    name: "AfficherEtablissement",
+    component: () =>
+        import("../components/etablissement/CardEtablissement.vue"),
+  },
+  {
     path: "/ModifierEtablissement",
     name: "ModifierEtablissement",
     component: () =>
