@@ -160,9 +160,8 @@ export class EtablissementService extends LicencesNationalesApiService {
   }
 
   deleteEtab(
-    token: string,
     siren: string,
-    commentaire: string
+    token: string,
   ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       return this.client
