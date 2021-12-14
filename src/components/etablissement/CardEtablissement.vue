@@ -78,11 +78,11 @@
                 {{ etablissement.typeEtablissement }}
               </div>
               <div>
-                <h3 class="d-inline">Status :</h3>
+                <h3 class="d-inline">Statut :</h3>
                 {{ etablissement.statut }}
               </div>
               <div>
-                <h3 class="d-inline">Status des IPs:</h3>
+                <h3 class="d-inline">Statut des IPs:</h3>
                 {{ etablissement.statut }}
               </div>
             </div>
