@@ -357,7 +357,11 @@ export default class FormEtablissement extends Vue {
         });
     } else if (this.action == Action.MODIFICATION) {
       etablissementService
-        .updateEtablissement(this.etablissement, this.$store.getters.getToken())
+        .updateEtablissement(
+          this.etablissement,
+          this.$store.getters.getToken(),
+          this.$store.getters.isAdmin()
+        )
         .then(response => {
           const message: Message = new Message();
           message.type = MessageType.VALIDATION;
@@ -373,9 +377,22 @@ export default class FormEtablissement extends Vue {
           }
           setTimeout(() => {
             this.$store.dispatch("closeDisplayedMessage");
-            this.$router.push({ name: "Home" }).catch(err => {
-              Logger.error(err.toString());
-            });
+            if (
+              this.etablissement.siren ==
+              this.$store.getters.getEtablissementConnecte().siren
+            ) {
+              this.$store
+                .dispatch("setEtablissementConnecté", this.etablissement)
+                .then(() => {
+                  this.$router.push({ name: "Home" }).catch(err => {
+                    Logger.error(err.toString());
+                  });
+                });
+            } else {
+              this.$router.push({ name: "Home" }).catch(err => {
+                Logger.error(err.toString());
+              });
+            }
           }, 4000);
         })
         .catch(err => {

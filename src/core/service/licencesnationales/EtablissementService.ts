@@ -134,7 +134,8 @@ export class EtablissementService extends LicencesNationalesApiService {
 
   updateEtablissement(
     etablissement: Etablissement,
-    token: string
+    token: string,
+    isAdmin: boolean
   ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const jsonContact: JsonUpdateContactEtablissement = {
@@ -153,7 +154,8 @@ export class EtablissementService extends LicencesNationalesApiService {
         nom: etablissement.nom,
         siren: etablissement.siren,
         typeEtablissement: etablissement.typeEtablissement,
-        contact: jsonContact
+        contact: jsonContact,
+        role: isAdmin?"admin":"etab"
       };
 
       return this.client
@@ -281,6 +283,7 @@ export interface JsonUpdateEtablissement {
   siren: string;
   typeEtablissement: string;
   contact: JsonUpdateContactEtablissement;
+  role: string;
 }
 
 export interface JsonTypeEtablissementResponse {
