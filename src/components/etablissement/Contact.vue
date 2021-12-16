@@ -121,7 +121,7 @@
           v-if="action === Action.CREATION"
           :action="Action.CREATION"
           :nouveau-mot-de-passe="contact.motDePasse"
-          @update:nouveauMotDePasse="updateMotDePasse()"
+          @update:nouveauMotDePasse="updateMotDePasse"
           :isDisableForm="isDisableForm"
         ></MotDePasse>
       </v-col>
