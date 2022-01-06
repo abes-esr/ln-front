@@ -81,7 +81,7 @@
                     <v-col cols="12" sm="7"></v-col>
                     <v-col cols="12" sm="2">
                       <v-btn
-                        @click="$router.push({ path: '/ajouterAcces/ip' })"
+                        @click="$router.push({ path: '/ajouterAcces2/ip' })"
                         color="warning"
                         >Ajouter une adresse IP</v-btn
                       ></v-col
