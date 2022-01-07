@@ -98,6 +98,8 @@
 import { Component, Vue } from "vue-property-decorator";
 import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
 import { Logger } from "@/utils/Logger";
+import { AjouterAccesSubmitEvent } from "@/main";
+import { iPService } from "@/core/service/licencesnationales/IPService";
 
 @Component({
   components: { ModuleSegmentsIpPlage }
@@ -162,8 +164,10 @@ export default class AjouterAcces extends Vue {
 
   enclencherAjouterIpModuleSegmentsIpPlage(): void {
     Logger.debug("debut enclencherAjouterAccesModuleIpPlage");
+
     //AjouterAccesSubmitEvent.$emit("ajouterAccesSubmitEvent");
     //AjouterAccesSubmitEvent.$emit("clear");
+
   }
 
   setText(): void {
