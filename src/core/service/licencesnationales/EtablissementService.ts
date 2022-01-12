@@ -152,11 +152,13 @@ export class EtablissementService extends LicencesNationalesApiService {
       };
       const json: JsonUpdateEtablissement = {
         nom: etablissement.nom,
-        siren: etablissement.siren,
+        siren: etablissement.siren, //TODO trouver pk c'est vide
         typeEtablissement: etablissement.typeEtablissement,
         contact: jsonContact,
         role: isAdmin?"admin":"etab"
       };
+
+      console.log(etablissement.siren);
 
       return this.client
         .post("/etablissements/" + etablissement.siren, json, token)

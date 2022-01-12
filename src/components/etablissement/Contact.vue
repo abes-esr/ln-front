@@ -185,6 +185,7 @@ export default class Contact extends Vue {
   }
 
   validate(): boolean {
+    console.log(this.$refs.form);
     const isFormValide = (this.$refs.form as Vue & {
       validate: () => boolean;
     }).validate();

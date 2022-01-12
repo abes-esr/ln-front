@@ -346,6 +346,8 @@ export default class ComposantEditeur extends Vue {
           }
         });
     } else if (this.action == Action.MODIFICATION) {
+      console.log(this.editeur);
+      console.log(this.$store.getters.getToken());
       editeurService
         .updateEditeur(this.editeur, this.$store.getters.getToken())
         .then(() => {
