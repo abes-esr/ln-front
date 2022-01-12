@@ -160,7 +160,7 @@ export default class SideMenu extends Vue {
   }
 
   allerAListeIPs(): void {
-    this.$router.push({ name: "ListeAcces" }).catch(err => {
+    this.$router.push({ name: "ListeIP" }).catch(err => {
       Logger.error(err);
     });
   }
