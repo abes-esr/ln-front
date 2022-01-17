@@ -95,6 +95,17 @@
 
       <v-card-text class="py-2 white--text footer-bottom">
         <strong>Licences Nationales</strong>
+        <div id="mentions">
+          <a href="https://abes.fr/accessibilite/" target="_blank"
+            >Accessibilité</a
+          >
+          |
+          <a @click="$router.push({ path: '/donneespersonnelles' })"
+            >Données personnelles</a
+          >
+          | <a>CGU</a> |
+          <a>Mentions légales</a>
+        </div>
       </v-card-text>
     </v-card>
   </v-footer>
@@ -179,5 +190,14 @@ export default class Footer extends Vue {}
 
 .footer-top {
   height: 100%;
+}
+
+#mentions {
+  float: right;
+}
+
+#mentions a {
+  text-decoration: none;
+  color: white !important;
 }
 </style>
