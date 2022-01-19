@@ -38,8 +38,8 @@
       <v-col cols="12" md="6" lg="6" xl="6">
         <v-text-field
           outlined
-          label="Boite Postal"
-          placeholder="Boite Postal"
+          label="Boite Postale"
+          placeholder="Boite Postale"
           v-model="contact.boitePostale"
           required
           @keyup.enter="validate()"
@@ -137,7 +137,7 @@
           <div>
             Pour connaître et exercer vos droits relatifs à l'utilisation des
             données collectées par ce formulaire, veuillez consulter la page
-            <a @click="$router.push({ path: '/donneespersonnelles' })"
+            <a @click="gotoDonneesPersonnellesInNewPage()"
               >Données personnelles</a
             >
           </div>
@@ -176,6 +176,11 @@ export default class Contact extends Vue {
       this.emailConfirmation === this.contact.mail ||
       this.emailConfirmation === "" ||
       "Le mail de confirmation n'est pas valide";
+  }
+
+  gotoDonneesPersonnellesInNewPage(): void {
+    const route = this.$router.resolve({ path: "/donneespersonnelles" });
+    window.open(route.href);
   }
 
   checkConfirmationMail(): void {

@@ -124,7 +124,11 @@
                     :icon="['fas', 'info-circle']"
                     class="fa-2x mr-5 mb-1 icone-information"
                   />
-                  Trouver le SIREN de votre établissement ?
+                  <a
+                    class="noUnderlineLink"
+                    href="https://www.sirene.fr/sirene/public/static/recherche"
+                    target="_blank"
+                  >Trouver le SIREN de votre établissement</a>
                 </v-alert>
               </v-col>
               <v-col
