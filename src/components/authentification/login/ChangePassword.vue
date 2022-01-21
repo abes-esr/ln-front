@@ -54,13 +54,13 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from "vue-property-decorator";
-import {Logger} from "@/utils/Logger";
-import {authService} from "@/core/service/licencesnationales/AuthentificationService";
-import {rulesForms} from "@/core/RulesForm";
+import { Component, Vue } from "vue-property-decorator";
+import { Logger } from "@/utils/Logger";
+import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { rulesForms } from "@/core/RulesForm";
 import MotDePasse from "@/components/authentification/MotDePasse.vue";
-import {Action, Message, MessageType} from "@/core/CommonDefinition";
-import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { Action, Message, MessageType } from "@/core/CommonDefinition";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import MessageBox from "@/components/common/MessageBox.vue";
 
 @Component({
@@ -109,7 +109,7 @@ export default class ChangePassword extends Vue {
         this.newPassword,
         this.$store.getters.getToken()
       )
-      .then(response => {
+      .then(() => {
         const message: Message = new Message();
         message.type = MessageType.VALIDATION;
         message.texte = "Le mot de passe a été mis à jour";

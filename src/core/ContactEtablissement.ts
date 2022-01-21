@@ -12,7 +12,7 @@ export class ContactEtablissement {
   motDePasse: string = "";
   role: string = "";
 
-  reset():void {
+  reset(): void {
     this.nom = "";
     this.prenom = "";
     this.adresse = "";

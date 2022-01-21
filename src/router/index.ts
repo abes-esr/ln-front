@@ -1,10 +1,10 @@
 import Vue from "vue";
 import store from "../store/index";
-import VueRouter, {RouteConfig} from "vue-router";
+import VueRouter, { RouteConfig } from "vue-router";
 import Login from "../views/Login.vue";
-import {Action, Message, MessageType} from "@/core/CommonDefinition";
-import {authService} from "@/core/service/licencesnationales/AuthentificationService";
-import {Logger} from "@/utils/Logger";
+import { Action, Message, MessageType } from "@/core/CommonDefinition";
+import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { Logger } from "@/utils/Logger";
 
 Vue.use(VueRouter);
 
@@ -68,8 +68,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/afficherEtablissement",
     name: "AfficherEtablissement",
-    component: () =>
-        import("../components/etablissement/CardEtablissement.vue"),
+    component: () => import("../components/etablissement/CardEtablissement.vue")
   },
   {
     path: "/ModifierEtablissement",
@@ -234,7 +233,7 @@ router.beforeEach((to, from, next) => {
         // On déconnecte l'utilisateur au cas où...;
         const message: Message = new Message();
         message.type = MessageType.ERREUR;
-        message.texte = err.message+ '. Vous avez été déconnecté';
+        message.texte = err.message + ". Vous avez été déconnecté";
         message.isSticky = true;
         store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());

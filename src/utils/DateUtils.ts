@@ -1,7 +1,7 @@
 export class DateUtils {
   static stringToDate(_date, _format, _delimiter): Date {
     if (!_date) {
-      return new Date()
+      return new Date();
     }
     const formatLowerCase = _format.toLowerCase();
     const formatItems = formatLowerCase.split(_delimiter);

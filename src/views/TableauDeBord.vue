@@ -172,7 +172,6 @@ import { Component, Vue } from "vue-property-decorator";
 import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
 import { Action } from "@/core/CommonDefinition";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { Logger } from "@/utils/Logger";
 
 @Component({

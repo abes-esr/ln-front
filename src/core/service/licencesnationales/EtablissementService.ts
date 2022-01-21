@@ -35,7 +35,7 @@ export class EtablissementService extends LicencesNationalesApiService {
       };
       return this.client
         .put("/etablissements", json)
-        .then(result => {
+        .then(() => {
           resolve(true);
         })
         .catch(err => {
@@ -155,12 +155,12 @@ export class EtablissementService extends LicencesNationalesApiService {
         siren: etablissement.siren,
         typeEtablissement: etablissement.typeEtablissement,
         contact: jsonContact,
-        role: isAdmin?"admin":"etab"
+        role: isAdmin ? "admin" : "etab"
       };
 
       return this.client
         .post("/etablissements/" + etablissement.siren, json, token)
-        .then(result => {
+        .then(() => {
           resolve(true);
         })
         .catch(err => {

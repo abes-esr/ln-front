@@ -51,9 +51,10 @@
                 </v-col>
               </v-card-actions>
               <v-card-actions>
+                <v-col cols="8"> </v-col>
                 <a @click="allerAMotDePasseOublie()"
-                  ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir
-                  au formulaire de connexion</a
+                  ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à
+                  la page d'accueil</a
                 >
               </v-card-actions>
             </v-form>
@@ -67,9 +68,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
-import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { rulesForms } from "@/core/RulesForm";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import MessageBox from "@/components/common/MessageBox.vue";

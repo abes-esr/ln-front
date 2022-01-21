@@ -128,7 +128,8 @@
                     class="noUnderlineLink"
                     href="https://www.sirene.fr/sirene/public/static/recherche"
                     target="_blank"
-                  >Trouver le SIREN de votre établissement</a>
+                    >Trouver le SIREN de votre établissement</a
+                  >
                 </v-alert>
               </v-col>
               <v-col
@@ -321,7 +322,7 @@ export default class FormEtablissement extends Vue {
     if (this.action == Action.CREATION) {
       etablissementService
         .creerEtablissement(this.etablissement, this.tokenrecaptcha)
-        .then(response => {
+        .then(() => {
           const message: Message = new Message();
           message.type = MessageType.VALIDATION;
           message.texte = "Votre compte a bien été créé";
@@ -366,7 +367,7 @@ export default class FormEtablissement extends Vue {
           this.$store.getters.getToken(),
           this.$store.getters.isAdmin()
         )
-        .then(response => {
+        .then(() => {
           const message: Message = new Message();
           message.type = MessageType.VALIDATION;
           message.texte = "Votre compte a bien été modifié";

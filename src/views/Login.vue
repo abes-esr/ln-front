@@ -29,13 +29,15 @@
         <transition name="fade">
           <forgot-password v-if="forgotPasswordVisible" />
         </transition>
-
-        <transition name="fade">
-          <a v-if="forgotPasswordVisible" @click="afficherConnexion()"
-            ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir au
-            formulaire de connexion</a
-          >
-        </transition>
+        <v-row id="row_RevenirAccueil">
+          <v-col cols="8"></v-col>
+          <transition name="fade">
+            <a v-if="forgotPasswordVisible" @click="afficherConnexion()"
+              ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
+              page d'accueil</a
+            >
+          </transition></v-row
+        >
         <div
           id="noAccount"
           v-if="!forgotPasswordVisible"
@@ -74,7 +76,6 @@ import FormLogin from "../components/authentification/login/FormLogin.vue";
 import ForgotPassword from "../components/authentification/login/ForgotPassword.vue";
 import { Logger } from "@/utils/Logger";
 import Etablissement from "@/core/Etablissement";
-import MessageBox from "@/components/common/MessageBox.vue";
 
 @Component({
   components: { FormLogin, ForgotPassword }
@@ -119,5 +120,9 @@ h4 {
 
 .full-width {
   width: 100%;
+}
+
+#row_RevenirAccueil {
+  margin: auto;
 }
 </style>

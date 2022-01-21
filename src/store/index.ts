@@ -164,16 +164,16 @@ export default new Vuex.Store({
     },
     setEtablissementConnecté(context, value: Etablissement): Promise<boolean> {
       return new Promise((resolve, reject) => {
-          etablissementService
-              .getEtablissement(value.siren, context.state.user.token)
-              .then(item => {
-                context.commit("SET_ETABLISSEMENT_CONNECTE", item); // On sauvegarde dans le store
-                resolve(true);
-              })
-              .catch(err => {
-                //Si une erreur avec le ws est jetée, on lève un message d'erreur
-                reject(err);
-              });
+        etablissementService
+          .getEtablissement(value.siren, context.state.user.token)
+          .then(item => {
+            context.commit("SET_ETABLISSEMENT_CONNECTE", item); // On sauvegarde dans le store
+            resolve(true);
+          })
+          .catch(err => {
+            //Si une erreur avec le ws est jetée, on lève un message d'erreur
+            reject(err);
+          });
       });
     }
   },

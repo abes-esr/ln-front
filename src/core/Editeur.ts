@@ -41,6 +41,6 @@ export default class Editeur {
     this.dateCreation = new Date();
     this.groupesEtabRelies = [];
     this.adresse = "";
-    this.contacts= [];
+    this.contacts = [];
   }
 }

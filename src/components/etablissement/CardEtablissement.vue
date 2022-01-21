@@ -237,7 +237,7 @@ export default class CardEtablissement extends Vue {
     if (confirmed) {
       etablissementService
         .deleteEtab(this.etablissement.siren, this.$store.getters.getToken())
-        .then(response => {
+        .then(() => {
           const message: Message = new Message();
           message.type = MessageType.VALIDATION;
           message.texte = "Le compte a bien été créé supprimé";
@@ -295,7 +295,7 @@ export default class CardEtablissement extends Vue {
           this.etablissement.siren,
           this.$store.getters.getToken()
         )
-        .then(response => {
+        .then(() => {
           const message: Message = new Message();
           message.type = MessageType.VALIDATION;
           message.texte = "Votre compte a bien été créé";

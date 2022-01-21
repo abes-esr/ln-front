@@ -35,7 +35,10 @@
                       </v-btn>
                     </v-card-actions>
                   </v-card>
-                  <form-etablissement :bus="bus" v-on:formEtab="send"></form-etablissement>
+                  <form-etablissement
+                    :bus="bus"
+                    v-on:formEtab="send"
+                  ></form-etablissement>
                 </v-col>
               </v-row>
             </v-col>
@@ -68,7 +71,6 @@
 </template>
 
 <script lang="ts">
-import FormEtab from "@/components/etablissement/FormEtab.vue";
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";

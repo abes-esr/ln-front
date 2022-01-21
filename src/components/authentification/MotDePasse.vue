@@ -68,7 +68,6 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
-import { Logger } from "@/utils/Logger";
 
 @Component
 export default class MotDePasse extends Vue {

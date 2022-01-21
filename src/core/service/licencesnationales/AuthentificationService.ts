@@ -1,6 +1,5 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import User from "@/core/User";
-import { Logger } from "@/utils/Logger";
 
 export class AuthentificationService extends LicencesNationalesApiService {
   /**

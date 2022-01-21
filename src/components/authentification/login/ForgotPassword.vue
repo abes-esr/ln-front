@@ -75,7 +75,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { rulesForms } from "@/core/RulesForm";
-import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";

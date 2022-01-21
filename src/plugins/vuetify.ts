@@ -8,5 +8,5 @@ export default new Vuetify({
   lang: {
     locales: { fr },
     current: "fr"
-  },
+  }
 });
