@@ -10,8 +10,8 @@
               class="elevation-0"
               :disabled="tokenValid"
             >
-              <v-card-title
-                >Réinitialisation de votre mot de passe
+              <v-card-title class="pa-3"
+                ><h1>Réinitialiser le mot de passe</h1>
               </v-card-title>
               <MessageBox></MessageBox>
               <v-card-text>
@@ -52,7 +52,8 @@
               </v-card-actions>
               <v-card-actions>
                 <a @click="allerAMotDePasseOublie()"
-                  >Revenir au formulaire de connexion</a
+                  ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir
+                  au formulaire de connexion</a
                 >
               </v-card-actions>
             </v-form>
@@ -167,7 +168,7 @@ export default class FormReinitialisationPass extends Vue {
     await this.$recaptchaLoaded();
     this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
     if (this.validate()) {
-      this.reinitialisationPass()
+      this.reinitialisationPass();
     } else {
       const message: Message = new Message();
       message.type = MessageType.ERREUR;
@@ -260,3 +261,10 @@ export default class FormReinitialisationPass extends Vue {
   }
 }
 </script>
+
+<style scoped lang="scss">
+h1 {
+  font-size: 40px;
+  font-weight: 500;
+}
+</style>

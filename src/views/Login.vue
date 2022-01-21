@@ -2,7 +2,7 @@
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
-        <v-alert dense outlined>
+        <v-alert dense outlined v-if="!forgotPasswordVisible">
           <font-awesome-icon
             :icon="['fas', 'exclamation-triangle']"
             class="mx-2 icone-attention"
@@ -20,7 +20,10 @@
           </p>
         </v-alert>
         <transition name="fade">
-          <form-login v-if="!forgotPasswordVisible" @onChange="afficherMotDePasseOublie()" />
+          <form-login
+            v-if="!forgotPasswordVisible"
+            @onChange="afficherMotDePasseOublie()"
+          />
         </transition>
 
         <transition name="fade">
@@ -28,10 +31,9 @@
         </transition>
 
         <transition name="fade">
-          <a
-            v-if="forgotPasswordVisible"
-            @click="afficherConnexion()"
-            >Revenir au formulaire de connexion</a
+          <a v-if="forgotPasswordVisible" @click="afficherConnexion()"
+            ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir au
+            formulaire de connexion</a
           >
         </transition>
         <div
@@ -48,7 +50,10 @@
             href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
             target="_blank"
             >Vérifier l'éligibilité
-            <font-awesome-icon :icon="['fas', 'question-circle']" class="mx-2" />
+            <font-awesome-icon
+              :icon="['fas', 'question-circle']"
+              class="mx-2"
+            />
           </v-btn>
 
           <v-btn
@@ -89,7 +94,7 @@ export default class App extends Vue {
       });
   }
 
-  afficherMotDePasseOublie() : void {
+  afficherMotDePasseOublie(): void {
     this.$store.dispatch("closeDisplayedMessage");
     this.forgotPasswordVisible = true;
   }
@@ -105,7 +110,7 @@ h4 {
   display: inline;
 }
 
-@import '~vuetify/src/styles/settings/_variables';
+@import "~vuetify/src/styles/settings/_variables";
 @media #{map-get($display-breakpoints, 'md-and-up')} {
   #noAccount {
     width: 50%;

@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="0">
-    <v-card-title class="pa-0">S'authentifier</v-card-title>
+    <v-card-title class="pa-3"><h1>S'authentifier</h1></v-card-title>
     <MessageBox></MessageBox>
     <v-card-text class="rounded pa-3">
       <v-form ref="form" lazy-validation>
@@ -56,19 +56,12 @@
         </v-row>
         <v-row>
           <v-col cols="8">
-            <a         @click="afficherMotDePasseOulie()"
-            >Mot de passe oublié ?</a
-            >
+            <a @click="afficherMotDePasseOulie()">Mot de passe oublié ?</a>
           </v-col>
           <v-col>
-            <v-btn
-                class="btn-1"
-                :loading="buttonLoading"
-                @click="login()"
-            >Se connecter
-              <v-icon
-              >mdi-arrow-right-circle-outline
-              </v-icon>
+            <v-btn class="btn-1" :loading="buttonLoading" @click="login()"
+              >Se connecter
+              <v-icon>mdi-arrow-right-circle-outline </v-icon>
             </v-btn>
           </v-col>
         </v-row>
@@ -131,10 +124,13 @@ export default class FormLogin extends Vue {
   }
 
   afficherMotDePasseOulie(): void {
-    this.$emit('onChange'); // On notifie le composant parent
+    this.$emit("onChange"); // On notifie le composant parent
   }
 }
 </script>
 <style scoped lang="scss">
-
+h1 {
+  font-size: 40px;
+  font-weight: 500;
+}
 </style>

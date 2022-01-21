@@ -1,11 +1,10 @@
 <template>
   <v-card elevation="0">
-    <v-card-title>Mot de passe oublié</v-card-title>
-    <v-card-subtitle
-      >Remplissez un des deux champs ci-dessous
-      <MessageBox></MessageBox>
-    </v-card-subtitle>
-    <v-radio-group v-model="sirenRadio">
+    <v-card-title class="pa-3"><h1>Mot de passe oublié</h1></v-card-title>
+    <v-card-title class="pa-1">
+      Choisir une option de réinitialisation <MessageBox></MessageBox>
+    </v-card-title>
+    <v-radio-group id="radio" v-model="sirenRadio">
       <v-card-text>
         <v-row>
           <v-col cols="1" />
@@ -99,7 +98,6 @@ export default class ForgotPassword extends Vue {
   }
 
   validate(): void {
-
     if (this.sirenRadio) {
       if (
         (this.$refs.formSIREN as Vue & { validate: () => boolean }).validate()
@@ -202,3 +200,15 @@ export default class ForgotPassword extends Vue {
   }
 }
 </script>
+
+<style scoped>
+h1 {
+  padding-bottom: 30px;
+  font-size: 40px;
+  font-weight: 500;
+}
+.v-input--radio-group {
+  padding-top: 0;
+  margin-top: 0;
+}
+</style>
