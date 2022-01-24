@@ -24,6 +24,11 @@
       </v-card-subtitle>
       <v-card-text>
         <v-col cols="12" md="6" lg="6" xl="6"><MessageBox></MessageBox> </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6" v-if="returnLink">
+          <v-alert outlined>
+            <div><a @click="allerPageAccueil()"><font-awesome-icon :icon="['fas', 'reply']" /> Revenir à la page d'accueil</a></div>
+          </v-alert>
+        </v-col>
         <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
         <v-row v-if="action === Action.CREATION">
           <v-col cols="12" md="6" lg="6" xl="6">
@@ -229,6 +234,7 @@ export default class FormEtablissement extends Vue {
   dialog: boolean = false;
   dialogAvailable: boolean = false;
   isDisableForm: boolean = false;
+  returnLink: boolean = false;
 
   constructor() {
     super();
@@ -269,6 +275,12 @@ export default class FormEtablissement extends Vue {
 
   allerAConnexion(): void {
     this.$store.dispatch("closeDisplayedMessage");
+    this.$router.push({ name: "Login" }).catch(err => {
+      Logger.error(err);
+    });
+  }
+
+  allerPageAccueil(): void {
     this.$router.push({ name: "Login" }).catch(err => {
       Logger.error(err);
     });
@@ -327,6 +339,7 @@ export default class FormEtablissement extends Vue {
           message.type = MessageType.VALIDATION;
           message.texte = "Votre compte a bien été créé";
           message.isSticky = true;
+          this.returnLink = true;
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
@@ -335,12 +348,6 @@ export default class FormEtablissement extends Vue {
           if (messageBox) {
             window.scrollTo(0, messageBox.offsetTop);
           }
-          setTimeout(() => {
-            this.$store.dispatch("closeDisplayedMessage");
-            this.$router.push({ name: "Home" }).catch(err => {
-              Logger.error(err.toString());
-            });
-          }, 4000);
         })
         .catch(err => {
           Logger.error(err.toString());
@@ -372,6 +379,7 @@ export default class FormEtablissement extends Vue {
           message.type = MessageType.VALIDATION;
           message.texte = "Votre compte a bien été modifié";
           message.isSticky = true;
+          this.returnLink = true;
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
@@ -380,25 +388,12 @@ export default class FormEtablissement extends Vue {
           if (messageBox) {
             window.scrollTo(0, messageBox.offsetTop);
           }
-          setTimeout(() => {
-            this.$store.dispatch("closeDisplayedMessage");
-            if (
-              this.etablissement.siren ==
-              this.$store.getters.getEtablissementConnecte().siren
-            ) {
-              this.$store
-                .dispatch("setEtablissementConnecté", this.etablissement)
-                .then(() => {
-                  this.$router.push({ name: "Home" }).catch(err => {
-                    Logger.error(err.toString());
-                  });
-                });
-            } else {
-              this.$router.push({ name: "Home" }).catch(err => {
-                Logger.error(err.toString());
-              });
-            }
-          }, 4000);
+          if (
+            this.etablissement.siren ==
+            this.$store.getters.getEtablissementConnecte().siren
+          ) {
+            this.$store.dispatch("setEtablissementConnecté", this.etablissement);
+          }
         })
         .catch(err => {
           Logger.error(err.toString());
