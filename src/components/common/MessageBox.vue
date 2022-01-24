@@ -75,7 +75,7 @@ export default class Message extends Vue {
     if (!this.$store.getters.getDisplayedMessage().isSticky) {
       setTimeout(() => {
         this.closeSnackBar();
-      }, 6000);
+      }, 6000); //TODO controler ici le delai du message
     }
     return this.$store.getters.getDisplayedMessage().isDisplayed;
   }
