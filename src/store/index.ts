@@ -149,6 +149,7 @@ export default new Vuex.Store({
           context.commit("SET_CURRENT_ETABLISSEMENT", value); // On sauvegarde dans le store
           resolve(true);
         } else {
+          console.log(value.nom);
           etablissementService
             .getEtablissement(value.siren, context.state.user.token)
             .then(item => {
@@ -161,6 +162,9 @@ export default new Vuex.Store({
             });
         }
       });
+    },
+    updateCurrentEtablissement(context, value: Etablissement) {
+      context.commit("SET_CURRENT_ETABLISSEMENT", value);
     },
     setEtablissementConnecté(context, value: Etablissement): Promise<boolean> {
       return new Promise((resolve, reject) => {
@@ -175,7 +179,7 @@ export default new Vuex.Store({
             reject(err);
           });
       });
-    }
+    },
   },
   getters: {
     getEtablissementConnecte: state => (): Etablissement => {

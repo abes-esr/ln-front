@@ -34,9 +34,9 @@
         >Compte créé le :
         {{ etablissement.dateCreation.toLocaleDateString() }}</span
       >
-      <v-btn class="btn-2 mt-3" @click="allerAModifierEtablissement()"
-        >Modifier le compte</v-btn
-      >
+      <v-btn v-if="this.modificationModeDisabled" class="btn-2 mt-3" @click="entrerEnModification()">Modifier le compte</v-btn>
+      <v-btn v-if="!this.modificationModeDisabled" class="btn-2 mt-3" @click="validerModifications()" style="margin-right: 1em" color="success">Valider les modifications du compte</v-btn>
+      <v-btn v-if="!this.modificationModeDisabled" class="btn-2 mt-3" @click="annulerModifications()" >Réinitialiser les champs d'origine</v-btn>
       <v-row class="d-flex justify-space-between flex-wrap">
         <v-col
           cols="12"
@@ -61,28 +61,31 @@
               </v-tooltip>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
+                <v-text-field
+                  label="Siren"
+                  placeholder="Siren"
+                  outlined
+                  v-model="etablissement.siren"
+                  :readonly="true"
+                ></v-text-field>
+                <v-text-field
+                  label="Nom de l'établissement"
+                  placeholder="Nom de l'établissement"
+                  outlined
+                  v-model="etablissement.nom"
+                  :readonly="this.modificationModeDisabled"
+                ></v-text-field>
+              <v-text-field
+                label="ID Abes"
+                placeholder="ID Abes"
+                outlined
+                v-model="etablissement.idAbes"
+                :readonly="true"
+              ></v-text-field>
+              <v-select label="Type d'établissement" :items="typesEtab" outlined v-model="etablissement.typeEtablissement" :readonly="this.modificationModeDisabled"></v-select>
+              <v-select label="Statut de l'établissement" :items="selectStatut" outlined v-model="etablissement.statut" :readonly="this.modificationModeDisabled"></v-select>
               <div>
-                <h3 class="d-inline">Siren :</h3>
-                {{ etablissement.siren }}
-              </div>
-              <div>
-                <h3 class="d-inline">ID Abes :</h3>
-                {{ etablissement.idAbes }}
-              </div>
-              <div>
-                <h3 class="d-inline">Nom :</h3>
-                {{ etablissement.nom }}
-              </div>
-              <div>
-                <h3 class="d-inline">Type :</h3>
-                {{ etablissement.typeEtablissement }}
-              </div>
-              <div>
-                <h3 class="d-inline">Statut :</h3>
-                {{ etablissement.statut }}
-              </div>
-              <div>
-                <h3 class="d-inline">Statut des IPs:</h3>
+                <h3 class="d-inline">Statut des IPs de l'établissement:</h3>
                 {{ etablissement.statut }}
               </div>
             </div>
@@ -101,42 +104,69 @@
               <h2 class="my-3">Contact</h2>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <div>
-                <h3 class="d-inline">Nom :</h3>
-                {{ etablissement.contact.nom }}
-              </div>
-              <div>
-                <h3 class="d-inline">Prénom :</h3>
-                {{ etablissement.contact.prenom }}
-              </div>
-              <div>
-                <h3 class="d-inline">Tél :</h3>
-                {{ etablissement.contact.telephone }}
-              </div>
-              <div>
-                <h3 class="d-inline">Email :</h3>
-                {{ etablissement.contact.mail }}
-              </div>
-              <div>
-                <h3 class="d-inline">Adresse :</h3>
-                {{ etablissement.contact.adresse }}
-              </div>
-              <div>
-                <h3 class="d-inline">BP :</h3>
-                {{ etablissement.contact.boitePostale }}
-              </div>
-              <div>
-                <h3 class="d-inline">Code postal :</h3>
-                {{ etablissement.contact.codePostal }}
-              </div>
-              <div>
-                <h3 class="d-inline">Ville :</h3>
-                {{ etablissement.contact.ville }}
-              </div>
-              <div>
-                <h3 class="d-inline">Cedex :</h3>
-                {{ etablissement.contact.cedex }}
-              </div>
+              <v-text-field
+                label="Nom du contact"
+                placeholder="Nom du contact"
+                outlined
+                v-model="etablissement.contact.nom"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
+              <v-text-field
+                label="Prénom du contact"
+                placeholder="Prénom du contact"
+                outlined
+                v-model="etablissement.contact.prenom"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
+              <v-text-field
+                label="Téléphone du contact"
+                placeholder="Téléphone du contact"
+                outlined
+                v-model="etablissement.contact.telephone"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
+              <v-text-field
+                label="Mail du contact"
+                placeholder="Mail du contact"
+                outlined
+                v-model="etablissement.contact.mail"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
+              <v-text-field
+                label="Adresse du contact"
+                placeholder="Adresse du contact"
+                outlined
+                v-model="etablissement.contact.adresse"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
+              <v-text-field
+                label="BP du contact"
+                placeholder="BP du contact"
+                outlined
+                v-model="etablissement.contact.boitePostale"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
+              <v-text-field
+                label="Code Postal du contact"
+                placeholder="Code Postal du contact"
+                outlined
+                v-model="etablissement.contact.codePostal"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
+              <v-text-field
+                label="Ville du contact"
+                placeholder="Ville du contact"
+                outlined
+                v-model="etablissement.contact.ville"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
+              <v-text-field
+                label="Cedex du contact"
+                placeholder="Cedex du contact"
+                outlined
+                v-model="etablissement.contact.cedex"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
             </div>
           </v-card-text>
         </v-col>
@@ -151,22 +181,6 @@
             >Supprimer le compte
           </v-btn></v-col
         >
-        <v-spacer></v-spacer>
-        <v-col
-          cols="12"
-          md="3"
-          lg="3"
-          xl="3"
-          class="d-flex justify-space-around mr-16 flex-wrap"
-        >
-          <v-btn @click="clear" class="bouton-annuler"> Annuler</v-btn>
-          <v-btn
-            color="bouton-valider"
-            @click="validerEtablissement()"
-            :loading="buttonValidationLoading"
-            >Valider
-          </v-btn>
-        </v-col>
       </v-row>
     </v-container>
   </v-card>
@@ -180,6 +194,8 @@ import { Action, Message, MessageType } from "@/core/CommonDefinition";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
+import Contact from "@/components/etablissement/Contact.vue";
+import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 
 @Component({
   components: { ConfirmPopup, MessageBox }
@@ -190,10 +206,18 @@ export default class CardEtablissement extends Vue {
   isAdmin: boolean = this.$store.getters.isAdmin();
   buttonValidationLoading: boolean = false;
   buttonSuppresionLoading: boolean = false;
+  typesEtab: Array<string> = [];
+  modificationModeDisabled: boolean = true;
+  selectStatut: Array<string> = [
+    "Nouveau",
+    "Validé"
+  ];
 
   constructor() {
     super();
+    this.fetchListeType();
     this.etablissement = this.getEtablissement;
+    this.modificationModeDisabled = true;
 
     if (!this.isAdmin) {
       const message: Message = new Message();
@@ -208,6 +232,29 @@ export default class CardEtablissement extends Vue {
         Logger.error(err);
       });
     }
+  }
+
+  async fetchListeType() {
+    await etablissementService
+      .listeType()
+      .then(result => {
+        this.typesEtab = result;
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesApiError) {
+          message.texte =
+            "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+      });
   }
 
   get getEtablissement(): Etablissement {
@@ -339,6 +386,21 @@ export default class CardEtablissement extends Vue {
       Logger.error(err);
     });
   }
+
+  entrerEnModification(): void {
+    this.modificationModeDisabled = false;
+  }
+
+  validerModifications(): void {
+    this.$store.dispatch("updateCurrentEtablissement", this.etablissement); //Enregistrement en store
+    etablissementService.updateEtablissement(this.etablissement, this.$store.getters.getToken(), this.$store.getters.isAdmin()); //Envoie au back et validation en BDD
+    this.modificationModeDisabled = true;
+  }
+
+  annulerModifications(): void {
+    this.etablissement = this.$store.getters.getCurrentEtablissement();
+  }
+
 }
 </script>
 <style scoped lang="scss">
@@ -363,4 +425,5 @@ export default class CardEtablissement extends Vue {
   min-height: 1rem;
   word-break: break-all;
 }
+
 </style>
