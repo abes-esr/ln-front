@@ -13,6 +13,11 @@ export interface SegmentPlage {
   value: string;
 }
 
+export interface List {
+  id: number;
+  value: string;
+}
+
 export enum ContactType {
   TECHNIQUE,
   COMMERCIAL
