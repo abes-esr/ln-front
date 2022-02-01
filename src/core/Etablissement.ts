@@ -7,6 +7,7 @@ export class Etablissement {
   nom: string = "";
   siren: string = "";
   dateCreation: Date = new Date();
+  dateCreationFormattedInString: string = "";
   typeEtablissement: string = "";
   statut: string = "";
   idAbes: string = "";

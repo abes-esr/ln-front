@@ -51,6 +51,7 @@
                                 class="mx-4"
                                 prepend-inner-icon="mdi-magnify"
                                 outlined
+                                clearable
                               ></v-text-field>
                             </v-col>
                           </v-row>

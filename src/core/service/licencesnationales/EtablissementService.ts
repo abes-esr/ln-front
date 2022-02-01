@@ -49,7 +49,7 @@ export class EtablissementService extends LicencesNationalesApiService {
       return this.client
         .get("/etablissements/getType")
         .then(result => {
-          const response: Array<JsonTypeEtablissementResponse> = result.data;
+          const response: Array<JsonTypeEtablissementResponse> = result.data; //TODO il faut des index !
           const typesEtablissement: Array<string> = [];
           response.forEach(element => typesEtablissement.push(element.libelle));
           resolve(typesEtablissement);
