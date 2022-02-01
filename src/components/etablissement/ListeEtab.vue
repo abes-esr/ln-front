@@ -29,7 +29,6 @@
         :search="rechercher"
         id="mytable"
       >
-        >
         <template v-slot:top>
           <div class="d-flex align-content-end justify-end">
             <v-text-field
