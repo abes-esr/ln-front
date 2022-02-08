@@ -19,7 +19,7 @@
                         class="elevation-1"
                         :search="rechercher"
                       >
-                        <template v-slot:header.statut="{ header }">
+                        <template v-slot:[header.statut="{ header }">
                           {{ header.texte }}
                           <v-menu offset-y :close-on-content-click="false">
                             <template v-slot:activator="{ on, attrs }">
@@ -81,18 +81,11 @@
                     <v-col cols="12" sm="7"></v-col>
                     <v-col cols="12" sm="2">
                       <v-btn
-                        @click="$router.push({ path: '/ajouterAcces2/ip' })"
+                        @click="$router.push({ path: '/ajouterAcces/' })"
                         color="warning"
                         >Ajouter une adresse IP</v-btn
                       ></v-col
                     >
-                    <v-col cols="12" sm="3">
-                      <v-btn
-                        @click="$router.push({ path: '/ajouterAcces/plage' })"
-                        color="warning"
-                        >Ajouter une plage d'adresses IP</v-btn
-                      >
-                    </v-col>
                   </v-row>
                 </v-card>
               </v-col>
@@ -129,7 +122,7 @@ const ListeAccesProps = Vue.extend({
 @Component
 export default class ListeAcces extends ListeAccesProps {
   statut: string = "";
-  selectStatut: Array<string> = ["En validation", "Validée"];
+  selectStatut: Array<string> = ["En validation", "Validée", ""];
   rechercher: string = "";
   acces: Array<string> = [];
   title: string = "";
@@ -176,9 +169,7 @@ export default class ListeAcces extends ListeAccesProps {
     return this.$store.getters.isAdmin();
   }
 
-  // pour éviter l'erreur this.qch doesn not exist on ...
-  // declarer le type returné par la fonction computed
-  get filteredAccesByStatut(): string {
+  get filteredAccesByStatut(): string[] {
     const conditions = [] as any;
     if (this.statut) {
       conditions.push(this.filterStatut);
@@ -188,9 +179,9 @@ export default class ListeAcces extends ListeAccesProps {
         return conditions.every(condition => {
           return condition(acces);
         });
-      })[0];
+      });
     }
-    return this.acces[0];
+    return this.acces;
   }
 
   mounted() {
@@ -210,10 +201,10 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   getAll() {
-    if (this.isAdmin === "true")
+    if (this.isAdmin)
       return iPService.getListIPEtab(
         this.$store.getters.getToken(),
-        this.sirenEtabSiAdmin
+        this.$store.getters.getCurrentEtablissement().siren
       );
     else
       return iPService.getListIP(
@@ -234,7 +225,6 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   affichageAcces(acces) {
-    Logger.debug("debut affichage ip");
     return {
       id: acces.id,
       dateCreation: moment(acces.dateCreation).format("L"),

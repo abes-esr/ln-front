@@ -111,11 +111,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
-import {
-  GetTypeIpFromModifierAccesEvent,
-  IpChangeEvent,
-  TypeIpChangeEvent
-} from "@/main";
 import { Logger } from "@/utils/Logger";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 
@@ -178,7 +173,7 @@ export default class ModifierAcces extends Vue {
       this.ip = ip;
       console.log(`ip =  ` + ip);
     };
-    IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
+    //IpChangeEvent.$on("ipChangeEvent", onchangeIpHandler);
   }
   enclencherAjouterIpModuleSegmentsIpPlage(): void {
     Logger.debug("debut enclencherAjouterAccesModuleIpPlage");
@@ -186,7 +181,7 @@ export default class ModifierAcces extends Vue {
     //AjouterAccesSubmitEvent.$emit("clear");
   }
   eventReinitialisationIpSegments(): void {
-    TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
+    //TypeIpChangeEvent.$emit("eventReinitialisationIpSegments", this.typeIp);
   }
 
   setText(): void {
@@ -218,10 +213,10 @@ export default class ModifierAcces extends Vue {
         this.typeAcces = result.data.typeAcces;
         this.typeIp = result.data.typeIp;
         this.commentaires = result.data.commentaires;
-        GetTypeIpFromModifierAccesEvent.$emit(
+        /* GetTypeIpFromModifierAccesEvent.$emit(
           "getTypeIpFromModifierAccesEvent",
           this.typeIp
-        );
+        );*/
       })
       .catch(err => {
         this.alert = true;
@@ -255,7 +250,6 @@ export default class ModifierAcces extends Vue {
   }
   submitAcces(): void {
     this.updateJsonObject();
-    Logger.debug(JSON.stringify(this.jsonResponse));
     iPService
       .addIP(
         this.$store.getters.getToken(),

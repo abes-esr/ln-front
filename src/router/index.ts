@@ -123,8 +123,8 @@ const routes: Array<RouteConfig> = [
   },
   //TODO faire un composant générique pour la route /ajouterAccess
   {
-    path: "/ajouterAcces2/ip",
-    name: "ajouterAcces2",
+    path: "/ajouterAcces/",
+    name: "ajouterAcces",
     component: () => import("../components/ip/AjouterAcces.vue"),
     meta: {
       requiresAuth: true

@@ -19,7 +19,7 @@
                         label="SIREN"
                         placeholder="SIREN"
                         v-model="sirenEtab[n - 1]"
-                        :rules="sirenEtabRules"
+                        :rules="rulesForms.siren"
                         required
                         @keyup.enter="validate()"
                         v-for="n in sirenNumber"
@@ -75,6 +75,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
+import { rulesForms } from "@/core/RulesForm";
 
 @Component({
   components: { FormEtablissement }
@@ -92,6 +93,7 @@ export default class FormFusionEtablissement extends Vue {
   alertOK: boolean = false;
   retourKo: boolean = false;
   message: string = "";
+  rulesForms: any = rulesForms;
 
   triggerChildremForm(): void {
     this.bus.$emit("submit");
