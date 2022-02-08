@@ -29,7 +29,6 @@
         :search="rechercher"
         id="mytable"
       >
-        >
         <template v-slot:top>
           <div class="d-flex align-content-end justify-end">
             <v-text-field
@@ -39,6 +38,7 @@
               prepend-inner-icon="mdi-magnify"
               outlined
               dense
+              clearable
             ></v-text-field>
           </div>
         </template>
@@ -53,15 +53,10 @@
                 </v-icon>
               </v-btn>
             </template>
-            <div style="background-color: white; width: 280px">
-              <v-card-actions
-                ><v-select
-                  v-model="selectedType"
-                  label="Selectionnez le type d'établissement"
-                  outlined
-                  :items="typesEtab"
-                ></v-select
-              ></v-card-actions>
+            <div style="background-color: white; width: 500px" >
+              <ul >
+                <li v-for="item in typesEtab" :key="item.id" @click="eventTypeEtabChoice(item)"><a>{{ item }}</a></li>
+              </ul>
             </div>
           </v-menu>
         </template>
@@ -77,18 +72,13 @@
               </v-btn>
             </template>
             <div style="background-color: white; width: 280px">
-              <v-card-actions
-                ><v-select
-                  v-model="statut"
-                  label="Selectionnez le statut"
-                  outlined
-                  :items="selectStatut"
-                ></v-select
-              ></v-card-actions>
+              <ul>
+                <li v-for="item in selectStatut" :key="item.id" @click="eventStatutChoice(item)"><a>{{ item }}</a></li>
+              </ul>
             </div>
           </v-menu>
         </template>
-        <template v-slot:item.dateCreation="{ item }">
+        <template v-slot:item.dateCreationFormattedInString="{ item }">
           <span>{{ item.dateCreation.toLocaleDateString() }}</span>
         </template>
         <template v-slot:item.nom="{ item }">
@@ -110,11 +100,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import Etablissement from "@/core/Etablissement";
-import { Message, MessageType } from "@/core/CommonDefinition";
+import { List, Message, MessageType } from "@/core/CommonDefinition";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import MessageBox from "@/components/common/MessageBox.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
+import moment from "moment";
 
 @Component({
   components: { MessageBox }
@@ -124,6 +115,7 @@ export default class ListeEtab extends Vue {
   disableForm: boolean = false;
   statut: string = "";
   selectStatut: Array<string> = [
+    "Tous",
     "Nouveau",
     "En validation",
     "Validé",
@@ -140,7 +132,7 @@ export default class ListeEtab extends Vue {
     {
       text: "Date de création",
       align: "start",
-      value: "dateCreation",
+      value: "dateCreationFormattedInString",
       sortable: true
     },
     { text: "Identifiant Abes", value: "idAbes", sortable: true },
@@ -183,7 +175,7 @@ export default class ListeEtab extends Vue {
   get filteredEtabByStatut(): Array<Etablissement> {
     const conditions = [] as any;
     if (this.statut) {
-      conditions.push(this.filterStatut);
+      conditions.push(this.statut);
     }
     if (this.selectedType) {
       conditions.push(this.selectedType);
@@ -198,7 +190,13 @@ export default class ListeEtab extends Vue {
         });
       });
     }
+    //Formatage des dates pour le tri du tableau
+    this.etabs.forEach(element => element.dateCreationFormattedInString = moment(element.dateCreation).format('YYYY-MM-DD'));
     return this.etabs;
+  }
+
+  get listEtab(): Array<string> {
+    return this.typesEtab;
   }
 
   async fetchListeType() {
@@ -208,6 +206,19 @@ export default class ListeEtab extends Vue {
       .then(result => {
         this.isDisableForm = false;
         this.typesEtab = result;
+        this.typesEtab.push('Tous');
+
+        this.typesEtab.sort((n1,n2) => {
+          if (n1 > n2) {
+            return 1;
+          }
+          if (n1 < n2) {
+            return -1;
+          }
+          return 0;
+        });
+
+        this.typesEtab.unshift(this.typesEtab.splice(this.typesEtab.findIndex(item => item === 'Tous'), 1)[0]);
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -225,6 +236,24 @@ export default class ListeEtab extends Vue {
           Logger.error(err.toString());
         });
       });
+  }
+
+  eventTypeEtabChoice(element: string): void {
+    if(element === 'Tous'){
+      this.selectedType = "";
+    } else {
+      this.selectedType = element;
+    }
+    this.filteredEtabByStatut;
+  }
+
+  eventStatutChoice(element: string): void {
+    if(element === 'Tous'){
+      this.statut = "";
+    } else {
+      this.statut = element;
+    }
+    this.filteredEtabByStatut;
   }
 
   ajouterEtablissement(): void {
