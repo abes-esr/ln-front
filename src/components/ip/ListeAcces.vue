@@ -160,7 +160,6 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   get isAdmin() {
-    Logger.debug("isAdmin = " + this.$store.getters.isAdmin());
     return this.$store.getters.isAdmin();
   }
 
@@ -212,7 +211,6 @@ export default class ListeAcces extends ListeAccesProps {
     this.getAll()
       .then(response => {
         this.acces = response.data.map(this.affichageAcces);
-        Logger.debug(response.data);
       })
       .catch(e => {
         Logger.error(e);
@@ -247,16 +245,13 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   supprimerAcces(id): void {
-    Logger.debug("id = " + id);
     iPService
       .deleteIP(this.$store.getters.getToken(), id)
       .then(response => {
         this.refreshList();
-        Logger.debug("notification = " + response.data);
         this.$store.dispatch("setNotification", response.data).catch(err => {
           Logger.error(err);
         });
-        Logger.debug("notification = " + this.$store.getters.notification());
       })
       .catch(err => {
         this.error = err.response.data;

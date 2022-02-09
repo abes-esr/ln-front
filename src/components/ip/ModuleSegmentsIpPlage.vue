@@ -21,6 +21,8 @@
                       v-bind:suffix="getSuffix(index)"
                       @click="clearIpSegment(index, ipv4Segments)"
                       @input="nextSegment(index, ipv4Segments, 'ipv4Segments')"
+                      @paste="onPasteIp"
+                      @paste.prevent
                       dense
                       outlined
                       required
@@ -41,6 +43,8 @@
                       v-bind:suffix="getSuffix(index)"
                       @click="clearIpSegment(index, ipv6Segments)"
                       @input="nextSegment(index, ipv6Segments, 'ipv6Segments')"
+                      @paste="onPasteIp"
+                      @paste.prevent
                       dense
                       outlined
                       required
@@ -79,6 +83,8 @@
                             'ipv4SegmentsPlageDebut'
                           )
                         "
+                        @paste="onPastePlageDebut"
+                        @paste.prevent
                         dense
                         outlined
                         required
@@ -107,6 +113,8 @@
                             'ipv4SegmentsPlageFin'
                           )
                         "
+                        @paste="onPastePlageFin"
+                        @paste.prevent
                         dense
                         outlined
                         required
@@ -139,6 +147,8 @@
                             'ipv6SegmentsPlageDebut'
                           )
                         "
+                        @paste="onPastePlageDebut"
+                        @paste.prevent
                         dense
                         outlined
                         required
@@ -167,6 +177,8 @@
                             'ipv6SegmentsPlageFin'
                           )
                         "
+                        @paste="onPastePlageFin"
+                        @paste.prevent
                         dense
                         outlined
                         required
@@ -216,8 +228,6 @@ export default class ModuleSegmentsIpPlage extends Vue {
   @Prop({ default: "IPV4" }) readonly typeIp!: string;
   @Prop({ default: "ip" }) readonly typeAcces!: string;
   rulesForm: any = rulesForm;
-  id: string = "";
-  valide: string = "";
   suffix: string = "";
   ipv4Segments: Array<SegmentPlage> = [];
   ipv6Segments: Array<SegmentPlage> = [];
@@ -409,7 +419,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
     }
   }
 
-  clear() {
+  clear(): void {
     this.alert = false;
     this.error = "";
     this.ip = "";
@@ -462,6 +472,60 @@ export default class ModuleSegmentsIpPlage extends Vue {
       { length: 5, value: "" },
       { length: 5, value: "" }
     ];
+  }
+
+  onPasteIp(evt): void {
+    if (this.typeIp === "IPV4") {
+      evt.clipboardData
+        .getData("text")
+        .split(".")
+        .forEach((content, index) => {
+          this.ipv4Segments[index].value = content;
+        });
+    } else {
+      evt.clipboardData
+        .getData("text")
+        .split(":")
+        .forEach((content, index) => {
+          this.ipv6Segments[index].value = content;
+        });
+    }
+  }
+
+  onPastePlageDebut(evt): void {
+    if (this.typeIp === "IPV4") {
+      evt.clipboardData
+        .getData("text")
+        .split(".")
+        .forEach((content, index) => {
+          this.ipv4SegmentsPlageDebut[index].value = content;
+        });
+    } else {
+      evt.clipboardData
+        .getData("text")
+        .split(":")
+        .forEach((content, index) => {
+          this.ipv6SegmentsPlageDebut[index].value = content;
+        });
+    }
+  }
+
+  onPastePlageFin(evt): void {
+    if (this.typeIp === "IPV4") {
+      evt.clipboardData
+        .getData("text")
+        .split(".")
+        .forEach((content, index) => {
+          this.ipv4SegmentsPlageFin[index].value = content;
+        });
+    } else {
+      evt.clipboardData
+        .getData("text")
+        .split(":")
+        .forEach((content, index) => {
+          this.ipv6SegmentsPlageFin[index].value = content;
+        });
+    }
   }
 }
 </script>

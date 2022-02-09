@@ -26,7 +26,12 @@
         <v-col cols="12" md="6" lg="6" xl="6"><MessageBox></MessageBox> </v-col>
         <v-col cols="12" md="6" lg="6" xl="6" v-if="returnLink">
           <v-alert outlined>
-            <div><a @click="allerPageAccueil()"><font-awesome-icon :icon="['fas', 'reply']" /> Revenir à la page d'accueil</a></div>
+            <div>
+              <a @click="allerPageAccueil()"
+                ><font-awesome-icon :icon="['fas', 'reply']" /> Revenir à la
+                page d'accueil</a
+              >
+            </div>
           </v-alert>
         </v-col>
         <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
@@ -392,12 +397,13 @@ export default class FormEtablissement extends Vue {
             this.etablissement.siren ==
             this.$store.getters.getEtablissementConnecte().siren
           ) {
-            this.$store.dispatch("setEtablissementConnecté", this.etablissement);
+            this.$store.dispatch(
+              "setEtablissementConnecté",
+              this.etablissement
+            );
           }
         })
         .catch(err => {
-          Logger.error(err.toString());
-          Logger.debug(JSON.stringify(err));
           const message: Message = new Message();
           message.type = MessageType.ERREUR;
           message.texte = err.message;

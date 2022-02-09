@@ -293,7 +293,6 @@ export default class ComposantEditeur extends Vue {
   }
 
   addContact(): void {
-    Logger.debug("Ajout d'un contact par défaut");
     const contact = new ContactEditeur();
     this.editeur.addContact(contact);
   }
@@ -400,7 +399,6 @@ export default class ComposantEditeur extends Vue {
     (this.$refs.formEditeur as HTMLFormElement).resetValidation();
 
     this.editeur = this.getCurrentEditeur;
-    Logger.debug(JSON.stringify(this.editeur.contacts));
     window.scrollTo(0, 0);
   }
 }

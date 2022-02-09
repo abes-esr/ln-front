@@ -72,7 +72,6 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
 import { rulesForms } from "@/core/RulesForm";
@@ -102,12 +101,6 @@ export default class FormFusionEtablissement extends Vue {
   send(payload: object): void {
     this.buttonLoading = true;
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-      Logger.debug(
-        JSON.stringify({
-          nouveauEtab: payload,
-          sirenFusionnes: this.sirenEtab
-        })
-      );
       etablissementService
         .fusion(this.$store.getters.getToken(), {
           etablissementDTO: payload,
