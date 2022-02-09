@@ -83,12 +83,6 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: "/donneespersonnelles",
-    name: "DonneesPersonnelles",
-    component: () => import("../views/DonneesPersonnelles.vue")
-  },
-
-  {
     path: "/listeEtab",
     name: "ListeEtab",
     component: () => import("../components/etablissement/ListeEtab.vue")
@@ -131,14 +125,6 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: "/modifierAcces/:id&:typeAcces",
-    name: "ModifierAcces",
-    component: () => import("../components/ip/ModifierAcces.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: "/listeEditeurs",
     name: "ListeEditeurs",
     component: () => import("../components/editeur/ListeEditeurs.vue"),
@@ -167,7 +153,26 @@ const routes: Array<RouteConfig> = [
       isAdmin: true
     }
   },
-
+  {
+    path: "/CGU",
+    name: "CGU",
+    component: () => import("../views/footer-static/CGU.vue")
+  },
+  {
+    path: "/donneespersonnelles",
+    name: "DonneesPersonnelles",
+    component: () => import("../views/footer-static/DonneesPersonnelles.vue")
+  },
+  {
+    path: "/mentions",
+    name: "MentionsLegales",
+    component: () => import("../views/footer-static/MentionsLegales.vue")
+  },
+  {
+    path: "/accessibilite",
+    name: "Accessibilite",
+    component: () => import("../views/footer-static/Accessibilite.vue")
+  },
   {
     path: "*",
     /* component: NotFoundComponent, */

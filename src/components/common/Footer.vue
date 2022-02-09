@@ -96,15 +96,13 @@
       <v-card-text class="py-2 white--text footer-bottom">
         <strong>Licences Nationales</strong>
         <div id="mentions">
-          <a href="https://abes.fr/accessibilite/" target="_blank"
-            >Accessibilité</a
-          >
+          <a @click="$router.push({ path: '/accessibilite' })">Accessibilité</a>
           |
           <a @click="$router.push({ path: '/donneespersonnelles' })"
             >Données personnelles</a
           >
-          | <a>CGU</a> |
-          <a>Mentions légales</a>
+          | <a @click="$router.push({ path: '/CGU' })">CGU</a> |
+          <a @click="$router.push({ path: '/mentions' })">Mentions légales</a>
         </div>
       </v-card-text>
     </v-card>

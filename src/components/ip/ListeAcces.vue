@@ -61,12 +61,6 @@
                           <v-icon
                             small
                             class="mr-2"
-                            @click="modifierAcces(item.id, item.typeAcces)"
-                            >mdi-pencil</v-icon
-                          >
-                          <v-icon
-                            small
-                            class="mr-2"
                             v-if="isAdmin === 'true'"
                             @click="analyserAcces(item.id)"
                             >mdi-help-circle-outline</v-icon
