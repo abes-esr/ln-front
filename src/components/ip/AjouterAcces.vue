@@ -1,27 +1,33 @@
 <template>
   <div>
     <v-form ref="formAjouterAcces" lazy-validation>
-      <v-row>
-        <v-col lg="12" md="12" xs="12">
-          <v-row>
-            <v-col cols="10">
-              <v-card-title>{{ titleText }}</v-card-title>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
       <v-row align="center" justify="center">
         <v-col lg="11" md="12" xs="12">
           <v-row>
+            <v-card-title
+              ><h1>
+                Déclarer de nouvelles adresses ou plages IP
+              </h1></v-card-title
+            >
+          </v-row>
+          <v-row>
+            <v-card-title>
+              Choisir le type d'adresse IP à déclarer
+            </v-card-title>
+          </v-row>
+          <v-row>
             <v-col cols="7">
-              <v-radio-group v-model="typeIp" mandatory row>
-                <v-radio
-                  v-for="n in 2"
-                  :key="n"
-                  :label="typesIp[n - 1]"
-                  :value="typesIp[n - 1]"
-                ></v-radio
-              ></v-radio-group>
+              <v-divider></v-divider>
+              <div id="radioIP">
+                <v-radio-group v-model="typeIp" mandatory row>
+                  <v-radio
+                    v-for="n in 2"
+                    :key="n"
+                    :label="typesIp[n - 1]"
+                    :value="typesIp[n - 1]"
+                  ></v-radio
+                ></v-radio-group>
+              </div>
             </v-col>
           </v-row>
           <v-row>
@@ -32,7 +38,7 @@
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
               >
               </module-segments-ip-plage>
-
+              <br />
               <module-segments-ip-plage
                 :typeIp="typeIp"
                 typeAcces="plage"
@@ -41,12 +47,16 @@
               </module-segments-ip-plage>
             </v-col>
             <v-col>
-              <v-simple-table>
+              <v-alert dense outlined :value="alert" type="error">
+                {{ error }}
+              </v-alert>
+              <h3>Nouvelles IP ou plages IP ajoutées</h3>
+              <v-simple-table dense>
                 <template v-slot:default>
                   <thead>
-                    Nouvelles IP ou plages IP ajoutées
                     <tr>
-                      <th></th>
+                      <th style="width: 20%">Type</th>
+                      <th>Adresse</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -54,19 +64,32 @@
                     <tr v-for="item in arrayAjouterIp" :key="item.ip">
                       <td>{{ item.typeIp }}</td>
                       <td>{{ item.ip }}</td>
+                      <td>
+                        <span title="Supprimer" @click="supprimerIP">
+                          <font-awesome-icon :icon="['fas', 'trash-alt']"
+                        /></span>
+                      </td>
                     </tr>
                   </tbody>
                 </template>
               </v-simple-table>
+
+              <v-row id="fillHeight"></v-row>
+              <v-row
+                ><v-col cols="6"></v-col
+                ><v-col>
+                  <a @click="$router.push({ path: '/listeAcces' })"
+                    ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir
+                    à la liste complète des IP</a
+                  ></v-col
+                ></v-row
+              >
             </v-col>
           </v-row>
         </v-col>
       </v-row>
     </v-form>
     <br />
-    <v-alert dense outlined :value="alert" type="error">
-      {{ error }}
-    </v-alert>
   </div>
 </template>
 <style src="./style.css"></style>
@@ -78,11 +101,6 @@ import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
   components: { ModuleSegmentsIpPlage }
 })
 export default class AjouterAcces extends Vue {
-  titleText: string = "";
-  buttonAjouterText: string = "";
-  title2Text: string = "";
-  buttonAjouterIpPlage: string = "";
-  buttonSupprimerIpPlage: string = "";
   id: string = "";
   ip: string = "";
   typeAcces: string = "";
@@ -102,5 +120,19 @@ export default class AjouterAcces extends Vue {
   clear() {
     this.arrayAjouterIp = [];
   }
+  supprimerIP() {
+    console.log("suppresion");
+  }
 }
 </script>
+<style scoped>
+h1 {
+  font-size: 30px;
+}
+#radioIP {
+  padding-left: 20px !important;
+}
+#fillHeight {
+  height: 80%;
+}
+</style>

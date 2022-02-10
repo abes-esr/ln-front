@@ -2,88 +2,38 @@
   <div>
     <v-card flat>
       <v-alert :value="alert" dense type="error"> {{ error }} </v-alert>
+      <v-alert :value="alertSuccess" dense type="success">
+        {{ success }}
+      </v-alert>
       <v-form ref="formModuleSegmentsIpPlage" lazy-validation>
-        <v-card-text flat>
-          <v-row v-if="this.typeAcces === 'ip'">
+        <v-app-bar dense flat class="barIp">
+          <span v-if="this.typeAcces === 'ip'">Saisir une adresse IP</span>
+          <span v-else>Saisir une plage d'adresses IP</span>
+          <span v-if="this.typeIp === 'IPV4'">v4</span>
+          <span v-else>v6</span>
+        </v-app-bar>
+        <v-card-text flat class="overflow-auto">
+          <v-row>
             <v-col>
-              <v-alert outlined>
-                <v-row> <v-col cols="1"/></v-row>
-                <!-- IP v4 -->
-                <v-row v-if="this.typeIp === 'IPV4'">
-                  <v-col v-for="(value, index) in ipv4Segments" :key="index">
-                    <v-text-field
-                      :data-length="value.length"
-                      :data-index="index"
-                      :rules="rulesForm.ipv4SegmentsRules"
-                      :placeholder="getLabelSegmentsIpv4(index)"
-                      ref="ipv4Segments"
-                      v-model="ipv4Segments[index].value"
-                      v-bind:suffix="getSuffix(index)"
-                      @click="clearIpSegment(index, ipv4Segments)"
-                      @input="nextSegment(index, ipv4Segments, 'ipv4Segments')"
-                      @paste="onPasteIp"
-                      @paste.prevent
-                      dense
-                      outlined
-                      required
-                    >
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-                <!-- IP v6 -->
-                <v-row v-else>
-                  <v-col v-for="(value, index) in ipv6Segments" :key="index">
-                    <v-text-field
-                      :data-length="value.length"
-                      :data-index="index"
-                      :rules="rulesForm.ipv6SegmentsRules"
-                      :placeholder="getLabelSegmentsIpv6(index)"
-                      ref="ipv6Segments"
-                      v-model="value.value"
-                      v-bind:suffix="getSuffix(index)"
-                      @click="clearIpSegment(index, ipv6Segments)"
-                      @input="nextSegment(index, ipv6Segments, 'ipv6Segments')"
-                      @paste="onPasteIp"
-                      @paste.prevent
-                      dense
-                      outlined
-                      required
-                    >
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-              </v-alert>
-            </v-col>
-          </v-row>
-
-          <v-row v-else>
-            <v-col>
-              <v-alert outlined>
-                <v-row> <v-col cols="1"/></v-row>
-                <!-- PLAGE IP v4 -->
-                <div v-if="this.typeIp === 'IPV4'">
-                  <v-row>
-                    <v-col
-                      v-for="(value, index) in ipv4SegmentsPlageDebut"
-                      :key="index"
-                    >
+              <v-row v-if="this.typeAcces === 'ip'">
+                <v-col>
+                  <v-row> <v-col cols="1"/></v-row>
+                  <!-- IP v4 -->
+                  <v-row v-if="this.typeIp === 'IPV4'">
+                    <v-col v-for="(value, index) in ipv4Segments" :key="index">
                       <v-text-field
                         :data-length="value.length"
                         :data-index="index"
                         :rules="rulesForm.ipv4SegmentsRules"
                         :placeholder="getLabelSegmentsIpv4(index)"
-                        ref="ipv4SegmentsPlageDebut"
-                        v-model="value.value"
+                        ref="ipv4Segments"
+                        v-model="ipv4Segments[index].value"
                         v-bind:suffix="getSuffix(index)"
-                        @click="clearIpSegment(index, ipv4SegmentsPlageDebut)"
+                        @click="clearIpSegment(index, ipv4Segments)"
                         @input="
-                          nextSegment(
-                            index,
-                            ipv4SegmentsPlageDebut,
-                            'ipv4SegmentsPlageDebut'
-                          )
+                          nextSegment(index, ipv4Segments, 'ipv4Segments')
                         "
-                        @paste="onPastePlageDebut"
+                        @paste="onPasteIp"
                         @paste.prevent
                         dense
                         outlined
@@ -92,28 +42,22 @@
                       </v-text-field>
                     </v-col>
                   </v-row>
-                  <v-row>
-                    <v-col
-                      v-for="(value, index) in ipv4SegmentsPlageFin"
-                      :key="index"
-                    >
+                  <!-- IP v6 -->
+                  <v-row v-else>
+                    <v-col v-for="(value, index) in ipv6Segments" :key="index">
                       <v-text-field
                         :data-length="value.length"
                         :data-index="index"
-                        :rules="rulesForm.ipv4SegmentsRules"
-                        :placeholder="getLabelSegmentsIpv4(index)"
-                        ref="ipv4SegmentsPlageFin"
+                        :rules="rulesForm.ipv6SegmentsRules"
+                        :placeholder="getLabelSegmentsIpv6(index)"
+                        ref="ipv6Segments"
                         v-model="value.value"
                         v-bind:suffix="getSuffix(index)"
-                        @click="clearIpSegment(index, ipv4SegmentsPlageFin)"
+                        @click="clearIpSegment(index, ipv6Segments)"
                         @input="
-                          nextSegment(
-                            index,
-                            ipv4SegmentsPlageFin,
-                            'ipv4SegmentsPlageFin'
-                          )
+                          nextSegment(index, ipv6Segments, 'ipv6Segments')
                         "
-                        @paste="onPastePlageFin"
+                        @paste="onPasteIp"
                         @paste.prevent
                         dense
                         outlined
@@ -122,81 +66,159 @@
                       </v-text-field>
                     </v-col>
                   </v-row>
-                </div>
+                </v-col>
+              </v-row>
+              <v-row v-else>
+                <v-col>
+                  <v-row> <v-col cols="1"/></v-row>
+                  <!-- PLAGE IP v4 -->
+                  <div v-if="this.typeIp === 'IPV4'">
+                    <v-row>
+                      <v-col
+                        v-for="(value, index) in ipv4SegmentsPlageDebut"
+                        :key="index"
+                      >
+                        <v-text-field
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="rulesForm.ipv4SegmentsRules"
+                          :placeholder="getLabelSegmentsIpv4(index)"
+                          ref="ipv4SegmentsPlageDebut"
+                          v-model="value.value"
+                          v-bind:suffix="getSuffix(index)"
+                          @click="clearIpSegment(index, ipv4SegmentsPlageDebut)"
+                          @input="
+                            nextSegment(
+                              index,
+                              ipv4SegmentsPlageDebut,
+                              'ipv4SegmentsPlageDebut'
+                            )
+                          "
+                          @paste="onPastePlageDebut"
+                          @paste.prevent
+                          dense
+                          outlined
+                          required
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        v-for="(value, index) in ipv4SegmentsPlageFin"
+                        :key="index"
+                      >
+                        <v-text-field
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="rulesForm.ipv4SegmentsRules"
+                          :placeholder="getLabelSegmentsIpv4(index)"
+                          ref="ipv4SegmentsPlageFin"
+                          v-model="value.value"
+                          v-bind:suffix="getSuffix(index)"
+                          @click="clearIpSegment(index, ipv4SegmentsPlageFin)"
+                          @input="
+                            nextSegment(
+                              index,
+                              ipv4SegmentsPlageFin,
+                              'ipv4SegmentsPlageFin'
+                            )
+                          "
+                          @paste="onPastePlageFin"
+                          @paste.prevent
+                          dense
+                          outlined
+                          required
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                  </div>
 
-                <!-- PLAGE IP v6 -->
-                <div v-else>
-                  <v-row>
-                    <v-col
-                      v-for="(value, index) in ipv6SegmentsPlageDebut"
-                      :key="index"
-                    >
-                      <v-text-field
-                        :data-length="value.length"
-                        :data-index="index"
-                        :rules="rulesForm.ipv6SegmentsRules"
-                        :placeholder="getLabelSegmentsIpv6(index)"
-                        ref="ipv6SegmentsPlageDebut"
-                        v-model="value.value"
-                        v-bind:suffix="getSuffix(index)"
-                        @click="clearIpSegment(index, ipv6SegmentsPlageDebut)"
-                        @input="
-                          nextSegment(
-                            index,
-                            ipv6SegmentsPlageDebut,
-                            'ipv6SegmentsPlageDebut'
-                          )
-                        "
-                        @paste="onPastePlageDebut"
-                        @paste.prevent
-                        dense
-                        outlined
-                        required
+                  <!-- PLAGE IP v6 -->
+                  <div v-else>
+                    <v-row>
+                      <v-col
+                        v-for="(value, index) in ipv6SegmentsPlageDebut"
+                        :key="index"
                       >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col
-                      v-for="(value, index) in ipv6SegmentsPlageFin"
-                      :key="index"
-                    >
-                      <v-text-field
-                        :data-length="value.length"
-                        :data-index="index"
-                        :rules="rulesForm.ipv6SegmentsRules"
-                        :placeholder="getLabelSegmentsIpv6(index)"
-                        ref="ipv6SegmentsPlageFin"
-                        v-model="value.value"
-                        v-bind:suffix="getSuffix(index)"
-                        @click="clearIpSegment(index, ipv6SegmentsPlageFin)"
-                        @input="
-                          nextSegment(
-                            index,
-                            ipv6SegmentsPlageFin,
-                            'ipv6SegmentsPlageFin'
-                          )
-                        "
-                        @paste="onPastePlageFin"
-                        @paste.prevent
-                        dense
-                        outlined
-                        required
+                        <v-text-field
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="rulesForm.ipv6SegmentsRules"
+                          :placeholder="getLabelSegmentsIpv6(index)"
+                          ref="ipv6SegmentsPlageDebut"
+                          v-model="value.value"
+                          v-bind:suffix="getSuffix(index)"
+                          @click="clearIpSegment(index, ipv6SegmentsPlageDebut)"
+                          @input="
+                            nextSegment(
+                              index,
+                              ipv6SegmentsPlageDebut,
+                              'ipv6SegmentsPlageDebut'
+                            )
+                          "
+                          @paste="onPastePlageDebut"
+                          @paste.prevent
+                          dense
+                          outlined
+                          required
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        v-for="(value, index) in ipv6SegmentsPlageFin"
+                        :key="index"
                       >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-alert>
-            </v-col>
+                        <v-text-field
+                          :data-length="value.length"
+                          :data-index="index"
+                          :rules="rulesForm.ipv6SegmentsRules"
+                          :placeholder="getLabelSegmentsIpv6(index)"
+                          ref="ipv6SegmentsPlageFin"
+                          v-model="value.value"
+                          v-bind:suffix="getSuffix(index)"
+                          @click="clearIpSegment(index, ipv6SegmentsPlageFin)"
+                          @input="
+                            nextSegment(
+                              index,
+                              ipv6SegmentsPlageFin,
+                              'ipv6SegmentsPlageFin'
+                            )
+                          "
+                          @paste="onPastePlageFin"
+                          @paste.prevent
+                          dense
+                          outlined
+                          required
+                        >
+                        </v-text-field>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-col> </v-row
+            ></v-col>
+            <v-col cols="2">
+              <v-row id="fillHeight"> </v-row>
+              <v-row>
+                <a @click="clear(true)"
+                  >Vider les champs
+                  <font-awesome-icon :icon="['fas', 'backspace']"/></a></v-row
+            ></v-col>
           </v-row>
-
+          <p class="caption">
+            Possibilité de copier/coller directement les IP dans les champs de
+            saisie
+          </p>
           <!-- COMMENTAIRES -->
           <v-row>
             <v-col>
               <v-textarea
                 outlined
                 auto-grow
+                rows="2"
                 label="Commentaires"
                 hint="Apporter ici toute précisions sur l'attribution de cette IP, surtout si elle n'appartient pas au réseau Renater."
                 v-model="commentaires"
@@ -204,13 +226,22 @@
                 persistent-hint
               ></v-textarea>
             </v-col>
+            <v-col cols="2">
+              <v-row id="btnToBtm"></v-row>
+              <v-row>
+                <v-card-actions>
+                  <v-btn
+                    @click="ajouterIp()"
+                    :loading="buttonLoading"
+                    id="btnSave"
+                    ><span id="btnText">Enregistrer </span
+                    ><v-icon>mdi-arrow-right-circle-outline </v-icon></v-btn
+                  >
+                </v-card-actions></v-row
+              ></v-col
+            >
           </v-row>
         </v-card-text>
-        <v-card-actions>
-          <v-btn @click="ajouterIp()" :loading="buttonLoading"
-            >Enregistrer</v-btn
-          >
-        </v-card-actions>
       </v-form>
     </v-card>
   </div>
@@ -236,17 +267,17 @@ export default class ModuleSegmentsIpPlage extends Vue {
   ipv6SegmentsPlageDebut: Array<SegmentPlage> = [];
   ipv6SegmentsPlageFin: Array<SegmentPlage> = [];
 
-  labelIp: string = "";
-  labelIpResultat: string = "";
   ip: string = "";
   alert: boolean = false;
+  alertSuccess: boolean = false;
   error: string = "";
+  success: string = "";
   commentaires: string = "";
 
   buttonLoading: boolean = false;
 
   mounted() {
-    this.clear();
+    this.clear(false);
   }
 
   get isAdmin() {
@@ -322,16 +353,6 @@ export default class ModuleSegmentsIpPlage extends Vue {
     }
   }
 
-  setText(): void {
-    if (this.typeAcces === "ip") {
-      this.labelIp = "Saisissez votre adresse ip.";
-      this.labelIpResultat = "Ip fournie";
-    } else {
-      this.labelIp = "Saisissez votre plage d'adresse ip.";
-      this.labelIpResultat = "Plage d'adresses ip fournie";
-    }
-  }
-
   setIp(): void {
     let value = "";
     if (this.typeAcces === "ip") {
@@ -401,29 +422,33 @@ export default class ModuleSegmentsIpPlage extends Vue {
         .addIP(this.$store.getters.getToken(), siren, [
           { typeIp: this.typeIp, ip: this.ip, commentaires: this.commentaires }
         ])
-        .then(() => {
+        .then(response => {
           this.$emit("FormModuleSegmentsIpPlageEvent", {
             typeIp: this.typeIp,
             ip: this.ip,
             commentaires: this.commentaires
           });
-          this.clear();
+          this.clear(false);
           this.buttonLoading = false;
+          this.alertSuccess = true;
+          this.success = response.data.message;
         })
         .catch(err => {
           Logger.error(err.toString());
           this.alert = true;
-          this.error = err.toString();
+          this.error = err.response.data.message;
           this.buttonLoading = false;
         });
     }
   }
 
-  clear(): void {
+  clear(dontClearComments: boolean): void {
     this.alert = false;
+    this.alertSuccess = false;
     this.error = "";
+    this.success = "";
     this.ip = "";
-    this.commentaires = "";
+    if (!dontClearComments) this.commentaires = "";
     this.ipv4Segments = [
       { length: 3, value: "" },
       { length: 3, value: "" },
@@ -529,9 +554,17 @@ export default class ModuleSegmentsIpPlage extends Vue {
   }
 }
 </script>
-
 <style scoped>
-.v-card__text {
-  border: none;
+button {
+  font-size: 12px !important;
+}
+#btnText {
+  padding-right: 5px;
+}
+#btnToBtm {
+  height: 58%;
+}
+#fillHeight {
+  height: 80%;
 }
 </style>

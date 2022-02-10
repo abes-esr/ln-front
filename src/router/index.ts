@@ -108,7 +108,7 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: "/listeAcces/",
+    path: "/listeAcces",
     name: "ListeIP",
     component: () => import("../components/ip/ListeAcces.vue"),
     meta: {
@@ -117,7 +117,7 @@ const routes: Array<RouteConfig> = [
   },
   //TODO faire un composant générique pour la route /ajouterAccess
   {
-    path: "/ajouterAcces/",
+    path: "/ajouterAcces",
     name: "ajouterAcces",
     component: () => import("../components/ip/AjouterAcces.vue"),
     meta: {
