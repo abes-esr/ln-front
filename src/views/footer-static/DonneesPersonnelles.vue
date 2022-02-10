@@ -61,6 +61,16 @@
                   <td>Acceptation de l’utilisation de cookies</td>
                   <td>13 mois</td>
                 </tr>
+                <tr>
+                  <td>Cookies Google Recaptcha</td>
+                  <td>
+                    Ce cookie est utilisé dans le formulaire de création de
+                    comptes, afin d’empêcher ou de décourager le spam.
+                    L’utilisation de cette technologie implique l’installation
+                    du cookie (non de profilage) de la société, Google.
+                  </td>
+                  <td>7 jours</td>
+                </tr>
               </tbody>
             </v-simple-table>
             <br /><br />

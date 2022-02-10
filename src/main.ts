@@ -25,7 +25,12 @@ if (process.env.VUE_APP_RECAPTCHA_KEY_SITE == "") {
   Logger.error("La clé ReCaptcha est vide");
 }
 
-Vue.use(VueReCaptcha, { siteKey: process.env.VUE_APP_RECAPTCHA_KEY_SITE });
+Vue.use(VueReCaptcha, {
+  siteKey: process.env.VUE_APP_RECAPTCHA_KEY_SITE,
+  loaderOptions: {
+    autoHideBadge: true
+  }
+});
 
 library.add(fas); // Import de toutes les icones
 Vue.component("font-awesome-icon", FontAwesomeIcon);

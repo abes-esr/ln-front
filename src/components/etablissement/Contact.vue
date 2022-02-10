@@ -141,6 +141,18 @@
               >Données personnelles</a
             >
           </div>
+          <br />
+          <div>
+            Ce formulaire est protégé par reCAPTCHA, la
+            <a href="https://policies.google.com/privacy"
+              >politique de confidentialité</a
+            >
+            ainsi que les
+            <a href="https://policies.google.com/terms"
+              >conditions d'utilisations</a
+            >
+            de Google s'appliquent.
+          </div>
         </div>
       </v-col>
     </v-row>
