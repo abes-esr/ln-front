@@ -1,101 +1,105 @@
 <template>
   <div>
-    <v-card width="100%">
-      <v-card-text>
-        <v-row>
-          <v-col lg="12" md="12" xs="12">
-            <v-row>
-              <v-col cols="12" sm="12">
-                <v-card class="mx-auto" tile>
-                  <v-card-title>Liste des Accès</v-card-title>
-                  <v-row>
-                    <v-col cols="1" />
-                    <v-col cols="10">
-                      <v-data-table
-                        id="mytable"
-                        :headers="headers"
-                        :items="filteredAccesByStatut"
-                        :items-per-page="30"
-                        class="elevation-1"
-                        :search="rechercher"
-                      >
-                        <template v-slot:[header.statut="{ header }">
-                          {{ header.texte }}
-                          <v-menu offset-y :close-on-content-click="false">
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-btn icon v-bind="attrs" v-on="on">
-                                <v-icon small :color="statut ? 'primary' : ''">
-                                  mdi-filter
-                                </v-icon>
-                              </v-btn>
-                            </template>
-                            <div style="background-color: white; width: 280px">
-                              <v-card-actions
-                                ><v-select
-                                  v-model="statut"
-                                  label="Selectionnez le statut"
-                                  outlined
-                                  :items="selectStatut"
-                                ></v-select
-                              ></v-card-actions>
-                            </div>
-                          </v-menu>
-                        </template>
-                        <template v-slot:top>
-                          <v-row>
-                            <v-col cols="12" sm="6"></v-col>
-                            <v-col cols="12" sm="6">
-                              <v-text-field
-                                v-model="rechercher"
-                                label="Chercher sur toutes les colonnes"
-                                class="mx-4"
-                                prepend-inner-icon="mdi-magnify"
-                                outlined
-                                clearable
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                        </template>
-
-                        <template v-slot:[`item.action`]="{ item }">
-                          <v-icon
-                            small
-                            class="mr-2"
-                            v-if="isAdmin === 'true'"
-                            @click="analyserAcces(item.id)"
-                            >mdi-help-circle-outline</v-icon
-                          >
-                          <v-icon small @click="supprimerAcces(item.id)"
-                            >mdi-delete</v-icon
-                          >
-                        </template>
-                      </v-data-table>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" sm="7"></v-col>
-                    <v-col cols="12" sm="2">
-                      <v-btn
-                        @click="$router.push({ path: '/ajouterAcces/' })"
-                        color="warning"
-                        >Ajouter une adresse IP</v-btn
-                      ></v-col
+    <v-card flat>
+      <v-row>
+        <v-col lg="12" md="12" xs="12">
+          <v-row>
+            <v-col cols="12" sm="12">
+              <v-row>
+                <h1>Liste des IP déclarées</h1>
+              </v-row>
+              <v-row>
+                <v-col cols="12" sm="8"></v-col>
+                <v-col cols="12" sm="2">
+                  <v-btn @click="$router.push({ path: '/ajouterAcces/' })"
+                    ><span class="btnText"
+                      >Ajouter une adresse ou une plage IP</span
                     >
-                  </v-row>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
+                    <font-awesome-icon :icon="['fas', 'plus-circle']"/></v-btn
+                ></v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="1" />
+                <v-col cols="10">
+                  <v-alert dense :value="alert" type="error">
+                    {{ error }}
+                  </v-alert>
+                  <v-alert dense :value="notification !== ''" type="success">
+                    {{ notification }}
+                  </v-alert>
+                  <v-card-text>
+                    <v-data-table
+                      id="mytable"
+                      :headers="headers"
+                      :items="filteredAccesByStatut"
+                      :items-per-page="30"
+                      :search="rechercher"
+                      flat
+                    >
+                      <template v-slot:[header.statut="{ header }">
+                        {{ header.texte }}
+                        <v-menu offset-y :close-on-content-click="false">
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon v-bind="attrs" v-on="on">
+                              <v-icon small :color="statut ? 'primary' : ''">
+                                mdi-filter
+                              </v-icon>
+                            </v-btn>
+                          </template>
+                          <div style="background-color: white; width: 280px">
+                            <v-card-actions
+                              ><v-select
+                                v-model="statut"
+                                label="Selectionnez le statut"
+                                outlined
+                                :items="selectStatut"
+                              ></v-select
+                            ></v-card-actions>
+                          </div>
+                        </v-menu>
+                      </template>
+                      <template v-slot:top>
+                        <v-row>
+                          <v-col cols="12" sm="6"></v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              v-model="rechercher"
+                              label="Chercher dans les colonnes"
+                              class="mx-4"
+                              prepend-inner-icon="mdi-magnify"
+                              outlined
+                              clearable
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </template>
+
+                      <template v-slot:[`item.action`]="{ item }">
+                        <v-icon
+                          small
+                          class="mr-2"
+                          v-if="isAdmin === 'true'"
+                          @click="analyserAcces(item.id)"
+                          >mdi-help-circle-outline</v-icon
+                        >
+                        <v-btn
+                          class="ma-0 pa-0 bouton-simple "
+                          icon
+                          title="Supprimer"
+                          @click="supprimerAcces(item.id)"
+                        >
+                          <font-awesome-icon :icon="['fas', 'trash-alt']"
+                        /></v-btn>
+                      </template> </v-data-table
+                  ></v-card-text>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-card>
     <br />
-    <v-alert dense outlined :value="alert" type="error">
-      {{ error }}
-    </v-alert>
-    <v-alert dense outlined :value="notification !== ''" type="success">
-      {{ notification }}
-    </v-alert>
   </div>
 </template>
 <style src="./style.css"></style>
@@ -212,8 +216,10 @@ export default class ListeAcces extends ListeAccesProps {
       .then(response => {
         this.acces = response.data.map(this.affichageAcces);
       })
-      .catch(e => {
-        Logger.error(e);
+      .catch(err => {
+        Logger.error(err);
+        this.error = err.response.data.message;
+        this.alert = true;
       });
   }
 
@@ -254,7 +260,7 @@ export default class ListeAcces extends ListeAccesProps {
         });
       })
       .catch(err => {
-        this.error = err.response.data;
+        this.error = err.response.data.message;
         this.alert = true;
       });
   }
@@ -271,3 +277,12 @@ export default class ListeAcces extends ListeAccesProps {
   }
 }
 </script>
+
+<style scoped>
+.row {
+  margin: 0 !important;
+}
+.btnText {
+  padding-right: 5px;
+}
+</style>

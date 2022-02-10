@@ -65,9 +65,14 @@
                       <td>{{ item.typeIp }}</td>
                       <td>{{ item.ip }}</td>
                       <td>
-                        <span title="Supprimer" @click="supprimerIP">
+                        <v-btn
+                          class="ma-0 pa-0 bouton-simple "
+                          icon
+                          title="Supprimer"
+                          @click="supprimerIP"
+                        >
                           <font-awesome-icon :icon="['fas', 'trash-alt']"
-                        /></span>
+                        /></v-btn>
                       </td>
                     </tr>
                   </tbody>

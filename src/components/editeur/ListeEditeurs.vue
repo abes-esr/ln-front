@@ -73,7 +73,7 @@
             icon
             @click="supprimerEditeur(item)"
           >
-            <font-awesome-icon :icon="['fas', 'trash']" />
+            <font-awesome-icon :icon="['fas', 'trash-alt']" />
           </v-btn>
         </template>
       </v-data-table>
