@@ -65,6 +65,7 @@ export default new Vuex.Store({
   },
   actions: {
     login(context, data: JsonLoginRequest): Promise<boolean> {
+      console.log(data);
       return new Promise((resolve, reject) => {
         // On appel le serviceLn LicencesNationales
         authService

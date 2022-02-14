@@ -1,5 +1,6 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import Etablissement from "@/core/Etablissement";
+import Notification from "@/core/Notification";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import { AxiosResponse } from "axios";
 import { DateUtils } from "@/utils/DateUtils";
@@ -202,6 +203,38 @@ export class EtablissementService extends LicencesNationalesApiService {
   scission(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/etablissements/scission", data, token);
   }
+
+  getNotificationsAdmin(token: string): Promise<Array<Notification>> {
+    return new Promise((resolve, reject) => {
+      return this.client
+          .get("/notificationsAdmin/", token)
+          .then(result => {
+            const response: Array<JsonNotificationResponse> = result.data;
+            const notifs: Array<Notification> = [];
+            response.forEach(element => {
+              const notification : Notification = new Notification();
+              notification.siren = element.siren;
+              notification.dateEvent = element.dateEvent;
+              notification.typeNotif = element.typeNotif;
+              notification.nomEtab = element.nomEtab;
+              notifs.push(notification);
+            });
+            resolve(notifs);
+          })
+          .catch(err => {
+            reject(this.buildException(err));
+          });
+    });
+  }
+
+  //TODO à supprimer après merge du ws
+  getNotificationsAdminMocked(): Array<Notification> {
+    const notifs: Array<Notification> = [];
+    notifs.push(new Notification("123123", new Date(), "Nouvel établissement", "etablissement 1"));
+    notifs.push(new Notification("230899", new Date(), "Nouvelle IP", "etablissement 2"));
+    notifs.push(new Notification("431900", new Date(), "Suppression IP depuis dernier envoi", "etablissement 3"));
+    return notifs;
+  }
 }
 
 export const etablissementService = new EtablissementService();
@@ -288,4 +321,11 @@ export interface JsonUpdateEtablissement {
 
 export interface JsonTypeEtablissementResponse {
   libelle: string;
+}
+
+export interface JsonNotificationResponse {
+  siren: string;
+  dateEvent: Date;
+  typeNotif: string;
+  nomEtab: string;
 }

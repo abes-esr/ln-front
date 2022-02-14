@@ -158,7 +158,8 @@
           >
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
-              Fonctionnalité à venir
+              <h3>Liste des nouveaux établissements crées</h3>
+
             </div>
           </v-card-text>
         </v-col>
@@ -186,6 +187,7 @@ export default class Home extends Vue {
     super();
     this.etablissement = this.getEtablissement;
     this.$store.dispatch("setCurrentEtablissement", this.etablissement);
+
   }
 
   get getEtablissement(): Etablissement {
@@ -201,6 +203,8 @@ export default class Home extends Vue {
       Logger.error(err);
     });
   }
+
+
 }
 </script>
 <style scoped lang="scss">
