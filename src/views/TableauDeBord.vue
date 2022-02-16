@@ -160,6 +160,8 @@
             <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
               <h3 style="margin-bottom: 1em">Liste des établissements</h3>
               <li style="margin-bottom: 1em" v-for="item in this.notifications" :key="item.index">Siren: {{ item.siren }}<br>Nom établissement: {{ item.nomEtab }}<br>Evenement: {{ item.typeNotif }}<br>Date: {{ dateFormatted(item.dateEvent) }}</li>
+              <!--TODO créer une fonction @click qui va à partir du numéro d'établissement, utiliser la fonction setcurrentetablissement pour changer l'établissement en cours dans le store, puisdans la fonction utilisé par @click, utiliser la fonction
+              allerAAfficherEtab qui passe en paramètre létablissement mis à jour à partir du store -->
             </div>
           </v-card-text>
         </v-col>
@@ -243,6 +245,7 @@ export default class Home extends Vue {
       });
   }
 
+  //TODO appeler cette fonction pour afficher l'établissement au clic
   allerAAfficherEtab(item: Etablissement): void {
     this.$store.dispatch("closeDisplayedMessage");
     this.$store
