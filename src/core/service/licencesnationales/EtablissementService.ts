@@ -207,12 +207,13 @@ export class EtablissementService extends LicencesNationalesApiService {
   getNotificationsAdmin(token: string): Promise<Array<Notification>> {
     return new Promise((resolve, reject) => {
       return this.client
-          .get("/notificationsAdmin/", token)
+          .get("/etablissements/notificationsAdmin/", token)
           .then(result => {
-            const response: Array<JsonNotificationResponse> = result.data;
+            const response: Array<JsonNotificationResponse> = result.data['notifications'];
             const notifs: Array<Notification> = [];
-            response.forEach(element => {
+            response.forEach(function (element, i) {
               const notification : Notification = new Notification();
+              notification.index = i;
               notification.siren = element.siren;
               notification.dateEvent = element.dateEvent;
               notification.typeNotif = element.typeNotif;
@@ -230,9 +231,9 @@ export class EtablissementService extends LicencesNationalesApiService {
   //TODO à supprimer après merge du ws
   getNotificationsAdminMocked(): Array<Notification> {
     const notifs: Array<Notification> = [];
-    notifs.push(new Notification("123123", new Date(), "Nouvel établissement", "etablissement 1"));
-    notifs.push(new Notification("230899", new Date(), "Nouvelle IP", "etablissement 2"));
-    notifs.push(new Notification("431900", new Date(), "Suppression IP depuis dernier envoi", "etablissement 3"));
+    notifs.push(new Notification(0,"123123", new Date(), "Nouvel établissement", "etablissement 1"));
+    notifs.push(new Notification(1,"230899", new Date(), "Nouvelle IP", "etablissement 2"));
+    notifs.push(new Notification(2,"431900", new Date(), "Suppression IP depuis dernier envoi", "etablissement 3"));
     return notifs;
   }
 }

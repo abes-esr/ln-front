@@ -158,8 +158,8 @@
           >
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
-              <h3>Liste des nouveaux établissements crées</h3>
-
+              <h3 style="margin-bottom: 1em">Liste des établissements</h3>
+              <li style="margin-bottom: 1em" v-for="item in this.notifications" :key="item.index">Siren: {{ item.siren }}<br>Nom établissement: {{ item.nomEtab }}<br>Evenement: {{ item.typeNotif }}<br>Date: {{ dateFormatted(item.dateEvent) }}</li>
             </div>
           </v-card-text>
         </v-col>
@@ -172,8 +172,13 @@
 import { Component, Vue } from "vue-property-decorator";
 import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
-import { Action } from "@/core/CommonDefinition";
+import { Action, Message, MessageType } from "@/core/CommonDefinition";
 import { Logger } from "@/utils/Logger";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import { Notification } from "@/core/Notification";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
+import moment from "moment/moment";
 
 @Component({
   components: { MessageBox }
@@ -182,16 +187,22 @@ export default class Home extends Vue {
   etablissement: Etablissement;
   Action: any = Action;
   isAdmin: boolean = this.$store.getters.isAdmin();
+  notifications: Array<Notification> = [];
 
   constructor() {
     super();
     this.etablissement = this.getEtablissement;
     this.$store.dispatch("setCurrentEtablissement", this.etablissement);
-
+    this.collecterNotifs();
+    console.log(this.notifications);
   }
 
   get getEtablissement(): Etablissement {
     return this.$store.getters.getEtablissementConnecte();
+  }
+
+  dateFormatted(d: Date): string {
+    return moment(d).format('YYYY-MM-DD');
   }
 
   allerAMonProfil(): void {
@@ -204,7 +215,62 @@ export default class Home extends Vue {
     });
   }
 
+  collecterNotifs(): void {
+    etablissementService
+      .getNotificationsAdmin(this.$store.getters.getToken())
+      .then(response => {
+        this.notifications = response;
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          message.texte =
+            "Vous n'êtes pas autorisé à effectuer cette opération";
+          setTimeout(() => {
+            this.$router.push({ name: "Home" });
+          });
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+      });
+  }
 
+  allerAAfficherEtab(item: Etablissement): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.$store
+        .dispatch("setCurrentEtablissement", item)
+        .then(() => {
+          this.$router.push({ name: "AfficherEtablissement" });
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
+          } else {
+            message.texte = "Impossible d'exécuter l'action : " + err.message;
+          }
+          message.isSticky = true;
+
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        });
+  }
 }
 </script>
 <style scoped lang="scss">
