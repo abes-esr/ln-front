@@ -13,6 +13,7 @@ import { etablissementService } from "@/core/service/licencesnationales/Etabliss
 import ContactEtablissement from "@/core/ContactEtablissement";
 import router from "@/router";
 import { Message } from "@/core/CommonDefinition";
+import {Logger} from "@/utils/Logger";
 
 Vue.use(Vuex);
 
@@ -142,6 +143,23 @@ export default new Vuex.Store({
         }
       });
     },
+    downloadEditeurs(context, value: Array<Editeur>): Promise<boolean> {
+      const ids = new Array<number>();
+      value.forEach(element => {
+        ids.push(element.id);
+        Logger.debug("test " + element.id);
+      });
+      return new Promise((resolve, reject) => {
+        editeurService
+          .downloadEditeur(ids, context.state.user.token)
+          .then(item => {
+            resolve(true);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
     setCurrentEtablissement(context, value: Etablissement): Promise<boolean> {
       return new Promise((resolve, reject) => {
         if (value.id == -999) {
@@ -179,7 +197,7 @@ export default new Vuex.Store({
             reject(err);
           });
       });
-    },
+    }
   },
   getters: {
     getEtablissementConnecte: state => (): Etablissement => {

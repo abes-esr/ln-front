@@ -206,6 +206,24 @@ export default class ListeEditeurs extends Vue {
       });
   }
 
+  downloadEditeurs(): void {
+    this.$store.dispatch("downloadEditeurs", this.editeurs).catch(err => {
+      Logger.error(err.toString());
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+
+      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+        Logger.error(err.toString());
+      });
+    });
+  }
+
   async supprimerEditeur(item: Editeur) {
     this.$store.dispatch("closeDisplayedMessage");
 
