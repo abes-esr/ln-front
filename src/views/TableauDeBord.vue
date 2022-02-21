@@ -158,10 +158,8 @@
           >
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
-              <h3 style="margin-bottom: 1em">Liste des établissements</h3>
-              <li style="margin-bottom: 1em" v-for="item in this.notifications" :key="item.index">Siren: {{ item.siren }}<br>Nom établissement: {{ item.nomEtab }}<br>Evenement: {{ item.typeNotif }}<br>Date: {{ dateFormatted(item.dateEvent) }}</li>
-              <!--TODO créer une fonction @click qui va à partir du numéro d'établissement, utiliser la fonction setcurrentetablissement pour changer l'établissement en cours dans le store, puisdans la fonction utilisé par @click, utiliser la fonction
-              allerAAfficherEtab qui passe en paramètre létablissement mis à jour à partir du store -->
+              <h3 style="margin-bottom: 1em">Liste des évenements</h3>
+              <li style="margin-bottom: 1em" v-for="item in this.notifications" :key="item.index">Siren: {{ item.siren }}<br>Nom établissement: <a @click="allerPageEtablissement(item.siren)">{{ item.nomEtab }}</a><br>Evenement: {{ item.typeNotif }}<br>Date: {{ dateFormatted(item.dateEvent) }}</li>
             </div>
           </v-card-text>
         </v-col>
@@ -204,7 +202,7 @@ export default class Home extends Vue {
   }
 
   dateFormatted(d: Date): string {
-    return moment(d).format('YYYY-MM-DD');
+    return moment(d).format('DD/MM/YYYY');
   }
 
   allerAMonProfil(): void {
@@ -215,6 +213,13 @@ export default class Home extends Vue {
     this.$router.push({ name: "Password" }).catch(err => {
       Logger.error(err);
     });
+  }
+
+  allerPageEtablissement(siren: string): void {
+    const etablissementCible = new Etablissement();
+    etablissementCible.siren = siren;
+    etablissementCible.id = 0;
+    this.allerAAfficherEtab(etablissementCible);
   }
 
   collecterNotifs(): void {
@@ -245,7 +250,6 @@ export default class Home extends Vue {
       });
   }
 
-  //TODO appeler cette fonction pour afficher l'établissement au clic
   allerAAfficherEtab(item: Etablissement): void {
     this.$store.dispatch("closeDisplayedMessage");
     this.$store

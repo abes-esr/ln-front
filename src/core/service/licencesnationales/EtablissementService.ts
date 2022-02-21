@@ -125,6 +125,7 @@ export class EtablissementService extends LicencesNationalesApiService {
           contact.mail = response.contact.mail;
 
           etablissement.contact = contact;
+          console.log(JSON.stringify(etablissement));
           resolve(etablissement);
         })
         .catch(err => {
