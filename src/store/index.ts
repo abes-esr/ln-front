@@ -143,17 +143,17 @@ export default new Vuex.Store({
         }
       });
     },
-    downloadEditeurs(context, value: Array<Editeur>): Promise<boolean> {
+    downloadEditeurs(context, value: Array<Editeur>): Promise<any> {
       const ids = new Array<number>();
       value.forEach(element => {
         ids.push(element.id);
-        Logger.debug("test " + element.id);
+        // Logger.debug("test " + element.id);
       });
       return new Promise((resolve, reject) => {
         editeurService
           .downloadEditeur(ids, context.state.user.token)
           .then(item => {
-            resolve(true);
+            resolve(item);
           })
           .catch(err => {
             reject(err);
