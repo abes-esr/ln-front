@@ -56,7 +56,7 @@
                   @click="downloadEditeurs()"
                   class="mx-2 text-lowercase bouton-simple"
                   v-on="on"
-                  ><span class="text-uppercase">T</span>élécharger tous les éditeurs
+                  ><span class="text-uppercase">T</span>élécharger la liste des éditeurs
                   <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
                 /></v-btn>
               </template>

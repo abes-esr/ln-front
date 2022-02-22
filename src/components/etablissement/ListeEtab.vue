@@ -41,7 +41,21 @@
               clearable
             ></v-text-field>
           </div>
+          <v-tooltip top max-width="20vw" open-delay="100">
+            <template v-slot:activator="{ on }">
+              <v-btn
+                  text
+                  @click="downloadEtablissements()"
+                  class="mx-2 text-lowercase bouton-simple"
+                  v-on="on"
+              ><span class="text-uppercase">T</span>élécharger la liste des Etabs
+                <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
+                /></v-btn>
+            </template>
+            <span>Le téléchargement correspond à la vue filtrée</span>
+          </v-tooltip>
         </template>
+
         <template v-slot:header.typeEtablissement="{ header }">
           {{ header.texte }}
           <v-menu offset-y :close-on-content-click="false">
@@ -362,6 +376,39 @@ export default class ListeEtab extends Vue {
           window.scrollTo(0, messageBox.offsetTop);
         }
       });
+  }
+
+  downloadEtablissements(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.$store
+        .dispatch("downloadEtablissements", this.etabs)
+        .then(response => {
+          Logger.debug(response);
+          const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
+          const fileLink = document.createElement("a");
+
+          fileLink.href = fileURL;
+          fileLink.setAttribute("download", "export.csv");
+          document.body.appendChild(fileLink);
+
+          fileLink.click();
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
+          } else {
+            message.texte = "Impossible d'exécuter l'action : " + err.message;
+          }
+          message.isSticky = true;
+
+          Logger.debug("erre" + err.debugMessage);
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+        });
   }
 
   allerAAfficherEtab(item: Etablissement): void {

@@ -202,6 +202,29 @@ export class EtablissementService extends LicencesNationalesApiService {
   scission(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/etablissements/scission", data, token);
   }
+
+  /**
+   * Appel API pour telecharger la liste établissements
+   * @param sirens siren des etab concerné
+   * @param token Jeton de session
+   * @return  Vrai si la suppresion a fonctionné, sinon on lève une exception
+   * @exception LicencesNationalesApiError si l'appel API a échoué
+   */
+  downloadEtablissements(sirens: Array<string>, token: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // const json: JsonExportRequest = {
+      //   ids: ids
+      // };
+      return this.client
+          .post("/etablissements/export", sirens, token)
+          .then(response => {
+            resolve(response);
+          })
+          .catch(err => {
+            reject(this.buildException(err));
+          });
+    });
+  }
 }
 
 export const etablissementService = new EtablissementService();

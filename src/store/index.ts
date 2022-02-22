@@ -151,7 +151,24 @@ export default new Vuex.Store({
       });
       return new Promise((resolve, reject) => {
         editeurService
-          .downloadEditeur(ids, context.state.user.token)
+          .downloadEditeurs(ids, context.state.user.token)
+          .then(item => {
+            resolve(item);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    downloadEtablissements(context, value: Array<Etablissement>): Promise<any> {
+      const sirens = new Array<string>();
+      value.forEach(element => {
+        sirens.push(element.siren);
+        Logger.debug("test " + element.siren);
+      });
+      return new Promise((resolve, reject) => {
+        etablissementService
+          .downloadEtablissements(sirens, context.state.user.token)
           .then(item => {
             resolve(item);
           })

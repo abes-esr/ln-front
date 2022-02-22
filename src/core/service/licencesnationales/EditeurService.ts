@@ -208,7 +208,7 @@ export class EditeurService extends LicencesNationalesApiService {
    * @return  Vrai si la suppresion a fonctionné, sinon on lève une exception
    * @exception LicencesNationalesApiError si l'appel API a échoué
    */
-  downloadEditeur(ids: Array<number>, token: string): Promise<any> {
+  downloadEditeurs(ids: Array<number>, token: string): Promise<any> {
     return new Promise((resolve, reject) => {
       // const json: JsonExportRequest = {
       //   ids: ids
