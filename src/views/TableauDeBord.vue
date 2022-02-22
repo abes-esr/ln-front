@@ -7,7 +7,12 @@
         >Information du compte
         <v-tooltip top max-width="20vw" open-delay="100">
           <template v-slot:activator="{ on }">
-            <v-btn icon class="bouton-simple" v-on="on">
+            <v-btn
+                icon
+                class="bouton-simple"
+                @click="downloadEtablissement()"
+                v-on="on"
+            >
               <font-awesome-icon
                 :icon="['fas', 'download']"
                 class="mx-2 fa-lg"
@@ -171,8 +176,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
-import { Action } from "@/core/CommonDefinition";
+import {Action, Message, MessageType} from "@/core/CommonDefinition";
 import { Logger } from "@/utils/Logger";
+import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component({
   components: { MessageBox }
@@ -200,6 +206,39 @@ export default class Home extends Vue {
     this.$router.push({ name: "Password" }).catch(err => {
       Logger.error(err);
     });
+  }
+
+  downloadEtablissement(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.$store
+        .dispatch("downloadEtablissements", new Array<Etablissement>())
+        .then(response => {
+          Logger.debug(response);
+          const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
+          const fileLink = document.createElement("a");
+
+          fileLink.href = fileURL;
+          fileLink.setAttribute("download", "export.csv");
+          document.body.appendChild(fileLink);
+
+          fileLink.click();
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
+          } else {
+            message.texte = "Impossible d'exécuter l'action : " + err.message;
+          }
+          message.isSticky = true;
+
+          Logger.debug("erre" + err.debugMessage);
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+        });
   }
 }
 </script>
