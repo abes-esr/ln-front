@@ -53,9 +53,15 @@
                 </v-icon>
               </v-btn>
             </template>
-            <div style="background-color: white; width: 500px" >
-              <ul >
-                <li v-for="item in typesEtab" :key="item.id" @click="eventTypeEtabChoice(item)"><a>{{ item }}</a></li>
+            <div style="background-color: white; width: 500px">
+              <ul>
+                <li
+                  v-for="item in typesEtab"
+                  :key="item.id"
+                  @click="eventTypeEtabChoice(item)"
+                >
+                  <a>{{ item }}</a>
+                </li>
               </ul>
             </div>
           </v-menu>
@@ -73,7 +79,13 @@
             </template>
             <div style="background-color: white; width: 280px">
               <ul>
-                <li v-for="item in selectStatut" :key="item.id" @click="eventStatutChoice(item)"><a>{{ item }}</a></li>
+                <li
+                  v-for="item in selectStatut"
+                  :key="item.id"
+                  @click="eventStatutChoice(item)"
+                >
+                  <a>{{ item }}</a>
+                </li>
               </ul>
             </div>
           </v-menu>
@@ -81,6 +93,7 @@
         <template v-slot:item.dateCreationFormattedInString="{ item }">
           <span>{{ item.dateCreation.toLocaleDateString() }}</span>
         </template>
+
         <template v-slot:item.nom="{ item }">
           <a class="bouton-simple" @click="allerAAfficherEtab(item)"
             ><strong>{{ item.nom }}</strong></a
@@ -100,7 +113,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import Etablissement from "@/core/Etablissement";
-import { List, Message, MessageType } from "@/core/CommonDefinition";
+import { Message, MessageType } from "@/core/CommonDefinition";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import MessageBox from "@/components/common/MessageBox.vue";
@@ -145,7 +158,7 @@ export default class ListeEtab extends Vue {
     },
     {
       text: "Dernière date de modification des IPs",
-      value: "derniereDateModificationIp",
+      value: "dateModificationDerniereIp",
       sortable: true
     },
     { text: "Statut", value: "statut", sortable: true },
@@ -191,7 +204,16 @@ export default class ListeEtab extends Vue {
       });
     }
     //Formatage des dates pour le tri du tableau
-    this.etabs.forEach(element => element.dateCreationFormattedInString = moment(element.dateCreation).format('YYYY-MM-DD'));
+    this.etabs.forEach(element => {
+      element.dateCreationFormattedInString = moment(
+        element.dateCreation
+      ).format("YYYY-MM-DD");
+      if (element.dateModificationDerniereIp)
+        element.dateModificationDerniereIp = element.dateModificationDerniereIp.replaceAll(
+          "-",
+          "/"
+        );
+    });
     return this.etabs;
   }
 
@@ -206,9 +228,9 @@ export default class ListeEtab extends Vue {
       .then(result => {
         this.isDisableForm = false;
         this.typesEtab = result;
-        this.typesEtab.push('Tous');
+        this.typesEtab.push("Tous");
 
-        this.typesEtab.sort((n1,n2) => {
+        this.typesEtab.sort((n1, n2) => {
           if (n1 > n2) {
             return 1;
           }
@@ -218,7 +240,12 @@ export default class ListeEtab extends Vue {
           return 0;
         });
 
-        this.typesEtab.unshift(this.typesEtab.splice(this.typesEtab.findIndex(item => item === 'Tous'), 1)[0]);
+        this.typesEtab.unshift(
+          this.typesEtab.splice(
+            this.typesEtab.findIndex(item => item === "Tous"),
+            1
+          )[0]
+        );
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -239,7 +266,7 @@ export default class ListeEtab extends Vue {
   }
 
   eventTypeEtabChoice(element: string): void {
-    if(element === 'Tous'){
+    if (element === "Tous") {
       this.selectedType = "";
     } else {
       this.selectedType = element;
@@ -248,7 +275,7 @@ export default class ListeEtab extends Vue {
   }
 
   eventStatutChoice(element: string): void {
-    if(element === 'Tous'){
+    if (element === "Tous") {
       this.statut = "";
     } else {
       this.statut = element;

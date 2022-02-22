@@ -77,6 +77,8 @@ export class EtablissementService extends LicencesNationalesApiService {
               "dd-MM-yyyy",
               "-"
             );
+            etablissement.dateModificationDerniereIp =
+              element.dateModificationDerniereIp;
             etablissement.typeEtablissement = element.typeEtablissement;
             etablissement.statut = element.statut;
             etablissement.statutIP = element.statutIP;
@@ -225,6 +227,7 @@ interface JsonSimpleEtablissementResponse {
   nom: string;
   siren: string;
   dateCreation: string;
+  dateModificationDerniereIp: string;
   typeEtablissement: string;
   statut: string;
   statutIP: string;
