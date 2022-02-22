@@ -391,6 +391,7 @@ export default class ListeEtab extends Vue {
       });
   }
 
+
   allerAAfficherEtab(item: Etablissement): void {
     this.$store.dispatch("closeDisplayedMessage");
     this.$store
