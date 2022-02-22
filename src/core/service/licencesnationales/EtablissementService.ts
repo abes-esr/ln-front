@@ -4,6 +4,7 @@ import Notification from "@/core/Notification";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import { AxiosResponse } from "axios";
 import { DateUtils } from "@/utils/DateUtils";
+import NotificationUser from "@/core/service/NotificationUser";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**
@@ -125,7 +126,6 @@ export class EtablissementService extends LicencesNationalesApiService {
           contact.mail = response.contact.mail;
 
           etablissement.contact = contact;
-          console.log(JSON.stringify(etablissement));
           resolve(etablissement);
         })
         .catch(err => {
@@ -210,7 +210,7 @@ export class EtablissementService extends LicencesNationalesApiService {
       return this.client
           .get("/etablissements/notificationsAdmin/", token)
           .then(result => {
-            const response: Array<JsonNotificationResponse> = result.data['notifications'];
+            const response: Array<JsonNotificationAdminResponse> = result.data['notifications'];
             const notifs: Array<Notification> = [];
             response.forEach(function (element, i) {
               const notification : Notification = new Notification();
@@ -219,6 +219,28 @@ export class EtablissementService extends LicencesNationalesApiService {
               notification.dateEvent = element.dateEvent;
               notification.typeNotif = element.typeNotif;
               notification.nomEtab = element.nomEtab;
+              notifs.push(notification);
+            });
+            resolve(notifs);
+          })
+          .catch(err => {
+            reject(this.buildException(err));
+          });
+    });
+  }
+
+  getNotificationsEtab(siren: string, token: string): Promise<Array<NotificationUser>> {
+    return new Promise((resolve, reject) => {
+      return this.client
+          .get("/etablissements/notifications/" + siren, token)
+          .then(result => {
+            const response: Array<JsonNotificationUserResponse> = result.data['notifications'];
+            const notifs: Array<NotificationUser> = [];
+            response.forEach(function (element, i) {
+              const notification : NotificationUser = new NotificationUser();
+              notification.index = i;
+              notification.message = element.message;
+              notification.description = element.description;
               notifs.push(notification);
             });
             resolve(notifs);
@@ -325,9 +347,14 @@ export interface JsonTypeEtablissementResponse {
   libelle: string;
 }
 
-export interface JsonNotificationResponse {
+export interface JsonNotificationAdminResponse {
   siren: string;
   dateEvent: Date;
   typeNotif: string;
   nomEtab: string;
+}
+
+export interface JsonNotificationUserResponse {
+  message: string;
+  description: string;
 }

@@ -65,7 +65,6 @@ export default new Vuex.Store({
   },
   actions: {
     login(context, data: JsonLoginRequest): Promise<boolean> {
-      console.log(data);
       return new Promise((resolve, reject) => {
         // On appel le serviceLn LicencesNationales
         authService
@@ -150,7 +149,6 @@ export default new Vuex.Store({
           context.commit("SET_CURRENT_ETABLISSEMENT", value); // On sauvegarde dans le store
           resolve(true);
         } else {
-          console.log(value.nom);
           etablissementService
             .getEtablissement(value.siren, context.state.user.token)
             .then(item => {

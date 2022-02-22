@@ -159,7 +159,25 @@
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
               <h3 style="margin-bottom: 1em">Liste des évenements</h3>
-              <li style="margin-bottom: 1em" v-for="item in this.notifications" :key="item.index">Siren: {{ item.siren }}<br>Nom établissement: <a @click="allerPageEtablissement(item.siren)">{{ item.nomEtab }}</a><br>Evenement: {{ item.typeNotif }}<br>Date: {{ dateFormatted(item.dateEvent) }}</li>
+              <li
+                style="margin-bottom: 1em"
+                v-for="item in this.notificationsAdmin"
+                :key="item.index"
+              >
+                Siren: {{ item.siren }}<br />Nom établissement:
+                <a @click="allerPageEtablissement(item.siren)">{{
+                  item.nomEtab
+                }}</a
+                ><br />Evenement: {{ item.typeNotif }}<br />Date:
+                {{ dateFormatted(item.dateEvent) }}
+              </li>
+              <li
+                  style="margin-bottom: 1em"
+                  v-for="item in this.notificationsUser"
+                  :key="item.index"
+              >
+                Message: {{ item.message }}<br />Description:{{ item.description }}
+              </li>
             </div>
           </v-card-text>
         </v-col>
@@ -179,6 +197,7 @@ import { Notification } from "@/core/Notification";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import moment from "moment/moment";
+import NotificationUser from "@/core/service/NotificationUser";
 
 @Component({
   components: { MessageBox }
@@ -187,14 +206,14 @@ export default class Home extends Vue {
   etablissement: Etablissement;
   Action: any = Action;
   isAdmin: boolean = this.$store.getters.isAdmin();
-  notifications: Array<Notification> = [];
+  notificationsAdmin: Array<Notification> = [];
+  notificationsUser: Array<NotificationUser> = [];
 
   constructor() {
     super();
     this.etablissement = this.getEtablissement;
     this.$store.dispatch("setCurrentEtablissement", this.etablissement);
     this.collecterNotifs();
-    console.log(this.notifications);
   }
 
   get getEtablissement(): Etablissement {
@@ -202,7 +221,7 @@ export default class Home extends Vue {
   }
 
   dateFormatted(d: Date): string {
-    return moment(d).format('DD/MM/YYYY');
+    return moment(d).format("DD/MM/YYYY");
   }
 
   allerAMonProfil(): void {
@@ -223,39 +242,11 @@ export default class Home extends Vue {
   }
 
   collecterNotifs(): void {
-    etablissementService
-      .getNotificationsAdmin(this.$store.getters.getToken())
-      .then(response => {
-        this.notifications = response;
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
-          message.texte =
-            "Vous n'êtes pas autorisé à effectuer cette opération";
-          setTimeout(() => {
-            this.$router.push({ name: "Home" });
-          });
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-      });
-  }
-
-  allerAAfficherEtab(item: Etablissement): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-        .dispatch("setCurrentEtablissement", item)
-        .then(() => {
-          this.$router.push({ name: "AfficherEtablissement" });
+    if (this.$store.getters.isAdmin()) {
+      etablissementService
+        .getNotificationsAdmin(this.$store.getters.getToken())
+        .then(response => {
+          this.notificationsAdmin = response;
         })
         .catch(err => {
           Logger.error(err.toString());
@@ -263,20 +254,79 @@ export default class Home extends Vue {
           message.type = MessageType.ERREUR;
           if (err instanceof LicencesNationalesBadRequestApiError) {
             message.texte = err.message;
+          } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+            message.texte =
+              "Vous n'êtes pas autorisé à effectuer cette opération";
+            setTimeout(() => {
+              this.$router.push({ name: "Home" });
+            });
           } else {
             message.texte = "Impossible d'exécuter l'action : " + err.message;
           }
           message.isSticky = true;
-
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
-          // On glisse sur le message d'erreur
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
         });
+    } else {
+      etablissementService
+        .getNotificationsEtab(
+          this.$store.getters.userSiren(),
+          this.$store.getters.getToken()
+        )
+        .then(response => {
+          this.notificationsUser = response;
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
+          } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+            message.texte =
+              "Vous n'êtes pas autorisé à effectuer cette opération";
+            setTimeout(() => {
+              this.$router.push({ name: "Home" });
+            });
+          } else {
+            message.texte = "Impossible d'exécuter l'action : " + err.message;
+          }
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+        });
+    }
+  }
+
+  allerAAfficherEtab(item: Etablissement): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    this.$store
+      .dispatch("setCurrentEtablissement", item)
+      .then(() => {
+        this.$router.push({ name: "AfficherEtablissement" });
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      });
   }
 }
 </script>
