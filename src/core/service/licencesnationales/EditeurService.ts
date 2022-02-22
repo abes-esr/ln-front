@@ -214,7 +214,7 @@ export class EditeurService extends LicencesNationalesApiService {
       //   ids: ids
       // };
       return this.client
-        .post("/editeurs/exporct", ids, token)
+        .post("/editeurs/export", ids, token)
         .then(response => {
           resolve(response);
         })
