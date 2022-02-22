@@ -108,6 +108,7 @@
                               v-else
                               class="ma-0 pa-0 bouton-simple "
                               icon
+                              :loading="buttlonLoading"
                               title="Supprimer"
                               @click="supprimerIP(item.id)"
                             >
@@ -128,7 +129,9 @@
                           <v-btn @click="clearActions" class="btn-6"
                             ><span class="btnText">Annuler</span>
                           </v-btn>
-                          <v-btn @click="clearActions"
+                          <v-btn
+                            @click="dispatchAllAction"
+                            :loading="buttlonLoading"
                             ><span class="btnText"
                               >Enregistrer mes actions</span
                             >
@@ -145,7 +148,11 @@
         </v-col>
       </v-row>
     </v-card>
-    <br />
+    <v-col cols="12" style="padding: 24px;">
+      <v-row>
+        <v-col cols="1" xs="0"/>
+        <v-col cols="10" xs="12"> <infos-i-ps></infos-i-ps></v-col></v-row
+    ></v-col>
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
         <v-card-title>
@@ -224,25 +231,13 @@
                 >
                   Annuler
                 </v-btn>
-                <v-btn
-                  v-model="buttlonLoading"
-                  @click="addActionToBuffer('SUPPRIMER')"
-                  class="btn-5"
-                >
+                <v-btn @click="addActionToBuffer('SUPPRIMER')" class="btn-5">
                   Supprimer
                 </v-btn>
-                <v-btn
-                  v-model="buttlonLoading"
-                  @click="addActionToBuffer('REJETER')"
-                  class="btn-2"
-                >
+                <v-btn @click="addActionToBuffer('REJETER')" class="btn-2">
                   Rejeter
                 </v-btn>
-                <v-btn
-                  v-model="buttlonLoading"
-                  @click="addActionToBuffer('VALIDER')"
-                  class="btn-4"
-                >
+                <v-btn @click="addActionToBuffer('VALIDER')" class="btn-4">
                   Valider
                 </v-btn>
               </div>
@@ -259,6 +254,7 @@ import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import { AxiosResponse } from "axios";
+import InfosIPs from "@/components/ip/InfosIPs.vue";
 
 const ListeAccesProps = Vue.extend({
   props: {
@@ -269,7 +265,9 @@ const ListeAccesProps = Vue.extend({
   }
 });
 
-@Component
+@Component({
+  components: { InfosIPs }
+})
 export default class ListeAcces extends ListeAccesProps {
   refreshKey: number = 0;
   statut: string = "";
@@ -530,6 +528,7 @@ export default class ListeAcces extends ListeAccesProps {
       .finally(() => {
         this.collecterAcces();
         this.clearActions();
+        this.buttlonLoading = false;
       });
   }
 
@@ -546,7 +545,8 @@ export default class ListeAcces extends ListeAccesProps {
     this.bufferActions.push({
       idIp: this.currentIP.id,
       action: action,
-      ip: this.currentIP.ip
+      ip: this.currentIP.ip,
+      commentaireAdmin: this.commentaires
     });
     this.addActionToDatatable(action, this.currentIP.id);
     this.dialog = false;
@@ -581,6 +581,7 @@ export default class ListeAcces extends ListeAccesProps {
       })
       .finally(() => {
         this.buttlonLoading = false;
+        this.collecterAcces();
       });
   }
 
