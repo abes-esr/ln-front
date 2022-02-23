@@ -210,9 +210,6 @@ export class EditeurService extends LicencesNationalesApiService {
    */
   downloadEditeurs(ids: Array<number>, token: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      // const json: JsonExportRequest = {
-      //   ids: ids
-      // };
       return this.client
         .post("/editeurs/export", ids, token)
         .then(response => {

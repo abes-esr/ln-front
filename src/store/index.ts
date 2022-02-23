@@ -14,6 +14,7 @@ import ContactEtablissement from "@/core/ContactEtablissement";
 import router from "@/router";
 import { Message } from "@/core/CommonDefinition";
 import {Logger} from "@/utils/Logger";
+import {iPService} from "@/core/service/licencesnationales/IPService";
 
 Vue.use(Vuex);
 
@@ -175,6 +176,18 @@ export default new Vuex.Store({
           });
       });
     },
+    downloadIPs(context, siren: string): Promise<any> {
+      return new Promise((resolve, reject) => {
+          iPService
+            .downloadIPs(siren, context.state.user.token)
+            .then(item => {
+              resolve(item);
+            })
+            .catch(err => {
+              reject(err);
+            });
+      });
+    },
     setCurrentEtablissement(context, value: Etablissement): Promise<boolean> {
       return new Promise((resolve, reject) => {
         if (value.id == -999) {
@@ -182,7 +195,6 @@ export default new Vuex.Store({
           context.commit("SET_CURRENT_ETABLISSEMENT", value); // On sauvegarde dans le store
           resolve(true);
         } else {
-          console.log(value.nom);
           etablissementService
             .getEtablissement(value.siren, context.state.user.token)
             .then(item => {
