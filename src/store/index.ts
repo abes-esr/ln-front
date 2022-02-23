@@ -147,7 +147,6 @@ export default new Vuex.Store({
       const ids = new Array<number>();
       value.forEach(element => {
         ids.push(element.id);
-        // Logger.debug("test " + element.id);
       });
       return new Promise((resolve, reject) => {
         editeurService
@@ -164,7 +163,6 @@ export default new Vuex.Store({
       const sirens = new Array<string>();
       value.forEach(element => {
         sirens.push(element.siren);
-        Logger.debug("test " + element.siren);
       });
       return new Promise((resolve, reject) => {
         etablissementService

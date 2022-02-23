@@ -205,7 +205,7 @@ export class EtablissementService extends LicencesNationalesApiService {
 
   /**
    * Appel API pour telecharger la liste établissements
-   * @param sirens siren des etab concerné
+   * @param sirens siren des etab concerné, si sirens est vide : télécharge les info compte connecté
    * @param token Jeton de session
    * @return  Vrai si la suppresion a fonctionné, sinon on lève une exception
    * @exception LicencesNationalesApiError si l'appel API a échoué

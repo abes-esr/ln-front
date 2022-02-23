@@ -213,7 +213,6 @@ export default class Home extends Vue {
     this.$store
         .dispatch("downloadEtablissements", new Array<Etablissement>())
         .then(response => {
-          Logger.debug(response);
           const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
           const fileLink = document.createElement("a");
 

@@ -137,6 +137,7 @@ export default class ListeEtab extends Vue {
   ];
   rechercher: string = "";
   etabs: Array<Etablissement> = [];
+  etabsFiltered: Array<Etablissement> = [];
   selectedType: string = "";
   typesEtab: Array<string> = [];
   isDisableForm: boolean = false;
@@ -196,16 +197,18 @@ export default class ListeEtab extends Vue {
     }
 
     if (conditions.length > 0) {
-      return this.etabs.filter(acces => {
+      this.etabsFiltered = this.etabs.filter(acces => {
         return conditions.every(condition => {
           return (
             acces.typeEtablissement == condition || acces.statut == condition
           );
         });
       });
+      return this.etabsFiltered
     }
     //Formatage des dates pour le tri du tableau
     this.etabs.forEach(element => element.dateCreationFormattedInString = moment(element.dateCreation).format('YYYY-MM-DD'));
+    this.etabsFiltered = this.etabs;
     return this.etabs;
   }
 
@@ -381,9 +384,8 @@ export default class ListeEtab extends Vue {
   downloadEtablissements(): void {
     this.$store.dispatch("closeDisplayedMessage");
     this.$store
-        .dispatch("downloadEtablissements", this.etabs)
+        .dispatch("downloadEtablissements", this.etabsFiltered)
         .then(response => {
-          Logger.debug(response);
           const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
           const fileLink = document.createElement("a");
 
@@ -404,7 +406,6 @@ export default class ListeEtab extends Vue {
           }
           message.isSticky = true;
 
-          Logger.debug("erre" + err.debugMessage);
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });

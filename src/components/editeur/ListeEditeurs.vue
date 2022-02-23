@@ -218,7 +218,6 @@ export default class ListeEditeurs extends Vue {
     this.$store
       .dispatch("downloadEditeurs", this.editeurs)
       .then(response => {
-        Logger.debug(response);
         const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
         const fileLink = document.createElement("a");
 
@@ -239,7 +238,6 @@ export default class ListeEditeurs extends Vue {
         }
         message.isSticky = true;
 
-        Logger.debug("erre" + err.debugMessage);
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
