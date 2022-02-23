@@ -435,8 +435,8 @@ export default class FormEtablissement extends Vue {
         this.dialogAvailable = true;
         serviceGouv
           .checkSiren(this.etablissement.siren)
-          .then(() => {
-            this.checkSirenAPI = "valide";
+          .then(data => {
+            this.checkSirenAPI = data;
             this.checkSirenColor = "siren-ok";
           })
           .catch(err => {

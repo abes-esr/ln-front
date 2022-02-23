@@ -103,7 +103,9 @@
           v-on:click="allerAListeIPs()"
         >
           <v-list-item-action class="ma-0 pa-1">
-            <font-awesome-icon :icon="['fas', 'sign-out-alt']" size="2x" />
+            <v-icon xLarge class="mr-2" @click="allerAIPs(item)"
+              >mdi-ip-network</v-icon
+            >
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Mes IPs</v-list-item-title>

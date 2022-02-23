@@ -18,16 +18,16 @@ export class IPService extends LicencesNationalesApiService {
     return this.client.put("/ip/" + siren, data, token);
   }
 
-  updateIP(token: string, id, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ip/" + id, data, token);
-  }
-
-  validateIp(token: string, data: any): Promise<AxiosResponse> {
-    return this.client.post("/ip/valider", data, token);
+  updateIP(token: string, siren: string, data: any): Promise<AxiosResponse> {
+    return this.client.post("/ip/gerer/" + siren, data, token);
   }
 
   deleteIP(token: string, id): Promise<AxiosResponse> {
     return this.client.delete("/ip/" + id, token);
+  }
+
+  getWhoIs(token: string, ip): Promise<AxiosResponse> {
+    return this.client.get("/ip/whois/" + ip, token);
   }
 
   /**

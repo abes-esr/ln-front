@@ -419,9 +419,11 @@ export default class ModuleSegmentsIpPlage extends Vue {
 
       // Envoi au back
       iPService
-        .addIP(this.$store.getters.getToken(), siren, [
-          { typeIp: this.typeIp, ip: this.ip, commentaires: this.commentaires }
-        ])
+        .addIP(this.$store.getters.getToken(), siren, {
+          typeIp: this.typeIp,
+          ip: this.ip,
+          commentaires: this.commentaires
+        })
         .then(response => {
           this.$emit("FormModuleSegmentsIpPlageEvent", {
             typeIp: this.typeIp,
