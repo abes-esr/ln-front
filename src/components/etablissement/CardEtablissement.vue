@@ -14,7 +14,7 @@
           >Information du compte
           <v-tooltip top max-width="20vw" open-delay="100">
             <template v-slot:activator="{ on }">
-              <v-btn icon class="bouton-simple" v-on="on">
+              <v-btn icon @click="downloadEtablissement" class="bouton-simple" v-on="on">
                 <font-awesome-icon
                   :icon="['fas', 'download']"
                   class="mx-2 fa-lg"
@@ -196,6 +196,7 @@ import { etablissementService } from "@/core/service/licencesnationales/Etabliss
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import Contact from "@/components/etablissement/Contact.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
+import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component({
   components: { ConfirmPopup, MessageBox }
@@ -395,6 +396,40 @@ export default class CardEtablissement extends Vue {
     this.$store.dispatch("updateCurrentEtablissement", this.etablissement); //Enregistrement en store
     etablissementService.updateEtablissement(this.etablissement, this.$store.getters.getToken(), this.$store.getters.isAdmin()); //Envoie au back et validation en BDD
     this.modificationModeDisabled = true;
+  }
+
+  downloadEtablissement(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    console.log(this.etablissement)
+    const etab = new Array<Etablissement>();
+    etab.push(this.etablissement);
+    this.$store
+        .dispatch("downloadEtablissements", etab)
+        .then(response => {
+          const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
+          const fileLink = document.createElement("a");
+
+          fileLink.href = fileURL;
+          fileLink.setAttribute("download", "export.csv");
+          document.body.appendChild(fileLink);
+
+          fileLink.click();
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
+          } else {
+            message.texte = "Impossible d'exécuter l'action : " + err.message;
+          }
+          message.isSticky = true;
+
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+        });
   }
 
   annulerModifications(): void {
