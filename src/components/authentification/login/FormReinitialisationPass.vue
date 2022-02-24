@@ -21,6 +21,7 @@
                   :nouveau-mot-de-passe="this.newPassword"
                   @update:nouveauMotDePasse="updateMotDePasse"
                   class="ma-3"
+                  :link-is-expired="true"
                 ></MotDePasse>
               </v-card-text>
               <v-card-actions>
@@ -33,6 +34,7 @@
                   class="d-flex justify-space-around"
                 >
                   <v-btn
+                    v-if="linkExpired === false"
                     x-large
                     @click="clear"
                     class="bouton-annuler"
@@ -41,6 +43,7 @@
                     Annuler</v-btn
                   >
                   <v-btn
+                    v-if="linkExpired === false"
                     :loading="buttonLoading"
                     :disabled="isDisableForm"
                     x-large
@@ -52,7 +55,7 @@
               </v-card-actions>
               <v-card-actions>
                 <v-col cols="8"> </v-col>
-                <a @click="allerAMotDePasseOublie()"
+                <a @click="revenirPageAccueil()"
                   ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à
                   la page d'accueil</a
                 >
@@ -86,6 +89,7 @@ export default class FormReinitialisationPass extends Vue {
   tokenrecaptcha: string = "";
   newPassword: string = "";
   buttonLoading: boolean = false;
+  linkExpired: boolean = false;
 
   mounted() {
     this.$store.dispatch("closeDisplayedMessage");
@@ -117,8 +121,9 @@ export default class FormReinitialisationPass extends Vue {
         if (!this.tokenValid) {
           const message: Message = new Message();
           message.type = MessageType.ERREUR;
-          message.texte = "  La durée de validité de ce lien est dépassée.";
+          message.texte = "La durée de validité de ce lien est dépassée.";
           message.isSticky = true;
+          this.linkExpired = true;
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
@@ -247,10 +252,20 @@ export default class FormReinitialisationPass extends Vue {
       });
   }
 
-  allerAMotDePasseOublie(): void {
+  revenirPageAccueil(): void {
     this.$router.push({ name: "Login" }).catch(err => {
       Logger.error(err);
     });
+  }
+
+  allerPageMotDePasseOublie(): void {
+    this.$router.push({ name: "ReinitialisationPass" }).catch(err => {
+      Logger.error(err);
+    });
+  }
+
+  afficherMotDePasseOulie(): void {
+    this.$emit("onChange"); // On notifie le composant parent
   }
 
   clear() {
