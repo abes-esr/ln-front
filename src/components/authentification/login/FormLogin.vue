@@ -21,7 +21,7 @@
               <template v-slot:append>
                 <a
                   class="noUnderlineLink"
-                  href="https://www.sirene.fr/sirene/public/static/recherche"
+                  href="https://annuaire-entreprises.data.gouv.fr/"
                   target="_blank"
                 >
                   <v-tooltip bottom>

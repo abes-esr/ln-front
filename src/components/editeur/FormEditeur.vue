@@ -42,6 +42,8 @@
                   v-model="editeur.groupesEtabRelies"
                   :items="typesEtab"
                   label="Groupes d'établissements reliés"
+                  placeholder="Groupes d'établissements reliés"
+                  persistent-placeholder
                   multiple
                   outlined
                 >

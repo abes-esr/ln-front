@@ -123,8 +123,7 @@ export class AuthentificationService extends LicencesNationalesApiService {
     return new Promise((resolve, reject) => {
       return this.client
         .post("/authentification/modifierMotDePasse", json, token)
-        .then(result => {
-          const response: JsonModifierMotDePasseResponse = result.data;
+        .then(() => {
           resolve(true);
         })
         .catch(err => {

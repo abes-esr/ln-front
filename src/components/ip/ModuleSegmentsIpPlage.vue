@@ -450,6 +450,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
     this.error = "";
     this.success = "";
     this.ip = "";
+    this.commentaires = "";
     if (!dontClearComments) this.commentaires = "";
     this.ipv4Segments = [
       { length: 3, value: "" },

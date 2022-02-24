@@ -98,7 +98,9 @@
                   outlined
                   v-model="etablissement.typeEtablissement"
                   :items="typesEtab"
-                  label="Type de l'établissement"
+                  label="Nom de l'établissement"
+                  placeholder="Nom de l'établissement"
+                  persistent-placeholder
                   :rules="rulesForms.typeEtabRules"
                   required
                 ></v-select>
@@ -142,7 +144,7 @@
                   />
                   <a
                     class="noUnderlineLink"
-                    href="https://www.sirene.fr/sirene/public/static/recherche"
+                    href="https://annuaire-entreprises.data.gouv.fr/"
                     target="_blank"
                     >Trouver le SIREN de votre établissement</a
                   >

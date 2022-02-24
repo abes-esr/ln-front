@@ -11,10 +11,12 @@
     </v-alert>
     <v-alert outlined v-if="linkIsExpired === true">
       <font-awesome-icon
-          :icon="['fas', 'info-circle']"
-          class="fa-2x mr-5 mb-1 mt-2 icone-information"
+        :icon="['fas', 'info-circle']"
+        class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
-      Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser votre mot de passe, retournez à la page d'accueil puis cliquez sur mot de passe oublié
+      Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser
+      votre mot de passe, retournez à la page d'accueil puis cliquez sur mot de
+      passe oublié
     </v-alert>
     <v-text-field
       v-if="action === Action.MODIFICATION && linkIsExpired === false"
@@ -31,7 +33,7 @@
       @keyup.enter="validate()"
     ></v-text-field>
     <v-text-field
-        v-if="linkIsExpired === false"
+      v-if="linkIsExpired === false"
       outlined
       :label="
         action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
@@ -49,7 +51,7 @@
       @keyup.enter="validate()"
     ></v-text-field>
     <v-text-field
-        v-if="linkIsExpired === false"
+      v-if="linkIsExpired === false"
       outlined
       :label="
         action === Action.CREATION
@@ -119,7 +121,7 @@ export default class MotDePasse extends Vue {
   }
 
   @Watch("nouveauMotDePasse")
-  motDepasse(value: string): void {
+  motDepasse(): void {
     if (this.confirmationNouveauMotDePasse != "") {
       (this.$refs.form as Vue & { validate: () => boolean }).validate();
     }

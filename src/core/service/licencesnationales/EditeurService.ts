@@ -1,6 +1,6 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import Editeur from "@/core/Editeur";
-import {ContactType, List} from "@/core/CommonDefinition";
+import { ContactType } from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
 
 export class EditeurService extends LicencesNationalesApiService {

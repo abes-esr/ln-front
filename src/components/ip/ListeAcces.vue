@@ -44,33 +44,6 @@
                           :search="rechercher"
                           flat
                         >
-                          <template v-slot:[header.statut="{ header }">
-                            {{ header.texte }}
-                            <v-menu offset-y :close-on-content-click="false">
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-btn icon v-bind="attrs" v-on="on">
-                                  <v-icon
-                                    small
-                                    :color="statut ? 'primary' : ''"
-                                  >
-                                    mdi-filter
-                                  </v-icon>
-                                </v-btn>
-                              </template>
-                              <div
-                                style="background-color: white; width: 280px"
-                              >
-                                <v-card-actions
-                                  ><v-select
-                                    v-model="statut"
-                                    label="Selectionnez le statut"
-                                    outlined
-                                    :items="selectStatut"
-                                  ></v-select
-                                ></v-card-actions>
-                              </div>
-                            </v-menu>
-                          </template>
                           <template v-slot:top>
                             <v-row>
                               <v-col cols="12" sm="6"></v-col>
@@ -107,14 +80,6 @@
                                 >
                               </v-tooltip>
                             </v-row>
-                          </template>
-                          <template v-slot:[`item.statut`]="{ item }">
-                            <td>
-                              {{ item.statut }}
-                              <font-awesome-icon
-                                :icon="['fas', 'info-circle']"
-                              />
-                            </td>
                           </template>
                           <template v-slot:[`item.action`]="{ item }">
                             <v-btn

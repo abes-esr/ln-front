@@ -226,12 +226,8 @@ import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
 import { Action, Message, MessageType } from "@/core/CommonDefinition";
 import { Logger } from "@/utils/Logger";
-import {
-  EtablissementService,
-  etablissementService
-} from "@/core/service/licencesnationales/EtablissementService";
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import Contact from "@/components/etablissement/Contact.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
