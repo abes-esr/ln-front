@@ -13,6 +13,8 @@ import { etablissementService } from "@/core/service/licencesnationales/Etabliss
 import ContactEtablissement from "@/core/ContactEtablissement";
 import router from "@/router";
 import { Message } from "@/core/CommonDefinition";
+import {Logger} from "@/utils/Logger";
+import {iPService} from "@/core/service/licencesnationales/IPService";
 
 Vue.use(Vuex);
 
@@ -149,7 +151,6 @@ export default new Vuex.Store({
           context.commit("SET_CURRENT_ETABLISSEMENT", value); // On sauvegarde dans le store
           resolve(true);
         } else {
-          console.log(value.nom);
           etablissementService
             .getEtablissement(value.siren, context.state.user.token)
             .then(item => {
@@ -179,7 +180,7 @@ export default new Vuex.Store({
             reject(err);
           });
       });
-    },
+    }
   },
   getters: {
     getEtablissementConnecte: state => (): Etablissement => {

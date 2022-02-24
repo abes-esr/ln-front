@@ -1,8 +1,10 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import Etablissement from "@/core/Etablissement";
+import Notification from "@/core/Notification";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import { AxiosResponse } from "axios";
 import { DateUtils } from "@/utils/DateUtils";
+import NotificationUser from "@/core/service/NotificationUser";
 
 export class EtablissementService extends LicencesNationalesApiService {
   /**
@@ -204,6 +206,84 @@ export class EtablissementService extends LicencesNationalesApiService {
   scission(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/etablissements/scission", data, token);
   }
+
+  /**
+   * Appel API pour telecharger la liste établissements
+   * @param sirens siren des etab concerné, si sirens est vide : télécharge les info compte connecté
+   * @param token Jeton de session
+   * @return  Vrai si la suppresion a fonctionné, sinon on lève une exception
+   * @exception LicencesNationalesApiError si l'appel API a échoué
+   */
+  downloadEtablissements(sirens: Array<string>, token: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // const json: JsonExportRequest = {
+      //   ids: ids
+      // };
+      return this.client
+          .post("/etablissements/export", sirens, token)
+          .then(response => {
+            resolve(response);
+          })
+          .catch(err => {
+            reject(this.buildException(err));
+          });
+    });
+  }
+
+  getNotificationsAdmin(token: string): Promise<Array<Notification>> {
+    return new Promise((resolve, reject) => {
+      return this.client
+          .get("/etablissements/notificationsAdmin/", token)
+          .then(result => {
+            const response: Array<JsonNotificationAdminResponse> = result.data['notifications'];
+            const notifs: Array<Notification> = [];
+            response.forEach(function (element, i) {
+              const notification : Notification = new Notification();
+              notification.index = i;
+              notification.siren = element.siren;
+              notification.dateEvent = element.dateEvent;
+              notification.typeNotif = element.typeNotif;
+              notification.nomEtab = element.nomEtab;
+              notifs.push(notification);
+            });
+            resolve(notifs);
+          })
+          .catch(err => {
+            reject(this.buildException(err));
+          });
+    });
+  }
+
+  getNotificationsEtab(siren: string, token: string): Promise<Array<NotificationUser>> {
+    return new Promise((resolve, reject) => {
+      return this.client
+          .get("/etablissements/notifications/" + siren, token)
+          .then(result => {
+            const response: Array<JsonNotificationUserResponse> = result.data['notifications'];
+            const notifs: Array<NotificationUser> = [];
+            response.forEach(function (element, i) {
+              const notification : NotificationUser = new NotificationUser();
+              notification.index = i;
+              notification.message = element.message;
+              notification.description = element.description;
+              notifs.push(notification);
+            });
+            resolve(notifs);
+          })
+          .catch(err => {
+            reject(this.buildException(err));
+          });
+    });
+  }
+
+  //TODO à supprimer après merge du ws
+  getNotificationsAdminMocked(): Array<Notification> {
+    const notifs: Array<Notification> = [];
+    notifs.push(new Notification(0,"123123", new Date(), "Nouvel établissement", "etablissement 1"));
+    notifs.push(new Notification(1,"230899", new Date(), "Nouvelle IP", "etablissement 2"));
+    notifs.push(new Notification(2,"431900", new Date(), "Suppression IP depuis dernier envoi", "etablissement 3"));
+    return notifs;
+  }
 }
 
 export const etablissementService = new EtablissementService();
@@ -291,4 +371,16 @@ export interface JsonUpdateEtablissement {
 
 export interface JsonTypeEtablissementResponse {
   libelle: string;
+}
+
+export interface JsonNotificationAdminResponse {
+  siren: string;
+  dateEvent: Date;
+  typeNotif: string;
+  nomEtab: string;
+}
+
+export interface JsonNotificationUserResponse {
+  message: string;
+  description: string;
 }

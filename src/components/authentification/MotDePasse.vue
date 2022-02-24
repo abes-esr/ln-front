@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" lazy-validation :disabled="isDisableForm">
-    <v-alert outlined>
+    <v-alert outlined v-if="linkIsExpired === false">
       <font-awesome-icon
         :icon="['fas', 'info-circle']"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
@@ -9,8 +9,15 @@
       majuscule, une lettre minuscule, un chiffre et un caractère spécial parmis
       @ $ ! % * ? &
     </v-alert>
+    <v-alert outlined v-if="linkIsExpired === true">
+      <font-awesome-icon
+          :icon="['fas', 'info-circle']"
+          class="fa-2x mr-5 mb-1 mt-2 icone-information"
+      />
+      Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser votre mot de passe, retournez à la page d'accueil puis cliquez sur mot de passe oublié
+    </v-alert>
     <v-text-field
-      v-if="action === Action.MODIFICATION"
+      v-if="action === Action.MODIFICATION && linkIsExpired === false"
       outlined
       label="Ancien mot de passe"
       placeholder="Ancien mot de passe"
@@ -24,6 +31,7 @@
       @keyup.enter="validate()"
     ></v-text-field>
     <v-text-field
+        v-if="linkIsExpired === false"
       outlined
       :label="
         action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
@@ -41,6 +49,7 @@
       @keyup.enter="validate()"
     ></v-text-field>
     <v-text-field
+        v-if="linkIsExpired === false"
       outlined
       :label="
         action === Action.CREATION
@@ -79,6 +88,7 @@ export default class MotDePasse extends Vue {
   confirmationNouveauMotDePasse: string = "";
   show: boolean = false;
   @Prop() isDisableForm!: boolean;
+  @Prop() linkIsExpired: boolean | undefined;
 
   get AncienMotDePasse() {
     return this.ancienMotDePasse;
