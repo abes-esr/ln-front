@@ -144,50 +144,6 @@ export default new Vuex.Store({
         }
       });
     },
-    downloadEditeurs(context, value: Array<Editeur>): Promise<any> {
-      const ids = new Array<number>();
-      value.forEach(element => {
-        ids.push(element.id);
-      });
-      return new Promise((resolve, reject) => {
-        editeurService
-          .downloadEditeurs(ids, context.state.user.token)
-          .then(item => {
-            resolve(item);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
-    },
-    downloadEtablissements(context, value: Array<Etablissement>): Promise<any> {
-      const sirens = new Array<string>();
-      value.forEach(element => {
-        sirens.push(element.siren);
-      });
-      return new Promise((resolve, reject) => {
-        etablissementService
-          .downloadEtablissements(sirens, context.state.user.token)
-          .then(item => {
-            resolve(item);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
-    },
-    downloadIPs(context, siren: string): Promise<any> {
-      return new Promise((resolve, reject) => {
-          iPService
-            .downloadIPs(siren, context.state.user.token)
-            .then(item => {
-              resolve(item);
-            })
-            .catch(err => {
-              reject(err);
-            });
-      });
-    },
     setCurrentEtablissement(context, value: Etablissement): Promise<boolean> {
       return new Promise((resolve, reject) => {
         if (value.id == -999) {

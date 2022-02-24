@@ -8,10 +8,10 @@
         <v-tooltip top max-width="20vw" open-delay="100">
           <template v-slot:activator="{ on }">
             <v-btn
-                icon
-                class="bouton-simple"
-                @click="downloadEtablissement()"
-                v-on="on"
+              icon
+              class="bouton-simple"
+              @click="downloadEtablissement()"
+              v-on="on"
             >
               <font-awesome-icon
                 :icon="['fas', 'download']"
@@ -177,11 +177,13 @@
                 {{ dateFormatted(item.dateEvent) }}
               </li>
               <li
-                  style="margin-bottom: 1em"
-                  v-for="item in this.notificationsUser"
-                  :key="item.index"
+                style="margin-bottom: 1em"
+                v-for="item in this.notificationsUser"
+                :key="item.index"
               >
-                Message: {{ item.message }}<br />Description:{{ item.description }}
+                Message: {{ item.message }}<br />Description:{{
+                  item.description
+                }}
               </li>
             </div>
           </v-card-text>
@@ -241,34 +243,38 @@ export default class Home extends Vue {
 
   downloadEtablissement(): void {
     this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-        .dispatch("downloadEtablissements", new Array<Etablissement>())
-        .then(response => {
-          const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
-          const fileLink = document.createElement("a");
+    const siren = new Array<string>();
+    siren.push(this.$store.state.user.siren);
+    etablissementService
+      .downloadEtablissements(siren, this.$store.state.user.token)
+      .then(response => {
+        const fileURL = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/csv" })
+        );
+        const fileLink = document.createElement("a");
 
-          fileLink.href = fileURL;
-          fileLink.setAttribute("download", "export.csv");
-          document.body.appendChild(fileLink);
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "export.csv");
+        document.body.appendChild(fileLink);
 
-          fileLink.click();
-        })
-        .catch(err => {
+        fileLink.click();
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        Logger.debug("erre" + err.debugMessage);
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else {
-            message.texte = "Impossible d'exécuter l'action : " + err.message;
-          }
-          message.isSticky = true;
-
-          Logger.debug("erre" + err.debugMessage);
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
         });
+      });
   }
 
   allerPageEtablissement(siren: string): void {

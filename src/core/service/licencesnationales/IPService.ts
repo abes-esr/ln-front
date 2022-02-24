@@ -37,16 +37,16 @@ export class IPService extends LicencesNationalesApiService {
    * @exception LicencesNationalesApiError si l'appel API a échoué
    */
   downloadIPs(siren: string, token: string): Promise<any> {
-      return new Promise((resolve, reject) => {
-        return this.client
-            .get("/ip/export/"+siren, token)
-            .then(response => {
-              resolve(response);
-            })
-            .catch(err => {
-              reject(this.buildException(err));
-            });
-      });
+    return new Promise((resolve, reject) => {
+      return this.client
+        .post("/ip/export/" + siren, null, token)
+        .then(response => {
+          resolve(response);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
   }
 }
 

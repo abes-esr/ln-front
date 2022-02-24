@@ -48,7 +48,6 @@
             <v-spacer></v-spacer>
           </v-row>
           <v-row class="d-flex mt-1 mb-3">
-
             <v-tooltip top max-width="20vw" open-delay="100">
               <template v-slot:activator="{ on }">
                 <v-btn
@@ -56,7 +55,8 @@
                   @click="downloadEditeurs()"
                   class="mx-2 text-lowercase bouton-simple"
                   v-on="on"
-                  ><span class="text-uppercase">T</span>élécharger la liste des éditeurs
+                  ><span class="text-uppercase">T</span>élécharger la liste des
+                  éditeurs
                   <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
                 /></v-btn>
               </template>
@@ -215,10 +215,16 @@ export default class ListeEditeurs extends Vue {
 
   downloadEditeurs(): void {
     this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-      .dispatch("downloadEditeurs", this.editeurs)
+    const ids = new Array<number>();
+    this.editeurs.forEach(element => {
+      ids.push(element.id);
+    });
+    editeurService
+      .downloadEditeurs(ids, this.$store.state.user.token)
       .then(response => {
-        const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
+        const fileURL = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/csv" })
+        );
         const fileLink = document.createElement("a");
 
         fileLink.href = fileURL;

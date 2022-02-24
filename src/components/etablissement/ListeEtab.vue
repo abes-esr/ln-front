@@ -44,13 +44,14 @@
           <v-tooltip top max-width="20vw" open-delay="100">
             <template v-slot:activator="{ on }">
               <v-btn
-                  text
-                  @click="downloadEtablissements()"
-                  class="mx-2 text-lowercase bouton-simple"
-                  v-on="on"
-              ><span class="text-uppercase">T</span>élécharger la liste des Etabs
+                text
+                @click="downloadEtablissements()"
+                class="mx-2 text-lowercase bouton-simple"
+                v-on="on"
+                ><span class="text-uppercase">T</span>élécharger la liste des
+                Etabs
                 <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
-                /></v-btn>
+              /></v-btn>
             </template>
             <span>Le téléchargement correspond à la vue filtrée</span>
           </v-tooltip>
@@ -216,7 +217,7 @@ export default class ListeEtab extends Vue {
           );
         });
       });
-      return this.etabsFiltered
+      return this.etabsFiltered;
     }
     //Formatage des dates pour le tri du tableau
     this.etabs.forEach(element => {
@@ -225,8 +226,8 @@ export default class ListeEtab extends Vue {
       ).format("YYYY-MM-DD");
       if (element.dateModificationDerniereIp) {
         element.dateModificationDerniereIp = element.dateModificationDerniereIp.replaceAll(
-            "-",
-            "/"
+          "-",
+          "/"
         );
       }
     });
@@ -410,35 +411,40 @@ export default class ListeEtab extends Vue {
 
   downloadEtablissements(): void {
     this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-        .dispatch("downloadEtablissements", this.etabsFiltered)
-        .then(response => {
-          const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
-          const fileLink = document.createElement("a");
+    const sirens = new Array<string>();
+    this.etabsFiltered.forEach(element => {
+      sirens.push(element.siren);
+    });
+    etablissementService
+      .downloadEtablissements(sirens, this.$store.state.user.token)
+      .then(response => {
+        const fileURL = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/csv" })
+        );
+        const fileLink = document.createElement("a");
 
-          fileLink.href = fileURL;
-          fileLink.setAttribute("download", "export.csv");
-          document.body.appendChild(fileLink);
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "export.csv");
+        document.body.appendChild(fileLink);
 
-          fileLink.click();
-        })
-        .catch(err => {
+        fileLink.click();
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else {
-            message.texte = "Impossible d'exécuter l'action : " + err.message;
-          }
-          message.isSticky = true;
-
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
         });
+      });
   }
-
 
   allerAAfficherEtab(item: Etablissement): void {
     this.$store.dispatch("closeDisplayedMessage");

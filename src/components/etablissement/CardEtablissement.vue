@@ -14,7 +14,12 @@
           >Information du compte
           <v-tooltip top max-width="20vw" open-delay="100">
             <template v-slot:activator="{ on }">
-              <v-btn icon @click="downloadEtablissement" class="bouton-simple" v-on="on">
+              <v-btn
+                icon
+                @click="downloadEtablissement"
+                class="bouton-simple"
+                v-on="on"
+              >
                 <font-awesome-icon
                   :icon="['fas', 'download']"
                   class="mx-2 fa-lg"
@@ -34,9 +39,26 @@
         >Compte créé le :
         {{ etablissement.dateCreation.toLocaleDateString() }}</span
       >
-      <v-btn v-if="this.modificationModeDisabled" class="btn-2 mt-3" @click="entrerEnModification()">Modifier le compte</v-btn>
-      <v-btn v-if="!this.modificationModeDisabled" class="btn-2 mt-3" @click="validerModifications()" style="margin-right: 1em" color="success">Valider les modifications du compte</v-btn>
-      <v-btn v-if="!this.modificationModeDisabled" class="btn-2 mt-3" @click="annulerModifications()" >Réinitialiser les champs d'origine</v-btn>
+      <v-btn
+        v-if="this.modificationModeDisabled"
+        class="btn-2 mt-3"
+        @click="entrerEnModification()"
+        >Modifier le compte</v-btn
+      >
+      <v-btn
+        v-if="!this.modificationModeDisabled"
+        class="btn-2 mt-3"
+        @click="validerModifications()"
+        style="margin-right: 1em"
+        color="success"
+        >Valider les modifications du compte</v-btn
+      >
+      <v-btn
+        v-if="!this.modificationModeDisabled"
+        class="btn-2 mt-3"
+        @click="annulerModifications()"
+        >Réinitialiser les champs d'origine</v-btn
+      >
       <v-row class="d-flex justify-space-between flex-wrap">
         <v-col
           cols="12"
@@ -61,20 +83,20 @@
               </v-tooltip>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-                <v-text-field
-                  label="Siren"
-                  placeholder="Siren"
-                  outlined
-                  v-model="etablissement.siren"
-                  :readonly="true"
-                ></v-text-field>
-                <v-text-field
-                  label="Nom de l'établissement"
-                  placeholder="Nom de l'établissement"
-                  outlined
-                  v-model="etablissement.nom"
-                  :readonly="this.modificationModeDisabled"
-                ></v-text-field>
+              <v-text-field
+                label="Siren"
+                placeholder="Siren"
+                outlined
+                v-model="etablissement.siren"
+                :readonly="true"
+              ></v-text-field>
+              <v-text-field
+                label="Nom de l'établissement"
+                placeholder="Nom de l'établissement"
+                outlined
+                v-model="etablissement.nom"
+                :readonly="this.modificationModeDisabled"
+              ></v-text-field>
               <v-text-field
                 label="ID Abes"
                 placeholder="ID Abes"
@@ -82,8 +104,20 @@
                 v-model="etablissement.idAbes"
                 :readonly="true"
               ></v-text-field>
-              <v-select label="Type d'établissement" :items="typesEtab" outlined v-model="etablissement.typeEtablissement" :readonly="this.modificationModeDisabled"></v-select>
-              <v-select label="Statut de l'établissement" :items="selectStatut" outlined v-model="etablissement.statut" :readonly="this.modificationModeDisabled"></v-select>
+              <v-select
+                label="Type d'établissement"
+                :items="typesEtab"
+                outlined
+                v-model="etablissement.typeEtablissement"
+                :readonly="this.modificationModeDisabled"
+              ></v-select>
+              <v-select
+                label="Statut de l'établissement"
+                :items="selectStatut"
+                outlined
+                v-model="etablissement.statut"
+                :readonly="this.modificationModeDisabled"
+              ></v-select>
               <div>
                 <h3 class="d-inline">Statut des IPs de l'établissement:</h3>
                 {{ etablissement.statut }}
@@ -192,11 +226,14 @@ import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
 import { Action, Message, MessageType } from "@/core/CommonDefinition";
 import { Logger } from "@/utils/Logger";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import {
+  EtablissementService,
+  etablissementService
+} from "@/core/service/licencesnationales/EtablissementService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import Contact from "@/components/etablissement/Contact.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
-import {LicencesNationalesBadRequestApiError} from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 
 @Component({
   components: { ConfirmPopup, MessageBox }
@@ -209,10 +246,7 @@ export default class CardEtablissement extends Vue {
   buttonSuppresionLoading: boolean = false;
   typesEtab: Array<string> = [];
   modificationModeDisabled: boolean = true;
-  selectStatut: Array<string> = [
-    "Nouveau",
-    "Validé"
-  ];
+  selectStatut: Array<string> = ["Nouveau", "Validé"];
 
   constructor() {
     super();
@@ -394,48 +428,52 @@ export default class CardEtablissement extends Vue {
 
   validerModifications(): void {
     this.$store.dispatch("updateCurrentEtablissement", this.etablissement); //Enregistrement en store
-    etablissementService.updateEtablissement(this.etablissement, this.$store.getters.getToken(), this.$store.getters.isAdmin()); //Envoie au back et validation en BDD
+    etablissementService.updateEtablissement(
+      this.etablissement,
+      this.$store.getters.getToken(),
+      this.$store.getters.isAdmin()
+    ); //Envoie au back et validation en BDD
     this.modificationModeDisabled = true;
   }
 
   downloadEtablissement(): void {
     this.$store.dispatch("closeDisplayedMessage");
-    console.log(this.etablissement)
-    const etab = new Array<Etablissement>();
-    etab.push(this.etablissement);
-    this.$store
-        .dispatch("downloadEtablissements", etab)
-        .then(response => {
-          const fileURL = window.URL.createObjectURL(new Blob([response.data],{type: 'application/csv'}));
-          const fileLink = document.createElement("a");
+    const siren = new Array<string>();
+    siren.push(this.etablissement.siren);
+    etablissementService
+      .downloadEtablissements(siren, this.$store.state.user.token)
+      .then(response => {
+        const fileURL = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/csv" })
+        );
+        const fileLink = document.createElement("a");
 
-          fileLink.href = fileURL;
-          fileLink.setAttribute("download", "export.csv");
-          document.body.appendChild(fileLink);
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "export.csv");
+        document.body.appendChild(fileLink);
 
-          fileLink.click();
-        })
-        .catch(err => {
+        fileLink.click();
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else {
-            message.texte = "Impossible d'exécuter l'action : " + err.message;
-          }
-          message.isSticky = true;
-
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
         });
+      });
   }
 
   annulerModifications(): void {
     this.etablissement = this.$store.getters.getCurrentEtablissement();
   }
-
 }
 </script>
 <style scoped lang="scss">
@@ -460,5 +498,4 @@ export default class CardEtablissement extends Vue {
   min-height: 1rem;
   word-break: break-all;
 }
-
 </style>
