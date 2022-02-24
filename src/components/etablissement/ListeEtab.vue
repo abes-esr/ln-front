@@ -41,6 +41,20 @@
               clearable
             ></v-text-field>
           </div>
+          <v-tooltip top max-width="20vw" open-delay="100">
+            <template v-slot:activator="{ on }">
+              <v-btn
+                text
+                @click="downloadEtablissements()"
+                class="mx-2 text-lowercase bouton-simple"
+                v-on="on"
+                ><span class="text-uppercase">T</span>élécharger la liste des
+                Etabs
+                <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
+              /></v-btn>
+            </template>
+            <span>Le téléchargement correspond à la vue filtrée</span>
+          </v-tooltip>
         </template>
         <template v-slot:header.typeEtablissement="{ header }">
           {{ header.texte }}
@@ -136,6 +150,7 @@ export default class ListeEtab extends Vue {
   ];
   rechercher: string = "";
   etabs: Array<Etablissement> = [];
+  etabsFiltered: Array<Etablissement> = [];
   selectedType: string = "";
   typesEtab: Array<string> = [];
   isDisableForm: boolean = false;
@@ -195,25 +210,28 @@ export default class ListeEtab extends Vue {
     }
 
     if (conditions.length > 0) {
-      return this.etabs.filter(acces => {
+      this.etabsFiltered = this.etabs.filter(acces => {
         return conditions.every(condition => {
           return (
             acces.typeEtablissement == condition || acces.statut == condition
           );
         });
       });
+      return this.etabsFiltered;
     }
     //Formatage des dates pour le tri du tableau
     this.etabs.forEach(element => {
       element.dateCreationFormattedInString = moment(
         element.dateCreation
       ).format("YYYY-MM-DD");
-      if (element.dateModificationDerniereIp)
+      if (element.dateModificationDerniereIp) {
         element.dateModificationDerniereIp = element.dateModificationDerniereIp.replaceAll(
           "-",
           "/"
         );
+      }
     });
+    this.etabsFiltered = this.etabs;
     return this.etabs;
   }
 
@@ -391,6 +409,42 @@ export default class ListeEtab extends Vue {
       });
   }
 
+  downloadEtablissements(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    const sirens = new Array<string>();
+    this.etabsFiltered.forEach(element => {
+      sirens.push(element.siren);
+    });
+    etablissementService
+      .downloadEtablissements(sirens, this.$store.state.user.token)
+      .then(response => {
+        const fileURL = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/csv" })
+        );
+        const fileLink = document.createElement("a");
+
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "export.csv");
+        document.body.appendChild(fileLink);
+
+        fileLink.click();
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+      });
+  }
 
   allerAAfficherEtab(item: Etablissement): void {
     this.$store.dispatch("closeDisplayedMessage");

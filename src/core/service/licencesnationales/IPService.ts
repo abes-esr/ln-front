@@ -29,6 +29,25 @@ export class IPService extends LicencesNationalesApiService {
   getWhoIs(token: string, ip): Promise<AxiosResponse> {
     return this.client.get("/ip/whois/" + ip, token);
   }
+
+  /**
+   * Appel API pour telecharger la liste des ip d'un etab
+   * @param siren siren du proprietaire d'ips
+   * @param token Jeton de session
+   * @exception LicencesNationalesApiError si l'appel API a échoué
+   */
+  downloadIPs(siren: string, token: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      return this.client
+        .post("/ip/export/" + siren, null, token)
+        .then(response => {
+          resolve(response);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
+  }
 }
 
 export const iPService = new IPService();

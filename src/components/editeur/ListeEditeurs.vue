@@ -48,13 +48,20 @@
             <v-spacer></v-spacer>
           </v-row>
           <v-row class="d-flex mt-1 mb-3">
-            <v-btn
-              text
-              @click="downloadEditeurs()"
-              class="mx-2 text-lowercase bouton-simple"
-              ><span class="text-uppercase">T</span>élécharger tous les éditeurs
-              <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
-            /></v-btn>
+            <v-tooltip top max-width="20vw" open-delay="100">
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  text
+                  @click="downloadEditeurs()"
+                  class="mx-2 text-lowercase bouton-simple"
+                  v-on="on"
+                  ><span class="text-uppercase">T</span>élécharger la liste des
+                  éditeurs
+                  <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
+                /></v-btn>
+              </template>
+              <span>Le téléchargement correspond à la vue filtrée</span>
+            </v-tooltip>
           </v-row>
         </template>
         <template v-slot:item.dateCreation="{ item }">
@@ -188,6 +195,43 @@ export default class ListeEditeurs extends Vue {
       .dispatch("setCurrentEditeur", item)
       .then(() => {
         this.$router.push({ name: "ModifierEditeur" });
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+      });
+  }
+
+  downloadEditeurs(): void {
+    this.$store.dispatch("closeDisplayedMessage");
+    const ids = new Array<number>();
+    this.editeurs.forEach(element => {
+      ids.push(element.id);
+    });
+    editeurService
+      .downloadEditeurs(ids, this.$store.state.user.token)
+      .then(response => {
+        const fileURL = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/csv" })
+        );
+        const fileLink = document.createElement("a");
+
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "export.csv");
+        document.body.appendChild(fileLink);
+
+        fileLink.click();
       })
       .catch(err => {
         Logger.error(err.toString());

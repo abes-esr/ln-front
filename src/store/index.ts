@@ -13,6 +13,8 @@ import { etablissementService } from "@/core/service/licencesnationales/Etabliss
 import ContactEtablissement from "@/core/ContactEtablissement";
 import router from "@/router";
 import { Message } from "@/core/CommonDefinition";
+import {Logger} from "@/utils/Logger";
+import {iPService} from "@/core/service/licencesnationales/IPService";
 
 Vue.use(Vuex);
 
@@ -178,7 +180,7 @@ export default new Vuex.Store({
             reject(err);
           });
       });
-    },
+    }
   },
   getters: {
     getEtablissementConnecte: state => (): Etablissement => {

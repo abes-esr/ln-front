@@ -1,6 +1,6 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import Editeur from "@/core/Editeur";
-import { ContactType } from "@/core/CommonDefinition";
+import {ContactType, List} from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
 
 export class EditeurService extends LicencesNationalesApiService {
@@ -200,6 +200,26 @@ export class EditeurService extends LicencesNationalesApiService {
         });
     });
   }
+
+  /**
+   * Appel API pour telecharger la liste éditeurs
+   * @param ids id des editeurs a telecharger
+   * @param token Jeton de session
+   * @return  Vrai si la suppresion a fonctionné, sinon on lève une exception
+   * @exception LicencesNationalesApiError si l'appel API a échoué
+   */
+  downloadEditeurs(ids: Array<number>, token: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      return this.client
+        .post("/editeurs/export", ids, token)
+        .then(response => {
+          resolve(response);
+        })
+        .catch(err => {
+          reject(this.buildException(err));
+        });
+    });
+  }
 }
 
 export const editeurService = new EditeurService();
@@ -263,4 +283,8 @@ export interface JsonModificationEditeurRequest {
   adresse: string;
   contactsCommerciaux: Array<JsonModificationContactEditeurRequest>;
   contactsTechniques: Array<JsonModificationContactEditeurRequest>;
+}
+
+export interface JsonExportRequest {
+  ids: Array<number>;
 }
