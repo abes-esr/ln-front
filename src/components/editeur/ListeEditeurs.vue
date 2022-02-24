@@ -7,14 +7,6 @@
     </v-col>
     <v-card-title>
       <v-row class="d-flex flex-row-reverse">
-        <v-btn @click="scissionEditeur()" class="btn-1 mx-2" :disabled="true"
-          >Scission
-          <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2"
-        /></v-btn>
-        <v-btn @click="fusionEditeur()" class="btn-1 mx-2" :disabled="true"
-          >Fusion
-          <font-awesome-icon :icon="['fas', 'object-group']" class="mx-2"
-        /></v-btn>
         <v-btn @click="ajouterEditeur()" class="btn-1 mx-2"
           >Créer un éditeur
           <font-awesome-icon :icon="['fas', 'plus']" class="mx-2"

@@ -1,19 +1,19 @@
 <template>
   <div>
-    <v-card width="100%" outlined>
-      <v-form ref="form" lazy-validation>
-        <v-card-text>
+    <v-form ref="form" lazy-validation>
+      <v-row>
+        <v-col lg="12" md="12" xs="12">
           <v-row>
-            <v-col lg="12" md="12" xs="12">
-              <v-row>
-                <v-col cols="2" />
-                <v-col cols="8">
-                  <v-card-title>Fusion d'établissements</v-card-title>
-                  <v-card width="100%">
-                    <v-card-title
-                      >Siren des établissements à fusionner
-                    </v-card-title>
-                    <v-card-text>
+            <v-col cols="2" />
+            <v-col cols="8">
+              <v-card-title>Fusion d'établissements</v-card-title>
+              <v-card>
+                <v-card-text>
+                  <v-card-title
+                    >Siren des établissements à fusionner
+                  </v-card-title>
+                  <v-row>
+                    <v-col cols="4" xs="12" v-for="n in sirenNumber" :key="n">
                       <v-text-field
                         outlined
                         label="SIREN"
@@ -21,120 +21,54 @@
                         v-model="sirenEtab[n - 1]"
                         :rules="rulesForms.siren"
                         required
-                        @keyup.enter="validate()"
-                        v-for="n in sirenNumber"
-                        :key="n"
-                      ></v-text-field>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-btn @click="increaseSirenNumber"
-                        >Ajouter un siren
-                      </v-btn>
-                      <v-btn @click="decreaseSirenNumber"
-                        >Supprimer un siren
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                  <form-etablissement
-                    :bus="bus"
-                    v-on:formEtab="send"
-                  ></form-etablissement>
-                </v-col>
-              </v-row>
+                      ></v-text-field></v-col
+                  ></v-row>
+                  <v-card-actions>
+                    <v-btn @click="increaseSirenNumber"
+                      >Ajouter un siren
+                    </v-btn>
+                    <v-btn @click="decreaseSirenNumber"
+                      >Supprimer un siren
+                    </v-btn>
+                  </v-card-actions>
+                </v-card-text>
+              </v-card>
+              <form-etablissement
+                :listeSirenFusion="sirenEtab"
+                :action="Action.FUSION"
+              ></form-etablissement>
             </v-col>
           </v-row>
-        </v-card-text>
-        <v-card-actions>
-          <v-row>
-            <v-col cols="9"></v-col>
-            <v-col>
-              <v-btn @click="clear()">Annuler </v-btn>
-              <v-btn
-                @click="triggerChildremForm()"
-                :loading="buttonLoading"
-                color="success"
-                >Valider
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-card-actions>
-      </v-form>
-    </v-card>
-    <br />
-    <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
-      {{ message }}
-    </v-alert>
-    <v-alert v-else dense outlined :value="alert" type="success">
-      {{ message }}
-    </v-alert>
+        </v-col>
+      </v-row>
+    </v-form>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
 import { rulesForms } from "@/core/RulesForm";
+import { Action } from "@/core/CommonDefinition";
 
 @Component({
   components: { FormEtablissement }
 })
 export default class FormFusionEtablissement extends Vue {
-  sirenEtab: Array<string> = [];
-  siren = [
-    (v: string) => !!v || "SIREN obligatoire",
-    (v: string) => /^\d{9}$/.test(v) || "Le SIREN doit contenir 9 chiffres"
-  ];
-  bus: Vue = new Vue();
+  sirenEtab: Array<string> = ["", ""];
   sirenNumber: number = 2;
-  buttonLoading: boolean = false;
-  alert: boolean = false;
-  alertOK: boolean = false;
-  retourKo: boolean = false;
-  message: string = "";
   rulesForms: any = rulesForms;
-
-  triggerChildremForm(): void {
-    this.bus.$emit("submit");
-  }
-
-  send(payload: object): void {
-    this.buttonLoading = true;
-    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-      etablissementService
-        .fusion(this.$store.getters.getToken(), {
-          etablissementDTO: payload,
-          sirenFusionnes: this.sirenEtab
-        })
-        .then(response => {
-          this.alert = true;
-          this.buttonLoading = false;
-          this.message = response.data;
-          this.alert = true;
-          this.clear();
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          this.message = err.response.data;
-          this.alert = true;
-          this.retourKo = true;
-        });
-    } else {
-      this.buttonLoading = false;
-    }
-  }
-
-  clear(): void {
-    this.bus.$emit("clear");
-  }
+  Action: any = Action;
 
   increaseSirenNumber() {
     this.sirenNumber++;
   }
 
   decreaseSirenNumber() {
-    this.sirenNumber--;
-    this.sirenEtab.pop();
+    if (this.sirenNumber > 2) {
+      this.sirenNumber--;
+      this.sirenEtab.pop();
+    }
   }
 }
 </script>

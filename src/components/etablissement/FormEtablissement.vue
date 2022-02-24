@@ -71,7 +71,9 @@
           class="mx-9"
           v-if="
             (action === Action.MODIFICATION && isAdmin) ||
-              action === Action.CREATION
+              action === Action.CREATION ||
+              action === Action.FUSION ||
+              Action.SCISSION
           "
         >
           <v-row>
@@ -118,7 +120,11 @@
                   class="ma-2"
                   :class="checkSirenColor"
                   label
-                  v-if="action == Action.CREATION"
+                  v-if="
+                    action == Action.CREATION ||
+                      action == Action.FUSION ||
+                      action == Action.SCISSION
+                  "
                   >SIREN : {{ checkSirenAPI }}
                 </v-chip>
               </v-col>
@@ -174,32 +180,35 @@
           />
         </div>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="action !== Action.SCISSION">
         <v-spacer class="hidden-sm-and-down"></v-spacer>
         <v-col
           cols="12"
-          md="3"
-          lg="3"
-          xl="3"
+          md="4"
+          lg="4"
+          xl="4"
           class="d-flex justify-space-around mr-16 flex-wrap"
         >
-          <v-btn
-            x-large
-            @click="clear"
-            class="bouton-annuler"
-            :disabled="isDisableForm"
+          <v-row>
+            <v-btn
+              x-large
+              @click="clear"
+              class="bouton-annuler"
+              :disabled="isDisableForm"
+            >
+              Annuler</v-btn
+            >
+            <div class="pl-2" />
+            <v-btn
+              color="button"
+              :loading="buttonLoading"
+              :disabled="isDisableForm"
+              x-large
+              @click="validate()"
+              >Enregistrer
+              <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+            </v-btn></v-row
           >
-            Annuler</v-btn
-          >
-          <v-btn
-            color="button"
-            :loading="buttonLoading"
-            :disabled="isDisableForm"
-            x-large
-            @click="validate()"
-            >Enregistrer
-            <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
-          </v-btn>
         </v-col>
       </v-card-actions>
     </v-form>
@@ -207,7 +216,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import { Logger } from "@/utils/Logger";
 import { serviceGouv } from "@/core/service/data.gouv/DataGouvApiService";
 import { SirenNotFoundError } from "@/core/service/data.gouv/exception/SirenNotFoundError";
@@ -224,8 +233,16 @@ import MessageBox from "@/components/common/MessageBox.vue";
   components: { MessageBox, Contact }
 })
 export default class FormEtablissement extends Vue {
-  etablissement: Etablissement;
+  etablissement: Etablissement = new Etablissement();
   @Prop() action!: Action;
+  @Prop() listeSirenFusion!: Array<string>;
+  @Prop() triggerScission!: boolean;
+  @Watch("triggerScission")
+  onTriggerScission() {
+    if (this.action == Action.SCISSION && this.triggerScission) {
+      this.validate();
+    }
+  }
   Action: any = Action;
   rulesForms: any = rulesForms;
   isAdmin: boolean = this.$store.getters.isAdmin();
@@ -243,7 +260,8 @@ export default class FormEtablissement extends Vue {
 
   constructor() {
     super();
-    this.etablissement = this.getCurrentEtablissement;
+    if (this.action !== Action.FUSION && this.action !== Action.SCISSION)
+      this.etablissement = this.getCurrentEtablissement;
     this.fetchListeType();
     window.scrollTo(0, 0);
   }
@@ -388,7 +406,7 @@ export default class FormEtablissement extends Vue {
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
-          // On glisse sur le message d'erreur
+          // On glisse sur le message
           const messageBox = document.getElementById("messageBox");
           if (messageBox) {
             window.scrollTo(0, messageBox.offsetTop);
@@ -420,6 +438,47 @@ export default class FormEtablissement extends Vue {
         .finally(() => {
           this.buttonLoading = false;
         });
+    } else if (this.action === Action.FUSION) {
+      etablissementService
+        .fusion(this.$store.getters.getToken(), {
+          nouveauEtab: this.etablissement,
+          sirenFusionnes: this.listeSirenFusion
+        })
+        .then(() => {
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = "Fusion effectuée.";
+          message.isSticky = true;
+          this.returnLink = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          this.$router.push({ name: "ListeEtab" }).catch(err => {
+            Logger.error(err);
+          });
+        })
+        .catch(err => {
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = err.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .finally(() => {
+          this.buttonLoading = false;
+          this.clear();
+        });
+    } else if (this.action === Action.SCISSION) {
+      console.log(this.etablissement);
+      this.$emit("send", this.etablissement);
+      this.buttonLoading = false;
     }
   }
 
@@ -464,7 +523,7 @@ export default class FormEtablissement extends Vue {
     (this.$refs.formCreationCompte as HTMLFormElement).resetValidation();
     (this.$refs.formContact as Contact).clear();
 
-    if (this.action != Action.CREATION) {
+    if (this.action === Action.MODIFICATION) {
       this.$store.dispatch("setCurrentEtablissement", this.etablissement);
       this.$store.dispatch("closeDisplayedMessage");
       this.$router.push({ name: "Home" }).catch(err => {

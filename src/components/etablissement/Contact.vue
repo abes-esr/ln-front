@@ -118,7 +118,11 @@
       <v-col cols="12" md="6" lg="6" xl="6">
         <MotDePasse
           ref="motdepasse"
-          v-if="action === Action.CREATION"
+          v-if="
+            action === Action.CREATION ||
+              action === Action.FUSION ||
+              action === Action.SCISSION
+          "
           :action="Action.CREATION"
           :nouveau-mot-de-passe="contact.motDePasse"
           @update:nouveauMotDePasse="updateMotDePasse"

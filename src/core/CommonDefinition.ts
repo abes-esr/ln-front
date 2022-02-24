@@ -5,7 +5,9 @@
 export enum Action {
   CREATION,
   MODIFICATION,
-  VISUALISER
+  VISUALISER,
+  FUSION,
+  SCISSION
 }
 
 export interface SegmentPlage {

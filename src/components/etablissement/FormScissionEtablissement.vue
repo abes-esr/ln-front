@@ -1,82 +1,75 @@
 <template>
   <div>
-    <v-card width="100%" outlined>
-      <v-form ref="form" lazy-validation>
-        <v-card-text>
+    <v-form ref="form" lazy-validation>
+      <v-row>
+        <v-col lg="12" md="12" xs="12">
           <v-row>
-            <v-col lg="12" md="12" xs="12">
-              <v-row>
-                <v-col cols="2" />
-                <v-col cols="8">
-                  <v-card-title>Scission d'établissement</v-card-title>
-                  <v-card width="100%">
+            <v-col cols="2" xs="0" />
+            <v-col cols="8" xs="12">
+              <v-card-title>Scission d'établissements</v-card-title>
+              <v-card>
+                <v-card-text>
+                  <v-row>
                     <v-card-title
                       >Siren de l'établissements à scinder</v-card-title
                     >
-                    <v-card-text>
+                    <v-col cols="3">
                       <v-text-field
                         outlined
                         label="SIREN"
                         placeholder="SIREN"
                         v-model="sirenEtab"
                         :rules="rulesForms.siren"
+                        class="pt-6"
                         required
                         @keyup.enter="validate()"
-                      ></v-text-field>
-                    </v-card-text>
-                  </v-card>
-                  <form-etablissement
-                    :bus="bus"
-                    v-on:formEtab="send"
-                    v-for="n in etablissementNumber"
-                    :key="n"
-                  ></form-etablissement>
-                </v-col>
-              </v-row>
+                      ></v-text-field></v-col
+                  ></v-row>
+
+                  <v-card-actions>
+                    <h3>Nombre d'établissements : {{ etablissementNumber }}</h3>
+                    <v-btn @click="increaseEtablissementNumber"
+                      >Ajouter un etablissement
+                    </v-btn>
+                    <v-btn @click="decreaseEtablissementNumber"
+                      >Supprimer un etablissement
+                    </v-btn>
+                  </v-card-actions>
+                </v-card-text>
+              </v-card>
+              <form-etablissement
+                :action="Action.SCISSION"
+                :triggerScission="triggerScission"
+                v-on:send="send"
+                v-for="n in etablissementNumber"
+                :key="n"
+              ></form-etablissement>
+              <v-card-actions class="v-card__actions">
+                <v-row>
+                  <v-spacer class="hidden-sm-and-down"></v-spacer>
+                  <v-col
+                    cols="12"
+                    md="3"
+                    lg="3"
+                    xl="3"
+                    class="d-flex justify-space-around mr-16 flex-wrap"
+                  >
+                    <v-btn
+                      @click="triggerChildremForm()"
+                      :loading="buttonLoading"
+                      x-large
+                      color="button"
+                      >Enregistrer
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card-actions>
             </v-col>
           </v-row>
-        </v-card-text>
-        <v-card-actions class="v-card__actions">
-          <v-row>
-            <v-col cols="3"></v-col>
-            <v-main>Nombre d'établissement : {{ etablissementNumber }}</v-main>
-          </v-row>
-          <v-row>
-            <v-col cols="3"></v-col>
-            <v-col>
-              <v-btn @click="increaseEtablissementNumber"
-                >Ajouter un etablissement
-              </v-btn>
-            </v-col>
-            <v-col>
-              <v-btn @click="decreaseEtablissementNumber"
-                >Supprimer un etablissement
-              </v-btn>
-            </v-col>
-            <v-col cols="3"></v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="9"></v-col>
-            <v-col>
-              <v-btn @click="clear()">Annuler </v-btn>
-              <v-btn
-                @click="triggerChildremForm()"
-                :loading="buttonLoading"
-                color="success"
-                >Valider
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-card-actions>
-      </v-form>
-    </v-card>
+        </v-col>
+      </v-row>
+    </v-form>
     <br />
-    <v-alert v-if="retourKo" dense outlined :value="alert" type="error">
-      {{ message }}
-    </v-alert>
-    <v-alert v-else dense outlined :value="alert" type="success">
-      {{ message }}
-    </v-alert>
   </div>
 </template>
 <style src="./style.css"></style>
@@ -86,57 +79,64 @@ import { Logger } from "@/utils/Logger";
 import { Component, Vue } from "vue-property-decorator";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { rulesForms } from "@/core/RulesForm";
+import { Action, Message, MessageType } from "@/core/CommonDefinition";
 
 @Component({
   components: { FormEtablissement }
 })
 export default class FormScissionEtablissement extends Vue {
   sirenEtab: string = "";
-  bus: Vue = new Vue();
   etablissementNumber: number = 2;
   etablissementDTOS: Array<string> = [];
   buttonLoading: boolean = false;
-  alert: boolean = false;
-  alertOK: boolean = false;
-  retourKo: boolean = false;
-  message: string = "";
   rulesForms: any = rulesForms;
+  Action: any = Action;
+  triggerScission: boolean = false;
 
   triggerChildremForm(): void {
-    this.bus.$emit("submit");
+    this.triggerScission = true;
   }
 
-  send(payload: never): void {
+  send(payload): void {
+    console.log(payload);
     this.buttonLoading = true;
     this.etablissementDTOS.push(payload);
-    if (this.etablissementDTOS.length == this.etablissementNumber) {
+    if (this.etablissementDTOS.length === this.etablissementNumber) {
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        Logger.debug(
-          JSON.stringify({
-            sirenScinde: this.sirenEtab,
-            nouveauxEtabs: this.etablissementDTOS
-          })
-        );
-
-        this.alert = false;
-        this.message = "";
-        this.retourKo = false;
         etablissementService
           .scission(this.$store.getters.getToken(), {
-            ancienSiren: this.sirenEtab,
-            etablissementDTOS: this.etablissementDTOS
+            sirenScinde: "this.sirenEtab",
+            nouveauxEtabs: this.etablissementDTOS
           })
-          .then(response => {
-            this.alert = true;
-            this.buttonLoading = false;
-            this.message = response.data;
-            this.clear();
+          .then(() => {
+            const message: Message = new Message();
+            message.type = MessageType.VALIDATION;
+            message.texte = "Scission effectuée.";
+            message.isSticky = true;
+            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+              Logger.error(err.toString());
+            });
+            this.$router.push({ name: "ListeEtab" }).catch(err => {
+              Logger.error(err);
+            });
           })
           .catch(err => {
+            const message: Message = new Message();
+            message.type = MessageType.ERREUR;
+            message.texte = err.response.data.message;
+            message.isSticky = true;
+            this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+              Logger.error(err.toString());
+            });
+            // On glisse sur le message d'erreur
+            const messageBox = document.getElementById("messageBox");
+            if (messageBox) {
+              window.scrollTo(0, messageBox.offsetTop);
+            }
+          })
+          .finally(() => {
             this.buttonLoading = false;
-            this.message = err.response.data;
-            this.alert = true;
-            this.retourKo = true;
+            this.triggerScission = false;
             this.etablissementDTOS = [];
           });
       } else {
@@ -146,16 +146,12 @@ export default class FormScissionEtablissement extends Vue {
     }
   }
 
-  clear(): void {
-    this.bus.$emit("clear");
-  }
-
   increaseEtablissementNumber() {
     this.etablissementNumber++;
   }
 
   decreaseEtablissementNumber() {
-    this.etablissementNumber--;
+    if (this.etablissementNumber > 2) this.etablissementNumber--;
   }
 }
 </script>
