@@ -98,7 +98,6 @@ export default class FormScissionEtablissement extends Vue {
   }
 
   send(payload): void {
-    console.log(payload);
     this.buttonLoading = true;
     this.etablissementDTOS.push(payload);
     if (this.etablissementDTOS.length === this.etablissementNumber) {

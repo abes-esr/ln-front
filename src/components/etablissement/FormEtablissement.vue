@@ -478,7 +478,6 @@ export default class FormEtablissement extends Vue {
           this.clear();
         });
     } else if (this.action === Action.SCISSION) {
-      console.log(this.etablissement);
       this.$emit("send", this.etablissement);
       this.buttonLoading = false;
     }

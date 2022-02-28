@@ -269,8 +269,6 @@ export default class Home extends Vue {
           message.texte = "Impossible d'exécuter l'action : " + err.message;
         }
         message.isSticky = true;
-
-        Logger.debug("erre" + err.debugMessage);
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
