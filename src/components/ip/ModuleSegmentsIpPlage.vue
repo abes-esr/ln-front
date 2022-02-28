@@ -126,6 +126,8 @@
                           "
                           @paste="onPastePlageFin"
                           @paste.prevent
+                          :disabled="index > 1 ? false : true"
+                          :filled="index > 1 ? false : true"
                           dense
                           outlined
                           required
@@ -248,7 +250,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { SegmentPlage } from "@/core/CommonDefinition";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import { rulesForm } from "@/core/RulesForm";
@@ -275,6 +277,12 @@ export default class ModuleSegmentsIpPlage extends Vue {
   commentaires: string = "";
 
   buttonLoading: boolean = false;
+
+  @Watch("ipv4SegmentsPlageDebut")
+  onPlageIpV4Changed() {
+    this.ipv4SegmentsPlageDebut[0] = this.ipv4SegmentsPlageFin[0];
+    this.ipv4SegmentsPlageDebut[1] = this.ipv4SegmentsPlageFin[1];
+  }
 
   mounted() {
     this.clear(false);
@@ -450,7 +458,6 @@ export default class ModuleSegmentsIpPlage extends Vue {
     this.error = "";
     this.success = "";
     this.ip = "";
-    this.commentaires = "";
     if (!dontClearComments) this.commentaires = "";
     this.ipv4Segments = [
       { length: 3, value: "" },
