@@ -108,8 +108,6 @@ export default class Header extends Vue {
     this.$store.dispatch("logout").catch(err => {
       Logger.error(err);
     });
-
-    this.$router.push({ name: "Login" });
   }
 }
 </script>
