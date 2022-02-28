@@ -4,13 +4,13 @@
 Client léger web en JavaScript pour l'API Licences Nationales ( https://github.com/abes-esr/licencesnationales-back ), permettant de fournir aux utilisateurs une interface graphique, disponible via un navigateur, pour l'API. 
 
 Licences nationales permet :
--aux institutions bénéficiaires des ressources numériques de :
-  -déclarer les contacts pour l’administration technique des ressources,
-  -déclarer les adresses IP.
--à l’Abes :
-  -renseigner les contacts auprès des éditeurs de ces ressources
-  -vérifier les informations saisies par les bénéficiaires, supprimer ou accepter les comptes, valider ou non les adresses IP
-  -envoyer les informations de gestion renseignées par les institutions aux éditeurs présents dans la base, via un batch mensuel, non automatisé. Ce batch comprend un identifiant Abes ad hoc, utilisé souvent comme identifiant pivot sur lequel les éditeurs et l’Inist (pour les plates-formes ISTEX et PANIST) s’appuient pour gérer les droits d’accès.
+- aux institutions bénéficiaires des ressources numériques de :
+  - déclarer les contacts pour l’administration technique des ressources,
+  - déclarer les adresses IP.
+- à l’Abes :
+  - renseigner les contacts auprès des éditeurs de ces ressources
+  - vérifier les informations saisies par les bénéficiaires, supprimer ou accepter les comptes, valider ou non les adresses IP
+  - envoyer les informations de gestion renseignées par les institutions aux éditeurs présents dans la base, via un batch mensuel, non automatisé. Ce batch comprend un identifiant Abes ad hoc, utilisé souvent comme identifiant pivot sur lequel les éditeurs et l’Inist (pour les plates-formes ISTEX et PANIST) s’appuient pour gérer les droits d’accès.
 
 
 ## Architecture
