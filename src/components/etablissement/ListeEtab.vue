@@ -225,8 +225,8 @@ export default class ListeEtab extends Vue {
         element.dateCreation
       ).format("YYYY-MM-DD");
       if (element.dateModificationDerniereIp) {
-        element.dateModificationDerniereIp = element.dateModificationDerniereIp.replaceAll(
-          "-",
+        element.dateModificationDerniereIp = element.dateModificationDerniereIp.replace(
+          /-/g,
           "/"
         );
       }

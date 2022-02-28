@@ -247,6 +247,9 @@ export class EtablissementService extends LicencesNationalesApiService {
             notification.nomEtab = element.nomEtab;
             notifs.push(notification);
           });
+          notifs.sort(function(a,b){
+            return new Date(b.dateEvent).getTime() - new Date(a.dateEvent).getTime();
+          });
           resolve(notifs);
         })
         .catch(err => {
