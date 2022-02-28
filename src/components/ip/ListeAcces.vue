@@ -6,15 +6,13 @@
           <v-row>
             <v-col cols="12" sm="12">
               <v-row>
-                <h1>Liste des IP déclarées</h1>
+                <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
               </v-row>
               <v-row>
                 <v-col cols="12" sm="8"></v-col>
                 <v-col cols="12" sm="2">
                   <v-btn @click="$router.push({ path: '/ajouterAcces/' })"
-                    ><span class="btnText"
-                      >Ajouter une adresse ou une plage IP</span
-                    >
+                    ><span class="btnText">Ajouter une IP ou une plage IP</span>
                     <font-awesome-icon :icon="['fas', 'plus-circle']"/></v-btn
                 ></v-col>
               </v-row>
@@ -280,6 +278,10 @@ export default class ListeAcces extends ListeAccesProps {
     return this.$store.state.user.siren;
   }
 
+  get currentEtabNom() {
+    return this.$store.getters.getCurrentEtablissement().nom;
+  }
+
   get isAdmin() {
     return this.$store.getters.isAdmin();
   }
@@ -317,23 +319,18 @@ export default class ListeAcces extends ListeAccesProps {
         },
         {
           text: "Type d'IP",
-          value: "typeAcces",
-          sortable: true
-        },
-        {
-          text: "Type d'IP",
           value: "typeIp",
           sortable: true
         },
         { text: "Valeur", value: "ip", sortable: true },
         { text: "Statut", value: "statut", sortable: true },
+        { text: "Action", value: "buffer", sortable: false },
         {
           text: "Action admin",
           value: "dateModification",
           sortable: true
         },
         { text: "Commentaires", value: "commentaires", sortable: true },
-        { text: "Action", value: "buffer", sortable: false },
         { text: "Examiner", value: "action", sortable: false }
       ];
     } else {
@@ -402,12 +399,13 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   affichageAcces(acces) {
+    let typeAcces = "";
+    if (acces.typeAcces === "range") typeAcces = "Plage ";
     return {
       id: acces.id,
       dateCreation: moment(acces.dateCreation).format("L"),
       dateModification: this.getDateModification(acces),
-      typeAcces: acces.typeAcces,
-      typeIp: acces.typeIp,
+      typeIp: typeAcces + " " + acces.typeIp,
       ip: acces.ip,
       statut: acces.statut,
       commentaires: acces.commentaires
