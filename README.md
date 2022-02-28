@@ -1,5 +1,5 @@
 # licencesnationales-front
-# Client léger pour l'API Licences Nationales
+## Client léger pour l'API Licences Nationales
 
 Client léger web en JavaScript pour l'API Licences Nationales ( https://github.com/abes-esr/licencesnationales-back ), permettant de fournir aux utilisateurs une interface graphique, disponible via un navigateur, pour l'API. 
 
@@ -12,6 +12,14 @@ Licences nationales permet :
   -vérifier les informations saisies par les bénéficiaires, supprimer ou accepter les comptes, valider ou non les adresses IP
   -envoyer les informations de gestion renseignées par les institutions aux éditeurs présents dans la base, via un batch mensuel, non automatisé. Ce batch comprend un identifiant Abes ad hoc, utilisé souvent comme identifiant pivot sur lequel les éditeurs et l’Inist (pour les plates-formes ISTEX et PANIST) s’appuient pour gérer les droits d’accès.
 
+
+## Architecture
+
+Cette application a été developpée avec le framework JavaScript VueJS version 2 (avec VueX et vue-router), la librairie de composants UI Material Design Vuetify. Elle utilise la surcouche Javascript TypeScript.
+
+Elle fonctionne sur les versions récentes des navigateurs Chrome (et dérivés), Firefox, Edge et Safari. La compatibilité avec Internet Explorer n'a pas été testée par nos équipes, et n'est donc pas garantie.
+
+L'ensemble des librairies tierces utilisées par ce projet est accessible dans le fichier package.json, situé à la racine du dépot.
 
 ## Installation
 
