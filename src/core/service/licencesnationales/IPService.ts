@@ -23,7 +23,7 @@ export class IPService extends LicencesNationalesApiService {
   }
 
   deleteIP(token: string, id): Promise<AxiosResponse> {
-    return this.client.delete("/ip/" + id, token);
+    return this.client.delete("/ip/" + id, null, token);
   }
 
   getWhoIs(token: string, ip): Promise<AxiosResponse> {

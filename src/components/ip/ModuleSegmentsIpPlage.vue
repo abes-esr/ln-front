@@ -434,6 +434,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
         })
         .then(response => {
           this.$emit("FormModuleSegmentsIpPlageEvent", {
+            id: response.data.id,
             typeIp: this.typeIp,
             ip: this.ip,
             commentaires: this.commentaires
