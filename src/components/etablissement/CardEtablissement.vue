@@ -19,6 +19,7 @@
                 @click="downloadEtablissement"
                 class="bouton-simple"
                 v-on="on"
+                :loading="isExportLoading"
               >
                 <font-awesome-icon
                   :icon="['fas', 'download']"
@@ -240,6 +241,7 @@ export default class CardEtablissement extends Vue {
   isAdmin: boolean = this.$store.getters.isAdmin();
   buttonValidationLoading: boolean = false;
   buttonSuppresionLoading: boolean = false;
+  isExportLoading: boolean = false;
   typesEtab: Array<string> = [];
   modificationModeDisabled: boolean = true;
   selectStatut: Array<string> = ["Nouveau", "Validé"];
@@ -433,6 +435,7 @@ export default class CardEtablissement extends Vue {
   }
 
   downloadEtablissement(): void {
+    this.isExportLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
     const siren = new Array<string>();
     siren.push(this.etablissement.siren);
@@ -449,6 +452,8 @@ export default class CardEtablissement extends Vue {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+
+        this.isExportLoading = false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -464,6 +469,8 @@ export default class CardEtablissement extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+
+        this.isExportLoading = false;
       });
   }
 

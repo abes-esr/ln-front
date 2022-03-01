@@ -48,6 +48,7 @@
                 @click="downloadEtablissements()"
                 class="mx-2 text-lowercase bouton-simple"
                 v-on="on"
+                :loading="isExportLoading"
                 ><span class="text-uppercase">T</span>élécharger la liste des
                 Etabs
                 <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
@@ -154,6 +155,7 @@ export default class ListeEtab extends Vue {
   selectedType: string = "";
   typesEtab: Array<string> = [];
   isDisableForm: boolean = false;
+  isExportLoading: boolean = false;
   title: string = "";
   id: string = "";
   headers = [
@@ -410,6 +412,7 @@ export default class ListeEtab extends Vue {
   }
 
   downloadEtablissements(): void {
+    this.isExportLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
     const sirens = new Array<string>();
     this.etabsFiltered.forEach(element => {
@@ -428,6 +431,8 @@ export default class ListeEtab extends Vue {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+
+        this.isExportLoading = false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -443,6 +448,8 @@ export default class ListeEtab extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+
+        this.isExportLoading = false;
       });
   }
 
