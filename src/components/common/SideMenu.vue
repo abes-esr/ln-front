@@ -10,20 +10,7 @@
     height="100%"
   >
     <v-list dense color="transparent">
-      <v-row class="mb-15">
-        <v-list-item
-          class="d-flex align-center justify-center flex-column menu-slot"
-          v-on:click="saveTheme()"
-        >
-          <v-switch
-            dense
-            v-model="$vuetify.theme.dark"
-            inset
-            class="theme-selector"
-          ></v-switch>
-          <v-list-item-title>Thème sombre</v-list-item-title>
-        </v-list-item>
-      </v-row>
+      <v-row class="mb-15"> </v-row>
 
       <v-row class="mb-5">
         <v-list-item
@@ -138,12 +125,6 @@ import { Logger } from "@/utils/Logger";
 export default class SideMenu extends Vue {
   @Prop() displayMenu!: boolean;
   @Prop() isAdmin!: boolean;
-
-  saveTheme(): void {
-    this.$store.dispatch("changeTheme").catch(err => {
-      Logger.error(err);
-    });
-  }
 
   allerAListeEditeurs(): void {
     this.$router.push({ name: "ListeEditeurs" }).catch(err => {
