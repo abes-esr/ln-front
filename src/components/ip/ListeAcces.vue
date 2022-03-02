@@ -81,16 +81,20 @@
                           </template>
                           <template v-slot:[`item.action`]="{ item }">
                             <v-btn
-                              v-if="isAdmin"
+                              v-if="
+                                isAdmin &&
+                                  $store.getters.getCurrentEtablissement()
+                                    .statut == 'Validé'
+                              "
                               class="ma-0 pa-0 bouton-simple "
                               icon
-                              title="Analyser"
+                              title="Examiner"
                               @click.stop="openDialog(item)"
                             >
                               <font-awesome-icon :icon="['fas', 'search']"
                             /></v-btn>
                             <v-btn
-                              v-else
+                              v-if="!isAdmin"
                               class="ma-0 pa-0 bouton-simple "
                               icon
                               :loading="buttlonLoading"
