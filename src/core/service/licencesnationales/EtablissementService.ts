@@ -247,8 +247,10 @@ export class EtablissementService extends LicencesNationalesApiService {
             notification.nomEtab = element.nomEtab;
             notifs.push(notification);
           });
-          notifs.sort(function(a,b){
-            return new Date(b.dateEvent).getTime() - new Date(a.dateEvent).getTime();
+          notifs.sort(function(a, b) {
+            return (
+              new Date(b.dateEvent).getTime() - new Date(a.dateEvent).getTime()
+            );
           });
           resolve(notifs);
         })
@@ -284,37 +286,8 @@ export class EtablissementService extends LicencesNationalesApiService {
     });
   }
 
-  //TODO à supprimer après merge du ws
-  getNotificationsAdminMocked(): Array<Notification> {
-    const notifs: Array<Notification> = [];
-    notifs.push(
-      new Notification(
-        0,
-        "123123",
-        new Date(),
-        "Nouvel établissement",
-        "etablissement 1"
-      )
-    );
-    notifs.push(
-      new Notification(
-        1,
-        "230899",
-        new Date(),
-        "Nouvelle IP",
-        "etablissement 2"
-      )
-    );
-    notifs.push(
-      new Notification(
-        2,
-        "431900",
-        new Date(),
-        "Suppression IP depuis dernier envoi",
-        "etablissement 3"
-      )
-    );
-    return notifs;
+  search(criteres: Array<string>, token: string): Promise<AxiosResponse> {
+    return this.client.post("/etablissements/search/", criteres, token);
   }
 }
 

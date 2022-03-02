@@ -97,6 +97,20 @@
         </v-list-item>
       </v-row>
 
+      <v-row v-if="isAdmin" class="mb-5">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="allerRecherche()"
+        >
+          <v-list-item-action class="ma-0 pa-1">
+            <font-awesome-icon :icon="['fas', 'search']" size="2x" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Recherche</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-row>
+
       <v-row v-if="!isAdmin" class="mb-5">
         <v-list-item
           class="d-flex align-center justify-center flex-column menu-slot"
@@ -157,6 +171,12 @@ export default class SideMenu extends Vue {
 
   allerAHistorique(): void {
     this.$router.push({ name: "Historique" }).catch(err => {
+      Logger.error(err);
+    });
+  }
+
+  allerRecherche(): void {
+    this.$router.push({ name: "Recherche" }).catch(err => {
       Logger.error(err);
     });
   }

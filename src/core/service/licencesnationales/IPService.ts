@@ -30,6 +30,10 @@ export class IPService extends LicencesNationalesApiService {
     return this.client.get("/ip/whois/" + ip, token);
   }
 
+  search(criteres: Array<string>, token: string): Promise<AxiosResponse> {
+    return this.client.post("/ip/search/", criteres, token);
+  }
+
   /**
    * Appel API pour telecharger la liste des ip d'un etab
    * @param siren siren du proprietaire d'ips

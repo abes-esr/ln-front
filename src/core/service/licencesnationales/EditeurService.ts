@@ -2,6 +2,7 @@ import { LicencesNationalesApiService } from "@/core/service/licencesnationales/
 import Editeur from "@/core/Editeur";
 import { ContactType } from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
+import { AxiosResponse } from "axios";
 
 export class EditeurService extends LicencesNationalesApiService {
   /**
@@ -219,6 +220,10 @@ export class EditeurService extends LicencesNationalesApiService {
           reject(this.buildException(err));
         });
     });
+  }
+
+  search(criteres: Array<string>, token: string): Promise<AxiosResponse> {
+    return this.client.post("/editeurs/search/", criteres, token);
   }
 }
 

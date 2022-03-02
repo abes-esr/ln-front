@@ -61,6 +61,14 @@ export class rulesForm {
 
   checkboxRules = [(v: boolean) => v || "Veuillez accepter avant de valider"];
 
+  selectSearchRules = [
+    (v: string) => !!v || "Le domaine de recherche est obligatoire"
+  ];
+
+  searchRules = [
+    (v: string) => !!v || "Veuillez saisir un ou des critères de recherche"
+  ];
+
   ipv4SegmentsRules = [
     (v: string) => !!v || "Le segment d'IP est obligatoire",
     (v: string) =>
