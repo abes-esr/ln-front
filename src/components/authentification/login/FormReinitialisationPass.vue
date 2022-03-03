@@ -21,7 +21,7 @@
                   :nouveau-mot-de-passe="this.newPassword"
                   @update:nouveauMotDePasse="updateMotDePasse"
                   class="ma-3"
-                  :link-is-expired="true"
+                  :link-is-expired="!tokenValid"
                 ></MotDePasse>
               </v-card-text>
               <v-card-actions>
@@ -99,8 +99,8 @@ export default class FormReinitialisationPass extends Vue {
     );
 
     this.isTokenValid
-      .then(result => {
-        this.tokenValid = result;
+      .then(() => {
+        this.tokenValid = true;
       })
       .catch(err => {
         Logger.error(err.toString());
