@@ -186,17 +186,8 @@ export class EtablissementService extends LicencesNationalesApiService {
     });
   }
 
-  validerEtablissement(siren: string, token: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      return this.client
-        .post("/etablissements/validation/" + siren, null, token)
-        .then(() => {
-          resolve(true);
-        })
-        .catch(err => {
-          reject(this.buildException(err));
-        });
-    });
+  validerEtablissement(siren: string, token: string): Promise<AxiosResponse> {
+    return this.client.post("/etablissements/validation/" + siren, null, token);
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {

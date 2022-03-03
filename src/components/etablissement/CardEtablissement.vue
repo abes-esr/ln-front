@@ -42,6 +42,7 @@
       <v-btn
         v-if="this.modificationModeDisabled"
         class="btn-2 mt-3"
+        style="margin-right: 1em"
         @click="entrerEnModification()"
         >Modifier le compte</v-btn
       >
@@ -58,6 +59,13 @@
         class="btn-2 mt-3"
         @click="annulerModifications()"
         >Réinitialiser les champs d'origine</v-btn
+      >
+      <v-btn
+        v-if="this.modificationModeDisabled"
+        class="btn-2  mt-3"
+        :loading="buttonValidationLoading"
+        @click="validerEtablissement()"
+        >Valider le compte</v-btn
       >
       <v-row class="d-flex justify-space-between flex-wrap">
         <v-col
@@ -111,15 +119,8 @@
                 v-model="etablissement.typeEtablissement"
                 :readonly="this.modificationModeDisabled"
               ></v-select>
-              <v-select
-                label="Statut de l'établissement"
-                :items="selectStatut"
-                outlined
-                v-model="etablissement.statut"
-                :readonly="this.modificationModeDisabled"
-              ></v-select>
               <div>
-                <h3 class="d-inline">Statut des IPs de l'établissement:</h3>
+                <h3 class="d-inline">Statut de l'établissement:</h3>
                 {{ etablissement.statut }}
               </div>
             </div>
@@ -368,15 +369,21 @@ export default class CardEtablissement extends Vue {
       Etes-vous sûr de vouloir effectuer cette ation ?`
     );
     if (confirmed) {
+      this.etablissement.statut = "Validé";
       etablissementService
         .validerEtablissement(
           this.etablissement.siren,
           this.$store.getters.getToken()
         )
-        .then(() => {
+        .then(response => {
+          this.$store.dispatch(
+            "updateCurrentEtablissement",
+            this.etablissement
+          );
+
           const message: Message = new Message();
           message.type = MessageType.VALIDATION;
-          message.texte = "Votre compte a bien été créé";
+          message.texte = response.data.message;
           message.isSticky = true;
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
@@ -391,7 +398,7 @@ export default class CardEtablissement extends Vue {
           Logger.error(err.toString());
           const message: Message = new Message();
           message.type = MessageType.ERREUR;
-          message.texte = err.message;
+          message.texte = err.response.data.message;
           message.isSticky = true;
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
