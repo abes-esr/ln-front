@@ -123,6 +123,10 @@
                 <h3 class="d-inline">Statut de l'établissement:</h3>
                 {{ etablissement.statut }}
               </div>
+              <div>
+                <h3 class="d-inline">Statut IP :</h3>
+                {{ etablissement.statutIP }}
+              </div>
             </div>
           </v-card-text>
         </v-col>
