@@ -11,7 +11,12 @@
               <v-row>
                 <v-col cols="12" sm="8"></v-col>
                 <v-col cols="12" sm="2">
-                  <v-btn @click="$router.push({ path: '/ajouterAcces/' })"
+                  <v-btn
+                    @click="$router.push({ path: '/ajouterAcces/' })"
+                    v-if="
+                      this.$store.getters.getCurrentEtablissement().statut ==
+                        'Validé'
+                    "
                     ><span class="btnText">Ajouter une IP ou une plage IP</span>
                     <font-awesome-icon :icon="['fas', 'plus-circle']"/></v-btn
                 ></v-col>
