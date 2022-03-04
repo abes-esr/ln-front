@@ -9,8 +9,8 @@
     <template v-slot:img="{ props }">
       <v-img
         v-bind="props"
-        width="500px"
-        style="float: right; height: 100%;"
+        class="hidden-md-and-down"
+        style="float: right; height: 300%; margin: -180px 0px 0px 0px;"
       ></v-img>
     </template>
     <v-layout class="d-flex flex-column" fill-height>

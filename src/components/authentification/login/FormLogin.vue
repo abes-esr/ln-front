@@ -2,11 +2,11 @@
   <v-card elevation="0">
     <v-card-title class="pa-3"><h1>S'authentifier</h1></v-card-title>
     <MessageBox></MessageBox>
-    <v-card-text class="rounded pa-3">
+    <v-card-text class="rounded pa-3 fondGris">
       <v-form ref="form" lazy-validation>
         <v-row>
           <v-col cols="1" />
-          <v-col cols="10">
+          <v-col cols="10" class="pb-0">
             <v-text-field
               ref="login"
               outlined
@@ -39,7 +39,7 @@
         </v-row>
         <v-row>
           <v-col cols="1" />
-          <v-col cols="10">
+          <v-col cols="10" class="pt-0">
             <v-text-field
               ref="password"
               outlined
@@ -128,9 +128,3 @@ export default class FormLogin extends Vue {
   }
 }
 </script>
-<style scoped lang="scss">
-h1 {
-  font-size: 40px;
-  font-weight: 500;
-}
-</style>
