@@ -9,7 +9,7 @@
     <template v-slot:img="{ props }">
       <v-img
         v-bind="props"
-        class="hidden-md-and-down"
+        class="hidden-lg-and-down"
         style="float: right; height: 300%; margin: -180px 0px 0px 0px;"
       ></v-img>
     </template>

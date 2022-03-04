@@ -2,7 +2,7 @@
   <v-card elevation="0">
     <v-card-title class="pa-3"><h1>S'authentifier</h1></v-card-title>
     <MessageBox></MessageBox>
-    <v-card-text class="rounded pa-3 fondGris">
+    <v-card-text class="rounded pa-3">
       <v-form ref="form" lazy-validation>
         <v-row>
           <v-col cols="1" />
