@@ -27,166 +27,165 @@
         {{ etablissement.dateCreation.toLocaleDateString() }}</span
       >
       <v-row class="d-flex justify-space-between flex-wrap">
-        <v-col
-          cols="12"
-          md="3"
-          lg="3"
-          xl="3"
-          class="d-flex align-content-start justify-center flex-wrap"
-        >
-          <v-card-title class="d-block titre-block"></v-card-title>
-          <v-card-text class="d-flex justify-space-between flex-column">
-            <div class="d-flex justify-space-between align-center">
-              <h2 class="my-3">Etablissement</h2>
+        <v-col cols="12" md="3" lg="3" xl="3">
+          <div style="height: 100%" class="borderCol">
+            <div class="d-flex">
+              <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
               <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
                 <template v-slot:activator="{ on }">
                   <font-awesome-icon
                     v-on="on"
                     :icon="['fas', 'lock']"
                     class="fa-2x mx-2"
+                    style="margin-top: 10px;"
                   />
                 </template>
                 <span>Non modifiable par l'utilisateur</span>
               </v-tooltip>
             </div>
-            <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <div>
-                <h3 class="d-inline">Siren :</h3>
-                {{ etablissement.siren }}
+            <v-card-text class="d-flex align-content-start flex-wrap pt-0">
+              <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
+                <div>
+                  <h3 class="d-inline">Siren :</h3>
+                  {{ etablissement.siren }}
+                </div>
+                <div>
+                  <h3 class="d-inline">ID Abes :</h3>
+                  {{ etablissement.idAbes }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Nom :</h3>
+                  {{ etablissement.nom }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Type :</h3>
+                  {{ etablissement.typeEtablissement }}
+                </div>
               </div>
-              <div>
-                <h3 class="d-inline">ID Abes :</h3>
-                {{ etablissement.idAbes }}
-              </div>
-              <div>
-                <h3 class="d-inline">Nom :</h3>
-                {{ etablissement.nom }}
-              </div>
-              <div>
-                <h3 class="d-inline">Type :</h3>
-                {{ etablissement.typeEtablissement }}
-              </div>
-            </div>
-            <v-alert outlined>
-              <font-awesome-icon
-                :icon="['fas', 'info-circle']"
-                class="fa-2x mr-5 mb-1 icone-information"
-              />
-              Pour toute demande de modification des infos de l'établissement,
-              nous contacter via le guichet d'assistance
-              <v-btn
-                class="bouton-simple elevation-0 pa-0"
-                href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-                target="_blank"
-                >ABESstp
-              </v-btn>
-            </v-alert>
-          </v-card-text>
+              <v-alert outlined style="margin-top: 200px">
+                <font-awesome-icon
+                  :icon="['fas', 'info-circle']"
+                  class="fa-2x mr-5 mb-1 icone-information"
+                />
+                Pour toute demande de modification des infos de l'établissement,
+                nous contacter via le guichet d'assistance
+                <v-btn
+                  class="bouton-simple elevation-0 pa-0"
+                  href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  target="_blank"
+                  >ABESstp
+                </v-btn>
+              </v-alert>
+            </v-card-text>
+          </div>
         </v-col>
-        <v-col
-          cols="12"
-          md="3"
-          lg="3"
-          xl="3"
-          class="d-flex align-content-start justify-center flex-wrap"
-        >
-          <v-card-title class="d-block titre-block"></v-card-title>
-          <v-card-text class="d-flex justify-space-between flex-column">
+        <v-col cols="12" md="3" lg="3" xl="3">
+          <div style="height: 100%" class="borderCol">
             <div class="d-flex justify-space-between align-center">
-              <h2 class="my-3">Contact</h2>
+              <h2 class="my-3 pl-4 mb-0">
+                Contact
+              </h2>
             </div>
-            <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <div>
-                <h3 class="d-inline">Nom :</h3>
-                {{ etablissement.contact.nom }}
+            <v-card-text class="d-flex align-content-start flex-wrap pt-0">
+              <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
+                <div>
+                  <h3 class="d-inline">Nom :</h3>
+                  {{ etablissement.contact.nom }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Prénom :</h3>
+                  {{ etablissement.contact.prenom }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Tél :</h3>
+                  {{ etablissement.contact.telephone }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Email :</h3>
+                  {{ etablissement.contact.mail }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Adresse :</h3>
+                  {{ etablissement.contact.adresse }}
+                </div>
+                <div>
+                  <h3 class="d-inline">BP :</h3>
+                  {{ etablissement.contact.boitePostale }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Code postal :</h3>
+                  {{ etablissement.contact.codePostal }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Ville :</h3>
+                  {{ etablissement.contact.ville }}
+                </div>
+                <div>
+                  <h3 class="d-inline">Cedex :</h3>
+                  {{ etablissement.contact.cedex }}
+                </div>
               </div>
-              <div>
-                <h3 class="d-inline">Prénom :</h3>
-                {{ etablissement.contact.prenom }}
-              </div>
-              <div>
-                <h3 class="d-inline">Tél :</h3>
-                {{ etablissement.contact.telephone }}
-              </div>
-              <div>
-                <h3 class="d-inline">Email :</h3>
-                {{ etablissement.contact.mail }}
-              </div>
-              <div>
-                <h3 class="d-inline">Adresse :</h3>
-                {{ etablissement.contact.adresse }}
-              </div>
-              <div>
-                <h3 class="d-inline">BP :</h3>
-                {{ etablissement.contact.boitePostale }}
-              </div>
-              <div>
-                <h3 class="d-inline">Code postal :</h3>
-                {{ etablissement.contact.codePostal }}
-              </div>
-              <div>
-                <h3 class="d-inline">Ville :</h3>
-                {{ etablissement.contact.ville }}
-              </div>
-              <div>
-                <h3 class="d-inline">Cedex :</h3>
-                {{ etablissement.contact.cedex }}
-              </div>
-            </div>
-            <v-row class="text-right">
-              <v-col cols="12">
-                <v-btn class="btn-2 " @click="allerAMonProfil()"
-                  >Modifier mon contact</v-btn
-                ></v-col
-              >
-              <v-col cols="12">
-                <v-btn class="btn-2" @click="allerAModifierMotDePasse()"
-                  >Modifier mon mot de passe</v-btn
-                ></v-col
-              >
-            </v-row>
-          </v-card-text>
+              <v-row class="text-right">
+                <v-col cols="12">
+                  <v-btn class="btn-2 " @click="allerAMonProfil()"
+                    >Modifier mon contact</v-btn
+                  ></v-col
+                >
+                <v-col cols="12">
+                  <v-btn class="btn-2" @click="allerAModifierMotDePasse()"
+                    >Modifier mon mot de passe</v-btn
+                  ></v-col
+                >
+              </v-row>
+            </v-card-text>
+          </div>
         </v-col>
-        <v-col
-          cols="12"
-          md="6"
-          lg="6"
-          xl="6"
-          class="d-flex align-content-start justify-center flex-wrap"
-        >
-          <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
-            <font-awesome-icon
-              :icon="['fas', 'bell']"
-              class="fa-lg mx-2 icone-standard"
-            />
-            Notifications</v-card-title
-          >
-          <v-card-text class="d-flex justify-space-between flex-column">
-            <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
-              <h3 style="margin-bottom: 1em">Liste des évenements</h3>
-              <li
-                style="margin-bottom: 1em"
-                v-for="item in this.notificationsAdmin"
-                :key="item.index"
+        <v-col cols="12" md="6" lg="6" xl="6">
+          <div style="height: 100%" class="borderCol">
+            <v-card-title
+              class="d-block titre-block"
+              style="margin-bottom:-4px;"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'bell']"
+                class="fa-lg mx-2 icone-standard"
+              />
+              Notifications</v-card-title
+            >
+            <v-card-text class="d-flex align-content-start flex-wrap">
+              <div
+                class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
               >
-                Siren: {{ item.siren }}<br />Nom établissement:
-                <a @click="allerPageEtablissement(item.siren)">{{
-                  item.nomEtab
-                }}</a
-                ><br />Evenement: {{ item.typeNotif }}<br />Date:
-                {{ dateFormatted(item.dateEvent) }}
-              </li>
-              <li
-                style="margin-bottom: 1em"
-                v-for="item in this.notificationsUser"
-                :key="item.index"
-              >
-                Message: {{ item.message }}<br />Description:{{
-                  item.description
-                }}
-              </li>
-            </div>
-          </v-card-text>
+                <h3 style="margin-bottom: 1em">Liste des évenements</h3>
+                <ul>
+                  <li
+                    style="margin-bottom: 1em"
+                    v-for="item in this.notificationsAdmin"
+                    :key="item.index"
+                  >
+                    Siren: {{ item.siren }}<br />Nom établissement:
+                    <a @click="allerPageEtablissement(item.siren)">{{
+                      item.nomEtab
+                    }}</a
+                    ><br />Evenement: {{ item.typeNotif }}<br />Date:
+                    {{ dateFormatted(item.dateEvent) }}
+                  </li>
+                  <li
+                    style="margin-bottom: 1em"
+                    v-for="item in this.notificationsUser"
+                    :key="item.index"
+                  >
+                    <span class="notifUserMsg" v-html="item.message"></span>
+                    <br />
+                    <span
+                      class="notifUserDesc"
+                      v-html="item.description"
+                    ></span>
+                  </li>
+                </ul>
+              </div>
+            </v-card-text>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -392,5 +391,38 @@ export default class Home extends Vue {
 .multi-line span {
   min-height: 1rem;
   word-break: break-all;
+}
+
+.notifUserMsg {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.notifUserDesc {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+ul {
+  list-style: none; /* Remove default bullets */
+}
+
+ul li::before {
+  content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: #cf491f; /* Change the color */
+  font-weight: bolder; /* If you want it to be bold */
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+.borderCol {
+  border: 1px solid #b8b8b9;
+  border-radius: 5px;
+  padding-top: 5px;
+}
+
+.v-card__text {
+  border: none !important;
 }
 </style>
