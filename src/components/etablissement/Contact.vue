@@ -124,6 +124,7 @@
               action === Action.SCISSION
           "
           :action="Action.CREATION"
+          :linkIsExpired="false"
           :nouveau-mot-de-passe="contact.motDePasse"
           @update:nouveauMotDePasse="updateMotDePasse"
           :isDisableForm="isDisableForm"
