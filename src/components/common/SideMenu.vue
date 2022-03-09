@@ -109,7 +109,7 @@
             >
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Mes IPs</v-list-item-title>
+            <v-list-item-title>Adresse IP</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-row>
