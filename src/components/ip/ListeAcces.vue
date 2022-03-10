@@ -563,11 +563,7 @@ export default class ListeAcces extends ListeAccesProps {
     this.clearAlerts();
 
     iPService
-      .updateIP(
-        this.$store.getters.getToken(),
-        this.$store.getters.getCurrentEtablissement().siren,
-        [{ idIp: ip, action: "SUPPRIMER" }]
-      )
+      .deleteIP(this.$store.getters.getToken(), ip)
       .then(() => {
         this.notification = "IP supprimée.";
       })

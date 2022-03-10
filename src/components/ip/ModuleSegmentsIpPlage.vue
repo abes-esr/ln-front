@@ -218,11 +218,13 @@
           <v-row>
             <v-col>
               <v-textarea
+                counter="255"
                 outlined
                 auto-grow
                 rows="2"
                 label="Commentaires"
                 hint="Apporter ici toute précisions sur l'attribution de cette IP, surtout si elle n'appartient pas au réseau Renater."
+                :rules="rulesForm.commentaires"
                 v-model="commentaires"
                 clearable
                 persistent-hint
@@ -253,14 +255,14 @@
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { SegmentPlage } from "@/core/CommonDefinition";
 import { iPService } from "@/core/service/licencesnationales/IPService";
-import { rulesForm } from "@/core/RulesForm";
+import { rulesForms } from "@/core/RulesForm";
 import { Logger } from "@/utils/Logger";
 
 @Component
 export default class ModuleSegmentsIpPlage extends Vue {
   @Prop({ default: "IPV4" }) readonly typeIp!: string;
   @Prop({ default: "ip" }) readonly typeAcces!: string;
-  rulesForm: any = rulesForm;
+  rulesForm: any = rulesForms;
   suffix: string = "";
   ipv4Segments: Array<SegmentPlage> = [];
   ipv6Segments: Array<SegmentPlage> = [];
@@ -440,16 +442,20 @@ export default class ModuleSegmentsIpPlage extends Vue {
             commentaires: this.commentaires
           });
           this.clear(false);
-          this.buttonLoading = false;
           this.alertSuccess = true;
           this.success = response.data.message;
         })
         .catch(err => {
           Logger.error(err.toString());
           this.alert = true;
+          this.alertSuccess = false;
           this.error = err.response.data.message;
+        })
+        .finally(() => {
           this.buttonLoading = false;
         });
+    } else {
+      this.buttonLoading = false;
     }
   }
 

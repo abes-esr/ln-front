@@ -109,5 +109,10 @@ export class rulesForm {
         v
       ) || "La plage d'Ips fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
   ];
+
+  commentaires = [
+    (v: string) =>
+      v.length <= 255 || "Le commentaire ne doit pas excéder 255 caractères"
+  ];
 }
 export const rulesForms = new rulesForm();
