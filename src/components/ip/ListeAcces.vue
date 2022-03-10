@@ -9,14 +9,11 @@
                 <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
               </v-row>
               <v-row>
-                <v-col cols="12" sm="8"></v-col>
-                <v-col cols="12" sm="2">
+                <v-col cols="1" sm="1"></v-col>
+                <v-col cols="10" sm="10">
                   <v-btn
+                    id="addIpButton"
                     @click="$router.push({ path: '/ajouterAcces/' })"
-                    v-if="
-                      this.$store.getters.getCurrentEtablissement().statut ==
-                        'Validé'
-                    "
                     ><span class="btnText">Ajouter une IP ou une plage IP</span>
                     <font-awesome-icon :icon="['fas', 'plus-circle']"/></v-btn
                 ></v-col>
@@ -656,6 +653,10 @@ h3 {
 }
 .actions .v-btn {
   margin: 5px;
+}
+
+#addIpButton {
+  float: right;
 }
 
 .VALIDER {

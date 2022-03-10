@@ -98,8 +98,8 @@
                   outlined
                   v-model="etablissement.typeEtablissement"
                   :items="typesEtab"
-                  label="Nom de l'établissement"
-                  placeholder="Nom de l'établissement"
+                  label="Type d'établissement"
+                  placeholder="Type d'établissement"
                   persistent-placeholder
                   :rules="rulesForms.typeEtabRules"
                   required
@@ -368,11 +368,7 @@ export default class FormEtablissement extends Vue {
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
-          // On glisse sur le message d'erreur
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
+          this.$router.push("/");
         })
         .catch(err => {
           Logger.error(err.toString());

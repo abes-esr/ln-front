@@ -27,7 +27,7 @@
         {{ etablissement.dateCreation.toLocaleDateString() }}</span
       >
       <v-row class="d-flex justify-space-between flex-wrap">
-        <v-col cols="12" md="3" lg="3" xl="3">
+        <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
           <div style="height: 100%" class="borderCol">
             <div class="d-flex">
               <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
@@ -79,7 +79,7 @@
             </v-card-text>
           </div>
         </v-col>
-        <v-col cols="12" md="3" lg="3" xl="3">
+        <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
           <div style="height: 100%" class="borderCol">
             <div class="d-flex justify-space-between align-center">
               <h2 class="my-3 pl-4 mb-0">
@@ -150,13 +150,13 @@
                 :icon="['fas', 'bell']"
                 class="fa-lg mx-2 icone-standard"
               />
-              Notifications</v-card-title
-            >
+              <span v-if="isAdmin">Dernières actions des utilisateurs</span>
+              <span v-else>Notifications</span>
+            </v-card-title>
             <v-card-text class="d-flex align-content-start flex-wrap">
               <div
                 class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
               >
-                <h3 style="margin-bottom: 1em">Liste des évenements</h3>
                 <ul>
                   <li
                     style="margin-bottom: 1em"
@@ -187,6 +187,34 @@
             </v-card-text>
           </div>
         </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6" v-if="isAdmin">
+          <div style="height: 100%" class="borderCol">
+            <v-card-title
+              class="d-block titre-block"
+              style="margin-bottom:-4px;"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'paper-plane']"
+                class="fa-lg mx-2"
+              />
+              Envoi du batch
+            </v-card-title>
+            <v-card-text class="d-flex align-content-start flex-wrap">
+              <div
+                class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
+              >
+                <ul>
+                  <li
+                    style="margin-bottom: 1em"
+                    v-for="item in this.notificationsAdmin"
+                    :key="item.index"
+                  ></li>
+                </ul>
+              </div>
+              <v-btn @click="envoiEditeurs()">Envoi aux éditeurs</v-btn>
+            </v-card-text>
+          </div>
+        </v-col>
       </v-row>
     </v-container>
   </v-card>
@@ -204,6 +232,7 @@ import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnat
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import moment from "moment/moment";
 import NotificationUser from "@/core/service/NotificationUser";
+import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 
 @Component({
   components: { MessageBox }
@@ -362,6 +391,43 @@ export default class Home extends Vue {
           Logger.error(err.toString());
         });
         // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      });
+  }
+
+  envoiEditeurs(): void {
+    editeurService
+      .envoiEditeurs(this.$store.getters.getToken())
+      .then(response => {
+        const message: Message = new Message();
+        message.type = MessageType.VALIDATION;
+        message.texte = response.data.message;
+
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
