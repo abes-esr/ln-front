@@ -197,21 +197,12 @@
                 :icon="['fas', 'paper-plane']"
                 class="fa-lg mx-2"
               />
-              Envoi du batch
+              Envoi aux éditeurs
             </v-card-title>
             <v-card-text class="d-flex align-content-start flex-wrap">
-              <div
-                class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
+              <v-btn @click="envoiEditeurs()" class="bottom"
+                >Envoi aux éditeurs</v-btn
               >
-                <ul>
-                  <li
-                    style="margin-bottom: 1em"
-                    v-for="item in this.notificationsAdmin"
-                    :key="item.index"
-                  ></li>
-                </ul>
-              </div>
-              <v-btn @click="envoiEditeurs()">Envoi aux éditeurs</v-btn>
             </v-card-text>
           </div>
         </v-col>
@@ -422,7 +413,8 @@ export default class Home extends Vue {
         if (err instanceof LicencesNationalesBadRequestApiError) {
           message.texte = err.message;
         } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
+          message.texte =
+            "Impossible d'exécuter l'action : " + err.response.data.message;
         }
         message.isSticky = true;
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
@@ -490,5 +482,13 @@ ul li::before {
 
 .v-card__text {
   border: none !important;
+}
+
+.bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 2em;
+  margin-right: 5em;
 }
 </style>

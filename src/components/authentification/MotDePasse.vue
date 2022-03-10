@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" lazy-validation :disabled="isDisableForm">
-    <v-alert outlined v-if="linkIsExpired === false">
+    <v-alert outlined class="pa-3" v-if="linkIsExpired === false">
       <font-awesome-icon
         :icon="['fas', 'info-circle']"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
@@ -9,7 +9,7 @@
       majuscule, une lettre minuscule, un chiffre et un caractère spécial parmis
       @ $ ! % * ? &
     </v-alert>
-    <v-alert outlined v-if="linkIsExpired === true">
+    <v-alert outlined class="pa-3" v-if="linkIsExpired === true">
       <font-awesome-icon
         :icon="['fas', 'info-circle']"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"

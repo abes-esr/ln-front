@@ -1,164 +1,168 @@
 <template>
   <v-form ref="form" lazy-validation :disabled="isDisableForm">
     <v-row>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <v-text-field
-          outlined
-          label="Nom"
-          placeholder="Nom"
-          v-model="contact.nom"
-          :rules="rulesForms.nom"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
+      <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
+        <v-row
+          ><v-text-field
+            outlined
+            label="Nom"
+            placeholder="Nom"
+            v-model="contact.nom"
+            :rules="rulesForms.nom"
+            required
+            @keyup.enter="validate()"
+          ></v-text-field
+        ></v-row>
+        <v-row
+          ><v-text-field
+            outlined
+            label="Prénom"
+            placeholder="Prénom"
+            v-model="contact.prenom"
+            :rules="rulesForms.prenom"
+            required
+            @keyup.enter="validate()"
+          ></v-text-field
+        ></v-row>
+        <v-row
+          ><v-text-field
+            outlined
+            label="Adresse"
+            placeholder="Adresse"
+            maxlength="80"
+            v-model="contact.adresse"
+            :rules="rulesForms.adresse"
+            required
+            @keyup.enter="validate()"
+          ></v-text-field
+        ></v-row>
+        <v-row
+          ><v-text-field
+            outlined
+            label="Boîte postale"
+            placeholder="Boîte postale"
+            v-model="contact.boitePostale"
+            required
+            @keyup.enter="validate()"
+          ></v-text-field
+        ></v-row>
+        <v-row
+          ><v-text-field
+            outlined
+            label="Code Postal"
+            placeholder="Code Postal"
+            maxlength="5"
+            v-model="contact.codePostal"
+            :rules="rulesForms.codePostal"
+            required
+            @keyup.enter="validate()"
+          ></v-text-field
+        ></v-row>
+        <v-row
+          ><v-text-field
+            outlined
+            label="Ville"
+            placeholder="Ville"
+            v-model="contact.ville"
+            :rules="rulesForms.ville"
+            required
+            @keyup.enter="validate()"
+          ></v-text-field
+        ></v-row>
+        <v-row
+          ><v-text-field
+            outlined
+            label="CEDEX"
+            placeholder="CEDEX"
+            v-model="contact.cedex"
+            required
+            @keyup.enter="validate()"
+          ></v-text-field
+        ></v-row>
       </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <v-text-field
-          outlined
-          label="Prénom"
-          placeholder="Prénom"
-          v-model="contact.prenom"
-          :rules="rulesForms.prenom"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <v-text-field
-          outlined
-          label="Adresse"
-          placeholder="Adresse"
-          maxlength="80"
-          v-model="contact.adresse"
-          :rules="rulesForms.adresse"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <v-text-field
-          outlined
-          label="Boite Postale"
-          placeholder="Boite Postale"
-          v-model="contact.boitePostale"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field> </v-col
-      ><v-col cols="12" md="6" lg="6" xl="6">
-        <v-text-field
-          outlined
-          label="Code Postal"
-          placeholder="Code Postal"
-          maxlength="5"
-          v-model="contact.codePostal"
-          :rules="rulesForms.codePostal"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <v-text-field
-          outlined
-          label="Ville"
-          placeholder="Ville"
-          v-model="contact.ville"
-          :rules="rulesForms.ville"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <v-text-field
-          outlined
-          label="CEDEX"
-          placeholder="CEDEX"
-          v-model="contact.cedex"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <v-text-field
-          outlined
-          label="Téléphone"
-          placeholder="Téléphone"
-          maxlength="10"
-          v-model="contact.telephone"
-          :rules="rulesForms.tel"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <v-form ref="mail" :disabled="isDisableForm">
+      <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
+      <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
+        <v-row>
           <v-text-field
             outlined
-            label="Mail de contact"
-            placeholder="Mail de contact"
-            v-model="contact.mail"
-            :rules="rulesForms.email.concat(rulesMailConfirmation)"
+            label="Téléphone"
+            placeholder="Téléphone"
+            maxlength="10"
+            v-model="contact.telephone"
+            :rules="rulesForms.tel"
             required
-            @keyup="checkConfirmationMail()"
             @keyup.enter="validate()"
-            autocomplete="new-mail"
-          ></v-text-field>
-          <v-text-field
-            outlined
-            label="Confirmez votre adresse e-mail"
-            placeholder="Confirmez votre adresse e-mail"
-            v-model="emailConfirmation"
-            :rules="rulesForms.email.concat(rulesMailConfirmation)"
-            required
-            @keyup="checkConfirmationMail()"
-            @keyup.enter="validate()"
-            autocomplete="new-mail"
-          ></v-text-field>
-        </v-form>
-      </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <MotDePasse
-          ref="motdepasse"
-          v-if="
-            action === Action.CREATION ||
-              action === Action.FUSION ||
-              action === Action.SCISSION
-          "
-          :action="Action.CREATION"
-          :linkIsExpired="false"
-          :nouveau-mot-de-passe="contact.motDePasse"
-          @update:nouveauMotDePasse="updateMotDePasse"
-          :isDisableForm="isDisableForm"
-        ></MotDePasse>
-      </v-col>
-      <v-col cols="12" md="6" lg="6" xl="6"></v-col>
-      <v-col cols="12" md="6" lg="6" xl="6">
-        <div v-if="action === Action.CREATION">
-          <v-checkbox
-            required
-            :rules="rulesForms.checkboxRules"
-            label="J'accepte les conditions générales liées à la politique de
+          ></v-text-field
+        ></v-row>
+        <v-row
+          ><v-form ref="mail" :disabled="isDisableForm" style="width: 100%">
+            <v-text-field
+              outlined
+              label="Mail de contact"
+              placeholder="Mail de contact"
+              v-model="contact.mail"
+              :rules="rulesForms.email.concat(rulesMailConfirmation)"
+              required
+              @keyup="checkConfirmationMail()"
+              @keyup.enter="validate()"
+              autocomplete="new-mail"
+            ></v-text-field>
+            <v-text-field
+              outlined
+              label="Confirmez votre adresse e-mail"
+              placeholder="Confirmez votre adresse e-mail"
+              v-model="emailConfirmation"
+              :rules="rulesForms.email.concat(rulesMailConfirmation)"
+              required
+              @keyup="checkConfirmationMail()"
+              @keyup.enter="validate()"
+              autocomplete="new-mail"
+            ></v-text-field> </v-form
+        ></v-row>
+        <v-row>
+          <MotDePasse
+            ref="motdepasse"
+            v-if="
+              action === Action.CREATION ||
+                action === Action.FUSION ||
+                action === Action.SCISSION
+            "
+            :action="Action.CREATION"
+            :linkIsExpired="false"
+            :nouveau-mot-de-passe="contact.motDePasse"
+            @update:nouveauMotDePasse="updateMotDePasse"
+            :isDisableForm="isDisableForm"
+          ></MotDePasse>
+        </v-row>
+        <v-row
+          ><div v-if="action === Action.CREATION">
+            <v-checkbox
+              required
+              :rules="rulesForms.checkboxRules"
+              label="J'accepte les conditions générales liées à la politique de
                 confidentialité*"
-          ></v-checkbox>
-          <div>
-            Pour connaître et exercer vos droits relatifs à l'utilisation des
-            données collectées par ce formulaire, veuillez consulter la page
-            <a @click="gotoDonneesPersonnellesInNewPage()"
-              >Données personnelles</a
-            >
-          </div>
-          <br />
-          <div>
-            Ce formulaire est protégé par reCAPTCHA, la
-            <a href="https://policies.google.com/privacy"
-              >politique de confidentialité</a
-            >
-            ainsi que les
-            <a href="https://policies.google.com/terms"
-              >conditions d'utilisations</a
-            >
-            de Google s'appliquent.
-          </div>
-        </div>
+            ></v-checkbox>
+            <div>
+              Pour connaître et exercer vos droits relatifs à l'utilisation des
+              données collectées par ce formulaire, veuillez consulter la page
+              <a @click="gotoDonneesPersonnellesInNewPage()"
+                >Données personnelles</a
+              >
+            </div>
+            <br />
+            <div>
+              Ce formulaire est protégé par reCAPTCHA, la
+              <a href="https://policies.google.com/privacy"
+                >politique de confidentialité</a
+              >
+              ainsi que les
+              <a href="https://policies.google.com/terms"
+                >conditions d'utilisations</a
+              >
+              de Google s'appliquent.
+            </div>
+          </div></v-row
+        >
       </v-col>
     </v-row>
   </v-form>
@@ -245,3 +249,9 @@ export default class Contact extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.row {
+  margin: 0 !important;
+}
+</style>

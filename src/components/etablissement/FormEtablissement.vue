@@ -6,22 +6,21 @@
       class="elevation-0"
       :disabled="isDisableForm"
     >
-      <v-card-title v-if="action === Action.CREATION" class="pl-3">
+      <h1 v-if="action === Action.CREATION" class="pl-3">
         Créer le compte de votre établissement
-      </v-card-title>
+      </h1>
       <h1 v-if="action === Action.MODIFICATION" class="pl-3">
         Etablissement {{ etablissement.nom }}
       </h1>
-      <v-card-subtitle
+      <h2
         v-if="action === Action.CREATION"
         @click="allerAConnexion"
+        class="pl-3"
       >
         Votre établissement a déjà un compte ?
-        <v-btn class="bouton-simple elevation-0"
-          >S'authentifier
-          <v-icon>mdi-arrow-right-circle-outline </v-icon></v-btn
-        >
-      </v-card-subtitle>
+        <a class="bouton-simple elevation-0 large">S'authentifier</a>
+        <v-icon>mdi-arrow-right-circle-outline </v-icon>
+      </h2>
       <v-card-text>
         <v-col cols="12" md="6" lg="6" xl="6"><MessageBox></MessageBox> </v-col>
         <v-col cols="12" md="6" lg="6" xl="6" v-if="returnLink">
@@ -34,7 +33,6 @@
             </div>
           </v-alert>
         </v-col>
-        <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
         <v-row v-if="action === Action.CREATION">
           <v-col cols="12" md="6" lg="6" xl="6">
             <v-alert dense outlined>
@@ -82,88 +80,87 @@
           <v-divider class="mb-4"></v-divider>
           <div class="mx-9">
             <v-row>
-              <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field
-                  outlined
-                  label="Nom de l'établissement"
-                  placeholder="Nom de l'établissement"
-                  v-model="etablissement.nom"
-                  :rules="rulesForms.nomEtabRules"
-                  required
-                  @keyup.enter="validate()"
-                ></v-text-field>
+              <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
+                <v-row
+                  ><v-text-field
+                    outlined
+                    label="Nom de l'établissement"
+                    placeholder="Nom de l'établissement"
+                    v-model="etablissement.nom"
+                    :rules="rulesForms.nomEtabRules"
+                    required
+                    @keyup.enter="validate()"
+                  ></v-text-field
+                ></v-row>
+                <v-row
+                  ><v-text-field
+                    outlined
+                    label="SIREN"
+                    placeholder="SIREN"
+                    maxlength="9"
+                    v-model="etablissement.siren"
+                    :rules="rulesForms.siren"
+                    required
+                    @input="checkSiren()"
+                    @keyup.enter="validate()"
+                    :readonly="action == Action.MODIFICATION"
+                  ></v-text-field
+                ></v-row>
+                <v-row
+                  ><v-chip
+                    class="ma-2"
+                    :class="checkSirenColor"
+                    label
+                    v-if="
+                      action == Action.CREATION ||
+                        action == Action.FUSION ||
+                        action == Action.SCISSION
+                    "
+                    >SIREN : {{ checkSirenAPI }}
+                  </v-chip></v-row
+                >
+                <v-row v-if="action == Action.MODIFICATION"
+                  ><v-text-field
+                    outlined
+                    label="ID Abes"
+                    placeholder="ID Abes"
+                    v-model="etablissement.idAbes"
+                    readonly
+                  ></v-text-field
+                ></v-row>
               </v-col>
-              <v-col cols="12" md="6" lg="6" xl="6">
-                <v-select
-                  outlined
-                  v-model="etablissement.typeEtablissement"
-                  :items="typesEtab"
-                  label="Type d'établissement"
-                  placeholder="Type d'établissement"
-                  persistent-placeholder
-                  :rules="rulesForms.typeEtabRules"
-                  required
-                ></v-select>
-              </v-col>
-              <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field
-                  outlined
-                  label="SIREN"
-                  placeholder="SIREN"
-                  maxlength="9"
-                  v-model="etablissement.siren"
-                  :rules="rulesForms.siren"
-                  required
-                  @input="checkSiren()"
-                  @keyup.enter="validate()"
-                  :readonly="action == Action.MODIFICATION"
-                ></v-text-field>
-                <v-chip
-                  class="ma-2"
-                  :class="checkSirenColor"
-                  label
-                  v-if="
-                    action == Action.CREATION ||
-                      action == Action.FUSION ||
-                      action == Action.SCISSION
-                  "
-                  >SIREN : {{ checkSirenAPI }}
-                </v-chip>
-              </v-col>
-              <v-col
-                cols="12"
-                md="6"
-                lg="6"
-                xl="6"
-                v-if="action == Action.CREATION"
-              >
-                <v-alert outlined>
-                  <font-awesome-icon
-                    :icon="['fas', 'info-circle']"
-                    class="fa-2x mr-5 mb-1 icone-information"
-                  />
-                  <a
-                    class="noUnderlineLink"
-                    href="https://annuaire-entreprises.data.gouv.fr/"
-                    target="_blank"
-                    >Trouver le SIREN de votre établissement</a
+              <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
+              <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
+                <v-row>
+                  <v-select
+                    outlined
+                    v-model="etablissement.typeEtablissement"
+                    :items="typesEtab"
+                    label="Type d'établissement"
+                    placeholder="Type d'établissement"
+                    persistent-placeholder
+                    :rules="rulesForms.typeEtabRules"
+                    required
+                  ></v-select>
+                </v-row>
+                <v-row
+                  ><v-alert
+                    outlined
+                    v-if="action == Action.CREATION"
+                    style="width: 100%"
                   >
-                </v-alert>
-              </v-col>
-              <v-col
-                cols="12"
-                md="6"
-                lg="6"
-                xl="6"
-                v-if="action == Action.MODIFICATION"
-              >
-                <v-text-field
-                  outlined
-                  label="ID Abes"
-                  placeholder="ID Abes"
-                  v-model="etablissement.idAbes"
-                  readonly
-                ></v-text-field>
+                    <font-awesome-icon
+                      :icon="['fas', 'info-circle']"
+                      class="fa-2x mr-5 mb-1 icone-information"
+                    />
+                    <a
+                      class="noUnderlineLink"
+                      href="https://annuaire-entreprises.data.gouv.fr/"
+                      target="_blank"
+                      >Trouver le SIREN de votre établissement</a
+                    >
+                  </v-alert></v-row
+                >
               </v-col>
             </v-row>
           </div>
@@ -544,5 +541,9 @@ export default class FormEtablissement extends Vue {
 
 .icone-attention {
   float: left;
+}
+
+.row {
+  margin: 0 !important;
 }
 </style>
