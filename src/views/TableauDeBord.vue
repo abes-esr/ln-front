@@ -3,7 +3,7 @@
     <h1>Tableau de bord {{ etablissement.nom }}</h1>
     <MessageBox></MessageBox>
     <v-container class="mx-9 elevation-0">
-      <v-card-title class="px-0"
+      <v-card-title class="px-0 pb-0"
         >Information du compte
         <v-tooltip top max-width="20vw" open-delay="100">
           <template v-slot:activator="{ on }">
@@ -26,7 +26,7 @@
         >Compte créé le :
         {{ etablissement.dateCreation.toLocaleDateString() }}</span
       >
-      <v-row class="d-flex justify-space-between flex-wrap">
+      <v-row class="d-flex justify-space-between flex-wrap pt-3">
         <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
           <div style="height: 100%; position:relative;" class="borderCol">
             <div class="d-flex">
@@ -37,27 +37,29 @@
                     v-on="on"
                     :icon="['fas', 'lock']"
                     class="fa-2x mx-2"
-                    style="margin-top: 10px;"
+                    style="margin-top: 10px; position: absolute; right: 0;"
                   />
                 </template>
                 <span>Non modifiable par l'utilisateur</span>
               </v-tooltip>
             </div>
             <v-card-text class="d-flex align-content-start flex-wrap pt-0">
-              <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-                <div>
+              <div
+                class="d-flex flex-column justify-start mx-3  mb-3 mt-0 bloc-info"
+              >
+                <div class="mt-2">
                   <h3 class="d-inline">Siren :</h3>
                   {{ etablissement.siren }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">ID Abes :</h3>
                   {{ etablissement.idAbes }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Nom :</h3>
                   {{ etablissement.nom }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Type :</h3>
                   {{ etablissement.typeEtablissement }}
                 </div>
@@ -65,21 +67,24 @@
             </v-card-text>
             <v-alert
               outlined
-              class="ma-2"
-              style="position: absolute; bottom: 0;"
+              class="ma-2 pt-1 pb-0"
+              style="position: absolute; bottom: 0; font-size: 14px;"
             >
               <font-awesome-icon
                 :icon="['fas', 'info-circle']"
                 class="fa-2x mr-5 mb-1 icone-information"
+                style="height: 100%"
               />
-              Pour toute demande de modification des infos de l'établissement,
-              nous contacter via le guichet d'assistance
-              <v-btn
-                class="bouton-simple elevation-0 pa-0"
-                href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-                target="_blank"
-                >ABESstp
-              </v-btn>
+              <p class="mb-0">
+                Pour toute demande de modification des infos de l'établissement,
+                nous contacter via le guichet d'assistance
+                <v-btn
+                  class="bouton-simple elevation-0 pa-0"
+                  href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  target="_blank"
+                  >ABESstp
+                </v-btn>
+              </p>
             </v-alert>
           </div>
         </v-col>
@@ -91,40 +96,42 @@
               </h2>
             </div>
             <v-card-text class="d-flex align-content-start flex-wrap pt-0">
-              <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-                <div>
+              <div
+                class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info"
+              >
+                <div class="mt-2">
                   <h3 class="d-inline">Nom :</h3>
                   {{ etablissement.contact.nom }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Prénom :</h3>
                   {{ etablissement.contact.prenom }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Tél :</h3>
                   {{ etablissement.contact.telephone }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Email :</h3>
                   {{ etablissement.contact.mail }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Adresse :</h3>
                   {{ etablissement.contact.adresse }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">BP :</h3>
                   {{ etablissement.contact.boitePostale }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Code postal :</h3>
                   {{ etablissement.contact.codePostal }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Ville :</h3>
                   {{ etablissement.contact.ville }}
                 </div>
-                <div>
+                <div class="mt-2">
                   <h3 class="d-inline">Cedex :</h3>
                   {{ etablissement.contact.cedex }}
                 </div>
@@ -132,12 +139,12 @@
               <v-row class="text-right">
                 <v-col cols="12">
                   <v-btn class="btn-2 " @click="allerAMonProfil()"
-                    >Modifier mon contact</v-btn
+                    >Modifier contact</v-btn
                   ></v-col
                 >
                 <v-col cols="12">
                   <v-btn class="btn-2" @click="allerAModifierMotDePasse()"
-                    >Modifier mon mot de passe</v-btn
+                    >Modifier mot de passe</v-btn
                   ></v-col
                 >
               </v-row>
