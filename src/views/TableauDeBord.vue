@@ -28,7 +28,7 @@
       >
       <v-row class="d-flex justify-space-between flex-wrap">
         <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
-          <div style="height: 100%" class="borderCol">
+          <div style="height: 100%; position:relative;" class="borderCol">
             <div class="d-flex">
               <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
               <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
@@ -62,21 +62,25 @@
                   {{ etablissement.typeEtablissement }}
                 </div>
               </div>
-              <v-alert outlined style="margin-top: 200px">
-                <font-awesome-icon
-                  :icon="['fas', 'info-circle']"
-                  class="fa-2x mr-5 mb-1 icone-information"
-                />
-                Pour toute demande de modification des infos de l'établissement,
-                nous contacter via le guichet d'assistance
-                <v-btn
-                  class="bouton-simple elevation-0 pa-0"
-                  href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-                  target="_blank"
-                  >ABESstp
-                </v-btn>
-              </v-alert>
             </v-card-text>
+            <v-alert
+              outlined
+              class="ma-2"
+              style="position: absolute; bottom: 0;"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'info-circle']"
+                class="fa-2x mr-5 mb-1 icone-information"
+              />
+              Pour toute demande de modification des infos de l'établissement,
+              nous contacter via le guichet d'assistance
+              <v-btn
+                class="bouton-simple elevation-0 pa-0"
+                href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                target="_blank"
+                >ABESstp
+              </v-btn>
+            </v-alert>
           </div>
         </v-col>
         <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
@@ -157,6 +161,12 @@
               <div
                 class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
               >
+                <div v-if="notifsLoading">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
+                </div>
                 <ul>
                   <li
                     style="margin-bottom: 1em"
@@ -188,7 +198,7 @@
           </div>
         </v-col>
         <v-col cols="12" md="6" lg="6" xl="6" v-if="isAdmin">
-          <div style="height: 100%" class="borderCol">
+          <div class="borderCol" style="height: 100%; position: relative;">
             <v-card-title
               class="d-block titre-block"
               style="margin-bottom:-4px;"
@@ -199,8 +209,8 @@
               />
               Envoi aux éditeurs
             </v-card-title>
-            <v-card-text class="d-flex align-content-start flex-wrap">
-              <v-btn @click="envoiEditeurs()" class="bottom"
+            <v-card-text>
+              <v-btn @click="envoiEditeurs()" class="bottom ma-4"
                 >Envoi aux éditeurs</v-btn
               >
             </v-card-text>
@@ -234,6 +244,8 @@ export default class Home extends Vue {
   isAdmin: boolean = this.$store.getters.isAdmin();
   notificationsAdmin: Array<Notification> = [];
   notificationsUser: Array<NotificationUser> = [];
+  buttonLoading: boolean = false;
+  notifsLoading: boolean = true;
 
   constructor() {
     super();
@@ -327,6 +339,9 @@ export default class Home extends Vue {
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
+        })
+        .finally(() => {
+          this.notifsLoading = false;
         });
     } else {
       etablissementService
@@ -356,6 +371,9 @@ export default class Home extends Vue {
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
+        })
+        .finally(() => {
+          this.notifsLoading = false;
         });
     }
   }
@@ -390,6 +408,7 @@ export default class Home extends Vue {
   }
 
   envoiEditeurs(): void {
+    this.buttonLoading = true;
     editeurService
       .envoiEditeurs(this.$store.getters.getToken())
       .then(response => {
@@ -424,6 +443,9 @@ export default class Home extends Vue {
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
         }
+      })
+      .finally(() => {
+        this.buttonLoading = false;
       });
   }
 }
@@ -488,7 +510,5 @@ ul li::before {
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 2em;
-  margin-right: 5em;
 }
 </style>

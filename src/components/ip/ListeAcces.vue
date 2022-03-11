@@ -42,6 +42,7 @@
                           :items-per-page="30"
                           :item-class="RowClasses"
                           :search="rechercher"
+                          :loading="dataLoading"
                           flat
                         >
                           <template v-slot:top>
@@ -279,6 +280,7 @@ export default class ListeAcces extends ListeAccesProps {
   notification: string = "";
   commentaires: string = "";
   headers = [{}];
+  dataLoading: boolean = true;
 
   get getUserSiren() {
     return this.$store.state.user.siren;
@@ -401,6 +403,9 @@ export default class ListeAcces extends ListeAccesProps {
       .catch(err => {
         Logger.error(err);
         this.error = err.response.data.message;
+      })
+      .finally(() => {
+        this.dataLoading = false;
       });
   }
 

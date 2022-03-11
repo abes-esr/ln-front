@@ -27,6 +27,7 @@
         :footer-props="{ 'items-per-page-options': [25, 50, 100, -1] }"
         class="elevation-0 ma-3"
         :search="rechercher"
+        :loading="dataLoading"
         id="mytable"
       >
         <template v-slot:top>
@@ -141,6 +142,7 @@ export default class ListeEtab extends Vue {
   isAdmin: boolean = this.$store.getters.isAdmin();
   disableForm: boolean = false;
   statut: string = "";
+  dataLoading: boolean = true;
   selectStatut: Array<string> = [
     "Tous",
     "Nouveau",
@@ -377,6 +379,9 @@ export default class ListeEtab extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+      })
+      .finally(() => {
+        this.dataLoading = false;
       });
   }
 

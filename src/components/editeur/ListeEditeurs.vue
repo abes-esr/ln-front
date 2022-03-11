@@ -109,6 +109,7 @@ export default class ListeEditeurs extends Vue {
   ];
   confirmDeleteDialog: any = {};
   isAdmin: boolean = this.$store.getters.isAdmin();
+  dataLoading: boolean = true;
 
   constructor() {
     super();
@@ -154,6 +155,9 @@ export default class ListeEditeurs extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+      })
+      .finally(() => {
+        this.dataLoading = false;
       });
   }
 
