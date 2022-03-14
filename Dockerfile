@@ -6,6 +6,7 @@ WORKDIR /app/
 # mise en cache docker pour le téléchargement
 # des dépendances npm (répertoire node_modules/)
 COPY ./package.json /app/
+COPY ./node_modules/ /app/node_modules/
 RUN npm install
 
 # Compilation du TS en JS compilé
@@ -18,6 +19,6 @@ RUN npm run build
 ###
 # Serveur web pour exec l'appli vuejs
 FROM nginx:1.20.2 as front-image
-COPY --from=build /app/dist/ /usr/share/nginx/html/
+COPY --from=build-image /app/dist/ /usr/share/nginx/html/
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
