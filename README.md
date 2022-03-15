@@ -64,7 +64,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ### Génération des images docker
 
 L'image docker de licencesnationales-front est générée automatiquement à chaque ``git push`` par la chaîne d'intégration continue [![ci](https://github.com/abes-esr/licencesnationales-front/actions/workflows/ci.yml/badge.svg)](https://github.com/abes-esr/licencesnationales-front/actions/workflows/ci.yml). Les images suivantes sont [disponibles sur dockerhub](https://hub.docker.com/r/abesesr/licencesnationales/tags) :
-- ``abesesr/licencesnationales:main-front`` : l'image du dernier git push sur la branche ``mail``
+- ``abesesr/licencesnationales:main-front`` : l'image du dernier git push sur la branche ``main``
 - ``abesesr/licencesnationales:develop-front`` : l'image du dernier git push sur la branche ``develop``
 - ``abesesr/licencesnationales:X.X.X-front`` : l'image dont le n° de version est ``X.X.X``
 - ``abesesr/licencesnationales:latest-front`` : l'image de la dernière version publiée
