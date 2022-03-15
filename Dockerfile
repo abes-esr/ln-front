@@ -5,7 +5,7 @@ WORKDIR /build/
 # Mise en cache docker pour le téléchargement
 # des dépendances npm (répertoire node_modules/)
 COPY ./package.json /build/
-COPY ./node_modules/ /build/node_modules/
+#COPY ./node_modules/ /build/node_modules/
 RUN npm install
 # Compilation du TS en JS compilé
 # en injectant des placeholders dans les variables .env de vuejs
