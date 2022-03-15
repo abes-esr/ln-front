@@ -19,7 +19,7 @@ RUN node -v
 # via des variables d'environement Docker
 # Par exemple, cela permet d'injecter l'URL où se trouvent les API (back) différente
 # si on est en dev, test ou prod ou local.
-COPY ./docker/.env /build/.env
+COPY ./.env /build/.env
 #COPY ./docker/vuejs_env_placeholder /build/.env
 COPY ./.browserslistrc /build/.browserslistrc
 COPY ./.eslintrc.js /build/.eslintrc.js
