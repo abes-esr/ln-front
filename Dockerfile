@@ -8,11 +8,11 @@ COPY ./package.json /build/
 COPY ./node_modules/ /build/node_modules/
 RUN npm install
 # Compilation du TS en JS compilé
-# en injectaant des placeholders dans les variables .env
+# en injectant des placeholders dans les variables .env de vuejs
 # (cf le fichier docker/vuejs_env_placeholder) pour pouvoir créer des conteneurs
 # en dev, test, prod ou en local en passant les valeurs de ce .env
 # via des variables d'environement Docker
-# Par exemple, cela permet d'injecter l'URL où se trouvent les API différente
+# Par exemple, cela permet d'injecter l'URL où se trouvent les API (back) différente
 # si on est en dev, test ou prod ou local.
 COPY ./docker/vuejs_env_placeholder /build/.env
 COPY ./.browserslistrc /build/
@@ -29,7 +29,7 @@ RUN npm run build
 ###
 # Serveur web (nginx) pour exec l'appli vuejs
 FROM nginx:1.20.2 as front-image
-COPY --from=build-image /build/dist/ /usr/share/nginx/html/
+COPY --from=build-image /build/dist/ /usr/share/nginx/html.orig/
 COPY ./docker/nginx-default.conf /etc/nginx/conf.d/default.conf
 COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
