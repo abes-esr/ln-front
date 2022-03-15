@@ -5,6 +5,8 @@ WORKDIR /build/
 # Mise en cache docker pour le téléchargement
 # des dépendances npm (répertoire node_modules/)
 COPY ./package.json /build/
+# si on a un node_modules/ local on peut décommenter la ligne suivante pour 
+# éviter que npm retélécharge toutes les dépendances
 #COPY ./node_modules/ /build/node_modules/
 RUN npm install
 # Compilation du TS en JS compilé
