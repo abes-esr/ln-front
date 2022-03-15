@@ -9,6 +9,9 @@ COPY ./package.json /build/
 # éviter que npm retélécharge toutes les dépendances
 #COPY ./node_modules/ /build/node_modules/
 RUN npm install
+RUN npm -v
+RUN node -v
+
 # Compilation du TS en JS compilé
 # en injectant des placeholders dans les variables .env de vuejs
 # (cf le fichier docker/vuejs_env_placeholder) pour pouvoir créer des conteneurs
