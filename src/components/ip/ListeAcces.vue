@@ -67,6 +67,7 @@
                                     @click="downloadIPs()"
                                     class="mx-2 text-lowercase bouton-simple"
                                     v-on="on"
+                                    :loading="isExportLoading"
                                     ><span class="text-uppercase">T</span
                                     >élécharger la liste des
                                     <span class="text-uppercase">IP</span>
@@ -276,6 +277,7 @@ export default class ListeAcces extends ListeAccesProps {
   bufferActions: Array<any> = [];
   error: string = "";
   dialog: boolean = false;
+  isExportLoading: boolean = false;
   buttlonLoading: boolean = false;
   notification: string = "";
   commentaires: string = "";
@@ -611,6 +613,7 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   downloadIPs(): void {
+    this.isExportLoading= true;
     this.$store.dispatch("closeDisplayedMessage");
     iPService
       .downloadIPs(this.getSirenEtabSujet(), this.$store.state.user.token)
@@ -625,6 +628,7 @@ export default class ListeAcces extends ListeAccesProps {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+        this.isExportLoading= false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -640,6 +644,8 @@ export default class ListeAcces extends ListeAccesProps {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+        this.isExportLoading= false;
+
       });
   }
 }

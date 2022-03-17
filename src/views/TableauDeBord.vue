@@ -12,6 +12,7 @@
               class="bouton-simple"
               @click="downloadEtablissement()"
               v-on="on"
+              :loading="isExportLoading"
             >
               <font-awesome-icon
                 :icon="['fas', 'download']"
@@ -249,6 +250,7 @@ export default class Home extends Vue {
   etablissement: Etablissement;
   Action: any = Action;
   isAdmin: boolean = this.$store.getters.isAdmin();
+  isExportLoading: boolean = false;
   notificationsAdmin: Array<Notification> = [];
   notificationsUser: Array<NotificationUser> = [];
   buttonLoading: boolean = false;
@@ -280,6 +282,7 @@ export default class Home extends Vue {
   }
 
   downloadEtablissement(): void {
+    this.isExportLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
     const siren = new Array<string>();
     siren.push(this.$store.state.user.siren);
@@ -296,6 +299,7 @@ export default class Home extends Vue {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+        this.isExportLoading = false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -310,6 +314,7 @@ export default class Home extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+        this.isExportLoading = false;
       });
   }
 
