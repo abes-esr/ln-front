@@ -61,6 +61,14 @@ export class rulesForm {
 
   checkboxRules = [(v: boolean) => v || "Veuillez accepter avant de valider"];
 
+  selectSearchRules = [
+    (v: string) => !!v || "Le domaine de recherche est obligatoire"
+  ];
+
+  searchRules = [
+    (v: string) => !!v || "Veuillez saisir un ou des critères de recherche"
+  ];
+
   ipv4SegmentsRules = [
     (v: string) => !!v || "Le segment d'IP est obligatoire",
     (v: string) =>
@@ -100,6 +108,11 @@ export class rulesForm {
       /^\s*((([0-9a-fA-F]{1,4}:){6,6}[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4}-[0-9a-fA-F]{1,4}))s*$/.test(
         v
       ) || "La plage d'Ips fournie n'est pas valide" // cf https://stackoverflow.com/a/17871737
+  ];
+
+  commentaires = [
+    (v: string) =>
+      v.length <= 255 || "Le commentaire ne doit pas excéder 255 caractères"
   ];
 }
 export const rulesForms = new rulesForm();

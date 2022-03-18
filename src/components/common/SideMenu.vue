@@ -10,20 +10,7 @@
     height="100%"
   >
     <v-list dense color="transparent">
-      <v-row class="mb-15">
-        <v-list-item
-          class="d-flex align-center justify-center flex-column menu-slot"
-          v-on:click="saveTheme()"
-        >
-          <v-switch
-            dense
-            v-model="$vuetify.theme.dark"
-            inset
-            class="theme-selector"
-          ></v-switch>
-          <v-list-item-title>Thème sombre</v-list-item-title>
-        </v-list-item>
-      </v-row>
+      <v-row class="mb-15"> </v-row>
 
       <v-row class="mb-5">
         <v-list-item
@@ -97,18 +84,30 @@
         </v-list-item>
       </v-row>
 
+      <v-row v-if="isAdmin" class="mb-5">
+        <v-list-item
+          class="d-flex align-center justify-center flex-column menu-slot"
+          v-on:click="allerRecherche()"
+        >
+          <v-list-item-action class="ma-0 pa-1">
+            <font-awesome-icon :icon="['fas', 'search']" size="2x" />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Recherche</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-row>
+
       <v-row v-if="!isAdmin" class="mb-5">
         <v-list-item
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeIPs()"
         >
           <v-list-item-action class="ma-0 pa-1">
-            <v-icon xLarge class="mr-2" @click="allerAIPs(item)"
-              >mdi-ip-network</v-icon
-            >
+            <v-icon xLarge class="mr-2">mdi-ip-network</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Mes IPs</v-list-item-title>
+            <v-list-item-title>Adresse IP</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-row>
@@ -124,12 +123,6 @@ import { Logger } from "@/utils/Logger";
 export default class SideMenu extends Vue {
   @Prop() displayMenu!: boolean;
   @Prop() isAdmin!: boolean;
-
-  saveTheme(): void {
-    this.$store.dispatch("changeTheme").catch(err => {
-      Logger.error(err);
-    });
-  }
 
   allerAListeEditeurs(): void {
     this.$router.push({ name: "ListeEditeurs" }).catch(err => {
@@ -157,6 +150,12 @@ export default class SideMenu extends Vue {
 
   allerAHistorique(): void {
     this.$router.push({ name: "Historique" }).catch(err => {
+      Logger.error(err);
+    });
+  }
+
+  allerRecherche(): void {
+    this.$router.push({ name: "Recherche" }).catch(err => {
       Logger.error(err);
     });
   }

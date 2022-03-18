@@ -83,7 +83,7 @@ export class EtablissementService extends LicencesNationalesApiService {
               element.dateModificationDerniereIp;
             etablissement.typeEtablissement = element.typeEtablissement;
             etablissement.statut = element.statut;
-            etablissement.statutIP = element.statutIP;
+            etablissement.statutIP = element.statutIps;
             etablissement.idAbes = element.idAbes;
             etabs.push(etablissement);
           });
@@ -112,7 +112,7 @@ export class EtablissementService extends LicencesNationalesApiService {
           );
           etablissement.typeEtablissement = response.typeEtablissement;
           etablissement.statut = response.statut;
-          etablissement.statutIP = response.statutIP;
+          etablissement.statutIP = response.statutIps;
           etablissement.idAbes = response.idAbes;
 
           const contact: ContactEtablissement = new ContactEtablissement();
@@ -186,17 +186,8 @@ export class EtablissementService extends LicencesNationalesApiService {
     });
   }
 
-  validerEtablissement(siren: string, token: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      return this.client
-        .post("/etablissements/validation/" + siren, null, token)
-        .then(() => {
-          resolve(true);
-        })
-        .catch(err => {
-          reject(this.buildException(err));
-        });
-    });
+  validerEtablissement(siren: string, token: string): Promise<AxiosResponse> {
+    return this.client.post("/etablissements/validation/" + siren, null, token);
   }
 
   fusion(token: string, data: any): Promise<AxiosResponse> {
@@ -247,6 +238,11 @@ export class EtablissementService extends LicencesNationalesApiService {
             notification.nomEtab = element.nomEtab;
             notifs.push(notification);
           });
+          notifs.sort(function(a, b) {
+            return (
+              new Date(b.dateEvent).getTime() - new Date(a.dateEvent).getTime()
+            );
+          });
           resolve(notifs);
         })
         .catch(err => {
@@ -281,37 +277,8 @@ export class EtablissementService extends LicencesNationalesApiService {
     });
   }
 
-  //TODO à supprimer après merge du ws
-  getNotificationsAdminMocked(): Array<Notification> {
-    const notifs: Array<Notification> = [];
-    notifs.push(
-      new Notification(
-        0,
-        "123123",
-        new Date(),
-        "Nouvel établissement",
-        "etablissement 1"
-      )
-    );
-    notifs.push(
-      new Notification(
-        1,
-        "230899",
-        new Date(),
-        "Nouvelle IP",
-        "etablissement 2"
-      )
-    );
-    notifs.push(
-      new Notification(
-        2,
-        "431900",
-        new Date(),
-        "Suppression IP depuis dernier envoi",
-        "etablissement 3"
-      )
-    );
-    return notifs;
+  search(criteres: Array<string>, token: string): Promise<AxiosResponse> {
+    return this.client.post("/etablissements/search/", criteres, token);
   }
 }
 
@@ -326,7 +293,7 @@ interface JsonEtablissementResponse {
   dateCreation: string;
   typeEtablissement: string;
   statut: string;
-  statutIP: string;
+  statutIps: string;
   idAbes: string;
   contact: JsonContactEtablissementResponse;
 }
@@ -339,7 +306,7 @@ interface JsonSimpleEtablissementResponse {
   dateModificationDerniereIp: string;
   typeEtablissement: string;
   statut: string;
-  statutIP: string;
+  statutIps: string;
   idAbes: string;
 }
 

@@ -9,9 +9,11 @@
                 <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
               </v-row>
               <v-row>
-                <v-col cols="12" sm="8"></v-col>
-                <v-col cols="12" sm="2">
-                  <v-btn @click="$router.push({ path: '/ajouterAcces/' })"
+                <v-col cols="1" sm="1"></v-col>
+                <v-col cols="10" sm="10">
+                  <v-btn
+                    id="addIpButton"
+                    @click="$router.push({ path: '/ajouterAcces/' })"
                     ><span class="btnText">Ajouter une IP ou une plage IP</span>
                     <font-awesome-icon :icon="['fas', 'plus-circle']"/></v-btn
                 ></v-col>
@@ -40,6 +42,7 @@
                           :items-per-page="30"
                           :item-class="RowClasses"
                           :search="rechercher"
+                          :loading="dataLoading"
                           flat
                         >
                           <template v-slot:top>
@@ -64,6 +67,7 @@
                                     @click="downloadIPs()"
                                     class="mx-2 text-lowercase bouton-simple"
                                     v-on="on"
+                                    :loading="isExportLoading"
                                     ><span class="text-uppercase">T</span
                                     >élécharger la liste des
                                     <span class="text-uppercase">IP</span>
@@ -81,16 +85,20 @@
                           </template>
                           <template v-slot:[`item.action`]="{ item }">
                             <v-btn
-                              v-if="isAdmin"
+                              v-if="
+                                isAdmin &&
+                                  $store.getters.getCurrentEtablissement()
+                                    .statut == 'Validé'
+                              "
                               class="ma-0 pa-0 bouton-simple "
                               icon
-                              title="Analyser"
+                              title="Examiner"
                               @click.stop="openDialog(item)"
                             >
                               <font-awesome-icon :icon="['fas', 'search']"
                             /></v-btn>
                             <v-btn
-                              v-else
+                              v-if="!isAdmin"
                               class="ma-0 pa-0 bouton-simple "
                               icon
                               :loading="buttlonLoading"
@@ -269,10 +277,12 @@ export default class ListeAcces extends ListeAccesProps {
   bufferActions: Array<any> = [];
   error: string = "";
   dialog: boolean = false;
+  isExportLoading: boolean = false;
   buttlonLoading: boolean = false;
   notification: string = "";
   commentaires: string = "";
   headers = [{}];
+  dataLoading: boolean = true;
 
   get getUserSiren() {
     return this.$store.state.user.siren;
@@ -395,6 +405,9 @@ export default class ListeAcces extends ListeAccesProps {
       .catch(err => {
         Logger.error(err);
         this.error = err.response.data.message;
+      })
+      .finally(() => {
+        this.dataLoading = false;
       });
   }
 
@@ -554,11 +567,7 @@ export default class ListeAcces extends ListeAccesProps {
     this.clearAlerts();
 
     iPService
-      .updateIP(
-        this.$store.getters.getToken(),
-        this.$store.getters.getCurrentEtablissement().siren,
-        [{ idIp: ip, action: "SUPPRIMER" }]
-      )
+      .deleteIP(this.$store.getters.getToken(), ip)
       .then(() => {
         this.notification = "IP supprimée.";
       })
@@ -604,6 +613,7 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   downloadIPs(): void {
+    this.isExportLoading= true;
     this.$store.dispatch("closeDisplayedMessage");
     iPService
       .downloadIPs(this.getSirenEtabSujet(), this.$store.state.user.token)
@@ -618,6 +628,7 @@ export default class ListeAcces extends ListeAccesProps {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+        this.isExportLoading= false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -633,6 +644,8 @@ export default class ListeAcces extends ListeAccesProps {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+        this.isExportLoading= false;
+
       });
   }
 }
@@ -651,6 +664,10 @@ h3 {
 }
 .actions .v-btn {
   margin: 5px;
+}
+
+#addIpButton {
+  float: right;
 }
 
 .VALIDER {

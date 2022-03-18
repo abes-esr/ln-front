@@ -47,8 +47,8 @@
               </module-segments-ip-plage>
             </v-col>
             <v-col>
-              <v-alert dense outlined :value="alert" type="error">
-                {{ error }}
+              <v-alert dense :value="message !== ''" :type="typeAlert">
+                {{ message }}
               </v-alert>
               <h3>Nouvelles IP ou plages IP ajoutées</h3>
               <v-simple-table dense>
@@ -61,7 +61,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="item in arrayAjouterIp" :key="item.ip">
+                    <tr v-for="(item, index) in arrayAjouterIp" :key="item.ip">
                       <td>{{ item.typeIp }}</td>
                       <td>{{ item.ip }}</td>
                       <td>
@@ -69,7 +69,7 @@
                           class="ma-0 pa-0 bouton-simple "
                           icon
                           title="Supprimer"
-                          @click="supprimerIP"
+                          @click="supprimerIP(item.id, index)"
                         >
                           <font-awesome-icon :icon="['fas', 'trash-alt']"
                         /></v-btn>
@@ -101,6 +101,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
+import { iPService } from "@/core/service/licencesnationales/IPService";
+import { Logger } from "@/utils/Logger";
 
 @Component({
   components: { ModuleSegmentsIpPlage }
@@ -111,12 +113,8 @@ export default class AjouterAcces extends Vue {
   typeAcces: string = "";
   typesIp: Array<string> = ["IPV4", "IPV6"];
   typeIp: string = "IPV4";
-  alertIp: boolean = true;
-  alert: boolean = false;
-  alertErrorIp: boolean = false;
-  errorIp: string = "";
-  //showButtonAjouterIp: false,
-  error: string = "";
+  message: string = "";
+  typeAlert: string = "success";
   arrayAjouterIp: Array<string> = [];
 
   validate(payloadFromModuleSegmentsIpPlage): void {
@@ -124,9 +122,21 @@ export default class AjouterAcces extends Vue {
   }
   clear() {
     this.arrayAjouterIp = [];
+    this.message = "";
   }
-  supprimerIP() {
-    console.log("suppresion");
+  supprimerIP(idIP: string, index: number) {
+    iPService
+      .deleteIP(this.$store.getters.getToken(), idIP)
+      .then(response => {
+        this.typeAlert = "success";
+        this.message = response.data.message;
+        this.arrayAjouterIp.splice(index, 1);
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        this.typeAlert = "error";
+        this.message = err.response.data.message;
+      });
   }
 }
 </script>

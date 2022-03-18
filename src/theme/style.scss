@@ -1,5 +1,7 @@
 h1 {
   color: $couleur-2;
+  font-weight: 900;
+  font-size:30px !important;
 }
 
 h4 {
@@ -221,11 +223,11 @@ nav svg {
   color: $couleur-5 !important;
 }
 .theme-selector .v-input--switch__track{
-  color: $couleur-3 !important;
+  color: $couleur-6 !important;
 }
 
 .theme-selector .v-input--switch__thumb {
-  color: $couleur-5 !important;
+  color: $couleur-6 !important;
 }
 
 .confirmPopup {

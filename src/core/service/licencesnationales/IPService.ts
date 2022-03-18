@@ -23,11 +23,15 @@ export class IPService extends LicencesNationalesApiService {
   }
 
   deleteIP(token: string, id): Promise<AxiosResponse> {
-    return this.client.delete("/ip/" + id, token);
+    return this.client.delete("/ip/" + id, null, token);
   }
 
   getWhoIs(token: string, ip): Promise<AxiosResponse> {
     return this.client.get("/ip/whois/" + ip, token);
+  }
+
+  search(criteres: Array<string>, token: string): Promise<AxiosResponse> {
+    return this.client.post("/ip/search/", criteres, token);
   }
 
   /**

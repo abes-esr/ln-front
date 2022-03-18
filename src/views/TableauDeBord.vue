@@ -3,7 +3,7 @@
     <h1>Tableau de bord {{ etablissement.nom }}</h1>
     <MessageBox></MessageBox>
     <v-container class="mx-9 elevation-0">
-      <v-card-title class="px-0"
+      <v-card-title class="px-0 pb-0"
         >Information du compte
         <v-tooltip top max-width="20vw" open-delay="100">
           <template v-slot:activator="{ on }">
@@ -12,6 +12,7 @@
               class="bouton-simple"
               @click="downloadEtablissement()"
               v-on="on"
+              :loading="isExportLoading"
             >
               <font-awesome-icon
                 :icon="['fas', 'download']"
@@ -26,167 +27,202 @@
         >Compte créé le :
         {{ etablissement.dateCreation.toLocaleDateString() }}</span
       >
-      <v-row class="d-flex justify-space-between flex-wrap">
-        <v-col
-          cols="12"
-          md="3"
-          lg="3"
-          xl="3"
-          class="d-flex align-content-start justify-center flex-wrap"
-        >
-          <v-card-title class="d-block titre-block"></v-card-title>
-          <v-card-text class="d-flex justify-space-between flex-column">
-            <div class="d-flex justify-space-between align-center">
-              <h2 class="my-3">Etablissement</h2>
+      <v-row class="d-flex justify-space-between flex-wrap pt-3">
+        <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
+          <div style="height: 100%; position:relative;" class="borderCol">
+            <div class="d-flex">
+              <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
               <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
                 <template v-slot:activator="{ on }">
                   <font-awesome-icon
                     v-on="on"
                     :icon="['fas', 'lock']"
                     class="fa-2x mx-2"
+                    style="margin-top: 10px; position: absolute; right: 0;"
                   />
                 </template>
                 <span>Non modifiable par l'utilisateur</span>
               </v-tooltip>
             </div>
-            <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <div>
-                <h3 class="d-inline">Siren :</h3>
-                {{ etablissement.siren }}
+            <v-card-text class="d-flex align-content-start flex-wrap pt-0">
+              <div
+                class="d-flex flex-column justify-start mx-3  mb-3 mt-0 bloc-info"
+              >
+                <div class="mt-2">
+                  <h3 class="d-inline">Siren :</h3>
+                  {{ etablissement.siren }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">ID Abes :</h3>
+                  {{ etablissement.idAbes }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Nom :</h3>
+                  {{ etablissement.nom }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Type :</h3>
+                  {{ etablissement.typeEtablissement }}
+                </div>
               </div>
-              <div>
-                <h3 class="d-inline">ID Abes :</h3>
-                {{ etablissement.idAbes }}
-              </div>
-              <div>
-                <h3 class="d-inline">Nom :</h3>
-                {{ etablissement.nom }}
-              </div>
-              <div>
-                <h3 class="d-inline">Type :</h3>
-                {{ etablissement.typeEtablissement }}
-              </div>
-            </div>
-            <v-alert outlined>
+            </v-card-text>
+            <v-alert
+              outlined
+              class="ma-2 pt-1 pb-0"
+              style="position: absolute; bottom: 0; font-size: 14px;"
+            >
               <font-awesome-icon
                 :icon="['fas', 'info-circle']"
                 class="fa-2x mr-5 mb-1 icone-information"
+                style="height: 100%"
               />
-              Pour toute demande de modification des infos de l'établissement,
-              nous contacter via le guichet d'assistance
-              <v-btn
-                class="bouton-simple elevation-0 pa-0"
-                href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-                target="_blank"
-                >ABESstp
-              </v-btn>
+              <p class="mb-0">
+                Pour toute demande de modification des infos de l'établissement,
+                nous contacter via le guichet d'assistance
+                <v-btn
+                  class="bouton-simple elevation-0 pa-0"
+                  href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  target="_blank"
+                  >ABESstp
+                </v-btn>
+              </p>
             </v-alert>
-          </v-card-text>
+          </div>
         </v-col>
-        <v-col
-          cols="12"
-          md="3"
-          lg="3"
-          xl="3"
-          class="d-flex align-content-start justify-center flex-wrap"
-        >
-          <v-card-title class="d-block titre-block"></v-card-title>
-          <v-card-text class="d-flex justify-space-between flex-column">
+        <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
+          <div style="height: 100%" class="borderCol">
             <div class="d-flex justify-space-between align-center">
-              <h2 class="my-3">Contact</h2>
+              <h2 class="my-3 pl-4 mb-0">
+                Contact
+              </h2>
             </div>
-            <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <div>
-                <h3 class="d-inline">Nom :</h3>
-                {{ etablissement.contact.nom }}
-              </div>
-              <div>
-                <h3 class="d-inline">Prénom :</h3>
-                {{ etablissement.contact.prenom }}
-              </div>
-              <div>
-                <h3 class="d-inline">Tél :</h3>
-                {{ etablissement.contact.telephone }}
-              </div>
-              <div>
-                <h3 class="d-inline">Email :</h3>
-                {{ etablissement.contact.mail }}
-              </div>
-              <div>
-                <h3 class="d-inline">Adresse :</h3>
-                {{ etablissement.contact.adresse }}
-              </div>
-              <div>
-                <h3 class="d-inline">BP :</h3>
-                {{ etablissement.contact.boitePostale }}
-              </div>
-              <div>
-                <h3 class="d-inline">Code postal :</h3>
-                {{ etablissement.contact.codePostal }}
-              </div>
-              <div>
-                <h3 class="d-inline">Ville :</h3>
-                {{ etablissement.contact.ville }}
-              </div>
-              <div>
-                <h3 class="d-inline">Cedex :</h3>
-                {{ etablissement.contact.cedex }}
-              </div>
-            </div>
-            <v-row class="text-right">
-              <v-col cols="12">
-                <v-btn class="btn-2 " @click="allerAMonProfil()"
-                  >Modifier mon contact</v-btn
-                ></v-col
+            <v-card-text class="d-flex align-content-start flex-wrap pt-0">
+              <div
+                class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info"
               >
-              <v-col cols="12">
-                <v-btn class="btn-2" @click="allerAModifierMotDePasse()"
-                  >Modifier mon mot de passe</v-btn
-                ></v-col
-              >
-            </v-row>
-          </v-card-text>
+                <div class="mt-2">
+                  <h3 class="d-inline">Nom :</h3>
+                  {{ etablissement.contact.nom }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Prénom :</h3>
+                  {{ etablissement.contact.prenom }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Tél :</h3>
+                  {{ etablissement.contact.telephone }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Email :</h3>
+                  {{ etablissement.contact.mail }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Adresse :</h3>
+                  {{ etablissement.contact.adresse }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">BP :</h3>
+                  {{ etablissement.contact.boitePostale }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Code postal :</h3>
+                  {{ etablissement.contact.codePostal }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Ville :</h3>
+                  {{ etablissement.contact.ville }}
+                </div>
+                <div class="mt-2">
+                  <h3 class="d-inline">Cedex :</h3>
+                  {{ etablissement.contact.cedex }}
+                </div>
+              </div>
+              <v-row class="text-right">
+                <v-col cols="12">
+                  <v-btn class="btn-2 " @click="allerAMonProfil()"
+                    >Modifier contact</v-btn
+                  ></v-col
+                >
+                <v-col cols="12">
+                  <v-btn class="btn-2" @click="allerAModifierMotDePasse()"
+                    >Modifier mot de passe</v-btn
+                  ></v-col
+                >
+              </v-row>
+            </v-card-text>
+          </div>
         </v-col>
-        <v-col
-          cols="12"
-          md="6"
-          lg="6"
-          xl="6"
-          class="d-flex align-content-start justify-center flex-wrap"
-        >
-          <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
-            <font-awesome-icon
-              :icon="['fas', 'bell']"
-              class="fa-lg mx-2 icone-standard"
-            />
-            Notifications</v-card-title
-          >
-          <v-card-text class="d-flex justify-space-between flex-column">
-            <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
-              <h3 style="margin-bottom: 1em">Liste des évenements</h3>
-              <li
-                style="margin-bottom: 1em"
-                v-for="item in this.notificationsAdmin"
-                :key="item.index"
+        <v-col cols="12" md="6" lg="6" xl="6">
+          <div style="height: 100%" class="borderCol">
+            <v-card-title
+              class="d-block titre-block"
+              style="margin-bottom:-4px;"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'bell']"
+                class="fa-lg mx-2 icone-standard"
+              />
+              <span v-if="isAdmin">Dernières actions des utilisateurs</span>
+              <span v-else>Notifications</span>
+            </v-card-title>
+            <v-card-text class="d-flex align-content-start flex-wrap">
+              <div
+                class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
               >
-                Siren: {{ item.siren }}<br />Nom établissement:
-                <a @click="allerPageEtablissement(item.siren)">{{
-                  item.nomEtab
-                }}</a
-                ><br />Evenement: {{ item.typeNotif }}<br />Date:
-                {{ dateFormatted(item.dateEvent) }}
-              </li>
-              <li
-                style="margin-bottom: 1em"
-                v-for="item in this.notificationsUser"
-                :key="item.index"
+                <div v-if="notifsLoading">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
+                </div>
+                <ul>
+                  <li
+                    style="margin-bottom: 1em"
+                    v-for="item in this.notificationsAdmin"
+                    :key="item.index"
+                  >
+                    Siren: {{ item.siren }}<br />Nom établissement:
+                    <a @click="allerPageEtablissement(item.siren)">{{
+                      item.nomEtab
+                    }}</a
+                    ><br />Evenement: {{ item.typeNotif }}<br />Date:
+                    {{ dateFormatted(item.dateEvent) }}
+                  </li>
+                  <li
+                    style="margin-bottom: 1em"
+                    v-for="item in this.notificationsUser"
+                    :key="item.index"
+                  >
+                    <span class="notifUserMsg" v-html="item.message"></span>
+                    <br />
+                    <span
+                      class="notifUserDesc"
+                      v-html="item.description"
+                    ></span>
+                  </li>
+                </ul>
+              </div>
+            </v-card-text>
+          </div>
+        </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6" v-if="isAdmin">
+          <div class="borderCol" style="height: 100%; position: relative;">
+            <v-card-title
+              class="d-block titre-block"
+              style="margin-bottom:-4px;"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'paper-plane']"
+                class="fa-lg mx-2"
+              />
+              Envoi aux éditeurs
+            </v-card-title>
+            <v-card-text>
+              <v-btn @click="envoiEditeurs()" class="bottom ma-4"
+                >Envoi aux éditeurs</v-btn
               >
-                Message: {{ item.message }}<br />Description:{{
-                  item.description
-                }}
-              </li>
-            </div>
-          </v-card-text>
+            </v-card-text>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -205,6 +241,7 @@ import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnat
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import moment from "moment/moment";
 import NotificationUser from "@/core/service/NotificationUser";
+import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 
 @Component({
   components: { MessageBox }
@@ -213,8 +250,11 @@ export default class Home extends Vue {
   etablissement: Etablissement;
   Action: any = Action;
   isAdmin: boolean = this.$store.getters.isAdmin();
+  isExportLoading: boolean = false;
   notificationsAdmin: Array<Notification> = [];
   notificationsUser: Array<NotificationUser> = [];
+  buttonLoading: boolean = false;
+  notifsLoading: boolean = true;
 
   constructor() {
     super();
@@ -242,6 +282,7 @@ export default class Home extends Vue {
   }
 
   downloadEtablissement(): void {
+    this.isExportLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
     const siren = new Array<string>();
     siren.push(this.$store.state.user.siren);
@@ -258,6 +299,7 @@ export default class Home extends Vue {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+        this.isExportLoading = false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -272,6 +314,7 @@ export default class Home extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+        this.isExportLoading = false;
       });
   }
 
@@ -308,6 +351,9 @@ export default class Home extends Vue {
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
+        })
+        .finally(() => {
+          this.notifsLoading = false;
         });
     } else {
       etablissementService
@@ -337,6 +383,9 @@ export default class Home extends Vue {
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {
             Logger.error(err.toString());
           });
+        })
+        .finally(() => {
+          this.notifsLoading = false;
         });
     }
   }
@@ -369,6 +418,48 @@ export default class Home extends Vue {
         }
       });
   }
+
+  envoiEditeurs(): void {
+    this.buttonLoading = true;
+    editeurService
+      .envoiEditeurs(this.$store.getters.getToken())
+      .then(response => {
+        const message: Message = new Message();
+        message.type = MessageType.VALIDATION;
+        message.texte = response.data.message;
+
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte =
+            "Impossible d'exécuter l'action : " + err.response.data.message;
+        }
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      })
+      .finally(() => {
+        this.buttonLoading = false;
+      });
+  }
 }
 </script>
 <style scoped lang="scss">
@@ -392,5 +483,44 @@ export default class Home extends Vue {
 .multi-line span {
   min-height: 1rem;
   word-break: break-all;
+}
+
+.notifUserMsg {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.notifUserDesc {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+ul {
+  list-style: none; /* Remove default bullets */
+}
+
+ul li::before {
+  content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: #cf491f; /* Change the color */
+  font-weight: bolder; /* If you want it to be bold */
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+.borderCol {
+  border: 1px solid #b8b8b9;
+  border-radius: 5px;
+  padding-top: 5px;
+}
+
+.v-card__text {
+  border: none !important;
+}
+
+.bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 </style>

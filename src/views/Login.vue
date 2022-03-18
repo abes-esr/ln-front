@@ -6,6 +6,7 @@
           <font-awesome-icon
             :icon="['fas', 'exclamation-triangle']"
             class="mx-2 icone-attention"
+            size="lg"
           />
           <h4>
             Application réservée aux établissements bénéficiaires
@@ -124,5 +125,19 @@ h4 {
 
 #row_RevenirAccueil {
   margin: auto;
+}
+
+p {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+strong {
+  font-weight: 900;
+}
+
+h4 {
+  font-size: 18px;
 }
 </style>

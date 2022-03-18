@@ -14,6 +14,7 @@
                   :action="Action.MODIFICATION"
                   :ancien-mot-de-passe="this.oldPassword"
                   :nouveau-mot-de-passe="this.newPassword"
+                  :linkIsExpired="false"
                   @update:ancienMotDePasse="updateAncienMotDePasse"
                   @update:nouveauMotDePasse="updateNouveauMotDePasse"
                   :isDisableForm="isDisableForm"

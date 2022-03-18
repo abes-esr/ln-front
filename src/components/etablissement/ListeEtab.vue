@@ -27,6 +27,7 @@
         :footer-props="{ 'items-per-page-options': [25, 50, 100, -1] }"
         class="elevation-0 ma-3"
         :search="rechercher"
+        :loading="dataLoading"
         id="mytable"
       >
         <template v-slot:top>
@@ -48,6 +49,7 @@
                 @click="downloadEtablissements()"
                 class="mx-2 text-lowercase bouton-simple"
                 v-on="on"
+                :loading="isExportLoading"
                 ><span class="text-uppercase">T</span>élécharger la liste des
                 Etabs
                 <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
@@ -141,6 +143,7 @@ export default class ListeEtab extends Vue {
   isAdmin: boolean = this.$store.getters.isAdmin();
   disableForm: boolean = false;
   statut: string = "";
+  dataLoading: boolean = true;
   selectStatut: Array<string> = [
     "Tous",
     "Nouveau",
@@ -154,6 +157,7 @@ export default class ListeEtab extends Vue {
   selectedType: string = "";
   typesEtab: Array<string> = [];
   isDisableForm: boolean = false;
+  isExportLoading: boolean = false;
   title: string = "";
   id: string = "";
   headers = [
@@ -225,8 +229,8 @@ export default class ListeEtab extends Vue {
         element.dateCreation
       ).format("YYYY-MM-DD");
       if (element.dateModificationDerniereIp) {
-        element.dateModificationDerniereIp = element.dateModificationDerniereIp.replaceAll(
-          "-",
+        element.dateModificationDerniereIp = element.dateModificationDerniereIp.replace(
+          /-/g,
           "/"
         );
       }
@@ -377,6 +381,9 @@ export default class ListeEtab extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+      })
+      .finally(() => {
+        this.dataLoading = false;
       });
   }
 
@@ -410,6 +417,7 @@ export default class ListeEtab extends Vue {
   }
 
   downloadEtablissements(): void {
+    this.isExportLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
     const sirens = new Array<string>();
     this.etabsFiltered.forEach(element => {
@@ -428,6 +436,8 @@ export default class ListeEtab extends Vue {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+
+        this.isExportLoading = false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -443,6 +453,8 @@ export default class ListeEtab extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+
+        this.isExportLoading = false;
       });
   }
 

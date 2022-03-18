@@ -154,6 +154,15 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: "/recherche",
+    name: "Recherche",
+    component: () => import("../components/common/Recherche.vue"),
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
+  },
+  {
     path: "/CGU",
     name: "CGU",
     component: () => import("../views/footer-static/CGU.vue")
