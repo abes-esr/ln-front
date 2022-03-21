@@ -416,7 +416,7 @@ export default class ListeAcces extends ListeAccesProps {
       id: acces.id,
       dateCreation: moment(acces.dateCreation).format("L"),
       dateModification: this.getDateModification(acces),
-      typeIp: typeAcces + " " + acces.typeIp,
+      typeIp: typeAcces + acces.typeIp,
       ip: acces.ip,
       statut: acces.statut,
       commentaires: acces.commentaires
@@ -472,7 +472,8 @@ export default class ListeAcces extends ListeAccesProps {
   splitRangeIntoIPs(typeIP: string, range: string): string[] {
     let ip1 = "";
     let ip2 = "";
-    if (typeIP === "IPV4") {
+
+    if (typeIP === "Plage IPV4") {
       range.split(".").forEach(element => {
         if (element.includes("-")) {
           const tabSplit = element.split("-");
