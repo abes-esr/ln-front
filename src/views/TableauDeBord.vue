@@ -1,7 +1,8 @@
 <template>
   <v-card flat>
-    <h1>Tableau de bord de l'établissement</h1>
+    <h1>Tableau de bord <span v-if="!isAdmin">de l'établissement</span></h1>
     <MessageBox></MessageBox>
+    <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-container class="mx-9 elevation-0">
       <v-card-title class="px-0 pb-0"
         >Information du compte
@@ -253,6 +254,7 @@ import { Component, Vue } from "vue-property-decorator";
 import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
 import { Action, Message, MessageType } from "@/core/CommonDefinition";
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { Notification } from "@/core/Notification";
@@ -263,7 +265,7 @@ import NotificationUser from "@/core/service/NotificationUser";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 
 @Component({
-  components: { MessageBox }
+  components: { MessageBox, ConfirmPopup }
 })
 export default class Home extends Vue {
   etablissement: Etablissement;
@@ -474,46 +476,53 @@ export default class Home extends Vue {
       });
   }
 
-  envoiEditeurs(): void {
-    this.buttonLoading = true;
-    editeurService
-      .envoiEditeurs(this.$store.getters.getToken())
-      .then(response => {
-        const message: Message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = response.data.message;
+  async envoiEditeurs() {
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `Vous êtes sur le point de lancer le traitement d'envoi aux éditeurs.
 
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+                Etes-vous sûr de vouloir continuer ?`
+    );
+    if (confirmed) {
+      this.buttonLoading = true;
+      editeurService
+        .envoiEditeurs(this.$store.getters.getToken())
+        .then(response => {
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = response.data.message;
+
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .catch(err => {
           Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          if (err instanceof LicencesNationalesBadRequestApiError) {
+            message.texte = err.message;
+          } else {
+            message.texte =
+              "Impossible d'exécuter l'action : " + err.response.data.message;
+          }
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .finally(() => {
+          this.buttonLoading = false;
         });
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte =
-            "Impossible d'exécuter l'action : " + err.response.data.message;
-        }
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-      })
-      .finally(() => {
-        this.buttonLoading = false;
-      });
+    }
   }
 }
 </script>

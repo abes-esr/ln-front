@@ -56,6 +56,34 @@
             Bienvenue {{ loggedInUsername }}
           </div>
           <v-divider vertical dark style="border: none;"></v-divider>
+          <div v-if="isAdmin">
+            <v-tooltip top max-width="20vw" open-delay="100">
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  @click="allerAModifierMotDePasse()"
+                  class="menu-slot btn-3"
+                  plain
+                  v-on="on"
+                >
+                  <font-awesome-icon :icon="['fas', 'lock']" size="2x" />
+                </v-btn>
+              </template>
+              <span>Modifier mot de passe</span>
+            </v-tooltip>
+            <v-tooltip top max-width="20vw" open-delay="100">
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  @click="allerAModifierProfil()"
+                  class="menu-slot btn-3"
+                  plain
+                  v-on="on"
+                >
+                  <font-awesome-icon :icon="['fas', 'user']" size="2x" />
+                </v-btn>
+              </template>
+              <span>Modifier les infos</span>
+            </v-tooltip>
+          </div>
           <v-tooltip top max-width="20vw" open-delay="100">
             <template v-slot:activator="{ on }">
               <v-btn
@@ -74,8 +102,7 @@
           <v-tooltip top max-width="20vw" open-delay="100">
             <template v-slot:activator="{ on }">
               <v-btn
-                href="http://documentation.abes.fr/aidelicencesnationales/index.html"
-                target="_blank"
+                @click="seDeconnecter()"
                 class="menu-slot btn-3"
                 plain
                 v-on="on"
@@ -123,6 +150,18 @@ export default class Header extends Vue {
 
   get loggedInUsername(): string {
     return this.$store.getters.userEtab();
+  }
+
+  allerAModifierMotDePasse(): void {
+    this.$router.push({ name: "Password" }).catch(err => {
+      Logger.error(err);
+    });
+  }
+
+  allerAModifierProfil(): void {
+    this.$router.push({ name: "Profil" }).catch(err => {
+      Logger.error(err);
+    });
   }
 
   saveTheme(): void {
