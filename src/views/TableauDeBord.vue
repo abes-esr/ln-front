@@ -1,6 +1,6 @@
 <template>
   <v-card flat>
-    <h1>Tableau de bord {{ etablissement.nom }}</h1>
+    <h1>Tableau de bord de l'établissement</h1>
     <MessageBox></MessageBox>
     <v-container class="mx-9 elevation-0">
       <v-card-title class="px-0 pb-0"
@@ -218,6 +218,25 @@
               Envoi aux éditeurs
             </v-card-title>
             <v-card-text>
+              <div
+                class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
+              >
+                <div v-if="datesLoading">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
+                </div>
+                <ul>
+                  <li
+                    style="margin-bottom: 0.5em"
+                    v-for="item in this.datesEnvoi"
+                    :key="item.index"
+                  >
+                    <span v-html="item"></span>
+                  </li>
+                </ul>
+              </div>
               <v-btn @click="envoiEditeurs()" class="bottom ma-4"
                 >Envoi aux éditeurs</v-btn
               >
@@ -253,14 +272,18 @@ export default class Home extends Vue {
   isExportLoading: boolean = false;
   notificationsAdmin: Array<Notification> = [];
   notificationsUser: Array<NotificationUser> = [];
+  datesEnvoi: Array<string> = [];
   buttonLoading: boolean = false;
   notifsLoading: boolean = true;
+  datesLoading: boolean = true;
 
   constructor() {
     super();
+    moment.locale("fr");
     this.etablissement = this.getEtablissement;
     this.$store.dispatch("setCurrentEtablissement", this.etablissement);
     this.collecterNotifs();
+    this.collecterDates();
   }
 
   get getEtablissement(): Etablissement {
@@ -323,6 +346,38 @@ export default class Home extends Vue {
     etablissementCible.siren = siren;
     etablissementCible.id = 0;
     this.allerAAfficherEtab(etablissementCible);
+  }
+
+  collecterDates(): void {
+    if (this.$store.getters.isAdmin()) {
+      editeurService
+        .getDatesEnvoiEditeurs(this.$store.getters.getToken())
+        .then(result => {
+          result.data.forEach(element => {
+            this.datesEnvoi.push(
+              "<strong>Envoyé le " +
+                moment(element).format("DD/MM/YYYY HH:MM") +
+                "</strong> - " +
+                moment(element).fromNow()
+            );
+          });
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte =
+            "Impossible d'exécuter l'action : " + err.response.data.message;
+
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+        })
+        .finally(() => {
+          this.datesLoading = false;
+        });
+    }
   }
 
   collecterNotifs(): void {

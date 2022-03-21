@@ -229,6 +229,10 @@ export class EditeurService extends LicencesNationalesApiService {
   envoiEditeurs(token: string): Promise<AxiosResponse> {
     return this.client.get("/editeurs/exportMensuelEditeur/", token);
   }
+
+  getDatesEnvoiEditeurs(token: string): Promise<AxiosResponse> {
+    return this.client.get("/editeurs/getDateEnvoiEditeur/", token);
+  }
 }
 
 export const editeurService = new EditeurService();

@@ -6,7 +6,7 @@
           <v-row>
             <v-col cols="12" sm="12">
               <v-row>
-                <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
+                <h1>Liste des IP de l'établissement</h1>
               </v-row>
               <v-row>
                 <v-col cols="1" sm="1"></v-col>
@@ -614,7 +614,7 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   downloadIPs(): void {
-    this.isExportLoading= true;
+    this.isExportLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
     iPService
       .downloadIPs(this.getSirenEtabSujet(), this.$store.state.user.token)
@@ -629,7 +629,7 @@ export default class ListeAcces extends ListeAccesProps {
         document.body.appendChild(fileLink);
 
         fileLink.click();
-        this.isExportLoading= false;
+        this.isExportLoading = false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -645,8 +645,7 @@ export default class ListeAcces extends ListeAccesProps {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
-        this.isExportLoading= false;
-
+        this.isExportLoading = false;
       });
   }
 }
