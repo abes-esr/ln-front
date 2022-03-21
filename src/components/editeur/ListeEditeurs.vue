@@ -47,6 +47,7 @@
                   @click="downloadEditeurs()"
                   class="mx-2 text-lowercase bouton-simple"
                   v-on="on"
+                  :loading="isExportLoading"
                   ><span class="text-uppercase">T</span>élécharger la liste des
                   éditeurs
                   <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
@@ -95,6 +96,7 @@ import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnat
 })
 export default class ListeEditeurs extends Vue {
   disableForm: boolean = false;
+  isExportLoading: boolean = false;
   rechercher: string = "";
   editeurs: Array<Editeur> = [];
   headers: Array<any> = [
@@ -210,6 +212,7 @@ export default class ListeEditeurs extends Vue {
   }
 
   downloadEditeurs(): void {
+    this.isExportLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
     const ids = new Array<number>();
     this.editeurs.forEach(element => {
@@ -228,6 +231,7 @@ export default class ListeEditeurs extends Vue {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+        this.isExportLoading = false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -243,6 +247,8 @@ export default class ListeEditeurs extends Vue {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
+
+        this.isExportLoading = false;
       });
   }
 
