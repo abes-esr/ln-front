@@ -301,4 +301,8 @@ export default class ListeEditeurs extends Vue {
 .search-bar {
   flex: 0 0 20%;
 }
+
+tbody tr:nth-of-type(odd) {
+  background-color: rgb(250, 250, 250);
+}
 </style>

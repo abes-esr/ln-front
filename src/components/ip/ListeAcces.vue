@@ -47,40 +47,41 @@
                         >
                           <template v-slot:top>
                             <v-row>
-                              <v-col cols="12" sm="6"></v-col>
-                              <v-col cols="12" sm="6">
+                              <v-col cols="12" sm="6" class="px-0">
+                                <v-tooltip
+                                  top
+                                  max-width="20vw"
+                                  open-delay="100"
+                                >
+                                  <template v-slot:activator="{ on }">
+                                    <v-btn
+                                      text
+                                      @click="downloadIPs()"
+                                      class="bouton-simple pl-0"
+                                      v-on="on"
+                                      :loading="isExportLoading"
+                                      ><h2>Télécharger la liste des IP</h2>
+                                      <font-awesome-icon
+                                        :icon="['fas', 'download']"
+                                        class="mx-2"
+                                    /></v-btn>
+                                  </template>
+                                  <span
+                                    >Le téléchargement correspond à la vue
+                                    filtrée</span
+                                  >
+                                </v-tooltip>
+                              </v-col>
+                              <v-col cols="0" sm="3"></v-col>
+                              <v-col cols="12" sm="3" class="px-0">
                                 <v-text-field
                                   v-model="rechercher"
                                   label="Chercher dans les colonnes"
-                                  class="mx-4"
                                   prepend-inner-icon="mdi-magnify"
                                   outlined
                                   clearable
                                 ></v-text-field>
                               </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-tooltip top max-width="20vw" open-delay="100">
-                                <template v-slot:activator="{ on }">
-                                  <v-btn
-                                    text
-                                    @click="downloadIPs()"
-                                    class="mx-2 text-lowercase bouton-simple"
-                                    v-on="on"
-                                    :loading="isExportLoading"
-                                    ><span class="text-uppercase">T</span
-                                    >élécharger la liste des
-                                    <span class="text-uppercase">IP</span>
-                                    <font-awesome-icon
-                                      :icon="['fas', 'download']"
-                                      class="mx-2"
-                                  /></v-btn>
-                                </template>
-                                <span
-                                  >Le téléchargement correspond à la vue
-                                  filtrée</span
-                                >
-                              </v-tooltip>
                             </v-row>
                           </template>
                           <template v-slot:[`item.action`]="{ item }">
@@ -144,7 +145,8 @@
     <v-col cols="12" style="padding: 24px;">
       <v-row>
         <v-col cols="1" xs="0"/>
-        <v-col cols="10" xs="12"> <infos-i-ps></infos-i-ps></v-col></v-row
+        <v-col cols="10" xs="12">
+          <infos-i-ps v-if="!isAdmin"></infos-i-ps></v-col></v-row
     ></v-col>
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
@@ -671,14 +673,18 @@ h3 {
 }
 
 .VALIDER {
-  background-color: #1cd74b60;
+  background-color: #1cd74b60 !important;
 }
 
 .SUPPRIMER {
-  background-color: #ee492e4d;
+  background-color: #ee492e4d !important;
 }
 
 .REJETER {
-  background-color: #155fab47;
+  background-color: #155fab47 !important;
+}
+
+tbody tr:nth-of-type(odd) {
+  background-color: rgb(250, 250, 250);
 }
 </style>

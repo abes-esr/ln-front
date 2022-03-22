@@ -243,3 +243,7 @@ nav svg {
   background-color: $couleur-2 !important;
   color: $couleur-6 !important;
 }
+
+.v-data-table-header th {
+  white-space: nowrap;
+}
