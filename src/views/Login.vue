@@ -9,7 +9,7 @@
             size="lg"
           />
           <h4>
-            Application réservée aux établissements bénéficiaires et à moi
+            Application réservée aux établissements bénéficiaires
           </h4>
           <p id="WarningLogin">
             <strong>Important : </strong>L'accès aux corpus sous licences
