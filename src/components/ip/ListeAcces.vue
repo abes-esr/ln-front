@@ -64,6 +64,7 @@
                                       <font-awesome-icon
                                         :icon="['fas', 'download']"
                                         class="mx-2"
+                                        size="2x"
                                     /></v-btn>
                                   </template>
                                   <span
