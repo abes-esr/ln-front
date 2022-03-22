@@ -550,7 +550,7 @@ export default class ListeAcces extends ListeAccesProps {
       idIp: this.currentIP.id,
       action: action,
       ip: this.currentIP.ip,
-      commentaireAdmin: this.commentaires
+      commentaire: this.commentaires
     });
     this.addActionToDatatable(action, this.currentIP.id);
     this.dialog = false;

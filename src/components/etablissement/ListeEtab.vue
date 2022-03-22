@@ -3,7 +3,7 @@
     <h1>Gestion des comptes établissements</h1>
     <MessageBox></MessageBox>
     <v-card-title class="pr-0">
-      <v-row class="d-flex flex-row-reverse">
+      <v-row class="d-flex flex-row-reverse ma-0">
         <v-btn @click="allerAScionnerEtab()" class="btn-1 ml-2"
           >Scission
           <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2"
