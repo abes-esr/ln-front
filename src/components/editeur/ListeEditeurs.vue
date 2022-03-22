@@ -301,7 +301,7 @@ export default class ListeEditeurs extends Vue {
   }
 }
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 tbody tr:nth-of-type(odd) {
   background-color: rgb(250, 250, 250);
 }
