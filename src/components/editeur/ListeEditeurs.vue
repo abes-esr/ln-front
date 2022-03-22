@@ -7,7 +7,7 @@
     </v-col>
     <v-card-title>
       <v-row class="d-flex flex-row-reverse">
-        <v-btn @click="ajouterEditeur()" class="btn-1 mx-2"
+        <v-btn @click="ajouterEditeur()" class="btn-1 mx-2 mr-0"
           >Créer un éditeur
           <font-awesome-icon :icon="['fas', 'plus']" class="mx-2"
         /></v-btn>
@@ -28,34 +28,38 @@
           {{ header.texte }}
         </template>
         <template v-slot:top>
-          <v-row class="d-flex flex-row-reverse mt-3">
-            <v-text-field
-              v-model="rechercher"
-              label="Chercher dans tous les éditeurs"
-              class="mx-4 search-bar"
-              prepend-inner-icon="mdi-magnify"
-              outlined
-              dense
-            ></v-text-field>
-            <v-spacer></v-spacer>
-          </v-row>
-          <v-row class="d-flex mt-1 mb-3">
-            <v-tooltip top max-width="20vw" open-delay="100">
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  text
-                  @click="downloadEditeurs()"
-                  class="mx-2 text-lowercase bouton-simple"
-                  v-on="on"
-                  :loading="isExportLoading"
-                  ><span class="text-uppercase">T</span>élécharger la liste des
-                  éditeurs
-                  <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
-                /></v-btn>
-              </template>
-              <span>Le téléchargement correspond à la vue filtrée</span>
-            </v-tooltip>
-          </v-row>
+          <v-row class="ma-0">
+            <v-col cols="12" sm="6" class="px-0"
+              ><v-tooltip top max-width="20vw" open-delay="100">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    text
+                    @click="downloadEditeurs()"
+                    class="bouton-simple pl-0"
+                    v-on="on"
+                    :loading="isExportLoading"
+                    ><h2>
+                      Télécharger la liste des éditeurs
+                    </h2>
+                    <font-awesome-icon
+                      :icon="['fas', 'download']"
+                      class="mx-2"
+                      size="2x"
+                  /></v-btn>
+                </template>
+                <span>Le téléchargement correspond à la vue filtrée</span>
+              </v-tooltip></v-col
+            >
+            <v-col cols="0" sm="3" class="px-0"></v-col>
+            <v-col cols="12" sm="3" class="px-0">
+              <v-text-field
+                v-model="rechercher"
+                label="Chercher dans les colonnes"
+                prepend-inner-icon="mdi-magnify"
+                outlined
+                dense
+              ></v-text-field></v-col
+          ></v-row>
         </template>
         <template v-slot:item.dateCreation="{ item }">
           <span>{{ item.dateCreation.toLocaleDateString() }}</span>
@@ -298,10 +302,6 @@ export default class ListeEditeurs extends Vue {
 }
 </script>
 <style scoped lang="scss">
-.search-bar {
-  flex: 0 0 20%;
-}
-
 tbody tr:nth-of-type(odd) {
   background-color: rgb(250, 250, 250);
 }
