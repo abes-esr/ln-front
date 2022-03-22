@@ -684,8 +684,4 @@ h3 {
 .REJETER {
   background-color: #155fab47 !important;
 }
-
-tbody tr:nth-of-type(odd) {
-  background-color: rgb(250, 250, 250);
-}
 </style>

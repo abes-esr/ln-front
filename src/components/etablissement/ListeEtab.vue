@@ -508,8 +508,3 @@ export default class ListeEtab extends Vue {
   }
 }
 </script>
-<style lang="scss">
-tbody tr:nth-of-type(odd) {
-  background-color: rgb(250, 250, 250) !important;
-}
-</style>

@@ -247,3 +247,7 @@ nav svg {
 .v-data-table-header th {
   white-space: nowrap;
 }
+
+tbody tr:nth-of-type(odd) {
+  background-color: $couleur-tab
+}
