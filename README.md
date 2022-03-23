@@ -18,6 +18,8 @@ Licences nationales permet :
 Copie d'écran de la page d'accueil de l'application Licences Nationales :  
 ![image](https://user-images.githubusercontent.com/328244/159643443-e8d8df64-ada6-44a5-a1f1-8f7f8a76530d.png)
 
+Voir aussi le code source de l'API et du batch:  
+https://github.com/abes-esr/licencesnationales-back
 
 ## Architecture
 
