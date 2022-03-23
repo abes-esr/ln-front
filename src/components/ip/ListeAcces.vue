@@ -40,6 +40,10 @@
                           :headers="headers"
                           :items="filteredAccesByStatut"
                           :items-per-page="30"
+                          :footer-props="{
+                            showFirstLastPage: true,
+                            'items-per-page-options': [30, 50, 75, -1]
+                          }"
                           :item-class="RowClasses"
                           :search="rechercher"
                           :loading="dataLoading"

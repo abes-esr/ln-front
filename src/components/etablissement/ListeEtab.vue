@@ -24,7 +24,10 @@
         :headers="headers"
         :items="filteredEtabByStatut"
         :items-per-page="25"
-        :footer-props="{ 'items-per-page-options': [25, 50, 100, -1] }"
+        :footer-props="{
+          showFirstLastPage: true,
+          'items-per-page-options': [25, 50, 100, -1]
+        }"
         class="elevation-0 ma-3"
         :search="rechercher"
         :loading="dataLoading"
