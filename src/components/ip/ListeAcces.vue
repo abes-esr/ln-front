@@ -222,6 +222,7 @@
                   @click="
                     dialog = false;
                     currentIPid = '';
+                    commentaires = '';
                   "
                   class="btn-6"
                 >
@@ -546,6 +547,7 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   addActionToBuffer(action: string): void {
+    this.commentaires = "";
     this.bufferActions.push({
       idIp: this.currentIP.id,
       action: action,
