@@ -2,9 +2,9 @@
 
 [![ci](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml/badge.svg)](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml) [![Docker Pulls](https://img.shields.io/docker/pulls/abesesr/licencesnationales.svg)](https://hub.docker.com/r/abesesr/licencesnationales/)
 
-## Client léger pour l'API Licences Nationales
+**Application en cours de développement**
 
-Client léger web en JavaScript pour l'API Licences Nationales ( https://github.com/abes-esr/licencesnationales-back ), permettant de fournir aux utilisateurs une interface graphique, disponible via un navigateur, pour l'API. 
+Application web Licences Nationales (client léger en JavaScript/VueJS) reposant sur l'[API Licences Nationales](https://github.com/abes-esr/licencesnationales-back). 
 
 Licences nationales permet :
 - aux institutions bénéficiaires des ressources numériques de :
@@ -14,6 +14,9 @@ Licences nationales permet :
   - renseigner les contacts auprès des éditeurs de ces ressources
   - vérifier les informations saisies par les bénéficiaires, supprimer ou accepter les comptes, valider ou non les adresses IP
   - envoyer les informations de gestion renseignées par les institutions aux éditeurs présents dans la base, via un batch mensuel, non automatisé. Ce batch comprend un identifiant Abes ad hoc, utilisé souvent comme identifiant pivot sur lequel les éditeurs et l’Inist (pour les plates-formes ISTEX et PANIST) s’appuient pour gérer les droits d’accès.
+
+Copie d'écran de la page d'accueil de l'application Licences Nationales :  
+![image](https://user-images.githubusercontent.com/328244/159643443-e8d8df64-ada6-44a5-a1f1-8f7f8a76530d.png)
 
 
 ## Architecture
