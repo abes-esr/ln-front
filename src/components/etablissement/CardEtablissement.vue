@@ -62,11 +62,23 @@
         >Réinitialiser les champs d'origine</v-btn
       >
       <v-btn
-        v-if="this.modificationModeDisabled"
+        v-if="
+          this.modificationModeDisabled && getEtablissement.statut !== 'Validé'
+        "
         class="btn-2  mt-3"
+        style="margin-right: 1em"
         :loading="buttonValidationLoading"
         @click="validerEtablissement()"
         >Valider le compte</v-btn
+      >
+      <v-btn
+        v-if="
+          this.modificationModeDisabled && getEtablissement.statut === 'Validé'
+        "
+        class="btn-5  mt-3"
+        :loading="buttonValidationLoading"
+        @click="devaliderEtablissement()"
+        >Dévalider le compte</v-btn
       >
       <v-row class="d-flex justify-space-between flex-wrap ma-0">
         <v-col
@@ -389,6 +401,64 @@ export default class CardEtablissement extends Vue {
       this.etablissement.statut = "Validé";
       etablissementService
         .validerEtablissement(
+          this.etablissement.siren,
+          this.$store.getters.getToken()
+        )
+        .then(response => {
+          this.$store.dispatch(
+            "updateCurrentEtablissement",
+            this.etablissement
+          );
+
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = response.data.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = err.response.data.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .finally(() => {
+          this.buttonValidationLoading = false;
+        });
+    } else {
+      this.buttonValidationLoading = false;
+    }
+  }
+
+  async devaliderEtablissement() {
+    this.buttonValidationLoading = true;
+    this.$store.dispatch("closeDisplayedMessage");
+
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `Vous êtes sur le point de dévalider le compte de l'établissement ${this.etablissement.nom}
+
+      Etes-vous sûr de vouloir effectuer cette ation ?`
+    );
+    if (confirmed) {
+      this.etablissement.statut = "Nouveau";
+      etablissementService
+        .devaliderEtablissement(
           this.etablissement.siren,
           this.$store.getters.getToken()
         )

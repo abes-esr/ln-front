@@ -93,19 +93,29 @@
                   ></v-text-field
                 ></v-row>
                 <v-row
-                  ><v-text-field
-                    outlined
-                    label="SIREN"
-                    placeholder="SIREN"
-                    maxlength="9"
-                    v-model="etablissement.siren"
-                    :rules="rulesForms.siren"
-                    required
-                    @input="checkSiren()"
-                    @keyup.enter="validate()"
-                    :readonly="action == Action.MODIFICATION"
-                  ></v-text-field
-                ></v-row>
+                  ><v-col cols="8" class="pa-0"
+                    ><v-text-field
+                      outlined
+                      label="SIREN"
+                      placeholder="SIREN"
+                      maxlength="9"
+                      v-model="etablissement.siren"
+                      :rules="rulesForms.siren"
+                      required
+                      @input="checkSiren()"
+                      @keyup.enter="validate()"
+                      :readonly="action == Action.MODIFICATION"
+                    ></v-text-field>
+                  </v-col>
+                  <!-- EXPERIMENTATION BOUTON SIREN -->
+                  <v-col cols="4"
+                    ><v-btn @click="popUpSiren()"
+                      >Valider mon SIREN</v-btn
+                    ></v-col
+                  >
+                  <ConfirmPopup ref="confirm"></ConfirmPopup>
+                  <!-- EXPERIMENTATION BOUTON SIREN -->
+                </v-row>
                 <v-row
                   ><v-chip
                     class="ma-2"
@@ -227,9 +237,11 @@ import { Action, Message, MessageType } from "@/core/CommonDefinition";
 import Contact from "@/components/etablissement/Contact.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import MessageBox from "@/components/common/MessageBox.vue";
+// EXPERIMENTATION BOUTON SIREN
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 
 @Component({
-  components: { MessageBox, Contact }
+  components: { MessageBox, Contact, ConfirmPopup }
 })
 export default class FormEtablissement extends Vue {
   etablissement: Etablissement = new Etablissement();
@@ -527,6 +539,16 @@ export default class FormEtablissement extends Vue {
       this.etablissement.reset();
       window.scrollTo(0, 0);
     }
+  }
+
+  async popUpSiren() {
+    await (this.$refs.confirm as ConfirmPopup).open(
+      `Ce SIREN correspond à l'établissement : ` +
+        this.checkSirenAPI +
+        ` 
+
+                Confirmer ?`
+    );
   }
 }
 </script>

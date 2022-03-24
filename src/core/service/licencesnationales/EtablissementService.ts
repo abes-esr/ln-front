@@ -190,6 +190,14 @@ export class EtablissementService extends LicencesNationalesApiService {
     return this.client.post("/etablissements/validation/" + siren, null, token);
   }
 
+  devaliderEtablissement(siren: string, token: string): Promise<AxiosResponse> {
+    return this.client.post(
+      "/etablissements/devalidation/" + siren,
+      null,
+      token
+    );
+  }
+
   fusion(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/etablissements/fusion", data, token);
   }
