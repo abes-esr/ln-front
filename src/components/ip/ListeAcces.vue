@@ -6,11 +6,19 @@
           <v-row>
             <v-col cols="12" sm="12">
               <v-row>
-                <h1>Liste des IP de l'établissement</h1>
+                <h1>
+                  Liste des IP de l'établissement
+                  <span v-if="isAdmin">{{ currentEtabNom }}</span>
+                </h1>
               </v-row>
               <v-row>
-                <v-col cols="1" sm="1"></v-col>
-                <v-col cols="10" sm="10">
+                <v-col cols="4" sm="4">
+                  <a v-if="isAdmin" @click="revenirInfosEtab()"
+                    ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir
+                    aux informations de l'établissement</a
+                  >
+                </v-col>
+                <v-col cols="7" sm="7">
                   <v-btn
                     id="addIpButton"
                     @click="$router.push({ path: '/ajouterAcces/' })"
@@ -656,6 +664,12 @@ export default class ListeAcces extends ListeAccesProps {
         });
         this.isExportLoading = false;
       });
+  }
+
+  revenirInfosEtab(): void {
+    this.$router.push({ name: "AfficherEtablissement" }).catch(err => {
+      Logger.error(err);
+    });
   }
 }
 </script>
