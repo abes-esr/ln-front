@@ -15,6 +15,10 @@
         <v-card-text flat class="overflow-auto">
           <v-row class="ma-0">
             <v-col class="py-0">
+              <p class="caption">
+                Possibilité de copier/coller directement les IP dans les champs
+                de saisie
+              </p>
               <v-row v-if="this.typeAcces === 'ip'">
                 <v-col class="pb-0">
                   <!-- IP v4 -->
@@ -213,12 +217,9 @@
                   <font-awesome-icon :icon="['fas', 'backspace']"/></a></v-row
             ></v-col>
           </v-row>
-          <p class="caption">
-            Possibilité de copier/coller directement les IP dans les champs de
-            saisie
-          </p>
+
           <!-- COMMENTAIRES -->
-          <v-row>
+          <v-row class="mx-0 mt-0">
             <v-col>
               <v-textarea
                 counter="255"
