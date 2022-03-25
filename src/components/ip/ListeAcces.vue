@@ -47,10 +47,10 @@
                           :key="refreshKey"
                           :headers="headers"
                           :items="filteredAccesByStatut"
-                          :items-per-page="30"
+                          :items-per-page="10"
                           :footer-props="{
                             showFirstLastPage: true,
-                            'items-per-page-options': [30, 50, 75, -1]
+                            'items-per-page-options': [10, 25, 50, 75, -1]
                           }"
                           :item-class="RowClasses"
                           :search="rechercher"
@@ -365,11 +365,6 @@ export default class ListeAcces extends ListeAccesProps {
           text: "Date de saisie",
           align: "start",
           value: "dateCreation",
-          sortable: true
-        },
-        {
-          text: "Type d'IP",
-          value: "typeAcces",
           sortable: true
         },
         {
