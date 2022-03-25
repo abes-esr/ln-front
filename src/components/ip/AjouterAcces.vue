@@ -10,10 +10,30 @@
               </h1></v-card-title
             >
           </v-row>
+          <v-row
+            ><v-col>
+              <a @click="$router.push({ path: '/listeAcces' })"
+                ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à
+                la liste complète des IP</a
+              ></v-col
+            ></v-row
+          >
           <v-row>
-            <v-card-title>
-              Choisir le type d'adresse IP à déclarer
-            </v-card-title>
+            <v-col cols="12" md="7" class="pa-0">
+              <v-card-title>
+                Choisir le type d'adresse IP à déclarer
+              </v-card-title></v-col
+            >
+            <v-col cols="12" md="3" class="pa-0">
+              <v-card-text
+                ><font-awesome-icon
+                  :icon="['fas', 'info-circle']"
+                  size="2x"
+                /><a class="pl-3 pb-6"
+                  >Tuto de déclaration des IP</a
+                ></v-card-text
+              >
+            </v-col>
           </v-row>
           <v-row>
             <v-col cols="7">
@@ -78,17 +98,6 @@
                   </tbody>
                 </template>
               </v-simple-table>
-
-              <v-row id="fillHeight"></v-row>
-              <v-row
-                ><v-col cols="6"></v-col
-                ><v-col>
-                  <a @click="$router.push({ path: '/listeAcces' })"
-                    ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir
-                    à la liste complète des IP</a
-                  ></v-col
-                ></v-row
-              >
             </v-col>
           </v-row>
         </v-col>

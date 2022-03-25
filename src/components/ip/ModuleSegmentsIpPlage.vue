@@ -13,11 +13,10 @@
           <span v-else>v6</span>
         </v-app-bar>
         <v-card-text flat class="overflow-auto">
-          <v-row>
-            <v-col>
+          <v-row class="ma-0">
+            <v-col class="py-0">
               <v-row v-if="this.typeAcces === 'ip'">
-                <v-col>
-                  <v-row> <v-col cols="1"/></v-row>
+                <v-col class="pb-0">
                   <!-- IP v4 -->
                   <v-row v-if="this.typeIp === 'IPV4'">
                     <v-col v-for="(value, index) in ipv4Segments" :key="index">
@@ -77,6 +76,7 @@
                       <v-col
                         v-for="(value, index) in ipv4SegmentsPlageDebut"
                         :key="index"
+                        class="pb-0"
                       >
                         <v-text-field
                           :data-length="value.length"
@@ -107,6 +107,7 @@
                       <v-col
                         v-for="(value, index) in ipv4SegmentsPlageFin"
                         :key="index"
+                        class="pt-0"
                       >
                         <v-text-field
                           :data-length="value.length"
@@ -143,6 +144,7 @@
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageDebut"
                         :key="index"
+                        class="pb-0"
                       >
                         <v-text-field
                           :data-length="value.length"
@@ -173,6 +175,7 @@
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageFin"
                         :key="index"
+                        class="pt-0"
                       >
                         <v-text-field
                           :data-length="value.length"

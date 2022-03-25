@@ -5,9 +5,9 @@
         :icon="['fas', 'info-circle']"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
-      Votre mot de passe doit contenir au minimum 8 caractères, une lettre
-      majuscule, une lettre minuscule, un chiffre et un caractère spécial parmis
-      @ $ ! % * ? &
+      Le mot de passe doit contenir au moins 8 caractères, dont au moins un
+      chiffre, une lettre majuscule, une lettre minuscule et un des caractères
+      spéciaux suivants : @ $ ! % * ? &
     </v-alert>
     <v-alert outlined class="pa-3" v-if="linkIsExpired === true">
       <font-awesome-icon
