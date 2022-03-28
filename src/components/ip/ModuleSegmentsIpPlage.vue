@@ -15,7 +15,7 @@
         <v-card-text flat class="overflow-auto">
           <v-row class="ma-0">
             <v-col class="py-0">
-              <p class="caption">
+              <p class="caption mb-0">
                 Possibilité de copier/coller directement les IP dans les champs
                 de saisie
               </p>
@@ -73,7 +73,6 @@
               </v-row>
               <v-row v-else>
                 <v-col>
-                  <v-row> <v-col cols="1"/></v-row>
                   <!-- PLAGE IP v4 -->
                   <div v-if="this.typeIp === 'IPV4'">
                     <v-row>

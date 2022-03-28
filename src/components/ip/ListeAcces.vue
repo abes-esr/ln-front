@@ -25,8 +25,8 @@
                 ></v-col>
               </v-row>
               <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
+                <v-col cols="1" class="d-none d-md-flex" />
+                <v-col cols="12" md="10">
                   <v-alert
                     dense
                     :value="error !== ''"
@@ -95,6 +95,18 @@
                                 ></v-text-field>
                               </v-col>
                             </v-row>
+                          </template>
+                          <template v-slot:[`item.commentaires`]="{ item }">
+                            <td class="truncate">
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <span v-bind="attrs" v-on="on">{{
+                                    item.commentaires
+                                  }}</span>
+                                </template>
+                                <span>{{ item.commentaires }}</span>
+                              </v-tooltip>
+                            </td>
                           </template>
                           <template v-slot:[`item.action`]="{ item }">
                             <v-btn
@@ -341,27 +353,31 @@ export default class ListeAcces extends ListeAccesProps {
           text: "Date de saisie",
           align: "start",
           value: "dateCreation",
-          sortable: true
+          sortable: true,
+          width: "9%"
         },
         {
           text: "Type d'IP",
           value: "typeIp",
-          sortable: true
+          sortable: true,
+          width: "9%"
         },
-        { text: "Valeur", value: "ip", sortable: true },
-        { text: "Statut", value: "statut", sortable: true },
-        { text: "Action", value: "buffer", sortable: false },
+        { text: "Valeur", value: "ip", sortable: true, width: "20%" },
+        { text: "Statut", value: "statut", sortable: true, width: "13%" },
+        { text: "Action", value: "buffer", sortable: false, width: "13%" },
         {
           text: "Action admin",
           value: "dateModification",
-          sortable: true
+          sortable: true,
+          width: "10%"
         },
         {
           text: "Commentaires",
           value: "commentaires",
-          sortable: true
+          sortable: true,
+          width: "17%"
         },
-        { text: "Examiner", value: "action", sortable: false }
+        { text: "Examiner", value: "action", sortable: false, width: "9%" }
       ];
     } else {
       this.headers = [
@@ -369,22 +385,30 @@ export default class ListeAcces extends ListeAccesProps {
           text: "Date de saisie",
           align: "start",
           value: "dateCreation",
-          sortable: true
+          sortable: true,
+          width: "9%"
         },
         {
           text: "Type d'IP",
           value: "typeIp",
-          sortable: true
+          sortable: true,
+          width: "20%"
         },
-        { text: "Valeur", value: "ip", sortable: true },
-        { text: "Statut", value: "statut", sortable: true },
+        { text: "Valeur", value: "ip", sortable: true, width: "15%" },
+        { text: "Statut", value: "statut", sortable: true, width: "15%" },
         {
           text: "Action admin",
           value: "dateModification",
-          sortable: true
+          sortable: true,
+          width: "15%"
         },
-        { text: "Commentaires", value: "commentaires", sortable: true },
-        { text: "Supprimer", value: "action", sortable: false }
+        {
+          text: "Commentaires",
+          value: "commentaires",
+          sortable: true,
+          width: "17%"
+        },
+        { text: "Supprimer", value: "action", sortable: false, width: "10%" }
       ];
     }
   }
@@ -688,10 +712,11 @@ h3 {
 .row {
   margin: 0 !important;
 }
-td {
-  max-width: 300px;
+.truncate {
+  max-width: 1px;
+  white-space: nowrap;
   overflow: hidden;
-  max-height: 48px !important;
+  text-overflow: ellipsis;
 }
 .v-data-table.row-height-50 td {
   max-height: 48px !important;
