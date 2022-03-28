@@ -100,7 +100,10 @@ export default class FormReinitialisationPass extends Vue {
 
     this.isTokenValid
       .then(result => {
-        if (!result) this.tokenValid = false;
+        if (!result) {
+          this.tokenValid = false;
+          this.linkExpired = true;
+        }
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -116,6 +119,7 @@ export default class FormReinitialisationPass extends Vue {
           Logger.error(err.toString());
         });
         this.tokenValid = false;
+        this.linkExpired = true;
       });
   }
 
