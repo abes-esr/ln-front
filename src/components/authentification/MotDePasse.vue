@@ -15,8 +15,7 @@
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
       Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser
-      votre mot de passe, retournez à la page d'accueil puis cliquez sur mot de
-      passe oublié
+      votre mot de passe : <a @click="allerPasswordReset()">cliquez ici.</a>
     </v-alert>
     <v-text-field
       v-if="action === Action.MODIFICATION && linkIsExpired === false"
@@ -134,6 +133,10 @@ export default class MotDePasse extends Vue {
   clear(): void {
     (this.$refs.form as HTMLFormElement).resetValidation();
     this.confirmationNouveauMotDePasse = "";
+  }
+
+  allerPasswordReset(): void {
+    this.$router.push({ name: "ReinitialisationPass" });
   }
 }
 </script>
