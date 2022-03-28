@@ -152,11 +152,11 @@
             <br />
             <div>
               Ce formulaire est protégé par reCAPTCHA, la
-              <a href="https://policies.google.com/privacy"
+              <a href="https://policies.google.com/privacy" target="_blank"
                 >politique de confidentialité</a
               >
               ainsi que les
-              <a href="https://policies.google.com/terms"
+              <a href="https://policies.google.com/terms" target="_blank"
                 >conditions d'utilisations</a
               >
               de Google s'appliquent.

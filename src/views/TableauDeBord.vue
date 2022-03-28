@@ -1,6 +1,8 @@
 <template>
   <v-card flat>
-    <h1>Tableau de bord <span v-if="!isAdmin">de l'établissement</span></h1>
+    <h1>
+      Tableau de bord <span v-if="!isAdmin">{{ etablissement.nom }}</span>
+    </h1>
     <MessageBox></MessageBox>
     <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-container class="mx-9 elevation-0">
@@ -82,7 +84,7 @@
                 nous contacter via le guichet d'assistance
                 <v-btn
                   class="bouton-simple elevation-0 pa-0"
-                  href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  href="https://stp.abes.fr/node/3?origine=LicencesNationales"
                   target="_blank"
                   >ABESstp
                 </v-btn>

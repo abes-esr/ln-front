@@ -10,7 +10,7 @@
         Créer le compte de votre établissement
       </h1>
       <h1 v-if="action === Action.MODIFICATION" class="pl-3">
-        Etablissement {{ etablissement.nom }}
+        {{ etablissement.nom }}
       </h1>
       <h2
         v-if="action === Action.CREATION"

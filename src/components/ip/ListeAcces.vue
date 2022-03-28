@@ -1,15 +1,13 @@
 <template>
   <div>
+    <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-card flat>
       <v-row>
         <v-col lg="12" md="12" xs="12">
           <v-row>
             <v-col cols="12" sm="12">
               <v-row>
-                <h1>
-                  Liste des IP de l'établissement
-                  <span v-if="isAdmin">{{ currentEtabNom }}</span>
-                </h1>
+                <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
               </v-row>
               <v-row>
                 <v-col cols="4" sm="4">
@@ -55,6 +53,7 @@
                           :item-class="RowClasses"
                           :search="rechercher"
                           :loading="dataLoading"
+                          class="row-height-50"
                           flat
                         >
                           <template v-slot:top>
@@ -263,6 +262,7 @@ import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import { Message, MessageType } from "@/core/CommonDefinition";
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { AxiosResponse } from "axios";
 import InfosIPs from "@/components/ip/InfosIPs.vue";
@@ -277,7 +277,7 @@ const ListeAccesProps = Vue.extend({
 });
 
 @Component({
-  components: { InfosIPs }
+  components: { InfosIPs, ConfirmPopup }
 })
 export default class ListeAcces extends ListeAccesProps {
   refreshKey: number = 0;
@@ -356,7 +356,11 @@ export default class ListeAcces extends ListeAccesProps {
           value: "dateModification",
           sortable: true
         },
-        { text: "Commentaires", value: "commentaires", sortable: true },
+        {
+          text: "Commentaires",
+          value: "commentaires",
+          sortable: true
+        },
         { text: "Examiner", value: "action", sortable: false }
       ];
     } else {
@@ -575,23 +579,30 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   // Suppression par un USER
-  supprimerIP(ip: string) {
-    this.buttlonLoading = true;
-    this.clearAlerts();
+  async supprimerIP(ip: string) {
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP
 
-    iPService
-      .deleteIP(this.$store.getters.getToken(), ip)
-      .then(() => {
-        this.notification = "IP supprimée.";
-      })
-      .catch(err => {
-        Logger.error = err;
-        this.error = err.message;
-      })
-      .finally(() => {
-        this.buttlonLoading = false;
-        this.collecterAcces();
-      });
+                Etes-vous sûr de vouloir effectuer cette action ?`
+    );
+    if (confirmed) {
+      this.buttlonLoading = true;
+      this.clearAlerts();
+
+      iPService
+        .deleteIP(this.$store.getters.getToken(), ip)
+        .then(() => {
+          this.notification = "IP supprimée.";
+        })
+        .catch(err => {
+          Logger.error = err;
+          this.error = err.message;
+        })
+        .finally(() => {
+          this.buttlonLoading = false;
+          this.collecterAcces();
+        });
+    }
   }
 
   RowClasses(item) {
@@ -676,6 +687,14 @@ h3 {
 }
 .row {
   margin: 0 !important;
+}
+td {
+  max-width: 300px;
+  overflow: hidden;
+  max-height: 48px !important;
+}
+.v-data-table.row-height-50 td {
+  max-height: 48px !important;
 }
 .btnText {
   padding-right: 5px;

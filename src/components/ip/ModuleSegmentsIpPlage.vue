@@ -446,6 +446,8 @@ export default class ModuleSegmentsIpPlage extends Vue {
             commentaires: this.commentaires
           });
           this.clear(false);
+          const refForm: any = this.$refs.formModuleSegmentsIpPlage;
+          refForm.reset();
           this.alertSuccess = true;
           this.success = response.data.message;
         })
