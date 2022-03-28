@@ -99,8 +99,8 @@ export default class FormReinitialisationPass extends Vue {
     );
 
     this.isTokenValid
-      .then(() => {
-        this.tokenValid = true;
+      .then(result => {
+        if (!result) this.tokenValid = false;
       })
       .catch(err => {
         Logger.error(err.toString());
