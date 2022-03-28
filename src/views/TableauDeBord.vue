@@ -168,7 +168,7 @@
               <span v-if="isAdmin">Dernières actions des utilisateurs</span>
               <span v-else>Notifications</span>
             </v-card-title>
-            <v-card-text class="d-flex align-content-start flex-wrap">
+            <v-card-text class="d-flex align-content-start flex-wrap notifs">
               <div
                 class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
               >
@@ -588,5 +588,10 @@ ul li::before {
   position: absolute;
   bottom: 0;
   right: 0;
+}
+
+.notifs {
+  max-height: 500px;
+  overflow: auto;
 }
 </style>

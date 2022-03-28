@@ -88,6 +88,7 @@
                     placeholder="Nom de l'établissement"
                     v-model="etablissement.nom"
                     :rules="rulesForms.nomEtabRules"
+                    :readonly="action === Action.MODIFICATION && !isAdmin"
                     required
                     @keyup.enter="validate()"
                   ></v-text-field
@@ -149,6 +150,7 @@
                     label="Type d'établissement"
                     placeholder="Type d'établissement"
                     persistent-placeholder
+                    :readonly="action === Action.MODIFICATION && !isAdmin"
                     :rules="rulesForms.typeEtabRules"
                     required
                   ></v-select>
