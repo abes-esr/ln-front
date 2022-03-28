@@ -136,7 +136,7 @@ export default class MotDePasse extends Vue {
   }
 
   allerPasswordReset(): void {
-    this.$router.push({ name: "ReinitialisationPass" });
+    this.$router.push({ name: "Login" });
   }
 }
 </script>
