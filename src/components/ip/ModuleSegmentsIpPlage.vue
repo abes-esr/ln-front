@@ -32,7 +32,6 @@
                         ref="ipv4Segments"
                         v-model="ipv4Segments[index].value"
                         v-bind:suffix="getSuffix(index)"
-                        @click="clearIpSegment(index, ipv4Segments)"
                         @input="
                           nextSegment(index, ipv4Segments, 'ipv4Segments')
                         "
@@ -56,7 +55,6 @@
                         ref="ipv6Segments"
                         v-model="value.value"
                         v-bind:suffix="getSuffix(index)"
-                        @click="clearIpSegment(index, ipv6Segments)"
                         @input="
                           nextSegment(index, ipv6Segments, 'ipv6Segments')
                         "
@@ -89,7 +87,6 @@
                           ref="ipv4SegmentsPlageDebut"
                           v-model="value.value"
                           v-bind:suffix="getSuffix(index)"
-                          @click="clearIpSegment(index, ipv4SegmentsPlageDebut)"
                           @input="
                             nextSegment(
                               index,
@@ -120,7 +117,6 @@
                           ref="ipv4SegmentsPlageFin"
                           v-model="value.value"
                           v-bind:suffix="getSuffix(index)"
-                          @click="clearIpSegment(index, ipv4SegmentsPlageFin)"
                           @input="
                             nextSegment(
                               index,
@@ -157,7 +153,6 @@
                           ref="ipv6SegmentsPlageDebut"
                           v-model="value.value"
                           v-bind:suffix="getSuffix(index)"
-                          @click="clearIpSegment(index, ipv6SegmentsPlageDebut)"
                           @input="
                             nextSegment(
                               index,
@@ -188,7 +183,6 @@
                           ref="ipv6SegmentsPlageFin"
                           v-model="value.value"
                           v-bind:suffix="getSuffix(index)"
-                          @click="clearIpSegment(index, ipv6SegmentsPlageFin)"
                           @input="
                             nextSegment(
                               index,
@@ -318,21 +312,14 @@ export default class ModuleSegmentsIpPlage extends Vue {
     }
     if (this.typeIp === "IPV4") {
       if (array[index].value.length > 2 && index < indexMax) {
-        this.clearIpSegment(index + 1, array);
         (this as any).$refs[refArray][index + 1].focus();
       }
     } else {
       if (array[index].value.length >= 4 && index < indexMax) {
-        this.clearIpSegment(index + 1, array);
         (this as any).$refs[refArray][index + 1].focus();
       }
     }
   }
-
-  clearIpSegment(index, array): void {
-    array[index].value = "";
-  }
-
   getLabelSegmentsIpv4(index) {
     switch (index) {
       case 0:
@@ -587,6 +574,6 @@ button {
   height: 58%;
 }
 #fillHeight {
-  height: 80%;
+  height: 70%;
 }
 </style>
