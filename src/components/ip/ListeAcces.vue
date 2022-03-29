@@ -582,7 +582,6 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   addActionToBuffer(action: string): void {
-    this.commentaires = "";
     this.bufferActions.push({
       idIp: this.currentIP.id,
       action: action,
@@ -590,6 +589,7 @@ export default class ListeAcces extends ListeAccesProps {
       commentaire: this.commentaires
     });
     this.addActionToDatatable(action, this.currentIP.id);
+    this.commentaires = "";
     this.dialog = false;
     this.refreshKey++;
   }

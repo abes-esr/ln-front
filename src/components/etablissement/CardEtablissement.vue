@@ -517,13 +517,33 @@ export default class CardEtablissement extends Vue {
   }
 
   validerModifications(): void {
-    this.$store.dispatch("updateCurrentEtablissement", this.etablissement); //Enregistrement en store
-    etablissementService.updateEtablissement(
-      this.etablissement,
-      this.$store.getters.getToken(),
-      this.$store.getters.isAdmin()
-    ); //Envoie au back et validation en BDD
-    this.modificationModeDisabled = true;
+    etablissementService
+      .updateEtablissement(
+        this.etablissement,
+        this.$store.getters.getToken(),
+        this.$store.getters.isAdmin()
+      )
+      .then(() => {
+        this.$store.dispatch("updateCurrentEtablissement", this.etablissement); //Enregistrement en store
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        message.texte = err.message;
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      })
+      .finally(() => {
+        this.modificationModeDisabled = true;
+      }); //Envoie au back et validation en BDD
   }
 
   downloadEtablissement(): void {

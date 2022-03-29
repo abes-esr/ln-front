@@ -431,9 +431,9 @@ export default class ModuleSegmentsIpPlage extends Vue {
             ip: this.ip,
             commentaires: this.commentaires
           });
-          this.clear(false);
           const refForm: any = this.$refs.formModuleSegmentsIpPlage;
-          refForm.reset();
+          refForm.resetValidation();
+          this.clear(false);
           this.alertSuccess = true;
           this.success = response.data.message;
         })
