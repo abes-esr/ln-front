@@ -288,6 +288,10 @@ export class EtablissementService extends LicencesNationalesApiService {
   search(criteres: Array<string>, token: string): Promise<AxiosResponse> {
     return this.client.post("/etablissements/search/", criteres, token);
   }
+
+  getHisto(siren: string, token: string): Promise<AxiosResponse> {
+    return this.client.get("/etablissements/histo/" + siren, token);
+  }
 }
 
 export const etablissementService = new EtablissementService();

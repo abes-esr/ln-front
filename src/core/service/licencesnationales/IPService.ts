@@ -34,6 +34,10 @@ export class IPService extends LicencesNationalesApiService {
     return this.client.post("/ip/search/", criteres, token);
   }
 
+  getHisto(siren: string, token: string): Promise<AxiosResponse> {
+    return this.client.get("/ip/histo/" + siren, token);
+  }
+
   /**
    * Appel API pour telecharger la liste des ip d'un etab
    * @param siren siren du proprietaire d'ips
