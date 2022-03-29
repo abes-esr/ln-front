@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-form ref="formAjouterAcces" lazy-validation>
       <v-row align="center" justify="center">
         <v-col lg="11" md="12" xs="12">
@@ -54,6 +55,7 @@
             <v-col cols="7">
               <module-segments-ip-plage
                 :typeIp="typeIp"
+                :closeAlert="closeAlert"
                 typeAcces="ip"
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
               >
@@ -61,6 +63,7 @@
               <br />
               <module-segments-ip-plage
                 :typeIp="typeIp"
+                :closeAlert="closeAlert"
                 typeAcces="plage"
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
               >
@@ -111,10 +114,11 @@
 import { Component, Vue } from "vue-property-decorator";
 import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
 import { iPService } from "@/core/service/licencesnationales/IPService";
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { Logger } from "@/utils/Logger";
 
 @Component({
-  components: { ModuleSegmentsIpPlage }
+  components: { ModuleSegmentsIpPlage, ConfirmPopup }
 })
 export default class AjouterAcces extends Vue {
   id: string = "";
@@ -126,6 +130,8 @@ export default class AjouterAcces extends Vue {
   typeAlert: string = "success";
   arrayAjouterIp: Array<string> = [];
 
+  closeAlert: boolean = false;
+
   validate(payloadFromModuleSegmentsIpPlage): void {
     this.arrayAjouterIp.push(payloadFromModuleSegmentsIpPlage);
   }
@@ -133,19 +139,31 @@ export default class AjouterAcces extends Vue {
     this.arrayAjouterIp = [];
     this.message = "";
   }
-  supprimerIP(idIP: string, index: number) {
-    iPService
-      .deleteIP(this.$store.getters.getToken(), idIP)
-      .then(response => {
-        this.typeAlert = "success";
-        this.message = response.data.message;
-        this.arrayAjouterIp.splice(index, 1);
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        this.typeAlert = "error";
-        this.message = err.response.data.message;
-      });
+  async supprimerIP(idIP: string, index: number) {
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP.
+
+                Etes-vous sûr de vouloir effectuer cette action ?`
+    );
+    if (confirmed) {
+      iPService
+        .deleteIP(this.$store.getters.getToken(), idIP)
+        .then(response => {
+          this.typeAlert = "success";
+          this.message = response.data.message;
+          this.arrayAjouterIp.splice(index, 1);
+          this.closeAlert = true;
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          this.typeAlert = "error";
+          this.message = err.response.data.message;
+          this.closeAlert = true;
+        })
+        .finally(() => {
+          this.closeAlert = false;
+        });
+    }
   }
 }
 </script>

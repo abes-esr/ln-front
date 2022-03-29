@@ -259,6 +259,8 @@ import { Logger } from "@/utils/Logger";
 export default class ModuleSegmentsIpPlage extends Vue {
   @Prop({ default: "IPV4" }) readonly typeIp!: string;
   @Prop({ default: "ip" }) readonly typeAcces!: string;
+  @Prop({ default: false }) readonly closeAlert!: boolean;
+
   rulesForm: any = rulesForms;
   suffix: string = "";
   ipv4Segments: Array<SegmentPlage> = [];
@@ -281,6 +283,12 @@ export default class ModuleSegmentsIpPlage extends Vue {
   onPlageIpV4Changed() {
     this.ipv4SegmentsPlageDebut[0] = this.ipv4SegmentsPlageFin[0];
     this.ipv4SegmentsPlageDebut[1] = this.ipv4SegmentsPlageFin[1];
+  }
+
+  @Watch("closeAlert")
+  onCloseAlertChanged() {
+    this.alertSuccess = false;
+    this.alert = false;
   }
 
   mounted() {
