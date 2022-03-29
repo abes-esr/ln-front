@@ -373,7 +373,8 @@ export default class FormEtablissement extends Vue {
         .then(() => {
           const message: Message = new Message();
           message.type = MessageType.VALIDATION;
-          message.texte = "Votre compte a bien été créé";
+          message.texte =
+            "Le compte a été enregistré. Pour y accéder, merci de vous authentifier";
           message.isSticky = true;
           this.returnLink = true;
           this.$store.dispatch("openDisplayedMessage", message).catch(err => {

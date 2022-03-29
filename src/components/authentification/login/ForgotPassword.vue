@@ -176,7 +176,9 @@ export default class ForgotPassword extends Vue {
             const message: Message = new Message();
             message.type = MessageType.ERREUR;
             if (err instanceof LicencesNationalesBadRequestApiError) {
-              message.texte = err.message;
+              message.type = MessageType.VALIDATION;
+              message.texte =
+                "Si l'adresse e-mail est reconnue, vous recevrez un lien de réinitialisation du mot de passe";
             } else {
               message.texte = "Impossible d'exécuter l'action : " + err.message;
             }
