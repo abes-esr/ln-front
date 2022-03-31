@@ -18,7 +18,7 @@
         /></v-btn>
       </v-row>
     </v-card-title>
-    <v-card-text class="mt-3">
+    <v-card-text class="mt-3 fondGris">
       <v-data-table
         dense
         :headers="headers"
@@ -62,6 +62,7 @@
                   label="Chercher sur toutes les colonnes"
                   prepend-inner-icon="mdi-magnify"
                   outlined
+                  filled
                   dense
                   clearable
                 ></v-text-field>

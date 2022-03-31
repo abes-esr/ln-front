@@ -292,6 +292,17 @@ export class EtablissementService extends LicencesNationalesApiService {
   getHisto(siren: string, token: string): Promise<AxiosResponse> {
     return this.client.get("/etablissements/histo/" + siren, token);
   }
+
+  getStats(
+    dateDebut: string,
+    dateFin: string,
+    token: string
+  ): Promise<AxiosResponse> {
+    return this.client.get(
+      "/etablissements/stats?dateDebut=" + dateDebut + "&dateFin=" + dateFin,
+      token
+    );
+  }
 }
 
 export const etablissementService = new EtablissementService();

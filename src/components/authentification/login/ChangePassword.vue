@@ -6,7 +6,7 @@
           <v-form ref="form" lazy-validation>
             <h1 class="pb-4">Modifier mon mot de passe</h1>
             <MessageBox></MessageBox>
-            <v-card-text>
+            <v-card-text class="fondGris">
               <div class="pt-4 px-4">
                 <MotDePasse
                   ref="motDePasse"

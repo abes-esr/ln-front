@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" lazy-validation :disabled="isDisableForm">
-    <v-alert outlined class="pa-3" v-if="linkIsExpired === false">
+    <v-alert outlined class="pa-3 fondBlanc" v-if="linkIsExpired === false">
       <font-awesome-icon
         :icon="['fas', 'info-circle']"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
@@ -20,6 +20,7 @@
     <v-text-field
       v-if="action === Action.MODIFICATION && linkIsExpired === false"
       outlined
+      filled
       label="Ancien mot de passe"
       placeholder="Ancien mot de passe"
       :type="show ? 'text' : 'password'"
@@ -34,6 +35,7 @@
     <v-text-field
       v-if="linkIsExpired === false"
       outlined
+      filled
       :label="
         action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
       "
@@ -52,6 +54,7 @@
     <v-text-field
       v-if="linkIsExpired === false"
       outlined
+      filled
       :label="
         action === Action.CREATION
           ? 'Confirmation du mot de passe'

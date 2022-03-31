@@ -5,7 +5,7 @@
       Choisir une option de réinitialisation <MessageBox></MessageBox>
     </v-card-title>
     <v-radio-group id="radio" v-model="sirenRadio">
-      <v-card-text>
+      <v-card-text class="fondGris">
         <v-row>
           <v-col cols="1" />
           <v-col cols="10">
@@ -16,6 +16,7 @@
             <v-form ref="formSIREN" lazy-validation>
               <v-text-field
                 outlined
+                filled
                 label="SIREN"
                 placeholder="SIREN"
                 v-model="siren"
@@ -38,6 +39,7 @@
             <v-form ref="formMail" lazy-validation>
               <v-text-field
                 outlined
+                filled
                 label="Adresse mail de contact"
                 placeholder="Adresse mail de contact"
                 type="mail"

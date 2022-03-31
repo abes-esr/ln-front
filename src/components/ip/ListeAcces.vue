@@ -37,7 +37,7 @@
                   <v-alert dense :value="notification !== ''" type="success">
                     {{ notification }}
                   </v-alert>
-                  <v-card-text>
+                  <v-card-text class="fondGris">
                     <v-row>
                       <v-col>
                         <v-data-table
@@ -91,6 +91,7 @@
                                   label="Chercher dans les colonnes"
                                   prepend-inner-icon="mdi-magnify"
                                   outlined
+                                  filled
                                   clearable
                                 ></v-text-field>
                               </v-col>
@@ -721,6 +722,18 @@ h3 {
 .v-data-table.row-height-50 td {
   max-height: 48px !important;
 }
+
+.v-data-table {
+  background-color: transparent !important;
+}
+
+.theme--light .v-data-footer__icons-before .v-btn,
+.theme--light .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-before .v-btn {
+  background-color: transparent !important;
+}
+
 .btnText {
   padding-right: 5px;
 }

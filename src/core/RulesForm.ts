@@ -73,6 +73,8 @@ export class rulesForm {
     (v: string) => !!v || "Veuillez saisir un ou des critères de recherche"
   ];
 
+  dateRules = [(v: string) => !!v || "Les dates sont obligatoires"];
+
   ipv4SegmentsRules = [
     (v: string) => !!v || "Le segment d'IP est obligatoire",
     (v: string) =>

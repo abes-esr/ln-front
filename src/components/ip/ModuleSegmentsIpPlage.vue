@@ -12,7 +12,7 @@
           <span v-if="this.typeIp === 'IPV4'">v4</span>
           <span v-else>v6</span>
         </v-app-bar>
-        <v-card-text flat class="overflow-auto">
+        <v-card-text flat class="overflow-auto fondGris">
           <v-row class="ma-0">
             <v-col class="py-0">
               <p class="caption mb-0">
@@ -39,6 +39,7 @@
                         @paste.prevent
                         dense
                         outlined
+                        filled
                         required
                       >
                       </v-text-field>
@@ -62,6 +63,7 @@
                         @paste.prevent
                         dense
                         outlined
+                        filled
                         required
                       >
                       </v-text-field>
@@ -98,6 +100,7 @@
                           @paste.prevent
                           dense
                           outlined
+                          filled
                           required
                         >
                         </v-text-field>
@@ -127,7 +130,7 @@
                           @paste="onPastePlageFin"
                           @paste.prevent
                           :disabled="index > 1 ? false : true"
-                          :filled="index > 1 ? false : true"
+                          :filled="index > 1 ? true : false"
                           dense
                           outlined
                           required
@@ -164,6 +167,7 @@
                           @paste.prevent
                           dense
                           outlined
+                          filled
                           required
                         >
                         </v-text-field>
@@ -194,6 +198,7 @@
                           @paste.prevent
                           dense
                           outlined
+                          filled
                           required
                         >
                         </v-text-field>
@@ -223,6 +228,7 @@
                 hint="Apporter ici toute précisions sur l'attribution de cette IP, surtout si elle n'appartient pas au réseau Renater."
                 :rules="rulesForm.commentaires"
                 v-model="commentaires"
+                filled
                 clearable
                 persistent-hint
               ></v-textarea>

@@ -12,7 +12,7 @@
         <v-row>
           <v-col cols="1" class="d-none d-md-flex"></v-col>
           <v-col cols="12" md="10">
-            <v-card-text>
+            <v-card-text class="fondGris">
               <v-select
                 v-model="select"
                 :items="etabs"
@@ -22,6 +22,7 @@
                 placeholder="Séléctionner un établissement"
                 persistent-placeholder
                 outlined
+                filled
                 @change="getHistorique(select)"
               ></v-select
             ></v-card-text> </v-col

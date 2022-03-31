@@ -58,7 +58,6 @@
         <v-list-item
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAStatitique()"
-          :disabled="true"
         >
           <v-list-item-action class="ma-0 pa-1">
             <font-awesome-icon :icon="['fas', 'chart-bar']" size="2x" />
@@ -142,7 +141,7 @@ export default class SideMenu extends Vue {
   }
 
   allerAStatitique(): void {
-    this.$router.push({ name: "Statistique" }).catch(err => {
+    this.$router.push({ name: "Statistiques" }).catch(err => {
       Logger.error(err);
     });
   }

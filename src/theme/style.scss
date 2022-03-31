@@ -251,3 +251,19 @@ nav svg {
 tbody tr:nth-of-type(odd) {
   background-color: $couleur-tab;
 }
+
+.v-text-field--filled > .v-input__control > .v-input__slot {
+  background-color:  $couleur-6 !important;
+}
+
+.v-textarea--filled > .v-input__control > .v-input__slot {
+  background-color:  $couleur-6 !important;
+}
+
+.fondBlanc {
+  background-color:  $couleur-6 !important;
+}
+
+.fondGris {
+  background-color: $couleur-fond-card !important;
+}
