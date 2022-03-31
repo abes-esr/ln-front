@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="0">
-    <v-card-title class="pa-3"><h1>S'authentifier</h1></v-card-title>
+    <v-card-title class="pa-3"><h1>S'authentifier Test</h1></v-card-title>
     <MessageBox></MessageBox>
     <v-card-text class="rounded pa-3">
       <v-form ref="form" lazy-validation>
