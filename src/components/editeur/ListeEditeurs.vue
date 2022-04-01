@@ -302,3 +302,15 @@ export default class ListeEditeurs extends Vue {
   }
 }
 </script>
+<style>
+.v-data-table {
+  background-color: transparent !important;
+}
+
+.theme--light .v-data-footer__icons-before .v-btn,
+.theme--light .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-before .v-btn {
+  background-color: transparent !important;
+}
+</style>
