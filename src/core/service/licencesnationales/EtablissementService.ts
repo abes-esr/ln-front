@@ -190,6 +190,14 @@ export class EtablissementService extends LicencesNationalesApiService {
     return this.client.post("/etablissements/validation/" + siren, null, token);
   }
 
+  devaliderEtablissement(siren: string, token: string): Promise<AxiosResponse> {
+    return this.client.post(
+      "/etablissements/devalidation/" + siren,
+      null,
+      token
+    );
+  }
+
   fusion(token: string, data: any): Promise<AxiosResponse> {
     return this.client.post("/etablissements/fusion", data, token);
   }
@@ -279,6 +287,21 @@ export class EtablissementService extends LicencesNationalesApiService {
 
   search(criteres: Array<string>, token: string): Promise<AxiosResponse> {
     return this.client.post("/etablissements/search/", criteres, token);
+  }
+
+  getHisto(siren: string, token: string): Promise<AxiosResponse> {
+    return this.client.get("/etablissements/histo/" + siren, token);
+  }
+
+  getStats(
+    dateDebut: string,
+    dateFin: string,
+    token: string
+  ): Promise<AxiosResponse> {
+    return this.client.get(
+      "/etablissements/stats?dateDebut=" + dateDebut + "&dateFin=" + dateFin,
+      token
+    );
   }
 }
 

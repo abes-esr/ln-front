@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-form ref="formAjouterAcces" lazy-validation>
       <v-row align="center" justify="center">
         <v-col lg="11" md="12" xs="12">
@@ -10,13 +11,33 @@
               </h1></v-card-title
             >
           </v-row>
+          <v-row
+            ><v-col>
+              <a @click="$router.push({ path: '/listeAcces' })"
+                ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à
+                la liste complète des IP</a
+              ></v-col
+            ></v-row
+          >
           <v-row>
-            <v-card-title>
-              Choisir le type d'adresse IP à déclarer
-            </v-card-title>
+            <v-col cols="12" md="7" class="pa-0">
+              <v-card-title class="pb-0">
+                Choisir le type d'adresse IP à déclarer
+              </v-card-title></v-col
+            >
+            <v-col cols="12" md="3" class="pa-0">
+              <v-card-text
+                ><font-awesome-icon
+                  :icon="['fas', 'info-circle']"
+                  size="2x"
+                /><a class="pl-3 pb-6"
+                  >Tuto de déclaration des IP</a
+                ></v-card-text
+              >
+            </v-col>
           </v-row>
           <v-row>
-            <v-col cols="7">
+            <v-col cols="7" class="pb-0">
               <v-divider></v-divider>
               <div id="radioIP">
                 <v-radio-group v-model="typeIp" mandatory row>
@@ -30,10 +51,11 @@
               </div>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row class="mt-0">
             <v-col cols="7">
               <module-segments-ip-plage
                 :typeIp="typeIp"
+                :closeAlert="closeAlert"
                 typeAcces="ip"
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
               >
@@ -41,6 +63,7 @@
               <br />
               <module-segments-ip-plage
                 :typeIp="typeIp"
+                :closeAlert="closeAlert"
                 typeAcces="plage"
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
               >
@@ -78,17 +101,6 @@
                   </tbody>
                 </template>
               </v-simple-table>
-
-              <v-row id="fillHeight"></v-row>
-              <v-row
-                ><v-col cols="6"></v-col
-                ><v-col>
-                  <a @click="$router.push({ path: '/listeAcces' })"
-                    ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir
-                    à la liste complète des IP</a
-                  ></v-col
-                ></v-row
-              >
             </v-col>
           </v-row>
         </v-col>
@@ -102,10 +114,11 @@
 import { Component, Vue } from "vue-property-decorator";
 import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
 import { iPService } from "@/core/service/licencesnationales/IPService";
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { Logger } from "@/utils/Logger";
 
 @Component({
-  components: { ModuleSegmentsIpPlage }
+  components: { ModuleSegmentsIpPlage, ConfirmPopup }
 })
 export default class AjouterAcces extends Vue {
   id: string = "";
@@ -117,6 +130,8 @@ export default class AjouterAcces extends Vue {
   typeAlert: string = "success";
   arrayAjouterIp: Array<string> = [];
 
+  closeAlert: boolean = false;
+
   validate(payloadFromModuleSegmentsIpPlage): void {
     this.arrayAjouterIp.push(payloadFromModuleSegmentsIpPlage);
   }
@@ -124,19 +139,31 @@ export default class AjouterAcces extends Vue {
     this.arrayAjouterIp = [];
     this.message = "";
   }
-  supprimerIP(idIP: string, index: number) {
-    iPService
-      .deleteIP(this.$store.getters.getToken(), idIP)
-      .then(response => {
-        this.typeAlert = "success";
-        this.message = response.data.message;
-        this.arrayAjouterIp.splice(index, 1);
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        this.typeAlert = "error";
-        this.message = err.response.data.message;
-      });
+  async supprimerIP(idIP: string, index: number) {
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP.
+
+                Etes-vous sûr de vouloir effectuer cette action ?`
+    );
+    if (confirmed) {
+      iPService
+        .deleteIP(this.$store.getters.getToken(), idIP)
+        .then(response => {
+          this.typeAlert = "success";
+          this.message = response.data.message;
+          this.arrayAjouterIp.splice(index, 1);
+          this.closeAlert = true;
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          this.typeAlert = "error";
+          this.message = err.response.data.message;
+          this.closeAlert = true;
+        })
+        .finally(() => {
+          this.closeAlert = false;
+        });
+    }
   }
 }
 </script>

@@ -1,14 +1,14 @@
 <template>
   <v-card flat>
     <h1>Etablissement {{ etablissement.nom }}</h1>
-    <v-col cols="12" md="6" lg="6" xl="6">
+    <v-col cols="12" md="6" lg="6" xl="6" class="pa-1">
       <MessageBox></MessageBox>
       <ConfirmPopup ref="confirm"></ConfirmPopup>
     </v-col>
-    <v-container class="mx-9 elevation-0">
+    <v-container class="mx-9 elevation-0 pt-0">
       <v-col
         cols="12"
-        class="d-flex align-content-start justify-space-between flex-wrap mx-0 px-0"
+        class="d-flex align-content-start justify-space-between flex-wrap mx-0 px-0 py-0"
       >
         <v-card-title class="px-0"
           >Information du compte
@@ -62,13 +62,25 @@
         >Réinitialiser les champs d'origine</v-btn
       >
       <v-btn
-        v-if="this.modificationModeDisabled"
+        v-if="
+          this.modificationModeDisabled && getEtablissement.statut !== 'Validé'
+        "
         class="btn-2  mt-3"
+        style="margin-right: 1em"
         :loading="buttonValidationLoading"
         @click="validerEtablissement()"
         >Valider le compte</v-btn
       >
-      <v-row class="d-flex justify-space-between flex-wrap">
+      <v-btn
+        v-if="
+          this.modificationModeDisabled && getEtablissement.statut === 'Validé'
+        "
+        class="btn-5  mt-3"
+        :loading="buttonValidationLoading"
+        @click="devaliderEtablissement()"
+        >Dévalider le compte</v-btn
+      >
+      <v-row class="d-flex justify-space-between flex-wrap ma-0">
         <v-col
           cols="12"
           md="6"
@@ -76,10 +88,9 @@
           xl="6"
           class="d-flex align-content-start justify-center flex-wrap"
         >
-          <v-card-title class="d-block titre-block"></v-card-title>
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex justify-space-between align-center">
-              <h2 class="my-3">Etablissement</h2>
+              <h2 class="mb-3">Etablissement</h2>
               <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
                 <template v-slot:activator="{ on }">
                   <font-awesome-icon
@@ -98,6 +109,7 @@
                 outlined
                 v-model="etablissement.siren"
                 :readonly="true"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="Nom de l'établissement"
@@ -105,6 +117,7 @@
                 outlined
                 v-model="etablissement.nom"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="ID Abes"
@@ -112,6 +125,7 @@
                 outlined
                 v-model="etablissement.idAbes"
                 :readonly="true"
+                class="mt-1"
               ></v-text-field>
               <v-select
                 label="Type d'établissement"
@@ -119,12 +133,13 @@
                 outlined
                 v-model="etablissement.typeEtablissement"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-select>
-              <div>
+              <div class="mt-1">
                 <h3 class="d-inline">Statut de l'établissement:</h3>
                 {{ etablissement.statut }}
               </div>
-              <div>
+              <div class="mt-1">
                 <h3 class="d-inline">Statut IP :</h3>
                 {{ etablissement.statutIP }}
               </div>
@@ -138,10 +153,9 @@
           xl="6"
           class="d-flex align-content-start justify-center flex-wrap"
         >
-          <v-card-title class="d-block titre-block"></v-card-title>
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex justify-space-between align-center">
-              <h2 class="my-3">Contact</h2>
+              <h2 class="mb-3">Contact</h2>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
               <v-text-field
@@ -150,6 +164,7 @@
                 outlined
                 v-model="etablissement.contact.nom"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="Prénom du contact"
@@ -157,6 +172,7 @@
                 outlined
                 v-model="etablissement.contact.prenom"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="Téléphone du contact"
@@ -164,6 +180,7 @@
                 outlined
                 v-model="etablissement.contact.telephone"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="Mail du contact"
@@ -171,6 +188,7 @@
                 outlined
                 v-model="etablissement.contact.mail"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="Adresse du contact"
@@ -178,6 +196,7 @@
                 outlined
                 v-model="etablissement.contact.adresse"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="BP du contact"
@@ -185,6 +204,7 @@
                 outlined
                 v-model="etablissement.contact.boitePostale"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="Code Postal du contact"
@@ -192,6 +212,7 @@
                 outlined
                 v-model="etablissement.contact.codePostal"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="Ville du contact"
@@ -199,6 +220,7 @@
                 outlined
                 v-model="etablissement.contact.ville"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
               <v-text-field
                 label="Cedex du contact"
@@ -206,6 +228,7 @@
                 outlined
                 v-model="etablissement.contact.cedex"
                 :readonly="this.modificationModeDisabled"
+                class="mt-1"
               ></v-text-field>
             </div>
           </v-card-text>
@@ -423,6 +446,64 @@ export default class CardEtablissement extends Vue {
     }
   }
 
+  async devaliderEtablissement() {
+    this.buttonValidationLoading = true;
+    this.$store.dispatch("closeDisplayedMessage");
+
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `Vous êtes sur le point de dévalider le compte de l'établissement ${this.etablissement.nom}
+
+      Etes-vous sûr de vouloir effectuer cette ation ?`
+    );
+    if (confirmed) {
+      this.etablissement.statut = "Nouveau";
+      etablissementService
+        .devaliderEtablissement(
+          this.etablissement.siren,
+          this.$store.getters.getToken()
+        )
+        .then(response => {
+          this.$store.dispatch(
+            "updateCurrentEtablissement",
+            this.etablissement
+          );
+
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = response.data.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .catch(err => {
+          Logger.error(err.toString());
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = err.response.data.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+        })
+        .finally(() => {
+          this.buttonValidationLoading = false;
+        });
+    } else {
+      this.buttonValidationLoading = false;
+    }
+  }
+
   clear() {
     this.$store.dispatch("closeDisplayedMessage");
 
@@ -436,13 +517,33 @@ export default class CardEtablissement extends Vue {
   }
 
   validerModifications(): void {
-    this.$store.dispatch("updateCurrentEtablissement", this.etablissement); //Enregistrement en store
-    etablissementService.updateEtablissement(
-      this.etablissement,
-      this.$store.getters.getToken(),
-      this.$store.getters.isAdmin()
-    ); //Envoie au back et validation en BDD
-    this.modificationModeDisabled = true;
+    etablissementService
+      .updateEtablissement(
+        this.etablissement,
+        this.$store.getters.getToken(),
+        this.$store.getters.isAdmin()
+      )
+      .then(() => {
+        this.$store.dispatch("updateCurrentEtablissement", this.etablissement); //Enregistrement en store
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        message.texte = err.message;
+        message.isSticky = true;
+        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+          Logger.error(err.toString());
+        });
+        // On glisse sur le message d'erreur
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      })
+      .finally(() => {
+        this.modificationModeDisabled = true;
+      }); //Envoie au back et validation en BDD
   }
 
   downloadEtablissement(): void {

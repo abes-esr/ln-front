@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-card flat>
       <v-row>
         <v-col lg="12" md="12" xs="12">
@@ -9,8 +10,13 @@
                 <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
               </v-row>
               <v-row>
-                <v-col cols="1" sm="1"></v-col>
-                <v-col cols="10" sm="10">
+                <v-col cols="4" sm="4">
+                  <a v-if="isAdmin" @click="revenirInfosEtab()"
+                    ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir
+                    aux informations de l'établissement</a
+                  >
+                </v-col>
+                <v-col cols="7" sm="7">
                   <v-btn
                     id="addIpButton"
                     @click="$router.push({ path: '/ajouterAcces/' })"
@@ -19,8 +25,8 @@
                 ></v-col>
               </v-row>
               <v-row>
-                <v-col cols="1" />
-                <v-col cols="10">
+                <v-col cols="1" class="d-none d-md-flex" />
+                <v-col cols="12" md="10">
                   <v-alert
                     dense
                     :value="error !== ''"
@@ -31,7 +37,7 @@
                   <v-alert dense :value="notification !== ''" type="success">
                     {{ notification }}
                   </v-alert>
-                  <v-card-text>
+                  <v-card-text class="fondGris">
                     <v-row>
                       <v-col>
                         <v-data-table
@@ -39,49 +45,69 @@
                           :key="refreshKey"
                           :headers="headers"
                           :items="filteredAccesByStatut"
-                          :items-per-page="30"
+                          :items-per-page="10"
+                          :footer-props="{
+                            showFirstLastPage: true,
+                            'items-per-page-options': [10, 25, 50, 75, -1]
+                          }"
                           :item-class="RowClasses"
                           :search="rechercher"
                           :loading="dataLoading"
+                          class="row-height-50"
                           flat
                         >
                           <template v-slot:top>
                             <v-row>
-                              <v-col cols="12" sm="6"></v-col>
-                              <v-col cols="12" sm="6">
+                              <v-col cols="12" sm="6" class="px-0">
+                                <v-tooltip
+                                  top
+                                  max-width="20vw"
+                                  open-delay="100"
+                                >
+                                  <template v-slot:activator="{ on }">
+                                    <v-btn
+                                      text
+                                      @click="downloadIPs()"
+                                      class="bouton-simple pl-0"
+                                      v-on="on"
+                                      :loading="isExportLoading"
+                                      ><h2>Télécharger la liste des IP</h2>
+                                      <font-awesome-icon
+                                        :icon="['fas', 'download']"
+                                        class="mx-2"
+                                        size="2x"
+                                    /></v-btn>
+                                  </template>
+                                  <span
+                                    >Le téléchargement correspond à la vue
+                                    filtrée</span
+                                  >
+                                </v-tooltip>
+                              </v-col>
+                              <v-col cols="0" sm="3"></v-col>
+                              <v-col cols="12" sm="3" class="px-0">
                                 <v-text-field
                                   v-model="rechercher"
                                   label="Chercher dans les colonnes"
-                                  class="mx-4"
                                   prepend-inner-icon="mdi-magnify"
                                   outlined
+                                  filled
                                   clearable
                                 ></v-text-field>
                               </v-col>
                             </v-row>
-                            <v-row>
-                              <v-tooltip top max-width="20vw" open-delay="100">
-                                <template v-slot:activator="{ on }">
-                                  <v-btn
-                                    text
-                                    @click="downloadIPs()"
-                                    class="mx-2 text-lowercase bouton-simple"
-                                    v-on="on"
-                                    :loading="isExportLoading"
-                                    ><span class="text-uppercase">T</span
-                                    >élécharger la liste des
-                                    <span class="text-uppercase">IP</span>
-                                    <font-awesome-icon
-                                      :icon="['fas', 'download']"
-                                      class="mx-2"
-                                  /></v-btn>
+                          </template>
+                          <template v-slot:[`item.commentaires`]="{ item }">
+                            <td class="truncate">
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <span v-bind="attrs" v-on="on">{{
+                                    item.commentaires
+                                  }}</span>
                                 </template>
-                                <span
-                                  >Le téléchargement correspond à la vue
-                                  filtrée</span
-                                >
+                                <span>{{ item.commentaires }}</span>
                               </v-tooltip>
-                            </v-row>
+                            </td>
                           </template>
                           <template v-slot:[`item.action`]="{ item }">
                             <v-btn
@@ -144,7 +170,8 @@
     <v-col cols="12" style="padding: 24px;">
       <v-row>
         <v-col cols="1" xs="0"/>
-        <v-col cols="10" xs="12"> <infos-i-ps></infos-i-ps></v-col></v-row
+        <v-col cols="10" xs="12">
+          <infos-i-ps v-if="!isAdmin"></infos-i-ps></v-col></v-row
     ></v-col>
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
@@ -219,6 +246,7 @@
                   @click="
                     dialog = false;
                     currentIPid = '';
+                    commentaires = '';
                   "
                   class="btn-6"
                 >
@@ -247,6 +275,7 @@ import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import { Message, MessageType } from "@/core/CommonDefinition";
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { AxiosResponse } from "axios";
 import InfosIPs from "@/components/ip/InfosIPs.vue";
@@ -261,7 +290,7 @@ const ListeAccesProps = Vue.extend({
 });
 
 @Component({
-  components: { InfosIPs }
+  components: { InfosIPs, ConfirmPopup }
 })
 export default class ListeAcces extends ListeAccesProps {
   refreshKey: number = 0;
@@ -325,23 +354,31 @@ export default class ListeAcces extends ListeAccesProps {
           text: "Date de saisie",
           align: "start",
           value: "dateCreation",
-          sortable: true
+          sortable: true,
+          width: "9%"
         },
         {
           text: "Type d'IP",
           value: "typeIp",
-          sortable: true
+          sortable: true,
+          width: "9%"
         },
-        { text: "Valeur", value: "ip", sortable: true },
-        { text: "Statut", value: "statut", sortable: true },
-        { text: "Action", value: "buffer", sortable: false },
+        { text: "Valeur", value: "ip", sortable: true, width: "20%" },
+        { text: "Statut", value: "statut", sortable: true, width: "13%" },
+        { text: "Action", value: "buffer", sortable: false, width: "13%" },
         {
           text: "Action admin",
           value: "dateModification",
-          sortable: true
+          sortable: true,
+          width: "10%"
         },
-        { text: "Commentaires", value: "commentaires", sortable: true },
-        { text: "Examiner", value: "action", sortable: false }
+        {
+          text: "Commentaires",
+          value: "commentaires",
+          sortable: true,
+          width: "17%"
+        },
+        { text: "Examiner", value: "action", sortable: false, width: "9%" }
       ];
     } else {
       this.headers = [
@@ -349,27 +386,30 @@ export default class ListeAcces extends ListeAccesProps {
           text: "Date de saisie",
           align: "start",
           value: "dateCreation",
-          sortable: true
-        },
-        {
-          text: "Type d'IP",
-          value: "typeAcces",
-          sortable: true
+          sortable: true,
+          width: "9%"
         },
         {
           text: "Type d'IP",
           value: "typeIp",
-          sortable: true
+          sortable: true,
+          width: "20%"
         },
-        { text: "Valeur", value: "ip", sortable: true },
-        { text: "Statut", value: "statut", sortable: true },
+        { text: "Valeur", value: "ip", sortable: true, width: "15%" },
+        { text: "Statut", value: "statut", sortable: true, width: "15%" },
         {
           text: "Action admin",
           value: "dateModification",
-          sortable: true
+          sortable: true,
+          width: "15%"
         },
-        { text: "Commentaires", value: "commentaires", sortable: true },
-        { text: "Supprimer", value: "action", sortable: false }
+        {
+          text: "Commentaires",
+          value: "commentaires",
+          sortable: true,
+          width: "17%"
+        },
+        { text: "Supprimer", value: "action", sortable: false, width: "10%" }
       ];
     }
   }
@@ -418,7 +458,7 @@ export default class ListeAcces extends ListeAccesProps {
       id: acces.id,
       dateCreation: moment(acces.dateCreation).format("L"),
       dateModification: this.getDateModification(acces),
-      typeIp: typeAcces + " " + acces.typeIp,
+      typeIp: typeAcces + acces.typeIp,
       ip: acces.ip,
       statut: acces.statut,
       commentaires: acces.commentaires
@@ -474,7 +514,8 @@ export default class ListeAcces extends ListeAccesProps {
   splitRangeIntoIPs(typeIP: string, range: string): string[] {
     let ip1 = "";
     let ip2 = "";
-    if (typeIP === "IPV4") {
+
+    if (typeIP === "Plage IPV4") {
       range.split(".").forEach(element => {
         if (element.includes("-")) {
           const tabSplit = element.split("-");
@@ -546,9 +587,10 @@ export default class ListeAcces extends ListeAccesProps {
       idIp: this.currentIP.id,
       action: action,
       ip: this.currentIP.ip,
-      commentaireAdmin: this.commentaires
+      commentaire: this.commentaires
     });
     this.addActionToDatatable(action, this.currentIP.id);
+    this.commentaires = "";
     this.dialog = false;
     this.refreshKey++;
   }
@@ -562,23 +604,30 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   // Suppression par un USER
-  supprimerIP(ip: string) {
-    this.buttlonLoading = true;
-    this.clearAlerts();
+  async supprimerIP(ip: string) {
+    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
+      `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP
 
-    iPService
-      .deleteIP(this.$store.getters.getToken(), ip)
-      .then(() => {
-        this.notification = "IP supprimée.";
-      })
-      .catch(err => {
-        Logger.error = err;
-        this.error = err.message;
-      })
-      .finally(() => {
-        this.buttlonLoading = false;
-        this.collecterAcces();
-      });
+                Etes-vous sûr de vouloir effectuer cette action ?`
+    );
+    if (confirmed) {
+      this.buttlonLoading = true;
+      this.clearAlerts();
+
+      iPService
+        .deleteIP(this.$store.getters.getToken(), ip)
+        .then(() => {
+          this.notification = "IP supprimée.";
+        })
+        .catch(err => {
+          Logger.error = err;
+          this.error = err.message;
+        })
+        .finally(() => {
+          this.buttlonLoading = false;
+          this.collecterAcces();
+        });
+    }
   }
 
   RowClasses(item) {
@@ -613,7 +662,7 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   downloadIPs(): void {
-    this.isExportLoading= true;
+    this.isExportLoading = true;
     this.$store.dispatch("closeDisplayedMessage");
     iPService
       .downloadIPs(this.getSirenEtabSujet(), this.$store.state.user.token)
@@ -628,7 +677,7 @@ export default class ListeAcces extends ListeAccesProps {
         document.body.appendChild(fileLink);
 
         fileLink.click();
-        this.isExportLoading= false;
+        this.isExportLoading = false;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -644,9 +693,14 @@ export default class ListeAcces extends ListeAccesProps {
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());
         });
-        this.isExportLoading= false;
-
+        this.isExportLoading = false;
       });
+  }
+
+  revenirInfosEtab(): void {
+    this.$router.push({ name: "AfficherEtablissement" }).catch(err => {
+      Logger.error(err);
+    });
   }
 }
 </script>
@@ -659,6 +713,27 @@ h3 {
 .row {
   margin: 0 !important;
 }
+.truncate {
+  max-width: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.v-data-table.row-height-50 td {
+  max-height: 48px !important;
+}
+
+.v-data-table {
+  background-color: transparent !important;
+}
+
+.theme--light .v-data-footer__icons-before .v-btn,
+.theme--light .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-before .v-btn {
+  background-color: transparent !important;
+}
+
 .btnText {
   padding-right: 5px;
 }
@@ -671,14 +746,14 @@ h3 {
 }
 
 .VALIDER {
-  background-color: #1cd74b60;
+  background-color: #1cd74b60 !important;
 }
 
 .SUPPRIMER {
-  background-color: #ee492e4d;
+  background-color: #ee492e4d !important;
 }
 
 .REJETER {
-  background-color: #155fab47;
+  background-color: #155fab47 !important;
 }
 </style>

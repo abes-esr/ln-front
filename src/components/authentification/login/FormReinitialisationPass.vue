@@ -99,8 +99,11 @@ export default class FormReinitialisationPass extends Vue {
     );
 
     this.isTokenValid
-      .then(() => {
-        this.tokenValid = true;
+      .then(result => {
+        if (!result) {
+          this.tokenValid = false;
+          this.linkExpired = true;
+        }
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -116,18 +119,7 @@ export default class FormReinitialisationPass extends Vue {
           Logger.error(err.toString());
         });
         this.tokenValid = false;
-      })
-      .finally(() => {
-        if (!this.tokenValid) {
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte = "La durée de validité de ce lien est dépassée.";
-          message.isSticky = true;
-          this.linkExpired = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-        }
+        this.linkExpired = true;
       });
   }
 

@@ -1,13 +1,13 @@
 <template>
   <v-form ref="form" lazy-validation :disabled="isDisableForm">
-    <v-alert outlined class="pa-3" v-if="linkIsExpired === false">
+    <v-alert outlined class="pa-3 fondBlanc" v-if="linkIsExpired === false">
       <font-awesome-icon
         :icon="['fas', 'info-circle']"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
-      Votre mot de passe doit contenir au minimum 8 caractères, une lettre
-      majuscule, une lettre minuscule, un chiffre et un caractère spécial parmis
-      @ $ ! % * ? &
+      Le mot de passe doit contenir au moins 8 caractères, dont au moins un
+      chiffre, une lettre majuscule, une lettre minuscule et un des caractères
+      spéciaux suivants : @ $ ! % * ? &
     </v-alert>
     <v-alert outlined class="pa-3" v-if="linkIsExpired === true">
       <font-awesome-icon
@@ -15,12 +15,12 @@
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
       Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser
-      votre mot de passe, retournez à la page d'accueil puis cliquez sur mot de
-      passe oublié
+      votre mot de passe : <a @click="allerPasswordReset()">cliquez ici.</a>
     </v-alert>
     <v-text-field
       v-if="action === Action.MODIFICATION && linkIsExpired === false"
       outlined
+      filled
       label="Ancien mot de passe"
       placeholder="Ancien mot de passe"
       :type="show ? 'text' : 'password'"
@@ -35,6 +35,7 @@
     <v-text-field
       v-if="linkIsExpired === false"
       outlined
+      filled
       :label="
         action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
       "
@@ -53,6 +54,7 @@
     <v-text-field
       v-if="linkIsExpired === false"
       outlined
+      filled
       :label="
         action === Action.CREATION
           ? 'Confirmation du mot de passe'
@@ -134,6 +136,10 @@ export default class MotDePasse extends Vue {
   clear(): void {
     (this.$refs.form as HTMLFormElement).resetValidation();
     this.confirmationNouveauMotDePasse = "";
+  }
+
+  allerPasswordReset(): void {
+    this.$router.push({ name: "Login" });
   }
 }
 </script>

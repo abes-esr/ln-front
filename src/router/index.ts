@@ -163,6 +163,24 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: "/historique",
+    name: "Historique",
+    component: () => import("../components/etablissement/Historique.vue"),
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
+  },
+  {
+    path: "/stats",
+    name: "Statistiques",
+    component: () => import("../components/etablissement/Statistiques.vue"),
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
+  },
+  {
     path: "/CGU",
     name: "CGU",
     component: () => import("../views/footer-static/CGU.vue")

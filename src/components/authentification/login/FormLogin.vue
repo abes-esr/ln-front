@@ -1,8 +1,8 @@
 <template>
   <v-card elevation="0">
-    <v-card-title class="pa-3"><h1>S'authentifier</h1></v-card-title>
+    <v-card-title class="pa-3"><h1>S'authentifier TEST</h1></v-card-title>
     <MessageBox></MessageBox>
-    <v-card-text class="rounded pa-3">
+    <v-card-text class="rounded pa-3 fondGris">
       <v-form ref="form" lazy-validation>
         <v-row>
           <v-col cols="1" />
@@ -10,6 +10,7 @@
             <v-text-field
               ref="login"
               outlined
+              filled
               placeholder="SIREN"
               maxlength="9"
               v-model="siren"
@@ -17,6 +18,7 @@
               append-icon="mdi-information"
               required
               @keyup="validate()"
+              @keyup.enter="login()"
             >
               <template v-slot:append>
                 <a
@@ -43,6 +45,7 @@
             <v-text-field
               ref="password"
               outlined
+              filled
               placeholder="Mot de passe"
               :type="show ? 'text' : 'password'"
               :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -51,6 +54,7 @@
               required
               @click:append="show = !show"
               @keyup="validate()"
+              @keyup.enter="login()"
             ></v-text-field>
           </v-col>
         </v-row>

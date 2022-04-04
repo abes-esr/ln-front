@@ -1,10 +1,10 @@
 # licencesnationales-front
 
-[![ci](https://github.com/abes-esr/licencesnationales-front/actions/workflows/ci.yml/badge.svg)](https://github.com/abes-esr/licencesnationales-front/actions/workflows/ci.yml) [![Docker Pulls](https://img.shields.io/docker/pulls/abesesr/licencesnationales.svg)](https://hub.docker.com/r/abesesr/licencesnationales/)
+[![ci](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml/badge.svg)](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml) [![Docker Pulls](https://img.shields.io/docker/pulls/abesesr/licencesnationales.svg)](https://hub.docker.com/r/abesesr/licencesnationales/)
 
-## Client léger pour l'API Licences Nationales
+**Application en cours de développement**
 
-Client léger web en JavaScript pour l'API Licences Nationales ( https://github.com/abes-esr/licencesnationales-back ), permettant de fournir aux utilisateurs une interface graphique, disponible via un navigateur, pour l'API. 
+Application web Licences Nationales (client léger en JavaScript/VueJS) reposant sur l'[API Licences Nationales](https://github.com/abes-esr/licencesnationales-back). 
 
 Licences nationales permet :
 - aux institutions bénéficiaires des ressources numériques de :
@@ -15,6 +15,11 @@ Licences nationales permet :
   - vérifier les informations saisies par les bénéficiaires, supprimer ou accepter les comptes, valider ou non les adresses IP
   - envoyer les informations de gestion renseignées par les institutions aux éditeurs présents dans la base, via un batch mensuel, non automatisé. Ce batch comprend un identifiant Abes ad hoc, utilisé souvent comme identifiant pivot sur lequel les éditeurs et l’Inist (pour les plates-formes ISTEX et PANIST) s’appuient pour gérer les droits d’accès.
 
+Copie d'écran de la page d'accueil de l'application Licences Nationales :  
+![image](https://user-images.githubusercontent.com/328244/159643443-e8d8df64-ada6-44a5-a1f1-8f7f8a76530d.png)
+
+Voir aussi le code source de l'API et du batch:  
+https://github.com/abes-esr/licencesnationales-back
 
 ## Architecture
 
@@ -63,7 +68,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Génération des images docker
 
-L'image docker de licencesnationales-front est générée automatiquement à chaque ``git push`` par la chaîne d'intégration continue [![ci](https://github.com/abes-esr/licencesnationales-front/actions/workflows/ci.yml/badge.svg)](https://github.com/abes-esr/licencesnationales-front/actions/workflows/ci.yml). Les images suivantes sont [disponibles sur dockerhub](https://hub.docker.com/r/abesesr/licencesnationales/tags) :
+L'image docker de licencesnationales-front est générée automatiquement à chaque ``git push`` par la chaîne d'intégration continue [![ci](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml/badge.svg)](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml). Les images suivantes sont [disponibles sur dockerhub](https://hub.docker.com/r/abesesr/licencesnationales/tags) :
 - ``abesesr/licencesnationales:main-front`` : l'image du dernier git push sur la branche ``main``
 - ``abesesr/licencesnationales:develop-front`` : l'image du dernier git push sur la branche ``develop``
 - ``abesesr/licencesnationales:X.X.X-front`` : l'image dont le n° de version est ``X.X.X``
@@ -98,6 +103,18 @@ docker logs -n 100 -f licencesnationales-front
 ```
 
 
+## Publier une nouvelle release de l'application
+
+Pour publier une nouvelle release (version) de l'application, voici comment procéder:
+1. Se rendre sur l'onglet "Actions" sur le dépôt github  
+   ![image](https://user-images.githubusercontent.com/328244/159044287-67c7131f-8663-4452-b7fa-55aa8c695692.png)
+2. Cliquer sur le workflow "Create release"  
+   ![image](https://user-images.githubusercontent.com/328244/159044427-d36ae0d6-51cc-4f69-a855-097c162ba100.png)
+3. Cliquez ensuite sur "Run workflow" sur la droite  
+   ![image](https://user-images.githubusercontent.com/328244/159044539-57b57fba-15b8-440d-94e7-1ee859566a04.png)
+4. Indiquez ensuite le numéro de la version à générer (doit respecter le sementic versionning) après avoir vérifié que votre numéro de version n'existe pas déjà dans la [liste des tags](https://github.com/abes-esr/licencesnationales-front/tags)  
+   ![image](https://user-images.githubusercontent.com/328244/159044729-e9cc0d7a-abe3-401f-a246-84e577670493.png)
+5. Validez et attendez que le build se termine dans le [workflow "build-test-pubtodockerhub"](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml), ce qui aura pour conséquence  de générer et [publier sur dockerhub une image docker](https://hub.docker.com/r/abesesr/licencesnationales/tags) ayant comme tag le numéro de version de votre release.
 
 ## Licences
 

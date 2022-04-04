@@ -1,14 +1,13 @@
 <template>
-  <v-card class="elevation-0">
-    <v-form ref="form" lazy-validation>
-      <v-card-title>Modifier mon mot de passe</v-card-title>
-      <MessageBox></MessageBox>
-      <v-card-text>
-        <v-row>
-          <v-col lg="12" md="12" xs="12">
-            <v-row>
-              <v-col cols="1" />
-              <v-col cols="8">
+  <v-container fill-height class="d-flex justify-center">
+    <v-col cols="8">
+      <v-row align="center" justify="center">
+        <v-card flat>
+          <v-form ref="form" lazy-validation>
+            <h1 class="pb-4">Modifier mon mot de passe</h1>
+            <MessageBox></MessageBox>
+            <v-card-text class="fondGris">
+              <div class="pt-4 px-4">
                 <MotDePasse
                   ref="motDePasse"
                   :action="Action.MODIFICATION"
@@ -19,39 +18,22 @@
                   @update:nouveauMotDePasse="updateNouveauMotDePasse"
                   :isDisableForm="isDisableForm"
                 ></MotDePasse>
+              </div>
+              <v-spacer class="hidden-sm-and-down"></v-spacer>
+              <v-col cols="12" class="d-flex justify-end">
+                <v-btn :loading="buttonLoading" x-large @click="validate()"
+                  >Valider
+                  <v-icon class="pl-2"
+                    >mdi-arrow-right-circle-outline
+                  </v-icon></v-btn
+                >
               </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer class="hidden-sm-and-down"></v-spacer>
-        <v-col
-          cols="12"
-          md="3"
-          lg="3"
-          xl="3"
-          class="d-flex justify-space-around mr-16"
-        >
-          <v-btn
-            x-large
-            @click="clear"
-            class="bouton-annuler"
-            :disabled="isDisableForm"
-          >
-            Annuler</v-btn
-          >
-          <v-btn
-            color="success"
-            :loading="buttonLoading"
-            x-large
-            @click="validate()"
-            >Envoyer
-          </v-btn>
-        </v-col>
-      </v-card-actions>
-    </v-form>
-  </v-card>
+            </v-card-text>
+          </v-form>
+        </v-card></v-row
+      ></v-col
+    ></v-container
+  >
 </template>
 
 <script lang="ts">

@@ -2,9 +2,9 @@
   <v-card flat :disabled="disableForm">
     <h1>Gestion des comptes établissements</h1>
     <MessageBox></MessageBox>
-    <v-card-title>
-      <v-row class="d-flex flex-row-reverse">
-        <v-btn @click="allerAScionnerEtab()" class="btn-1 mx-2"
+    <v-card-title class="pr-0">
+      <v-row class="d-flex flex-row-reverse ma-0">
+        <v-btn @click="allerAScionnerEtab()" class="btn-1 ml-2"
           >Scission
           <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2"
         /></v-btn>
@@ -18,51 +18,69 @@
         /></v-btn>
       </v-row>
     </v-card-title>
-    <v-card-text class="mt-3">
+    <v-card-text class="mt-3 fondGris">
       <v-data-table
         dense
         :headers="headers"
         :items="filteredEtabByStatut"
         :items-per-page="25"
-        :footer-props="{ 'items-per-page-options': [25, 50, 100, -1] }"
+        :footer-props="{
+          showFirstLastPage: true,
+          'items-per-page-options': [25, 50, 100, -1]
+        }"
         class="elevation-0 ma-3"
         :search="rechercher"
         :loading="dataLoading"
         id="mytable"
       >
         <template v-slot:top>
-          <div class="d-flex align-content-end justify-end">
-            <v-text-field
-              v-model="rechercher"
-              label="Chercher sur toutes les colonnes"
-              class="mx-4 search-bar"
-              prepend-inner-icon="mdi-magnify"
-              outlined
-              dense
-              clearable
-            ></v-text-field>
-          </div>
-          <v-tooltip top max-width="20vw" open-delay="100">
-            <template v-slot:activator="{ on }">
-              <v-btn
-                text
-                @click="downloadEtablissements()"
-                class="mx-2 text-lowercase bouton-simple"
-                v-on="on"
-                :loading="isExportLoading"
-                ><span class="text-uppercase">T</span>élécharger la liste des
-                Etabs
-                <font-awesome-icon :icon="['fas', 'download']" class="mx-2"
-              /></v-btn>
-            </template>
-            <span>Le téléchargement correspond à la vue filtrée</span>
-          </v-tooltip>
+          <v-row class="ma-0">
+            <v-col cols="12" sm="6" class="px-0">
+              <v-tooltip top max-width="20vw" open-delay="100">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    text
+                    @click="downloadEtablissements()"
+                    class="pl-0 bouton-simple"
+                    v-on="on"
+                    :loading="isExportLoading"
+                    ><h2>Télécharger la liste des établissements</h2>
+                    <font-awesome-icon
+                      :icon="['fas', 'download']"
+                      size="2x"
+                      class="mx-2"
+                  /></v-btn>
+                </template>
+                <span>Le téléchargement correspond à la vue filtrée</span>
+              </v-tooltip>
+            </v-col>
+            <v-col cols="0" sm="3" class="px-0"></v-col>
+            <v-col cols="12" sm="3" class="px-0">
+              <div class="d-flex align-content-end justify-end">
+                <v-text-field
+                  v-model="rechercher"
+                  label="Chercher sur toutes les colonnes"
+                  prepend-inner-icon="mdi-magnify"
+                  outlined
+                  filled
+                  dense
+                  clearable
+                ></v-text-field>
+              </div>
+            </v-col>
+          </v-row>
         </template>
         <template v-slot:header.typeEtablissement="{ header }">
           {{ header.texte }}
           <v-menu offset-y :close-on-content-click="false">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn text class="bouton-simple" v-bind="attrs" v-on="on">
+              <v-btn
+                text
+                class="bouton-simple"
+                style="text-decoration: none;"
+                v-bind="attrs"
+                v-on="on"
+              >
                 Type d'établissement
                 <v-icon small :color="statut ? 'primary' : ''">
                   mdi-filter
@@ -86,7 +104,13 @@
           {{ header.texte }}
           <v-menu offset-y :close-on-content-click="false">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn text class="bouton-simple" v-bind="attrs" v-on="on">
+              <v-btn
+                text
+                class="bouton-simple"
+                v-bind="attrs"
+                v-on="on"
+                style="text-decoration: none;"
+              >
                 Statut
                 <v-icon small :color="statut ? 'primary' : ''">
                   mdi-filter
@@ -488,8 +512,15 @@ export default class ListeEtab extends Vue {
   }
 }
 </script>
-<style scoped lang="scss">
-.search-bar {
-  flex: 0 0 20%;
+<style>
+.v-data-table {
+  background-color: transparent !important;
+}
+
+.theme--light .v-data-footer__icons-before .v-btn,
+.theme--light .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-before .v-btn {
+  background-color: transparent !important;
 }
 </style>

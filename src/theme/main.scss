@@ -28,6 +28,10 @@
   $couleur-arriere-plan-9: #32465b;
   $couleur-arriere-plan-10: #5f97ce;
 
+  $couleur-fond-card: #F7F9FA;
+
+  $couleur-tab: rgb(250, 250, 250);
+
   @import "style";
 }
 
@@ -60,6 +64,10 @@
   $couleur-arriere-plan-8: #000000;
   $couleur-arriere-plan-9: #7d7979;
   $couleur-arriere-plan-10: #7d7979;
+
+  $couleur-fond-card: #1E1E1E;
+
+  $couleur-tab: rgb(0, 0, 0);
 
   @import "style";
 }

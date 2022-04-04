@@ -8,108 +8,123 @@
       </v-alert>
 
       <v-form ref="searchForm">
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <v-select
-                outlined
-                :items="listeDomaine"
-                v-model="domaine"
-                placeholder="Domaine de recherche"
-                persistent-placeholder
-                required
-                :rules="rulesForm.selectSearchRules"
-              ></v-select>
-            </v-col>
-            <v-col cols="9">
-              <v-text-field
-                outlined
-                label="Mots clés"
-                placeholder="Mots clés"
-                v-model="criteres"
-                required
-                :rules="rulesForm.searchRules"
-                @keyup.enter="search()"
-              ></v-text-field
-            ></v-col>
-            <v-btn @click="search()" :loading="buttonLoading">Rechercher</v-btn>
-          </v-row>
-          <br />
-        </v-card-text>
+        <v-row>
+          <v-col cols="1" class="d-none d-md-flex"></v-col>
+          <v-col cols="12" md="10">
+            <v-card-text>
+              <v-row class="d-flex justify-center align-center">
+                <v-col cols="2" class="pb-0">
+                  <v-select
+                    outlined
+                    :items="listeDomaine"
+                    v-model="domaine"
+                    placeholder="Domaine de recherche"
+                    hide-details="auto"
+                    persistent-placeholder
+                    required
+                    :rules="rulesForm.selectSearchRules"
+                  ></v-select>
+                </v-col>
+                <v-col cols="9" class="pb-0">
+                  <v-text-field
+                    outlined
+                    label="Mots clés"
+                    placeholder="Mots clés"
+                    hide-details="auto"
+                    v-model="criteres"
+                    required
+                    :rules="rulesForm.searchRules"
+                    @keyup.enter="search()"
+                  ></v-text-field
+                ></v-col>
+                <v-col class="pb-0">
+                  <v-btn @click="search()" :loading="buttonLoading"
+                    >Rechercher</v-btn
+                  ></v-col
+                >
+              </v-row>
+              <br />
+            </v-card-text> </v-col
+        ></v-row>
       </v-form>
-      <v-col cols="8" v-if="afficheResultat">
-        <h3>Résultats pour "{{ criteres }}" dans {{ domaine }} :</h3>
-        <br />
-        <div v-if="domaineValide == 'IPs'">
-          <v-list dense>
-            <v-list-item-group>
-              <div v-for="item in resultats" :key="item.id">
-                <v-list-item @click="clickIP(item)">
-                  <v-list-item-content>
-                    <v-list-item-title>{{ item.ip }}</v-list-item-title>
-                    <v-list-item-subtitle>
-                      {{ item.idAbes }} - {{ item.siren }} - {{ item.nomEtab }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider /></div
-            ></v-list-item-group>
-          </v-list>
-        </div>
-        <div v-if="domaineValide == 'Etablissements'">
-          <v-list dense>
-            <v-list-item-group>
-              <div v-for="item in resultats" :key="item.id">
-                <v-list-item @click="clickEtab(item)">
-                  <v-list-item-content>
-                    <v-list-item-title
-                      >{{ item.idAbes }} - {{ item.siren }} -
-                      {{ item.nomEtab }} -
-                      {{ item.villeContact }}</v-list-item-title
-                    >
-                    <v-list-item-subtitle
-                      >{{ item.nomContact }} {{ item.prenomContact }} -
-                      {{ item.mailContact }}</v-list-item-subtitle
-                    >
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider /></div
-            ></v-list-item-group>
-          </v-list>
-        </div>
-        <div v-if="domaineValide == 'Editeurs'">
-          <v-list dense>
-            <v-list-item-group>
-              <div v-for="item in resultats" :key="item.id">
-                <v-list-item @click="clickEditeur(item)">
-                  <v-list-item-content>
-                    <v-list-item-title
-                      >{{ item.idEditeur }} - {{ item.nom }} -
-                      {{ item.adresse }}</v-list-item-title
-                    >
-                    <v-list-item-subtitle
-                      v-for="contactCommerciaux in item.contactsCommerciaux"
-                      :key="contactCommerciaux.id"
-                    >
-                      {{ contactCommerciaux.nom }}
-                      {{ contactCommerciaux.prenom }} -
-                      {{ contactCommerciaux.mail }}
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle
-                      v-for="contactTechnique in item.contactsTechniques"
-                      :key="contactTechnique.id"
-                    >
-                      {{ contactTechnique.nom }} {{ contactTechnique.prenom }} -
-                      {{ contactTechnique.mail }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider /></div
-            ></v-list-item-group>
-          </v-list>
-        </div>
-        <br />
-      </v-col>
+      <v-row>
+        <v-col cols="1" class="d-none d-md-flex"></v-col>
+        <v-col cols="12" md="8" v-if="afficheResultat">
+          <h3>Résultats pour "{{ criteres }}" dans {{ domaine }} :</h3>
+          <br />
+          <div v-if="domaineValide == 'IPs'">
+            <v-list dense>
+              <v-list-item-group>
+                <div v-for="item in resultats" :key="item.id">
+                  <v-list-item @click="clickIP(item)">
+                    <v-list-item-content>
+                      <v-list-item-title>{{ item.ip }}</v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{ item.idAbes }} - {{ item.siren }} -
+                        {{ item.nomEtab }}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider /></div
+              ></v-list-item-group>
+            </v-list>
+          </div>
+          <div v-if="domaineValide == 'Etablissements'">
+            <v-list dense>
+              <v-list-item-group>
+                <div v-for="item in resultats" :key="item.id">
+                  <v-list-item @click="clickEtab(item)">
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >{{ item.idAbes }} - {{ item.siren }} -
+                        {{ item.nomEtab }} -
+                        {{ item.villeContact }}</v-list-item-title
+                      >
+                      <v-list-item-subtitle
+                        >{{ item.nomContact }} {{ item.prenomContact }} -
+                        {{ item.mailContact }}</v-list-item-subtitle
+                      >
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider /></div
+              ></v-list-item-group>
+            </v-list>
+          </div>
+          <div v-if="domaineValide == 'Editeurs'">
+            <v-list dense>
+              <v-list-item-group>
+                <div v-for="item in resultats" :key="item.id">
+                  <v-list-item @click="clickEditeur(item)">
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >{{ item.idEditeur }} - {{ item.nom }} -
+                        {{ item.adresse }}</v-list-item-title
+                      >
+                      <v-list-item-subtitle
+                        v-for="contactCommerciaux in item.contactsCommerciaux"
+                        :key="contactCommerciaux.id"
+                      >
+                        {{ contactCommerciaux.nom }}
+                        {{ contactCommerciaux.prenom }} -
+                        {{ contactCommerciaux.mail }}
+                      </v-list-item-subtitle>
+                      <v-list-item-subtitle
+                        v-for="contactTechnique in item.contactsTechniques"
+                        :key="contactTechnique.id"
+                      >
+                        {{ contactTechnique.nom }}
+                        {{ contactTechnique.prenom }} -
+                        {{ contactTechnique.mail }}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider /></div
+              ></v-list-item-group>
+            </v-list>
+          </div>
+          <br />
+        </v-col>
+      </v-row>
     </v-card>
   </div>
 </template>

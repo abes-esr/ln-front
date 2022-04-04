@@ -7,7 +7,7 @@ export class rulesForm {
   siren = [
     (v: string) => !!v || "SIREN obligatoire",
     (v: string) =>
-      /^\d{9}$/.test(v.trim()) || "Le SIREN doit contenir 9 chiffres"
+      /^\d{9}$/.test(v.trim()) || "Le SIREN doit comporter 9 chiffres"
   ];
 
   typeEtabRules = [
@@ -23,8 +23,7 @@ export class rulesForm {
   codePostal = [
     (v: string) => !!v || "Le code postal est obligatoire",
     (v: string) =>
-      /^\d{5}$/.test(v.trim()) ||
-      "Le code postal doit contenir 5 chiffres uniquement"
+      /^\d{5}$/.test(v.trim()) || "Le code postal doit comporter 5 chiffres"
   ];
 
   ville = [(v: string) => !!v || "La ville de l'établissement est obligatoire"];
@@ -32,7 +31,8 @@ export class rulesForm {
   tel = [
     (v: string) => !!v || "Le téléphone du contact est obligatoire",
     (v: string) =>
-      /^\d{10}$/.test(v.trim()) || "Veuillez entrer 10 chiffres sans espace"
+      /^\d{10}$/.test(v.trim()) ||
+      "Le numéro de téléphone doit comporter 10 chiffres sans espace et sans point"
   ];
 
   email = [
@@ -59,7 +59,11 @@ export class rulesForm {
       "Le mot de passe doit contenir au moins un caractère spécial parmis @ $ ! % * ? &"
   ];
 
-  checkboxRules = [(v: boolean) => v || "Veuillez accepter avant de valider"];
+  checkboxRules = [
+    (v: boolean) =>
+      v ||
+      "L’acceptation des conditions générales liées à la politique de confidentialité est obligatoire pour créer un compte"
+  ];
 
   selectSearchRules = [
     (v: string) => !!v || "Le domaine de recherche est obligatoire"
@@ -68,6 +72,8 @@ export class rulesForm {
   searchRules = [
     (v: string) => !!v || "Veuillez saisir un ou des critères de recherche"
   ];
+
+  dateRules = [(v: string) => !!v || "Les dates sont obligatoires"];
 
   ipv4SegmentsRules = [
     (v: string) => !!v || "Le segment d'IP est obligatoire",
