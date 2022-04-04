@@ -1,12 +1,12 @@
 <template>
-  <div class="mx-9">
+  <v-card flat class="mx-9">
     <h1>
       Tableau de bord <span v-if="!isAdmin">{{ etablissement.nom }}</span>
     </h1>
     <MessageBox></MessageBox>
     <ConfirmPopup ref="confirm"></ConfirmPopup>
-    <v-card-text class="fondGris pa-0 px-2">
-      <v-container class="pt-0 elevation-0">
+    <v-container class="pt-0 elevation-0">
+      <v-card-text class="fondGris pa-0 px-6 pb-6">
         <v-card-title class="px-0 pb-0"
           >Information du compte
           <v-tooltip top max-width="20vw" open-delay="100">
@@ -265,9 +265,9 @@
             </div>
           </v-col>
         </v-row>
-      </v-container>
-    </v-card-text>
-  </div>
+      </v-card-text>
+    </v-container>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -612,5 +612,10 @@ ul li::before {
 .notifs {
   max-height: 500px;
   overflow: auto;
+}
+
+.container {
+  margin-left: 0;
+  margin-right: 0;
 }
 </style>
