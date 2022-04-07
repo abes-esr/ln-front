@@ -1,4 +1,5 @@
 ###
+ARG HASH=""
 # Phase de compilation de l'appli vuejs
 FROM node:16.14.0 as build-image
 WORKDIR /build/
@@ -34,7 +35,7 @@ RUN npm run build
 FROM nginx:1.20.2 as front-image
 COPY --from=build-image /build/dist/ /usr/share/nginx/html.orig/
 COPY ./docker/nginx-default.conf /etc/nginx/conf.d/default.conf
-COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh $HASH
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
 EXPOSE 80
