@@ -1,5 +1,6 @@
 import { LicencesNationalesApiService } from "@/core/service/licencesnationales/LicencesNationalesApiService";
 import User from "@/core/User";
+import { AxiosResponse } from "axios";
 
 export class AuthentificationService extends LicencesNationalesApiService {
   /**
@@ -130,6 +131,10 @@ export class AuthentificationService extends LicencesNationalesApiService {
           reject(this.buildException(err));
         });
     });
+  }
+
+  getVersion(): Promise<AxiosResponse> {
+    return this.client.get("/applicationVersion");
   }
 }
 
