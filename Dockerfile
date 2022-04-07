@@ -35,7 +35,7 @@ RUN npm run build
 FROM nginx:1.20.2 as front-image
 COPY --from=build-image /build/dist/ /usr/share/nginx/html.orig/
 COPY ./docker/nginx-default.conf /etc/nginx/conf.d/default.conf
-COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh $HASH
+COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
 EXPOSE 80
