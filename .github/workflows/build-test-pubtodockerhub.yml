@@ -42,9 +42,3 @@ jobs:
             docker build . --target front-image -t ${DOCKER_TAG}-front
             docker push ${DOCKER_TAG}-front
           done
-          
-  build-test-pubtodockerhub-failure:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    steps:
-      - run: echo 'The triggering workflow failed'
