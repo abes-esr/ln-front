@@ -4,16 +4,10 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-  workflow_run:
-    workflows: 
-      - Create Release
-    types:
-      - completed
 
 jobs:
   build-test-pubtodockerhub:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion != 'failure' }}
     steps:
 
 
