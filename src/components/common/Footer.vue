@@ -94,18 +94,7 @@
       </v-card-title>
 
       <v-card-text class="py-2 white--text footer-bottom">
-        <strong>Licences Nationales </strong
-        ><v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on"> {{ appVersion }}</span>
-          </template>
-          <span>
-            Front: {{ appVersion }} <br />
-            Commit: {{ frontCommit }} <br /><br />
-            Back: {{ backVersion }} <br />
-            Commit: {{ backCommit }}
-          </span>
-        </v-tooltip>
+        <strong>Licences Nationales</strong>
         <div id="mentions">
           <a @click="$router.push({ path: '/accessibilite' })">Accessibilité</a>
           |
@@ -122,27 +111,9 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { Logger } from "@/utils/Logger";
 
 @Component
-export default class Footer extends Vue {
-  appVersion: string = process.env.VUE_APP_VERSION;
-  backVersion: string = "";
-  backCommit: string = "";
-  frontCommit: string = "";
-
-  mounted() {
-    authService
-      .getVersion()
-      .then(response => {
-        this.backVersion = response.data;
-      })
-      .catch(error => {
-        Logger.error("Impossible de récupérer le numéro de version : " + error);
-      });
-  }
-}
+export default class Footer extends Vue {}
 </script>
 <style scoped lang="scss">
 #footer,

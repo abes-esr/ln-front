@@ -1,5 +1,4 @@
 ###
-ARG HASH=""
 # Phase de compilation de l'appli vuejs
 FROM node:16.14.0 as build-image
 WORKDIR /build/
