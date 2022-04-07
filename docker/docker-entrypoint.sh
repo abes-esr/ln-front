@@ -9,6 +9,7 @@ export LN_VUE_APP_RECAPTCHA_KEY_SITE=${LN_VUE_APP_RECAPTCHA_KEY_SITE:='6LcjHroaA
 # LN_PLACEHOLDER_VUE_APP_RECAPTCHA_KEY_SITE
 # LN_PLACEHOLDER_VUE_APP_ROOT_API
 # On va remplacer les placeholders depuis les JS originales
+echo "TEST Récup Hash : $1"
 echo "-> Remplacement des placeholders venant du .env de vuejs dans la destination /usr/share/nginx/html/"
 echo "-> LN_VUE_APP_ROOT_API=${LN_VUE_APP_ROOT_API}"
 echo "-> LN_VUE_APP_RECAPTCHA_KEY_SITE=${LN_VUE_APP_RECAPTCHA_KEY_SITE}"

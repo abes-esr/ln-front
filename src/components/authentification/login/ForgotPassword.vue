@@ -205,11 +205,6 @@ export default class ForgotPassword extends Vue {
 </script>
 
 <style scoped>
-h1 {
-  padding-bottom: 30px;
-  font-size: 40px;
-  font-weight: 500;
-}
 .v-input--radio-group {
   padding-top: 0;
   margin-top: 0;
