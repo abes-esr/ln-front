@@ -23,25 +23,31 @@ jobs:
                 do
                     if [[ $(echo $changed_file) =~ ^.*$list_of_files.*$ ]]
                         then
+                        build=no
+                        echo $build
                         exit
                     fi
                 done
+        
       - name: "Build: build docker image"
+        if: env.build != 'no'
         run: |
           docker build --build-arg HASH=$GITHUB_SHA . -t localimage:latest
 
-
       - name: "Push: prepare version from git tags/branchs"
+        if: env.build != 'no'
         id: docker_tag_meta
         uses: docker/metadata-action@v3
         with:
           images: abesesr/licencesnationales
+
       - name: "Push: login to DockerHub"
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.build != 'no'
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin  
+          
       - name: "Push: push docker image"
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.build != 'no'
         run: |
           DOCKER_TAGS="${{ steps.docker_tag_meta.outputs.tags }}"
           for DOCKER_TAG in $DOCKER_TAGS
