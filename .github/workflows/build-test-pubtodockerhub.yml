@@ -1,6 +1,9 @@
 name: "build-test-pubtodockerhub"
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build-test-pubtodockerhub:
@@ -12,7 +15,7 @@ jobs:
         uses: actions/checkout@v2          
       - name: "Build: build docker image"
         run: |
-          docker build . -t localimage:latest
+          docker build --build-arg HASH=$GITHUB_SHA . -t localimage:latest
 
 
       - name: "Push: prepare version from git tags/branchs"
