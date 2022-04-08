@@ -12,7 +12,20 @@ jobs:
 
 
       - name: "Build: checkout source code"
-        uses: actions/checkout@v2          
+        uses: actions/checkout@v2
+      - name: "Get changed files"
+        id: files
+        uses: abes-esr/get-changed-files@v1
+      - name: "Don't build if some files are not part of source code"
+        run: |
+            list_of_files="(README|.github)"
+            for changed_file in ${{ steps.files.outputs.all }}
+                do
+                    if [[ $(echo $changed_file) =~ ^.*$list_of_files.*$ ]]
+                        then
+                        exit
+                    fi
+                done
       - name: "Build: build docker image"
         run: |
           docker build --build-arg HASH=$GITHUB_SHA . -t localimage:latest
