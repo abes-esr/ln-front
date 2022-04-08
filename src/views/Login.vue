@@ -13,14 +13,9 @@
           </h4>
           <p id="WarningLogin">
             <strong>Important : </strong>L'accès aux corpus sous licences
-            nationales est reservé aux
-            <a
-              href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-              target="_blank"
-              >établissements bénéficiaires</a
-            >
-            selon les conditions spécifiques négociées avec chaque éditeur. Pour
-            permettre la déclaration des adresses IP autorisées, l'Abes met à la
+            nationales est reservé aux établissements bénéficiaires selon les
+            conditions spécifiques négociées avec chaque éditeur. Pour permettre
+            la déclaration des adresses IP autorisées, l'Abes met à la
             disposition des professionnels de la documentation cette application
             dédiée à la gestion des accès.
           </p>
@@ -88,7 +83,6 @@ import Etablissement from "@/core/Etablissement";
 })
 export default class App extends Vue {
   forgotPasswordVisible: boolean = false;
-
   creerCompte(): void {
     this.$store
       .dispatch("setCurrentEtablissement", new Etablissement())
@@ -97,6 +91,8 @@ export default class App extends Vue {
       })
       .catch(err => {
         Logger.error(err);
+        // this.error = "Impossible de créer un nouvel éditeur : " + err.message;
+        // this.alert = true;
       });
   }
 
