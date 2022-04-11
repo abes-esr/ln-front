@@ -30,7 +30,7 @@
               />
             </v-btn>
             <v-btn
-              href="http://documentation.abes.fr/aidelicencesnationales/index.html"
+              href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html"
               target="_blank"
               class="footer-btn mx-2 text-center no-text-transform"
               ><span class="texte">Documentation Licences nationales</span>

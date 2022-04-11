@@ -50,7 +50,7 @@
           <v-btn
             class="bouton-simple elevation-0"
             v-if="!forgotPasswordVisible"
-            href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+            href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#Beneficiaires"
             target="_blank"
             >Vérifier l'éligibilité
             <font-awesome-icon

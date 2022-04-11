@@ -30,7 +30,10 @@
                 ><font-awesome-icon
                   :icon="['fas', 'info-circle']"
                   size="2x"
-                /><a class="pl-3 pb-6"
+                /><a
+                  href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#TutoDeDeclarationDesIP"
+                  target="_blank"
+                  class="pl-3 pb-6"
                   >Tuto de déclaration des IP</a
                 ></v-card-text
               >
