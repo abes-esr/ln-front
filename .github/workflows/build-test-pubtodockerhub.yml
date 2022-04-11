@@ -2,7 +2,6 @@ name: "build-test-pubtodockerhub"
 
 on:
   push:
-  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -12,23 +11,43 @@ jobs:
 
 
       - name: "Build: checkout source code"
-        uses: actions/checkout@v2          
+        uses: actions/checkout@v2
+      - name: "Get changed files"
+        id: files
+        uses: jitterbit/get-changed-files@v1
+      - name: "Don't build if some files are not part of source code"
+        run: |
+            list_of_files="(README|.github)"
+            for changed_file in ${{ steps.files.outputs.all }}
+                do
+                    if [[ $(echo $changed_file) =~ ^.*$list_of_files.*$ ]]
+                        then
+                        build=no
+                        echo $build
+                        echo "BUILD=no" >> "$GITHUB_ENV"
+                        exit
+                    fi
+                done
+        
       - name: "Build: build docker image"
+        if: env.BUILD != 'no'
         run: |
           docker build --build-arg HASH=$GITHUB_SHA . -t localimage:latest
 
-
       - name: "Push: prepare version from git tags/branchs"
+        if: env.BUILD != 'no'
         id: docker_tag_meta
         uses: docker/metadata-action@v3
         with:
           images: abesesr/licencesnationales
+
       - name: "Push: login to DockerHub"
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.BUILD != 'no'
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin  
+          
       - name: "Push: push docker image"
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.BUILD != 'no'
         run: |
           DOCKER_TAGS="${{ steps.docker_tag_meta.outputs.tags }}"
           for DOCKER_TAG in $DOCKER_TAGS
