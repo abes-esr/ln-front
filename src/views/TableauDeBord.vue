@@ -218,6 +218,11 @@
                         v-html="item.description"
                       ></span>
                     </li>
+                    <span
+                      v-if="!isAdmin && this.notificationsUser.length === 0"
+                      class="notifUserMsg"
+                      >Toutes les adresses IP déclarées ont été validées</span
+                    >
                   </ul>
                 </div>
               </v-card-text>
