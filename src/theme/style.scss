@@ -1,7 +1,7 @@
 h1 {
   color: $couleur-2;
   font-weight: 900;
-  font-size:30px !important;
+  font-size: 30px !important;
 }
 
 h4 {
@@ -14,11 +14,11 @@ h4 {
 
 #appBar {
   background-color: $couleur-arriere-plan-8;
-  background: linear-gradient(90deg,  $couleur-arriere-plan-9 20%, $couleur-arriere-plan-10 100%);
+  background: linear-gradient(90deg, $couleur-arriere-plan-9 20%, $couleur-arriere-plan-10 100%);
 }
 
 .mainBar {
-  background-color:  $couleur-arriere-plan-5;
+  background-color: $couleur-arriere-plan-5;
 }
 
 .v-alert--outlined {
@@ -65,21 +65,21 @@ h4 {
 .erreur--text {
   color: $couleur-arriere-plan-7;
   background-color: $couleur-arriere-plan-1 !important;
-  border-left:0.5rem solid $couleur-arriere-plan-4;
+  border-left: 0.5rem solid $couleur-arriere-plan-4;
 }
 
 .validation--text {
   color: $couleur-8;
   background-color: $couleur-arriere-plan-3 !important;
-  border-left:0.5rem solid $couleur-arriere-plan-3;
+  border-left: 0.5rem solid $couleur-arriere-plan-3;
 }
 
 .mdi-information {
-  color:$couleur-2;
+  color: $couleur-2;
 }
 
 .v-btn {
-  background-color:$couleur-1 !important;
+  background-color: $couleur-1 !important;
 }
 
 a {
@@ -87,28 +87,31 @@ a {
 }
 
 #noAccount {
-  color:$couleur-3;
+  color: $couleur-3;
 }
 
 .bouton-simple {
-  color:$couleur-3 !important;
+  color: $couleur-3 !important;
   background-color: transparent !important;
 }
 
-#footer, .footer-btn, #footer div, .footer-top h4 {
+#footer,
+.footer-btn,
+#footer div,
+.footer-top h4 {
   color: $couleur-arriere-plan-6 !important;
 }
 
 .footer-top {
   background-color: $couleur-arriere-plan-8;
-  background: linear-gradient(90deg,  $couleur-arriere-plan-9 20%, $couleur-arriere-plan-10 100%);
+  background: linear-gradient(90deg, $couleur-arriere-plan-9 20%, $couleur-arriere-plan-10 100%);
 }
 
 .footer-bottom {
   background-color: $couleur-arriere-plan-5;
-  border-top:1px solid $couleur-4;
-  border-left:0;
-  border-right:0;
+  border-top: 1px solid $couleur-4;
+  border-left: 0;
+  border-right: 0;
   border-bottom: 0;
 }
 
@@ -215,14 +218,17 @@ nav svg {
   background-color: $couleur-6 !important;
 }
 
-.v-data-footer__icons-before .v-btn, .v-data-footer__icons-after .v-btn {
+.v-data-footer__icons-before .v-btn,
+.v-data-footer__icons-after .v-btn {
   background-color: $couleur-6 !important;
 }
 
-.v-data-footer__icons-before .v-btn .v-icon, .v-data-footer__icons-after .v-btn .v-icon {
+.v-data-footer__icons-before .v-btn .v-icon,
+.v-data-footer__icons-after .v-btn .v-icon {
   color: $couleur-5 !important;
 }
-.theme-selector .v-input--switch__track{
+
+.theme-selector .v-input--switch__track {
   color: $couleur-6 !important;
 }
 
@@ -252,18 +258,24 @@ tbody tr:nth-of-type(odd) {
   background-color: $couleur-tab;
 }
 
-.v-text-field--filled > .v-input__control > .v-input__slot {
-  background-color:  $couleur-6 !important;
+.v-text-field--filled>.v-input__control>.v-input__slot {
+  background-color: $couleur-6 !important;
 }
 
-.v-textarea--filled > .v-input__control > .v-input__slot {
-  background-color:  $couleur-6 !important;
+.v-textarea--filled>.v-input__control>.v-input__slot {
+  background-color: $couleur-6 !important;
 }
 
 .fondBlanc {
-  background-color:  $couleur-6 !important;
+  background-color: $couleur-6 !important;
 }
 
 .fondGris {
   background-color: $couleur-fond-card !important;
+}
+
+@media (min-resolution: 120dpi) {
+  #main {
+    zoom: 0.75;
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="zoom">
     <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-form ref="formAjouterAcces" lazy-validation>
       <v-row align="center" justify="center">
@@ -20,7 +20,7 @@
             ></v-row
           >
           <v-row>
-            <v-col cols="12" md="7" class="pa-0">
+            <v-col cols="12" md="8" class="pa-0">
               <v-card-title class="pb-0">
                 Choisir le type d'adresse IP à déclarer
               </v-card-title></v-col
@@ -40,7 +40,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="7" class="pb-0">
+            <v-col cols="8" class="pb-0">
               <v-divider></v-divider>
               <div id="radioIP">
                 <v-radio-group v-model="typeIp" mandatory row>
@@ -55,7 +55,7 @@
             </v-col>
           </v-row>
           <v-row class="mt-0">
-            <v-col cols="7">
+            <v-col cols="8">
               <module-segments-ip-plage
                 :typeIp="typeIp"
                 :closeAlert="closeAlert"
@@ -179,5 +179,11 @@ h1 {
 }
 #fillHeight {
   height: 80%;
+}
+
+@media (min-resolution: 120dpi) {
+  #zoom {
+    zoom: 0.9 !important;
+  }
 }
 </style>

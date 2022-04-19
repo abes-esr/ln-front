@@ -5,7 +5,10 @@
     </h1>
     <MessageBox></MessageBox>
     <ConfirmPopup ref="confirm"></ConfirmPopup>
-    <v-container class="pt-0 elevation-0">
+    <v-container
+      class="pt-0 elevation-0"
+      :class="[$vuetify.breakpoint.mdAndDown ? 'large-container' : '']"
+    >
       <v-card-text class="fondGris pa-0 px-6 pb-6">
         <v-card-title class="px-0 pb-0"
           >Information du compte
@@ -36,6 +39,7 @@
             <div
               style="height: 100%; position:relative;"
               class="borderCol fondBlanc"
+              :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']"
             >
               <div class="d-flex">
                 <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
@@ -622,5 +626,15 @@ ul li::before {
 .container {
   margin-left: 0;
   margin-right: 0;
+}
+
+.large-container {
+  max-width: 1200px !important;
+}
+
+@media (min-resolution: 120dpi) {
+  #main {
+    zoom: 0.75;
+  }
 }
 </style>

@@ -199,26 +199,30 @@
           lg="4"
           xl="4"
           class="d-flex justify-space-around mr-16 flex-wrap"
+          style="float: right;"
         >
           <v-row>
-            <v-btn
-              x-large
-              @click="clear"
-              class="bouton-annuler"
-              :disabled="isDisableForm"
+            <v-col cols="6">
+              <v-btn
+                x-large
+                @click="clear"
+                class="bouton-annuler"
+                :disabled="isDisableForm"
+              >
+                Annuler</v-btn
+              ></v-col
             >
-              Annuler</v-btn
-            >
-            <div class="pl-2" />
-            <v-btn
-              color="button"
-              :loading="buttonLoading"
-              :disabled="isDisableForm"
-              x-large
-              @click="validate()"
-              >Enregistrer
-              <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
-            </v-btn></v-row
+            <v-col cols="6">
+              <v-btn
+                color="button"
+                :loading="buttonLoading"
+                :disabled="isDisableForm"
+                x-large
+                @click="validate()"
+                >Enregistrer
+                <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+              </v-btn></v-col
+            ></v-row
           >
         </v-col>
       </v-card-actions>

@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
-      <v-col lg="5" md="8" xs="10">
+      <v-col lg="5" md="10" xs="11">
         <v-alert dense outlined v-if="!forgotPasswordVisible">
           <font-awesome-icon
             :icon="['fas', 'exclamation-triangle']"
@@ -33,16 +33,21 @@
         <v-row id="row_RevenirAccueil">
           <v-col cols="8"></v-col>
           <transition name="fade">
-            <a v-if="forgotPasswordVisible" @click="afficherConnexion()"
-              ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
-              page d'accueil</a
-            >
-          </transition></v-row
-        >
+            <a v-if="forgotPasswordVisible" @click="afficherConnexion()">
+              <font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
+              page d'accueil
+            </a>
+          </transition>
+        </v-row>
         <div
           id="noAccount"
           v-if="!forgotPasswordVisible"
-          class="mt-6 d-flex justify-space-around flex-column flex-md-row flex-wrap"
+          class="
+            mt-6
+            d-flex
+            justify-space-around
+            flex-column flex-md-row flex-wrap
+          "
         >
           <span class="d-block full-width"
             >Votre établissement n'a pas encore de compte ?</span

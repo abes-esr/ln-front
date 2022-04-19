@@ -16,7 +16,7 @@
                     aux informations de l'établissement</a
                   >
                 </v-col>
-                <v-col cols="7" sm="7">
+                <v-col cols="7" sm="8" lg="7">
                   <v-btn
                     id="addIpButton"
                     @click="$router.push({ path: '/ajouterAcces/' })"
@@ -25,8 +25,8 @@
                 ></v-col>
               </v-row>
               <v-row>
-                <v-col cols="1" class="d-none d-md-flex" />
-                <v-col cols="12" md="10">
+                <v-col cols="1" class="d-none d-lg-flex" />
+                <v-col cols="12" lg="10">
                   <v-alert
                     dense
                     :value="error !== ''"
@@ -171,7 +171,10 @@
       <v-row>
         <v-col cols="1" xs="0"/>
         <v-col cols="10" xs="12">
-          <infos-i-ps v-if="!isAdmin"></infos-i-ps></v-col></v-row
+          <infos-i-ps
+            v-if="!isAdmin"
+            :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']"
+          ></infos-i-ps></v-col></v-row
     ></v-col>
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
@@ -755,5 +758,11 @@ h3 {
 
 .REJETER {
   background-color: #155fab47 !important;
+}
+
+@media (min-resolution: 120dpi) {
+  #main {
+    zoom: 0.75;
+  }
 }
 </style>
