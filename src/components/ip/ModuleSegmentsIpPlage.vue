@@ -1,9 +1,8 @@
 <template>
   <div>
     <v-card flat>
-      <v-alert :value="alert" dense type="error"> {{ error }} </v-alert>
-      <v-alert :value="alertSuccess" dense type="success">
-        {{ success }}
+      <v-alert :value="alert" dense type="error" v-html="error"> </v-alert>
+      <v-alert :value="alertSuccess" dense type="success" v-html="success">
       </v-alert>
       <v-form ref="formModuleSegmentsIpPlage" lazy-validation>
         <v-app-bar dense flat class="barIp">
@@ -296,6 +295,20 @@ export default class ModuleSegmentsIpPlage extends Vue {
     this.alertSuccess = false;
     this.alert = false;
   }
+
+  /*@Watch("alertSuccess")
+  onAlertSuccess() {
+    setTimeout(() => {
+      this.alertSuccess = false;
+    }, 5000);
+  }
+
+  @Watch("alert")
+  onAlert() {
+    setTimeout(() => {
+      this.alert = false;
+    }, 5000);
+  }*/
 
   mounted() {
     this.clear(false);
