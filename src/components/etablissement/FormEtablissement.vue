@@ -41,7 +41,7 @@
                 class="mx-2 icone-attention"
               />
               <h4 class="mb-1">
-                Avant de créer cotre compte, vérifier l'éligibilité de votre
+                Avant de créer votre compte, vérifier l'éligibilité de votre
                 établissement
               </h4>
               <p>

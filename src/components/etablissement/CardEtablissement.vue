@@ -27,7 +27,7 @@
                 />
               </v-btn>
             </template>
-            <span>Télécharger les infos du compte</span>
+            <span>Exporter les infos du compte</span>
           </v-tooltip>
         </v-card-title>
 

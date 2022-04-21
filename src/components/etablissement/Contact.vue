@@ -88,9 +88,10 @@
             label="Téléphone"
             placeholder="Téléphone"
             maxlength="10"
-            v-model="contact.telephone"
+            v-model.trim="contact.telephone"
             :rules="rulesForms.tel"
             required
+            @paste.prevent="pastePhone"
             @keyup.enter="validate()"
           ></v-text-field
         ></v-row>
@@ -246,6 +247,13 @@ export default class Contact extends Vue {
 
   updateMotDePasse(value: string) {
     this.contact.motDePasse = value;
+  }
+
+  pastePhone(evt) {
+    this.contact.telephone = evt.clipboardData
+      .getData("text")
+      .replaceAll(" ", "")
+      .replaceAll(".", "");
   }
 }
 </script>

@@ -53,6 +53,7 @@
                           :item-class="RowClasses"
                           :search="rechercher"
                           :loading="dataLoading"
+                          noDataText="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP."
                           class="row-height-50"
                           flat
                         >
@@ -71,7 +72,7 @@
                                       class="bouton-simple pl-0"
                                       v-on="on"
                                       :loading="isExportLoading"
-                                      ><h2>Télécharger la liste des IP</h2>
+                                      ><h2>Exporter la liste des IP</h2>
                                       <font-awesome-icon
                                         :icon="['fas', 'download']"
                                         class="mx-2"
