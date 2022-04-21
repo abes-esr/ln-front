@@ -539,6 +539,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
     if (this.typeIp === "IPV4") {
       evt.clipboardData
         .getData("text")
+        .trim()
         .split(".")
         .forEach((content, index) => {
           this.ipv4Segments[index].value = content;
@@ -546,6 +547,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
     } else {
       evt.clipboardData
         .getData("text")
+        .trim()
         .split(":")
         .forEach((content, index) => {
           this.ipv6Segments[index].value = content;
@@ -557,6 +559,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
     if (this.typeIp === "IPV4") {
       evt.clipboardData
         .getData("text")
+        .trim()
         .split(".")
         .forEach((content, index) => {
           this.ipv4SegmentsPlageDebut[index].value = content;
@@ -564,6 +567,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
     } else {
       evt.clipboardData
         .getData("text")
+        .trim()
         .split(":")
         .forEach((content, index) => {
           this.ipv6SegmentsPlageDebut[index].value = content;
@@ -575,13 +579,16 @@ export default class ModuleSegmentsIpPlage extends Vue {
     if (this.typeIp === "IPV4") {
       evt.clipboardData
         .getData("text")
+        .trim()
         .split(".")
         .forEach((content, index) => {
-          this.ipv4SegmentsPlageFin[index].value = content;
+          if (this.ipv4SegmentsPlageFin[index + 2])
+            this.ipv4SegmentsPlageFin[index + 2].value = content;
         });
     } else {
       evt.clipboardData
         .getData("text")
+        .trim()
         .split(":")
         .forEach((content, index) => {
           this.ipv6SegmentsPlageFin[index].value = content;
