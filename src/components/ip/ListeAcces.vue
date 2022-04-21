@@ -232,9 +232,10 @@
           <br />
           <h3>Commentaire admin</h3>
           <v-textarea
-            hide-details
             outlined
             auto-grow
+            counter="4000"
+            :rules="rulesForm.commentaireAdmin"
             rows="2"
             label="Raisons de la suppression"
             v-model="commentaires"
@@ -281,6 +282,7 @@ import { Message, MessageType } from "@/core/CommonDefinition";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { AxiosResponse } from "axios";
+import { rulesForms } from "@/core/RulesForm";
 import InfosIPs from "@/components/ip/InfosIPs.vue";
 
 const ListeAccesProps = Vue.extend({
@@ -296,6 +298,7 @@ const ListeAccesProps = Vue.extend({
   components: { InfosIPs, ConfirmPopup }
 })
 export default class ListeAcces extends ListeAccesProps {
+  rulesForm: any = rulesForms;
   refreshKey: number = 0;
   statut: string = "";
   selectStatut: Array<string> = ["En validation", "Validée", ""];

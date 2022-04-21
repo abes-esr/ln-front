@@ -120,5 +120,10 @@ export class rulesForm {
     (v: string) =>
       v.length <= 255 || "Le commentaire ne doit pas excéder 255 caractères"
   ];
+
+  commentaireAdmin = [
+    (v: string) =>
+      v.length <= 4000 || "Le commentaire ne doit pas excéder 4000 caractères"
+  ];
 }
 export const rulesForms = new rulesForm();
