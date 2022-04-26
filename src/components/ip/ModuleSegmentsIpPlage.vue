@@ -1,9 +1,6 @@
 <template>
   <div>
     <v-card flat>
-      <v-alert :value="alert" dense type="error" v-html="error"> </v-alert>
-      <v-alert :value="alertSuccess" dense type="success" v-html="success">
-      </v-alert>
       <v-form ref="formModuleSegmentsIpPlage" lazy-validation>
         <v-app-bar dense flat class="barIp">
           <span v-if="this.typeAcces === 'ip'">Saisir une adresse IP</span>
@@ -27,7 +24,6 @@
                         :data-length="value.length"
                         :data-index="index"
                         :rules="rulesForm.ipv4SegmentsRules"
-                        :placeholder="getLabelSegmentsIpv4(index)"
                         ref="ipv4Segments"
                         v-model="ipv4Segments[index].value"
                         v-bind:suffix="getSuffix(index)"
@@ -51,7 +47,6 @@
                         :data-length="value.length"
                         :data-index="index"
                         :rules="rulesForm.ipv6SegmentsRules"
-                        :placeholder="getLabelSegmentsIpv6(index)"
                         ref="ipv6Segments"
                         v-model="value.value"
                         v-bind:suffix="getSuffix(index)"
@@ -74,6 +69,7 @@
                 <v-col>
                   <!-- PLAGE IP v4 -->
                   <div v-if="this.typeIp === 'IPV4'">
+                    <label>IP de début</label>
                     <v-row>
                       <v-col
                         v-for="(value, index) in ipv4SegmentsPlageDebut"
@@ -84,7 +80,6 @@
                           :data-length="value.length"
                           :data-index="index"
                           :rules="rulesForm.ipv4SegmentsRules"
-                          :placeholder="getLabelSegmentsIpv4(index)"
                           ref="ipv4SegmentsPlageDebut"
                           v-model="value.value"
                           v-bind:suffix="getSuffix(index)"
@@ -105,6 +100,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
+                    <label>IP de fin</label>
                     <v-row>
                       <v-col
                         v-for="(value, index) in ipv4SegmentsPlageFin"
@@ -115,7 +111,6 @@
                           :data-length="value.length"
                           :data-index="index"
                           :rules="rulesForm.ipv4SegmentsRules"
-                          :placeholder="getLabelSegmentsIpv4(index)"
                           ref="ipv4SegmentsPlageFin"
                           v-model="value.value"
                           v-bind:suffix="getSuffix(index)"
@@ -141,6 +136,7 @@
 
                   <!-- PLAGE IP v6 -->
                   <div v-else>
+                    <label>IP de début</label>
                     <v-row>
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageDebut"
@@ -151,7 +147,6 @@
                           :data-length="value.length"
                           :data-index="index"
                           :rules="rulesForm.ipv6SegmentsRules"
-                          :placeholder="getLabelSegmentsIpv6(index)"
                           ref="ipv6SegmentsPlageDebut"
                           v-model="value.value"
                           v-bind:suffix="getSuffix(index)"
@@ -172,6 +167,7 @@
                         </v-text-field>
                       </v-col>
                     </v-row>
+                    <label>IP de fin</label>
                     <v-row>
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageFin"
@@ -182,7 +178,6 @@
                           :data-length="value.length"
                           :data-index="index"
                           :rules="rulesForm.ipv6SegmentsRules"
-                          :placeholder="getLabelSegmentsIpv6(index)"
                           ref="ipv6SegmentsPlageFin"
                           v-model="value.value"
                           v-bind:suffix="getSuffix(index)"
@@ -217,7 +212,7 @@
 
           <!-- COMMENTAIRES -->
           <v-row class="mx-0 mt-0">
-            <v-col>
+            <v-col cols="10" lg="10" md="8" sm="8">
               <v-textarea
                 counter="255"
                 outlined
@@ -264,7 +259,6 @@ import { Logger } from "@/utils/Logger";
 export default class ModuleSegmentsIpPlage extends Vue {
   @Prop({ default: "IPV4" }) readonly typeIp!: string;
   @Prop({ default: "ip" }) readonly typeAcces!: string;
-  @Prop({ default: false }) readonly closeAlert!: boolean;
 
   rulesForm: any = rulesForms;
   suffix: string = "";
@@ -276,10 +270,6 @@ export default class ModuleSegmentsIpPlage extends Vue {
   ipv6SegmentsPlageFin: Array<SegmentPlage> = [];
 
   ip: string = "";
-  alert: boolean = false;
-  alertSuccess: boolean = false;
-  error: string = "";
-  success: string = "";
   commentaires: string = "";
 
   buttonLoading: boolean = false;
@@ -289,26 +279,6 @@ export default class ModuleSegmentsIpPlage extends Vue {
     this.ipv4SegmentsPlageDebut[0] = this.ipv4SegmentsPlageFin[0];
     this.ipv4SegmentsPlageDebut[1] = this.ipv4SegmentsPlageFin[1];
   }
-
-  @Watch("closeAlert")
-  onCloseAlertChanged() {
-    this.alertSuccess = false;
-    this.alert = false;
-  }
-
-  /*@Watch("alertSuccess")
-  onAlertSuccess() {
-    setTimeout(() => {
-      this.alertSuccess = false;
-    }, 5000);
-  }
-
-  @Watch("alert")
-  onAlert() {
-    setTimeout(() => {
-      this.alert = false;
-    }, 5000);
-  }*/
 
   mounted() {
     this.clear(false);
@@ -345,38 +315,6 @@ export default class ModuleSegmentsIpPlage extends Vue {
       if (array[index].value.length >= 4 && index < indexMax) {
         (this as any).$refs[refArray][index + 1].focus();
       }
-    }
-  }
-  getLabelSegmentsIpv4(index) {
-    switch (index) {
-      case 0:
-        return "192";
-      case 1:
-        return "168";
-      case 2:
-        return "136";
-      case 3:
-        return "120";
-    }
-  }
-  getLabelSegmentsIpv6(index) {
-    switch (index) {
-      case 0:
-        return "5800";
-      case 1:
-        return "10C3";
-      case 2:
-        return "E3C3";
-      case 3:
-        return "F1AA";
-      case 4:
-        return "48E3";
-      case 5:
-        return "D923";
-      case 6:
-        return "D494";
-      case 7:
-        return "AAFF";
     }
   }
 
@@ -461,14 +399,11 @@ export default class ModuleSegmentsIpPlage extends Vue {
           const refForm: any = this.$refs.formModuleSegmentsIpPlage;
           refForm.resetValidation();
           this.clear(false);
-          this.alertSuccess = true;
-          this.success = response.data.message;
+          this.$emit("alertSuccess", response.data.message);
         })
         .catch(err => {
           Logger.error(err.toString());
-          this.alert = true;
-          this.alertSuccess = false;
-          this.error = err.response.data.message;
+          this.$emit("alertError", err.response.data.message);
         })
         .finally(() => {
           this.buttonLoading = false;
@@ -479,10 +414,6 @@ export default class ModuleSegmentsIpPlage extends Vue {
   }
 
   clear(dontClearComments: boolean): void {
-    this.alert = false;
-    this.alertSuccess = false;
-    this.error = "";
-    this.success = "";
     this.ip = "";
     if (!dontClearComments) this.commentaires = "";
     this.ipv4Segments = [

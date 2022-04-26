@@ -21,8 +21,9 @@
           >
           <v-row>
             <v-col cols="12" md="8" class="pa-0">
+              <MessageBox class="mr-2"></MessageBox>
               <v-card-title class="pb-0">
-                Choisir le type d'adresse IP à déclarer
+                Choisir le type d'IP à déclarer
               </v-card-title></v-col
             >
             <v-col cols="12" md="3" class="pa-0">
@@ -33,8 +34,8 @@
                 /><a
                   href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#TutoDeDeclarationDesIP"
                   target="_blank"
-                  class="pl-3 pb-6"
-                  >Tuto de déclaration des IP</a
+                  class="pl-3 pb-6 text-body-1 font-weight-bold"
+                  >Consulter l'aide pour la déclaration des IP</a
                 ></v-card-text
               >
             </v-col>
@@ -58,52 +59,55 @@
             <v-col cols="8">
               <module-segments-ip-plage
                 :typeIp="typeIp"
-                :closeAlert="closeAlert"
                 typeAcces="ip"
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
+                v-on:alertSuccess="alertSuccess"
+                v-on:alertError="alertError"
               >
               </module-segments-ip-plage>
               <br />
               <module-segments-ip-plage
                 :typeIp="typeIp"
-                :closeAlert="closeAlert"
                 typeAcces="plage"
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
+                v-on:alertSuccess="alertSuccess"
+                v-on:alertError="alertError"
               >
               </module-segments-ip-plage>
             </v-col>
             <v-col>
-              <v-alert dense :value="message !== ''" :type="typeAlert">
-                {{ message }}
-              </v-alert>
-              <h3>Nouvelles IP ou plages IP ajoutées</h3>
-              <v-simple-table dense>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th style="width: 20%">Type</th>
-                      <th>Adresse</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in arrayAjouterIp" :key="item.ip">
-                      <td>{{ item.typeIp }}</td>
-                      <td>{{ item.ip }}</td>
-                      <td>
-                        <v-btn
-                          class="ma-0 pa-0 bouton-simple "
-                          icon
-                          title="Supprimer"
-                          @click="supprimerIP(item.id, index)"
-                        >
-                          <font-awesome-icon :icon="['fas', 'trash-alt']"
-                        /></v-btn>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+              <v-card-text flat class="overflow-auto fondGris">
+                <h2 class="pb-4">Nouvelles IP ou plages IP ajoutées</h2>
+                <v-simple-table dense>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th style="width: 20%">Type</th>
+                        <th>Adresse</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item, index) in arrayAjouterIp"
+                        :key="item.ip"
+                      >
+                        <td>{{ item.typeIp }}</td>
+                        <td>{{ item.ip }}</td>
+                        <td>
+                          <v-btn
+                            class="ma-0 pa-0 bouton-simple "
+                            icon
+                            title="Supprimer"
+                            @click="supprimerIP(item.id, index)"
+                          >
+                            <font-awesome-icon :icon="['fas', 'trash-alt']"
+                          /></v-btn>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template> </v-simple-table
+              ></v-card-text>
             </v-col>
           </v-row>
         </v-col>
@@ -119,9 +123,11 @@ import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { Logger } from "@/utils/Logger";
+import MessageBox from "@/components/common/MessageBox.vue";
+import { Message, MessageType } from "@/core/CommonDefinition";
 
 @Component({
-  components: { ModuleSegmentsIpPlage, ConfirmPopup }
+  components: { ModuleSegmentsIpPlage, ConfirmPopup, MessageBox }
 })
 export default class AjouterAcces extends Vue {
   id: string = "";
@@ -129,18 +135,13 @@ export default class AjouterAcces extends Vue {
   typeAcces: string = "";
   typesIp: Array<string> = ["IPV4", "IPV6"];
   typeIp: string = "IPV4";
-  message: string = "";
-  typeAlert: string = "success";
   arrayAjouterIp: Array<string> = [];
-
-  closeAlert: boolean = false;
 
   validate(payloadFromModuleSegmentsIpPlage): void {
     this.arrayAjouterIp.push(payloadFromModuleSegmentsIpPlage);
   }
   clear() {
     this.arrayAjouterIp = [];
-    this.message = "";
   }
   async supprimerIP(idIP: string, index: number) {
     const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
@@ -152,20 +153,73 @@ export default class AjouterAcces extends Vue {
       iPService
         .deleteIP(this.$store.getters.getToken(), idIP)
         .then(response => {
-          this.typeAlert = "success";
-          this.message = response.data.message;
+          const message: Message = new Message();
+          message.type = MessageType.VALIDATION;
+          message.texte = response.data.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
+
+          setTimeout(() => {
+            this.$store.dispatch("closeDisplayedMessage");
+          }, 5000);
           this.arrayAjouterIp.splice(index, 1);
-          this.closeAlert = true;
         })
         .catch(err => {
           Logger.error(err.toString());
-          this.typeAlert = "error";
-          this.message = err.response.data.message;
-          this.closeAlert = true;
-        })
-        .finally(() => {
-          this.closeAlert = false;
+          const message: Message = new Message();
+          message.type = MessageType.ERREUR;
+          message.texte = err.response.data.message;
+          message.isSticky = true;
+          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+            Logger.error(err.toString());
+          });
+          // On glisse sur le message d'erreur
+          const messageBox = document.getElementById("messageBox");
+          if (messageBox) {
+            window.scrollTo(0, messageBox.offsetTop);
+          }
         });
+    }
+  }
+
+  alertSuccess(evt) {
+    const message: Message = new Message();
+    message.type = MessageType.VALIDATION;
+    message.texte = evt;
+    message.isSticky = true;
+    this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+      Logger.error(err.toString());
+    });
+    // On glisse sur le message d'erreur
+    const messageBox = document.getElementById("messageBox");
+    if (messageBox) {
+      window.scrollTo(0, messageBox.offsetTop);
+    }
+
+    setTimeout(() => {
+      this.$store.dispatch("closeDisplayedMessage");
+    }, 5000);
+  }
+
+  alertError(evt) {
+    const message: Message = new Message();
+    message.type = MessageType.ERREUR;
+    message.texte = evt;
+    message.isSticky = true;
+    this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+      Logger.error(err.toString());
+    });
+    // On glisse sur le message d'erreur
+    const messageBox = document.getElementById("messageBox");
+    if (messageBox) {
+      window.scrollTo(0, messageBox.offsetTop);
     }
   }
 }
@@ -179,6 +233,10 @@ h1 {
 }
 #fillHeight {
   height: 80%;
+}
+
+#zoom {
+  max-width: 2000px;
 }
 
 @media (min-resolution: 120dpi) {

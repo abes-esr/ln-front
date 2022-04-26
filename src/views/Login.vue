@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
-      <v-col lg="7" md="10" xs="11">
+      <v-col lg="5" md="10" xs="11">
         <v-alert dense outlined v-if="!forgotPasswordVisible">
           <font-awesome-icon
             :icon="['fas', 'exclamation-triangle']"
