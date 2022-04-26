@@ -56,7 +56,7 @@ export class rulesForm {
       "Le mot de passe doit contenir au moins un chiffre",
     (v: string) =>
       /^(.*[@$!%*?&]+.*)$/.test(v) ||
-      "Le mot de passe doit contenir au moins un caractère spécial parmis @ $ ! % * ? &"
+      "Le mot de passe doit contenir au moins un caractère spécial parmi @ $ ! % * ? &"
   ];
 
   checkboxRules = [
