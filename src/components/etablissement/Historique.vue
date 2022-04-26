@@ -157,7 +157,6 @@ export default class Historique extends Vue {
   }
 
   getHistorique(siren: string): void {
-    console.log(siren);
     etablissementService
       .getHisto(siren, this.$store.getters.getToken())
       .then(response => {

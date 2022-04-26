@@ -576,7 +576,6 @@ export default class Home extends Vue {
 
 .multi-line span {
   min-height: 1rem;
-  word-break: break-all;
 }
 
 .notifUserMsg {

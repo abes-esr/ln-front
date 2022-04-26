@@ -17,8 +17,7 @@
               :rules="rulesForms.siren"
               append-icon="mdi-information"
               required
-              @keyup="validate()"
-              @keyup.enter="login()"
+              @keyup.enter="validate()"
             >
               <template v-slot:append>
                 <a
@@ -53,8 +52,7 @@
               :rules="rulesForms.motDePasse"
               required
               @click:append="show = !show"
-              @keyup="validate()"
-              @keyup.enter="login()"
+              @keyup.enter="validate()"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -63,7 +61,7 @@
             <a @click="afficherMotDePasseOulie()">Mot de passe oublié ?</a>
           </v-col>
           <v-col>
-            <v-btn class="btn-1" :loading="buttonLoading" @click="login()"
+            <v-btn class="btn-1" :loading="buttonLoading" @click="validate()"
               >Se connecter
               <v-icon>mdi-arrow-right-circle-outline </v-icon>
             </v-btn>
@@ -99,6 +97,9 @@ export default class FormLogin extends Vue {
       (this.$refs.login as Vue & { valid: () => boolean }).valid &&
       (this.$refs.password as Vue & { valid: () => boolean }).valid
     );
+    if (this.isValid) {
+      this.login();
+    }
   }
 
   login(): void {

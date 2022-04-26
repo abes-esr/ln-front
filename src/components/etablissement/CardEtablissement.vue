@@ -611,6 +611,5 @@ export default class CardEtablissement extends Vue {
 
 .multi-line span {
   min-height: 1rem;
-  word-break: break-all;
 }
 </style>

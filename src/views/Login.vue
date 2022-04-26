@@ -2,24 +2,6 @@
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col lg="5" md="10" xs="11">
-        <v-alert dense outlined v-if="!forgotPasswordVisible">
-          <font-awesome-icon
-            :icon="['fas', 'exclamation-triangle']"
-            class="mx-2 icone-attention"
-            size="lg"
-          />
-          <h4>
-            Application réservée aux établissements bénéficiaires
-          </h4>
-          <p id="WarningLogin">
-            <strong>Important : </strong>L'accès aux corpus sous licences
-            nationales est reservé aux établissements bénéficiaires selon les
-            conditions spécifiques négociées avec chaque éditeur. Pour permettre
-            la déclaration des adresses IP autorisées, l'Abes met à la
-            disposition des professionnels de la documentation cette application
-            dédiée à la gestion des accès.
-          </p>
-        </v-alert>
         <transition name="fade">
           <form-login
             v-if="!forgotPasswordVisible"
@@ -96,8 +78,6 @@ export default class App extends Vue {
       })
       .catch(err => {
         Logger.error(err);
-        // this.error = "Impossible de créer un nouvel éditeur : " + err.message;
-        // this.alert = true;
       });
   }
 
