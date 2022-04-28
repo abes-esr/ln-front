@@ -275,6 +275,10 @@ tbody tr:nth-of-type(odd) {
   background-color: $couleur-fond-card !important;
 }
 
+.fondGrisFonce {
+  background-color: $couleur-fond-declaration !important;
+}
+
 .v-btn.v-btn--icon.v-alert {
   background: transparent !important;
 }

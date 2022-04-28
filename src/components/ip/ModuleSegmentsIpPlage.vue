@@ -8,7 +8,7 @@
           <span v-if="this.typeIp === 'IPV4'">v4</span>
           <span v-else>v6</span>
         </v-app-bar>
-        <v-card-text flat class="overflow-auto fondGris">
+        <v-card-text flat class="overflow-auto fondGrisFonce">
           <v-row class="ma-0">
             <v-col class="py-0">
               <p class="caption mb-0">
@@ -540,5 +540,11 @@ button {
 }
 #fillHeight {
   height: 70%;
+}
+</style>
+
+<style>
+.v-input--is-disabled > .v-input__control > .v-input__slot {
+  background: #b0b4c4 !important;
 }
 </style>
