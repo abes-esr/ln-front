@@ -32,10 +32,10 @@
           "
         >
           <span class="d-block full-width"
-            >Votre établissement n'a pas encore de compte ?</span
+            ><h1>Votre établissement n'a pas encore de compte ?</h1></span
           >
           <v-btn
-            class="bouton-simple elevation-0"
+            class="btn-2"
             v-if="!forgotPasswordVisible"
             href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#Beneficiaires"
             target="_blank"
@@ -47,7 +47,7 @@
           </v-btn>
 
           <v-btn
-            class="bouton-simple elevation-0"
+            class="btn-2"
             v-if="!forgotPasswordVisible"
             @click="creerCompte"
             >Créer un compte

@@ -1,5 +1,5 @@
 <template>
-  <div id="zoom">
+  <div>
     <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-form ref="formAjouterAcces" lazy-validation>
       <v-row align="center" justify="center">
@@ -235,13 +235,4 @@ h1 {
   height: 80%;
 }
 
-#zoom {
-  max-width: 2000px;
-}
-
-@media (min-resolution: 120dpi) {
-  #zoom {
-    zoom: 0.9 !important;
-  }
-}
 </style>

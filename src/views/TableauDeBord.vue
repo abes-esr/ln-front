@@ -630,10 +630,4 @@ ul li::before {
 .large-container {
   max-width: 1200px !important;
 }
-
-@media (min-resolution: 120dpi) {
-  #main {
-    zoom: 0.75;
-  }
-}
 </style>
