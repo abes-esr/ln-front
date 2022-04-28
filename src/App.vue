@@ -51,7 +51,6 @@ export default class App extends Vue {
         " shrink-to-fit=no, width=device-width, initial-scale=" +
           1 / window.devicePixelRatio
       );
-    console.log(1 / window.devicePixelRatio);
   }
 }
 </script>

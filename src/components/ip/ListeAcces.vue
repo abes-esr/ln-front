@@ -763,10 +763,4 @@ h3 {
 .REJETER {
   background-color: #155fab47 !important;
 }
-
-@media (min-resolution: 120dpi) {
-  #main {
-    zoom: 0.75;
-  }
-}
 </style>

@@ -280,6 +280,11 @@ tbody tr:nth-of-type(odd) {
 
 @media (min-resolution: 120dpi) {
   #main {
-    zoom: 0.75;
+    transform: scale(0.75);
+    transform-origin: top left;
+    width: 125%;
+    height: 125%;
+    max-width: 125% !important;
+    margin-left: -12.5%;
   }
 }
