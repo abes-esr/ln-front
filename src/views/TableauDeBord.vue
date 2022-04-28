@@ -7,7 +7,7 @@
     <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-container
       class="pt-0 elevation-0"
-      :class="[$vuetify.breakpoint.mdAndDown ? 'large-container' : '']"
+      :class="[$vuetify.breakpoint.lgAndDown ? 'large-container' : '']"
     >
       <v-card-text class="fondGris pa-0 px-6 pb-6">
         <v-card-title class="px-0 pb-0"
@@ -628,6 +628,6 @@ ul li::before {
 }
 
 .large-container {
-  max-width: 1200px !important;
+  max-width: 150% !important;
 }
 </style>

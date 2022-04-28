@@ -16,7 +16,7 @@
                     aux informations de l'établissement</a
                   >
                 </v-col>
-                <v-col cols="7" sm="8" lg="7">
+                <v-col cols="8">
                   <v-btn
                     id="addIpButton"
                     @click="$router.push({ path: '/ajouterAcces/' })"
@@ -25,8 +25,7 @@
                 ></v-col>
               </v-row>
               <v-row>
-                <v-col cols="1" class="d-none d-lg-flex" />
-                <v-col cols="12" lg="10">
+                <v-col cols="12">
                   <v-alert
                     dense
                     :value="error !== ''"

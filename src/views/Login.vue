@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
-      <v-col lg="5" md="10" xs="11">
+      <v-col xl="5" lg="7" md="9" xs="11">
         <transition name="fade">
           <form-login
             v-if="!forgotPasswordVisible"

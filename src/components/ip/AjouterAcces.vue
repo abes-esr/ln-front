@@ -26,11 +26,12 @@
                 Choisir le type d'IP à déclarer
               </v-card-title></v-col
             >
-            <v-col cols="12" md="3" class="pa-0">
+            <v-col cols="12" md="4" class="pa-0">
               <v-card-text
                 ><font-awesome-icon
                   :icon="['fas', 'info-circle']"
                   size="2x"
+                  style="color: #478dcb;"
                 /><a
                   href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#TutoDeDeclarationDesIP"
                   target="_blank"
@@ -234,5 +235,4 @@ h1 {
 #fillHeight {
   height: 80%;
 }
-
 </style>
