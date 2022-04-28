@@ -29,10 +29,13 @@
             d-flex
             justify-space-around
             flex-column flex-md-row flex-wrap
+            pb-8
           "
         >
           <span class="d-block full-width"
-            ><h1>Votre établissement n'a pas encore de compte ?</h1></span
+            ><h1 class="pb-2">
+              Votre établissement n'a pas encore de compte ?
+            </h1></span
           >
           <v-btn
             class="btn-2"
