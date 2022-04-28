@@ -3,8 +3,8 @@
     <v-card flat>
       <v-form ref="formModuleSegmentsIpPlage" lazy-validation>
         <v-app-bar dense flat class="barIp">
-          <span v-if="this.typeAcces === 'ip'">Saisir une adresse IP</span>
-          <span v-else>Saisir une plage d'adresses IP</span>
+          <span v-if="this.typeAcces === 'ip'">Adresse IP</span>
+          <span v-else>Plages d'adresses IP</span>
           <span v-if="this.typeIp === 'IPV4'">v4</span>
           <span v-else>v6</span>
         </v-app-bar>
