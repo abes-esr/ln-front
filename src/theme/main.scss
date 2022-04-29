@@ -28,7 +28,9 @@
   $couleur-arriere-plan-9: #32465b;
   $couleur-arriere-plan-10: #5f97ce;
 
-  $couleur-fond-card: #F7F9FA;
+  $couleur-fond-card: #f0f0f4;
+
+  $couleur-fond-declaration: #e3e4ea;
 
   $couleur-tab: rgb(250, 250, 250);
 
@@ -67,6 +69,8 @@
 
   $couleur-fond-card: #1E1E1E;
 
+  $couleur-fond-declaration: #1E1E1E;
+
   $couleur-tab: rgb(0, 0, 0);
 
   @import "style";
@@ -103,8 +107,11 @@ a {
   transition: opacity 0.5s;
 }
 
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
- {
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active below version 2.1.8 */
+  {
   opacity: 0;
 }
 
@@ -163,7 +170,6 @@ nav .v-list-item {
 nav .v-list-item__title {
   font-size: 0.6rem !important;
   overflow-wrap: break-word;
-  word-break: break-all;
   word-wrap: break-word;
   white-space: normal;
   text-align: center;

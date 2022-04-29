@@ -26,7 +26,7 @@
       :icon="['fas', 'ban']"
       class="fa-lg mr-5 mb-1 mt-2 icone-information"
     />
-    <span v-for="m in getSnackbarText" v-bind:key="m">{{ m }}</span>
+    <span v-for="m in getSnackbarText" v-bind:key="m" v-html="m"></span>
 
     <template v-slot:close="{ attrs }">
       <v-btn
@@ -101,6 +101,5 @@ export default class Message extends Vue {
 <style scoped>
 .multi-line span {
   min-height: 1rem;
-  word-break: break-all;
 }
 </style>

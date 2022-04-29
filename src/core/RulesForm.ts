@@ -56,7 +56,7 @@ export class rulesForm {
       "Le mot de passe doit contenir au moins un chiffre",
     (v: string) =>
       /^(.*[@$!%*?&]+.*)$/.test(v) ||
-      "Le mot de passe doit contenir au moins un caractère spécial parmis @ $ ! % * ? &"
+      "Le mot de passe doit contenir au moins un caractère spécial parmi @ $ ! % * ? &"
   ];
 
   checkboxRules = [
@@ -119,6 +119,11 @@ export class rulesForm {
   commentaires = [
     (v: string) =>
       v.length <= 255 || "Le commentaire ne doit pas excéder 255 caractères"
+  ];
+
+  commentaireAdmin = [
+    (v: string) =>
+      v.length <= 4000 || "Le commentaire ne doit pas excéder 4000 caractères"
   ];
 }
 export const rulesForms = new rulesForm();

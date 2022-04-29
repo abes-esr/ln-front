@@ -30,7 +30,7 @@
               />
             </v-btn>
             <v-btn
-              href="http://documentation.abes.fr/aidelicencesnationales/index.html"
+              href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html"
               target="_blank"
               class="footer-btn mx-2 text-center no-text-transform"
               ><span class="texte">Documentation Licences nationales</span>
@@ -96,13 +96,12 @@
       <v-card-text class="py-2 white--text footer-bottom">
         <strong>Licences Nationales</strong>
         <div id="mentions">
-          <a @click="$router.push({ path: '/accessibilite' })">Accessibilité</a>
-          |
           <a @click="$router.push({ path: '/donneespersonnelles' })"
             >Données personnelles</a
           >
           | <a @click="$router.push({ path: '/CGU' })">CGU</a> |
-          <a @click="$router.push({ path: '/mentions' })">Mentions légales</a>
+          <a @click="$router.push({ path: '/mentions' })">Mentions légales</a> |
+          <a @click="$router.push({ path: '/accessibilite' })">Accessibilité</a>
         </div>
       </v-card-text>
     </v-card>

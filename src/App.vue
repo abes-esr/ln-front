@@ -3,7 +3,7 @@
     <Header></Header>
     <v-layout class="flex-shrink-0">
       <side-menu :display-menu="isLoggedIn" :is-admin="isAdmin"></side-menu>
-      <v-main class="ma-0 pa-3">
+      <v-main class="ma-0 pa-3" id="main">
         <transition name="fade">
           <router-view />
         </transition>
@@ -42,6 +42,15 @@ export default class App extends Vue {
     if (this.isDark) {
       this.$vuetify.theme.dark = true;
     }
+
+    // Permet de mieux adapter les breakpoints en cas de zoom/scale Windows
+    document
+      .querySelector("meta[name=viewport]")
+      .setAttribute(
+        "content",
+        " shrink-to-fit=no, width=device-width, initial-scale=" +
+          1 / window.devicePixelRatio
+      );
   }
 }
 </script>

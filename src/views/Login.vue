@@ -1,25 +1,7 @@
 <template>
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
-      <v-col lg="5" md="8" xs="10">
-        <v-alert dense outlined v-if="!forgotPasswordVisible">
-          <font-awesome-icon
-            :icon="['fas', 'exclamation-triangle']"
-            class="mx-2 icone-attention"
-            size="lg"
-          />
-          <h4>
-            Application réservée aux établissements bénéficiaires
-          </h4>
-          <p id="WarningLogin">
-            <strong>Important : </strong>L'accès aux corpus sous licences
-            nationales est reservé aux établissements bénéficiaires selon les
-            conditions spécifiques négociées avec chaque éditeur. Pour permettre
-            la déclaration des adresses IP autorisées, l'Abes met à la
-            disposition des professionnels de la documentation cette application
-            dédiée à la gestion des accès.
-          </p>
-        </v-alert>
+      <v-col xl="5" lg="7" md="9" xs="11">
         <transition name="fade">
           <form-login
             v-if="!forgotPasswordVisible"
@@ -33,24 +15,32 @@
         <v-row id="row_RevenirAccueil">
           <v-col cols="8"></v-col>
           <transition name="fade">
-            <a v-if="forgotPasswordVisible" @click="afficherConnexion()"
-              ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
-              page d'accueil</a
-            >
-          </transition></v-row
-        >
+            <a v-if="forgotPasswordVisible" @click="afficherConnexion()">
+              <font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
+              page d'accueil
+            </a>
+          </transition>
+        </v-row>
         <div
           id="noAccount"
           v-if="!forgotPasswordVisible"
-          class="mt-6 d-flex justify-space-around flex-column flex-md-row flex-wrap"
+          class="
+            mt-6
+            d-flex
+            justify-space-around
+            flex-column flex-md-row flex-wrap
+            pb-8
+          "
         >
           <span class="d-block full-width"
-            >Votre établissement n'a pas encore de compte ?</span
+            ><h1 class="pb-2">
+              Votre établissement n'a pas encore de compte ?
+            </h1></span
           >
           <v-btn
-            class="bouton-simple elevation-0"
+            class="btn-2"
             v-if="!forgotPasswordVisible"
-            href="http://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+            href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#Beneficiaires"
             target="_blank"
             >Vérifier l'éligibilité
             <font-awesome-icon
@@ -60,7 +50,7 @@
           </v-btn>
 
           <v-btn
-            class="bouton-simple elevation-0"
+            class="btn-2"
             v-if="!forgotPasswordVisible"
             @click="creerCompte"
             >Créer un compte
@@ -91,8 +81,6 @@ export default class App extends Vue {
       })
       .catch(err => {
         Logger.error(err);
-        // this.error = "Impossible de créer un nouvel éditeur : " + err.message;
-        // this.alert = true;
       });
   }
 
@@ -110,13 +98,6 @@ export default class App extends Vue {
 <style scoped lang="scss">
 h4 {
   display: inline;
-}
-
-@import "~vuetify/src/styles/settings/_variables";
-@media #{map-get($display-breakpoints, 'md-and-up')} {
-  #noAccount {
-    width: 50%;
-  }
 }
 
 .full-width {

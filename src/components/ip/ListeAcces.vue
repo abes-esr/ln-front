@@ -16,7 +16,7 @@
                     aux informations de l'établissement</a
                   >
                 </v-col>
-                <v-col cols="7" sm="7">
+                <v-col cols="8">
                   <v-btn
                     id="addIpButton"
                     @click="$router.push({ path: '/ajouterAcces/' })"
@@ -25,8 +25,7 @@
                 ></v-col>
               </v-row>
               <v-row>
-                <v-col cols="1" class="d-none d-md-flex" />
-                <v-col cols="12" md="10">
+                <v-col cols="12">
                   <v-alert
                     dense
                     :value="error !== ''"
@@ -53,6 +52,7 @@
                           :item-class="RowClasses"
                           :search="rechercher"
                           :loading="dataLoading"
+                          noDataText="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP."
                           class="row-height-50"
                           flat
                         >
@@ -71,7 +71,7 @@
                                       class="bouton-simple pl-0"
                                       v-on="on"
                                       :loading="isExportLoading"
-                                      ><h2>Télécharger la liste des IP</h2>
+                                      ><h2>Exporter la liste des IP</h2>
                                       <font-awesome-icon
                                         :icon="['fas', 'download']"
                                         class="mx-2"
@@ -171,7 +171,10 @@
       <v-row>
         <v-col cols="1" xs="0"/>
         <v-col cols="10" xs="12">
-          <infos-i-ps v-if="!isAdmin"></infos-i-ps></v-col></v-row
+          <infos-i-ps
+            v-if="!isAdmin"
+            :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']"
+          ></infos-i-ps></v-col></v-row
     ></v-col>
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
@@ -229,9 +232,10 @@
           <br />
           <h3>Commentaire admin</h3>
           <v-textarea
-            hide-details
             outlined
             auto-grow
+            counter="4000"
+            :rules="rulesForm.commentaireAdmin"
             rows="2"
             label="Raisons de la suppression"
             v-model="commentaires"
@@ -278,6 +282,7 @@ import { Message, MessageType } from "@/core/CommonDefinition";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { AxiosResponse } from "axios";
+import { rulesForms } from "@/core/RulesForm";
 import InfosIPs from "@/components/ip/InfosIPs.vue";
 
 const ListeAccesProps = Vue.extend({
@@ -293,6 +298,7 @@ const ListeAccesProps = Vue.extend({
   components: { InfosIPs, ConfirmPopup }
 })
 export default class ListeAcces extends ListeAccesProps {
+  rulesForm: any = rulesForms;
   refreshKey: number = 0;
   statut: string = "";
   selectStatut: Array<string> = ["En validation", "Validée", ""];

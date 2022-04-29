@@ -112,14 +112,14 @@ export default class MotDePasse extends Vue {
     return () =>
       this.confirmationNouveauMotDePasse === "" ||
       this.nouveauMotDePasse === this.confirmationNouveauMotDePasse ||
-      "Le mot de passe ne correspond pas au mot de passe confirmation";
+      "La confirmation du mot de passe ne correspond pas au mot de passe saisi";
   }
 
   get regleConfirmationMotDePasse() {
     return () =>
       this.nouveauMotDePasse === this.confirmationNouveauMotDePasse ||
       this.confirmationNouveauMotDePasse === "" ||
-      "Le mot de passe de confirmation ne correspond pas au mot de passe";
+      "La confirmation du mot de passe ne correspond pas au mot de passe saisi";
   }
 
   @Watch("nouveauMotDePasse")

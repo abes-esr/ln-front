@@ -27,7 +27,7 @@
                 />
               </v-btn>
             </template>
-            <span>Télécharger les infos du compte</span>
+            <span>Exporter les infos du compte</span>
           </v-tooltip>
         </v-card-title>
 
@@ -611,6 +611,5 @@ export default class CardEtablissement extends Vue {
 
 .multi-line span {
   min-height: 1rem;
-  word-break: break-all;
 }
 </style>
