@@ -1,6 +1,6 @@
 {
   "name": "licencesnationales-front",
-  "version": "9.9.26",
+  "version": "9.9.27",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
