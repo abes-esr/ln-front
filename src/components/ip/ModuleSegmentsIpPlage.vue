@@ -210,7 +210,7 @@
             <v-col cols="2">
               <v-row id="fillHeight"> </v-row>
               <v-row>
-                <a @click="clear(true)"
+                <a @click="clear(false)"
                   >Vider les champs
                   <font-awesome-icon :icon="['fas', 'backspace']"/></a></v-row
             ></v-col>
