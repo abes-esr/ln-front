@@ -168,7 +168,13 @@ export default class ListeEtab extends Vue {
   disableForm: boolean = false;
   statut: string = "";
   dataLoading: boolean = true;
-  selectStatut: Array<string> = ["Tous", "Sans IP", "Examiner IP", "IP Ok"];
+  selectStatut: Array<string> = [
+    "Tous",
+    "Sans IP",
+    "Examiner IP",
+    "IP Ok",
+    "Nouveau"
+  ];
   rechercher: string = "";
   etabs: Array<Etablissement> = [];
   etabsFiltered: Array<Etablissement> = [];
@@ -253,8 +259,17 @@ export default class ListeEtab extends Vue {
         );
       }
     });
+    this.overrideStatuts();
     this.etabsFiltered = this.etabs;
-    return this.etabs;
+    return this.etabsFiltered;
+  }
+
+  overrideStatuts(): void {
+    this.etabs.forEach(element => {
+      if (element.statut === "Nouveau") {
+        element.statutIP = "Nouveau";
+      }
+    });
   }
 
   get listEtab(): Array<string> {
