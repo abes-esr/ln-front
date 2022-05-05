@@ -100,7 +100,7 @@
             </div>
           </v-menu>
         </template>
-        <template v-slot:header.statut="{ header }">
+        <template v-slot:header.statutIP="{ header }">
           {{ header.texte }}
           <v-menu offset-y :close-on-content-click="false">
             <template v-slot:activator="{ on, attrs }">
@@ -168,13 +168,7 @@ export default class ListeEtab extends Vue {
   disableForm: boolean = false;
   statut: string = "";
   dataLoading: boolean = true;
-  selectStatut: Array<string> = [
-    "Tous",
-    "Nouveau",
-    "En validation",
-    "Validé",
-    "Aucune IP"
-  ];
+  selectStatut: Array<string> = ["Tous", "Sans IP", "Examiner IP", "IP Ok"];
   rechercher: string = "";
   etabs: Array<Etablissement> = [];
   etabsFiltered: Array<Etablissement> = [];
@@ -204,7 +198,7 @@ export default class ListeEtab extends Vue {
       value: "dateModificationDerniereIp",
       sortable: true
     },
-    { text: "Statut", value: "statut", sortable: true },
+    { text: "Statut", value: "statutIP", sortable: true },
     { text: "Liste des IPs", value: "action", sortable: false }
   ];
 
@@ -241,7 +235,7 @@ export default class ListeEtab extends Vue {
       this.etabsFiltered = this.etabs.filter(acces => {
         return conditions.every(condition => {
           return (
-            acces.typeEtablissement == condition || acces.statut == condition
+            acces.typeEtablissement == condition || acces.statutIP == condition
           );
         });
       });
@@ -375,7 +369,7 @@ export default class ListeEtab extends Vue {
   }
 
   filterStatut(statutRecherche) {
-    return statutRecherche.statut.toString().includes(this.statut);
+    return statutRecherche.statutIP.toString().includes(this.statut);
   }
 
   collecterEtab(): void {
