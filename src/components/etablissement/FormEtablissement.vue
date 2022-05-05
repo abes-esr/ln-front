@@ -94,7 +94,15 @@
                   ></v-text-field
                 ></v-row>
                 <v-row
-                  ><v-col cols="8" class="pa-0"
+                  ><v-col
+                    :cols="
+                      action == Action.CREATION ||
+                      action == Action.FUSION ||
+                      action == Action.SCISSION
+                        ? 8
+                        : 12
+                    "
+                    class="pa-0"
                     ><v-text-field
                       outlined
                       label="SIREN"
@@ -109,7 +117,13 @@
                     ></v-text-field>
                   </v-col>
                   <!-- EXPERIMENTATION BOUTON SIREN -->
-                  <v-col cols="4"
+                  <v-col
+                    cols="4"
+                    v-if="
+                      action == Action.CREATION ||
+                        action == Action.FUSION ||
+                        action == Action.SCISSION
+                    "
                     ><v-btn @click="popUpSiren()"
                       >Valider mon SIREN</v-btn
                     ></v-col

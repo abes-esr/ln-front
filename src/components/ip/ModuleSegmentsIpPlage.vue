@@ -108,7 +108,6 @@
                       <v-col
                         v-for="(value, index) in ipv4SegmentsPlageFin"
                         :key="index"
-                        class="pt-0"
                       >
                         <v-text-field
                           :data-length="value.length"
@@ -177,7 +176,6 @@
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageFin"
                         :key="index"
-                        class="pt-0"
                       >
                         <v-text-field
                           :data-length="value.length"

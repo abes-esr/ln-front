@@ -26,8 +26,8 @@
                 Choisir le type d'IP à déclarer
               </v-card-title></v-col
             >
-            <v-col cols="12" md="4" class="pa-0">
-              <v-card-text
+            <v-col cols="12" md="4" class="pa-3">
+              <v-card-text class="fondGris"
                 ><font-awesome-icon
                   :icon="['fas', 'info-circle']"
                   size="2x"
