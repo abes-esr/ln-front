@@ -318,6 +318,10 @@ export default class Home extends Vue {
     this.collecterDates();
   }
 
+  mounted() {
+    this.$store.dispatch("closeDisplayedMessage");
+  }
+
   get getEtablissement(): Etablissement {
     return this.$store.getters.getEtablissementConnecte();
   }
