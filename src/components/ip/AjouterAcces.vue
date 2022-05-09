@@ -26,8 +26,8 @@
                 Choisir le type d'IP à déclarer
               </v-card-title></v-col
             >
-            <v-col cols="12" md="4" class="pa-0">
-              <v-card-text
+            <v-col cols="12" md="4" class="pa-3">
+              <v-card-text class="fondGris"
                 ><font-awesome-icon
                   :icon="['fas', 'info-circle']"
                   size="2x"
@@ -45,7 +45,15 @@
             <v-col cols="8" class="pb-0">
               <v-divider></v-divider>
               <div id="radioIP">
-                <v-radio-group v-model="typeIp" mandatory row>
+                <v-radio-group
+                  v-model="typeIp"
+                  @change="
+                    clearChild(true);
+                    clearChild(false);
+                  "
+                  mandatory
+                  row
+                >
                   <v-radio
                     v-for="n in 2"
                     :key="n"
@@ -61,18 +69,22 @@
               <module-segments-ip-plage
                 :typeIp="typeIp"
                 typeAcces="ip"
+                ref="ip"
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
                 v-on:alertSuccess="alertSuccess"
                 v-on:alertError="alertError"
+                v-on:focus="clearChild(false)"
               >
               </module-segments-ip-plage>
               <br />
               <module-segments-ip-plage
                 :typeIp="typeIp"
                 typeAcces="plage"
+                ref="plage"
                 v-on:FormModuleSegmentsIpPlageEvent="validate"
                 v-on:alertSuccess="alertSuccess"
                 v-on:alertError="alertError"
+                v-on:focus="clearChild(true)"
               >
               </module-segments-ip-plage>
             </v-col>
@@ -221,6 +233,18 @@ export default class AjouterAcces extends Vue {
     const messageBox = document.getElementById("messageBox");
     if (messageBox) {
       window.scrollTo(0, messageBox.offsetTop);
+    }
+  }
+
+  clearChild(isPlage: boolean) {
+    if (isPlage) {
+      const child = this.$refs.ip as any;
+      child.clear(false);
+      child.$refs.formModuleSegmentsIpPlage.resetValidation();
+    } else {
+      const child = this.$refs.plage as any;
+      child.clear(false);
+      child.$refs.formModuleSegmentsIpPlage.resetValidation();
     }
   }
 }

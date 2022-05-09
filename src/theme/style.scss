@@ -293,3 +293,12 @@ tbody tr:nth-of-type(odd) {
     margin-left: -12.5%;
   }
 }
+
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: $couleur-1;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.5em;
+}

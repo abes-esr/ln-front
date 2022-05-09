@@ -92,23 +92,24 @@
                 <font-awesome-icon
                   :icon="['fas', 'info-circle']"
                   class="fa-2x mr-5 mb-1 icone-information"
-                  style="height: 100%"
                 />
-                <p class="mb-0">
+                <p class="mb-0 pl-12">
                   Pour toute demande de modification des infos de
                   l'établissement, nous contacter via le guichet d'assistance
-                  <v-btn
-                    class="bouton-simple elevation-0 pa-0"
+                  <a
                     href="https://stp.abes.fr/node/3?origine=LicencesNationales"
                     target="_blank"
                     >ABESstp
-                  </v-btn>
+                  </a>
                 </p>
               </v-alert>
             </div>
           </v-col>
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
-            <div style="height: 100%" class="borderCol fondBlanc">
+            <div
+              style="height: 100%; position: relative;"
+              class="borderCol fondBlanc"
+            >
               <div class="d-flex justify-space-between align-center">
                 <h2 class="my-3 pl-4 mb-0">
                   Contact
@@ -157,7 +158,10 @@
                     {{ etablissement.contact.cedex }}
                   </div>
                 </div>
-                <v-row class="text-right">
+                <v-row
+                  style="position: absolute; bottom: 0; right: 0;"
+                  class="text-right pb-4 pr-4"
+                >
                   <v-col cols="12">
                     <v-btn class="btn-2 " @click="allerAMonProfil()"
                       >Modifier contact</v-btn
@@ -222,11 +226,6 @@
                         v-html="item.description"
                       ></span>
                     </li>
-                    <span
-                      v-if="!isAdmin && this.notificationsUser.length === 0"
-                      class="notifUserMsg"
-                      >Toutes les adresses IP déclarées ont été validées</span
-                    >
                   </ul>
                 </div>
               </v-card-text>
@@ -316,6 +315,10 @@ export default class Home extends Vue {
     this.$store.dispatch("setCurrentEtablissement", this.etablissement);
     this.collecterNotifs();
     this.collecterDates();
+  }
+
+  mounted() {
+    this.$store.dispatch("closeDisplayedMessage");
   }
 
   get getEtablissement(): Etablissement {

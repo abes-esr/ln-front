@@ -4,7 +4,7 @@
       <v-form ref="formModuleSegmentsIpPlage" lazy-validation>
         <v-app-bar dense flat class="barIp">
           <span v-if="this.typeAcces === 'ip'">Adresse IP</span>
-          <span v-else>Plages d'adresses IP</span>
+          <span v-else>Plage d'adresses IP</span>
           <span v-if="this.typeIp === 'IPV4'">v4</span>
           <span v-else>v6</span>
         </v-app-bar>
@@ -32,6 +32,7 @@
                         "
                         @paste="onPasteIp"
                         @paste.prevent
+                        @focus="$emit('focus')"
                         dense
                         outlined
                         filled
@@ -55,6 +56,7 @@
                         "
                         @paste="onPasteIp"
                         @paste.prevent
+                        @focus="$emit('focus')"
                         dense
                         outlined
                         filled
@@ -92,6 +94,7 @@
                           "
                           @paste="onPastePlageDebut"
                           @paste.prevent
+                          @focus="$emit('focus')"
                           dense
                           outlined
                           filled
@@ -105,7 +108,6 @@
                       <v-col
                         v-for="(value, index) in ipv4SegmentsPlageFin"
                         :key="index"
-                        class="pt-0"
                       >
                         <v-text-field
                           :data-length="value.length"
@@ -123,6 +125,7 @@
                           "
                           @paste="onPastePlageFin"
                           @paste.prevent
+                          @focus="$emit('focus')"
                           :disabled="index > 1 ? false : true"
                           :filled="index > 1 ? true : false"
                           dense
@@ -159,6 +162,7 @@
                           "
                           @paste="onPastePlageDebut"
                           @paste.prevent
+                          @focus="$emit('focus')"
                           dense
                           outlined
                           filled
@@ -172,7 +176,6 @@
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageFin"
                         :key="index"
-                        class="pt-0"
                       >
                         <v-text-field
                           :data-length="value.length"
@@ -190,6 +193,7 @@
                           "
                           @paste="onPastePlageFin"
                           @paste.prevent
+                          @focus="$emit('focus')"
                           dense
                           outlined
                           filled
@@ -204,7 +208,7 @@
             <v-col cols="2">
               <v-row id="fillHeight"> </v-row>
               <v-row>
-                <a @click="clear(true)"
+                <a @click="clear(false)"
                   >Vider les champs
                   <font-awesome-icon :icon="['fas', 'backspace']"/></a></v-row
             ></v-col>
@@ -222,6 +226,7 @@
                 hint="Apporter ici toute précisions sur l'attribution de cette IP, surtout si elle n'appartient pas au réseau Renater."
                 :rules="rulesForm.commentaires"
                 v-model="commentaires"
+                @focus="$emit('focus')"
                 filled
                 clearable
                 persistent-hint
@@ -300,13 +305,12 @@ export default class ModuleSegmentsIpPlage extends Vue {
 
   nextSegment(index, array, refArray) {
     let indexMax;
-    if (this.typeAcces === "ip") {
-      if (this.typeIp === "IPV4") {
-        indexMax = 3;
-      } else {
-        indexMax = 5;
-      }
+    if (this.typeIp === "IPV4") {
+      indexMax = 3;
+    } else {
+      indexMax = 5;
     }
+
     if (this.typeIp === "IPV4") {
       if (array[index].value.length > 2 && index < indexMax) {
         (this as any).$refs[refArray][index + 1].focus();
@@ -464,6 +468,9 @@ export default class ModuleSegmentsIpPlage extends Vue {
       { length: 5, value: "" },
       { length: 5, value: "" }
     ];
+    const refForm: any = this.$refs.formModuleSegmentsIpPlage;
+    refForm.resetValidation();
+    this.$store.dispatch("closeDisplayedMessage");
   }
 
   onPasteIp(evt): void {

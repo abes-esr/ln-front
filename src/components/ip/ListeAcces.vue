@@ -56,6 +56,41 @@
                           class="row-height-50"
                           flat
                         >
+                          <template v-slot:header.statut="{ header }">
+                            {{ header.texte }}
+                            <v-menu offset-y :close-on-content-click="false">
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                  text
+                                  class="bouton-simple"
+                                  style="text-decoration: none;"
+                                  v-bind="attrs"
+                                  v-on="on"
+                                >
+                                  Statut
+                                  <v-icon
+                                    small
+                                    :color="statut ? 'primary' : ''"
+                                  >
+                                    mdi-filter
+                                  </v-icon>
+                                </v-btn>
+                              </template>
+                              <div
+                                style="background-color: white; width: 500px"
+                              >
+                                <ul>
+                                  <li
+                                    v-for="item in selectStatut"
+                                    :key="item.id"
+                                    @click="eventStatutChoice(item)"
+                                  >
+                                    <a>{{ item }}</a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </v-menu>
+                          </template>
                           <template v-slot:top>
                             <v-row>
                               <v-col cols="12" sm="6" class="px-0">
@@ -301,7 +336,12 @@ export default class ListeAcces extends ListeAccesProps {
   rulesForm: any = rulesForms;
   refreshKey: number = 0;
   statut: string = "";
-  selectStatut: Array<string> = ["En validation", "Validée", ""];
+  selectStatut: Array<string> = [
+    "Attestation à envoyer",
+    "IP Validée",
+    "En attente d'examen par l'Abes",
+    "Tous"
+  ];
   rechercher: string = "";
   acces: Array<any> = [];
   title: string = "";
@@ -707,6 +747,15 @@ export default class ListeAcces extends ListeAccesProps {
     this.$router.push({ name: "AfficherEtablissement" }).catch(err => {
       Logger.error(err);
     });
+  }
+
+  eventStatutChoice(element: string): void {
+    if (element === "Tous") {
+      this.statut = "";
+    } else {
+      this.statut = element;
+    }
+    this.filteredAccesByStatut;
   }
 }
 </script>

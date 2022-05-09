@@ -267,10 +267,3 @@ export default class FormReinitialisationPass extends Vue {
   }
 }
 </script>
-
-<style scoped lang="scss">
-h1 {
-  font-size: 40px;
-  font-weight: 500;
-}
-</style>
