@@ -58,7 +58,6 @@ jobs:
           CURRENT_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           git switch develop
           # git merge $CURRENT_GIT_BRANCH -m "[skip ci]" --no-ff flag
-          git merge --ff-only $CURRENT_GIT_BRANCH
           git reset --hard HEAD@{1}
           git merge --no-ff $CURRENT_GIT_BRANCH -m "[skip ci]"
           git push
