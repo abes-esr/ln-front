@@ -60,7 +60,6 @@ jobs:
           # git merge $CURRENT_GIT_BRANCH -m "[skip ci]" --no-ff flag
           git reset --hard HEAD@{1}
           git merge --no-ff $CURRENT_GIT_BRANCH -m "[skip ci]"
-          git push
 
       - name: 'Create the github release'
         uses: softprops/action-gh-release@v1
