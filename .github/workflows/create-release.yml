@@ -53,9 +53,6 @@ jobs:
           git add .
           git commit -m "Version $NEW_TAG [skip ci]"
           git push
-          echo $NEW_TAG > release_version
-          git add release_version
-          git commit -m "Version $NEW_TAG"
           git tag $NEW_TAG
           git push --tags
 
