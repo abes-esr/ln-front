@@ -50,10 +50,13 @@ jobs:
           npm version $NEW_TAG
           sed -i "s#Version: [0-9]+\.[0-9]+\.[0-9]+#Version: $NEW_TAG#g" README.md
           git add .
-          git commit -m "[skip ci]"
+          git commit -m "Version $NEW_TAG [skip ci]"
           git push
+          echo $NEW_TAG > release_version
+          git add release_version
+          git commit -m "Version $NEW_TAG"
           git tag $NEW_TAG
-          git push origin $NEW_TAG
+          git push --follow-tags
 
           # merge la préparation de la nouvelle version sur develop
           # (version X.X.X-SNAPSHOT)
@@ -62,7 +65,7 @@ jobs:
           git switch develop
           git add .
           git merge --no-commit $CURRENT_GIT_BRANCH
-          git commit -m "Version $NEW_TAG [skip ci]"
+          git commit -m "[skip ci]"
           git push
                  
       - name: 'Create the github release'
