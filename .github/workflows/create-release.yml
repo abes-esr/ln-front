@@ -52,7 +52,7 @@ jobs:
           git add README.md package.json
           git commit -m "Version $NEW_TAG"
           git tag $NEW_TAG
-          git push --atomic origin $NEW_TAG
+          git push --atomic origin main $NEW_TAG
           # merge la préparation de la nouvelle version sur develop
           # (version X.X.X-SNAPSHOT)
           # CURRENT_GIT_BRANCH vaut main ou master, c'est la où est créé la release
