@@ -104,7 +104,7 @@ export default class FormScissionEtablissement extends Vue {
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
         etablissementService
           .scission(this.$store.getters.getToken(), {
-            sirenScinde: "this.sirenEtab",
+            sirenScinde: this.sirenEtab.trim(),
             nouveauxEtabs: this.etablissementDTOS
           })
           .then(() => {
