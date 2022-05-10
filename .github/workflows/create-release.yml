@@ -59,6 +59,7 @@ jobs:
           CURRENT_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           git switch develop
           git merge --no-commit $CURRENT_GIT_BRANCH
+          git add .
           git commit -m "[skip ci]"
           git push
           
