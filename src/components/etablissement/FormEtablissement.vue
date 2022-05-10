@@ -473,6 +473,7 @@ export default class FormEtablissement extends Vue {
           sirenFusionnes: this.listeSirenFusion
         })
         .then(() => {
+          this.clear();
           const message: Message = new Message();
           message.type = MessageType.VALIDATION;
           message.texte = "Fusion effectuée.";
@@ -501,7 +502,6 @@ export default class FormEtablissement extends Vue {
         })
         .finally(() => {
           this.buttonLoading = false;
-          this.clear();
         });
     } else if (this.action === Action.SCISSION) {
       this.$emit("send", this.etablissement);
