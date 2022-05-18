@@ -33,6 +33,7 @@
                         @paste="onPasteIp"
                         @paste.prevent
                         @focus="$emit('focus')"
+                        maxlength="3"
                         dense
                         outlined
                         filled
@@ -95,6 +96,7 @@
                           @paste="onPastePlageDebut"
                           @paste.prevent
                           @focus="$emit('focus')"
+                          maxlength="3"
                           dense
                           outlined
                           filled
@@ -128,6 +130,7 @@
                           @focus="$emit('focus')"
                           :disabled="index > 1 ? false : true"
                           :filled="index > 1 ? true : false"
+                          maxlength="3"
                           dense
                           outlined
                           required
@@ -480,7 +483,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
         .trim()
         .split(".")
         .forEach((content, index) => {
-          this.ipv4Segments[index].value = content;
+          this.ipv4Segments[index].value = content.slice(0, 3);
         });
     } else {
       evt.clipboardData
@@ -488,7 +491,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
         .trim()
         .split(":")
         .forEach((content, index) => {
-          this.ipv6Segments[index].value = content;
+          this.ipv6Segments[index].value = content.slice(0, 4);
         });
     }
   }
@@ -500,7 +503,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
         .trim()
         .split(".")
         .forEach((content, index) => {
-          this.ipv4SegmentsPlageDebut[index].value = content;
+          this.ipv4SegmentsPlageDebut[index].value = content.slice(0, 3);
         });
     } else {
       evt.clipboardData
@@ -508,7 +511,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
         .trim()
         .split(":")
         .forEach((content, index) => {
-          this.ipv6SegmentsPlageDebut[index].value = content;
+          this.ipv6SegmentsPlageDebut[index].value = content.slice(0, 4);
         });
     }
   }
@@ -521,7 +524,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
         .split(".")
         .forEach((content, index) => {
           if (this.ipv4SegmentsPlageFin[index + 2])
-            this.ipv4SegmentsPlageFin[index + 2].value = content;
+            this.ipv4SegmentsPlageFin[index + 2].value = content.slice(0, 3);
         });
     } else {
       evt.clipboardData
@@ -529,7 +532,7 @@ export default class ModuleSegmentsIpPlage extends Vue {
         .trim()
         .split(":")
         .forEach((content, index) => {
-          this.ipv6SegmentsPlageFin[index].value = content;
+          this.ipv6SegmentsPlageFin[index].value = content.slice(0, 4);
         });
     }
   }
