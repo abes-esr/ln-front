@@ -102,4 +102,8 @@ export default class Message extends Vue {
 .multi-line span {
   min-height: 1rem;
 }
+
+.v-alert {
+  word-break: normal !important;
+}
 </style>
