@@ -91,6 +91,41 @@
                               </div>
                             </v-menu>
                           </template>
+                          <template v-slot:header.typeIp="{ header }">
+                            {{ header.texte }}
+                            <v-menu offset-y :close-on-content-click="false">
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                  text
+                                  class="bouton-simple"
+                                  style="text-decoration: none;"
+                                  v-bind="attrs"
+                                  v-on="on"
+                                >
+                                  Type d'IP
+                                  <v-icon
+                                    small
+                                    :color="statut ? 'primary' : ''"
+                                  >
+                                    mdi-filter
+                                  </v-icon>
+                                </v-btn>
+                              </template>
+                              <div
+                                style="background-color: white; width: 500px"
+                              >
+                                <ul>
+                                  <li
+                                    v-for="item in selectType"
+                                    :key="item.id"
+                                    @click="eventTypeChoice(item)"
+                                  >
+                                    <a>{{ item }}</a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </v-menu>
+                          </template>
                           <template v-slot:top>
                             <v-row>
                               <v-col cols="12" sm="6" class="px-0">
@@ -106,7 +141,7 @@
                                       class="bouton-simple pl-0"
                                       v-on="on"
                                       :loading="isExportLoading"
-                                      ><h2>Exporter la liste des IP</h2>
+                                      ><h2>Télécharger la liste des IP</h2>
                                       <font-awesome-icon
                                         :icon="['fas', 'download']"
                                         class="mx-2"
@@ -336,10 +371,18 @@ export default class ListeAcces extends ListeAccesProps {
   rulesForm: any = rulesForms;
   refreshKey: number = 0;
   statut: string = "";
+  type: string = "";
   selectStatut: Array<string> = [
     "Attestation à envoyer",
     "IP Validée",
     "En attente d'examen par l'Abes",
+    "Tous"
+  ];
+  selectType: Array<string> = [
+    "IPV4",
+    "IPV6",
+    "Plage IPV4",
+    "Plage IPV6",
     "Tous"
   ];
   rechercher: string = "";
@@ -375,6 +418,21 @@ export default class ListeAcces extends ListeAccesProps {
     const conditions = [] as any;
     if (this.statut) {
       conditions.push(this.filterStatut);
+    }
+    if (conditions.length > 0) {
+      return this.filteredAccesByType.filter(acces => {
+        return conditions.every(condition => {
+          return condition(acces);
+        });
+      });
+    }
+    return this.filteredAccesByType;
+  }
+
+  get filteredAccesByType(): string[] {
+    const conditions = [] as any;
+    if (this.type) {
+      conditions.push(this.filterType);
     }
     if (conditions.length > 0) {
       return this.acces.filter(acces => {
@@ -468,6 +526,10 @@ export default class ListeAcces extends ListeAccesProps {
 
   filterStatut(statutRecherche) {
     return statutRecherche.statut.toString().includes(this.statut);
+  }
+
+  filterType(typeRecherche) {
+    return typeRecherche.typeIp.toString() === this.type;
   }
 
   getAll() {
@@ -756,6 +818,15 @@ export default class ListeAcces extends ListeAccesProps {
       this.statut = element;
     }
     this.filteredAccesByStatut;
+  }
+
+  eventTypeChoice(element: string): void {
+    if (element === "Tous") {
+      this.type = "";
+    } else {
+      this.type = element;
+    }
+    this.filteredAccesByType;
   }
 }
 </script>
