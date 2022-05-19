@@ -22,7 +22,7 @@ h4 {
 }
 
 .v-alert--outlined {
-  border-color: $couleur-4 !important;
+  border-color: $couleur-4  !important;
 }
 
 .icone-attention {
@@ -64,13 +64,13 @@ h4 {
 
 .erreur--text {
   color: $couleur-arriere-plan-7;
-  background-color: $couleur-arriere-plan-1 !important;
+  background-color: $couleur-arriere-plan-1  !important;
   border-left: 0.5rem solid $couleur-arriere-plan-4;
 }
 
 .validation--text {
   color: $couleur-8;
-  background-color: $couleur-arriere-plan-3 !important;
+  background-color: $couleur-arriere-plan-3  !important;
   border-left: 0.5rem solid $couleur-arriere-plan-3;
 }
 
@@ -79,11 +79,11 @@ h4 {
 }
 
 .v-btn {
-  background-color: $couleur-1 !important;
+  background-color: $couleur-1  !important;
 }
 
 a {
-  color: $couleur-arriere-plan-7 !important;
+  color: $couleur-arriere-plan-7  !important;
 }
 
 #noAccount {
@@ -91,7 +91,7 @@ a {
 }
 
 .bouton-simple {
-  color: $couleur-3 !important;
+  color: $couleur-3  !important;
   background-color: transparent !important;
 }
 
@@ -99,7 +99,7 @@ a {
 .footer-btn,
 #footer div,
 .footer-top h4 {
-  color: $couleur-arriere-plan-6 !important;
+  color: $couleur-arriere-plan-6  !important;
 }
 
 .footer-top {
@@ -116,47 +116,47 @@ a {
 }
 
 #footer .v-divider {
-  border-color: $couleur-arriere-plan-6 !important;
+  border-color: $couleur-arriere-plan-6  !important;
 }
 
 .footer-btn {
-  color: $couleur-6 !important;
+  color: $couleur-6  !important;
 }
 
 .v-divider {
-  border-color: $couleur-7 !important;
+  border-color: $couleur-7  !important;
 }
 
 .v-card__title {
-  color: $couleur-3 !important;
+  color: $couleur-3  !important;
 }
 
 .v-chip {
-  color: $couleur-6 !important;
+  color: $couleur-6  !important;
 }
 
 .siren-erreur {
-  background-color: $couleur-9 !important;
+  background-color: $couleur-9  !important;
 }
 
 .siren-ok {
-  background-color: $couleur-8 !important;
+  background-color: $couleur-8  !important;
 }
 
 .siren-default {
-  background-color: $couleur-3 !important;
+  background-color: $couleur-3  !important;
 }
 
 .bouton-annuler {
-  background-color: $couleur-4 !important;
+  background-color: $couleur-4  !important;
 }
 
 .bouton-supprimer {
-  background-color: $couleur-9 !important;
+  background-color: $couleur-9  !important;
 }
 
 .bouton-valider {
-  background-color: $couleur-8 !important;
+  background-color: $couleur-8  !important;
 }
 
 .v-btn {
@@ -164,42 +164,42 @@ a {
 }
 
 .btn-1 {
-  color: $couleur-6 !important;
-  background-color: $couleur-1 !important;
+  color: $couleur-6  !important;
+  background-color: $couleur-1  !important;
 }
 
 .btn-2 {
-  color: $couleur-6 !important;
-  background-color: $couleur-3 !important;
+  color: $couleur-6  !important;
+  background-color: $couleur-3  !important;
 }
 
 .btn-3 {
-  color: $couleur-6 !important;
-  background-color: $couleur-arriere-plan-5 !important;
+  color: $couleur-6  !important;
+  background-color: $couleur-arriere-plan-5  !important;
 }
 
 .btn-4 {
-  color: $couleur-6 !important;
-  background-color: $bouton-1 !important;
+  color: $couleur-6  !important;
+  background-color: $bouton-1  !important;
 }
 
 .btn-5 {
-  color: $couleur-6 !important;
-  background-color: $bouton-3 !important;
+  color: $couleur-6  !important;
+  background-color: $bouton-3  !important;
 }
 
 .btn-6 {
-  color: $couleur-6 !important;
-  background-color: $couleur-5 !important;
+  color: $couleur-6  !important;
+  background-color: $couleur-5  !important;
 }
 
 #mytable table thead {
-  color: $couleur-6 !important;
-  background-color: $couleur-2 !important;
+  color: $couleur-6  !important;
+  background-color: $couleur-2  !important;
 }
 
 #mytable table thead span {
-  color: $couleur-6 !important;
+  color: $couleur-6  !important;
 }
 
 .menu-slot:hover {
@@ -211,33 +211,33 @@ nav svg {
 }
 
 .v-text-field input[readonly="readonly"] {
-  background-color: $couleur-4 !important;
+  background-color: $couleur-4  !important;
 }
 
 .v-select__slot input[readonly="readonly"] {
-  background-color: $couleur-6 !important;
+  background-color: $couleur-6  !important;
 }
 
 .v-data-footer__icons-before .v-btn,
 .v-data-footer__icons-after .v-btn {
-  background-color: $couleur-6 !important;
+  background-color: $couleur-6  !important;
 }
 
 .v-data-footer__icons-before .v-btn .v-icon,
 .v-data-footer__icons-after .v-btn .v-icon {
-  color: $couleur-5 !important;
+  color: $couleur-5  !important;
 }
 
 .theme-selector .v-input--switch__track {
-  color: $couleur-6 !important;
+  color: $couleur-6  !important;
 }
 
 .theme-selector .v-input--switch__thumb {
-  color: $couleur-6 !important;
+  color: $couleur-6  !important;
 }
 
 .confirmPopup {
-  border: 2px solid $couleur-3 !important;
+  border: 2px solid $couleur-3  !important;
   border-radius: 1rem;
 }
 
@@ -246,8 +246,8 @@ nav svg {
 }
 
 .barIp {
-  background-color: $couleur-2 !important;
-  color: $couleur-6 !important;
+  background-color: $couleur-2  !important;
+  color: $couleur-6  !important;
   font-size: 1.4rem;
 }
 
@@ -260,23 +260,27 @@ tbody tr:nth-of-type(odd) {
 }
 
 .v-text-field--filled>.v-input__control>.v-input__slot {
-  background-color: $couleur-6 !important;
+  background-color: $couleur-6  !important;
+}
+
+.v-input--is-readonly>.v-input__control>.v-input__slot {
+  background-color: #b8b8b9 !important;
 }
 
 .v-textarea--filled>.v-input__control>.v-input__slot {
-  background-color: $couleur-6 !important;
+  background-color: $couleur-6  !important;
 }
 
 .fondBlanc {
-  background-color: $couleur-6 !important;
+  background-color: $couleur-6  !important;
 }
 
 .fondGris {
-  background-color: $couleur-fond-card !important;
+  background-color: $couleur-fond-card  !important;
 }
 
 .fondGrisFonce {
-  background-color: $couleur-fond-declaration !important;
+  background-color: $couleur-fond-declaration  !important;
 }
 
 .v-btn.v-btn--icon.v-alert {
