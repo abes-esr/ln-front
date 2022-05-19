@@ -33,18 +33,22 @@ export class DataGouvApiService {
           }
         })
         .catch(err => {
-          if (
-            err.response.status == 404 &&
-            err.response.data.message == "no results found"
-          ) {
-            reject(new SirenNotFoundError("SIREN introuvable"));
+          if (err.response) {
+            if (
+              err.response.status == 404 &&
+              err.response.data.message == "no results found"
+            ) {
+              reject(new SirenNotFoundError("SIREN introuvable"));
+            } else {
+              reject(
+                new DataGouvApiError(
+                  err.response.status,
+                  err.response.data.message
+                )
+              );
+            }
           } else {
-            reject(
-              new DataGouvApiError(
-                err.response.status,
-                err.response.data.message
-              )
-            );
+            reject(new DataGouvApiError(500, "Service SIREN Indisponible"));
           }
         });
     });

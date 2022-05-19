@@ -514,6 +514,7 @@ export default class FormEtablissement extends Vue {
    */
   checkSiren(): void {
     this.$store.dispatch("closeDisplayedMessage");
+    this.checkSirenAPI = "En attente de vérification";
     if (this.etablissement.siren) {
       this.checkSirenAPI = "Vérification du SIREN en cours...";
       this.checkSirenColor = "siren-default";
@@ -542,7 +543,6 @@ export default class FormEtablissement extends Vue {
       } else {
         this.dialogAvailable = false;
       }
-      this.checkSirenAPI = "En attente de vérification";
     }
   }
   clear() {

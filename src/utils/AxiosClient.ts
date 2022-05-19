@@ -11,6 +11,7 @@ class AxiosClient {
     this.client = axios.create({
       baseURL: url
     });
+    this.client.defaults.timeoutErrorMessage = "Délai d'attente dépassé";
   }
 
   /**
