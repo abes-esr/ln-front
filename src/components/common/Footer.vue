@@ -100,10 +100,8 @@
             <span v-bind="attrs" v-on="on"> {{ appVersion }}</span>
           </template>
           <span>
-            Front: {{ appVersion }} <br />
-            Commit: {{ frontCommit }} <br /><br />
+            Front: {{ appVersion }} <br /><br />
             Back: {{ backVersion }} <br />
-            Commit: {{ backCommit }}
           </span>
         </v-tooltip>
         <div id="mentions">

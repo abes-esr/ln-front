@@ -26,6 +26,13 @@
                 @keyup.enter="validate()"
                 :disabled="!sirenRadio"
               ></v-text-field>
+              <v-icon> mdi-information </v-icon
+              ><a
+                href="https://annuaire-entreprises.data.gouv.fr/"
+                target="_blank"
+                style="font-size: 1.1rem"
+                >Trouver le SIREN de votre établissement</a
+              >
             </v-form>
           </v-col>
         </v-row>
