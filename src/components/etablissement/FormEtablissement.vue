@@ -94,15 +94,7 @@
                   ></v-text-field
                 ></v-row>
                 <v-row
-                  ><v-col
-                    :cols="
-                      action == Action.CREATION ||
-                      action == Action.FUSION ||
-                      action == Action.SCISSION
-                        ? 8
-                        : 12
-                    "
-                    class="pa-0"
+                  ><v-col :cols="12" class="pa-0"
                     ><v-text-field
                       outlined
                       label="SIREN"
@@ -116,20 +108,6 @@
                       :readonly="action == Action.MODIFICATION"
                     ></v-text-field>
                   </v-col>
-                  <!-- EXPERIMENTATION BOUTON SIREN -->
-                  <v-col
-                    cols="4"
-                    v-if="
-                      action == Action.CREATION ||
-                        action == Action.FUSION ||
-                        action == Action.SCISSION
-                    "
-                    ><v-btn @click="popUpSiren()"
-                      >Valider mon SIREN</v-btn
-                    ></v-col
-                  >
-                  <ConfirmPopup ref="confirm"></ConfirmPopup>
-                  <!-- EXPERIMENTATION BOUTON SIREN -->
                 </v-row>
                 <v-row
                   ><v-chip
@@ -367,6 +345,11 @@ export default class FormEtablissement extends Vue {
         const message: Message = new Message();
         message.type = MessageType.ERREUR;
         message.texte = "Des champs ne remplissent pas les conditions";
+
+        if (this.checkSirenAPI === "inconnu") {
+          message.texte += "<br /> Le SIREN de l'établissement est inconnu";
+        }
+
         message.isSticky = true;
         this.$store.dispatch("openDisplayedMessage", message).catch(err => {
           Logger.error(err.toString());

@@ -179,6 +179,28 @@
                               </v-tooltip>
                             </td>
                           </template>
+                          <template v-slot:[`item.statut`]="{ item }">
+                            <span class="pr-2">{{ item.statut }}</span>
+
+                            <v-tooltip bottom>
+                              <template v-slot:activator="{ on, attrs }">
+                                <span v-bind="attrs" v-on="on"
+                                  ><font-awesome-icon
+                                    :icon="['fas', 'info-circle']"
+                                /></span>
+                              </template>
+                              <span v-if="item.statut.includes('Validé')">{{
+                                infobulleValid
+                              }}</span>
+                              <span
+                                v-if="item.statut.includes('Attestation')"
+                                >{{ infobulleAttestation }}</span
+                              >
+                              <span v-if="item.statut.includes('attente')">{{
+                                infobulleAttente
+                              }}</span>
+                            </v-tooltip>
+                          </template>
                           <template v-slot:[`item.action`]="{ item }">
                             <v-btn
                               v-if="
@@ -199,7 +221,7 @@
                               icon
                               :loading="buttlonLoading"
                               title="Supprimer"
-                              @click="supprimerIP(item.id)"
+                              @click="supprimerIP(item.id, item.ip)"
                             >
                               <font-awesome-icon :icon="['fas', 'trash-alt']"
                             /></v-btn>
@@ -374,7 +396,7 @@ export default class ListeAcces extends ListeAccesProps {
   type: string = "";
   selectStatut: Array<string> = [
     "Attestation à envoyer",
-    "IP Validée",
+    "IP Validée par l'Abes",
     "En attente d'examen par l'Abes",
     "Tous"
   ];
@@ -401,6 +423,13 @@ export default class ListeAcces extends ListeAccesProps {
   commentaires: string = "";
   headers = [{}];
   dataLoading: boolean = true;
+
+  infobulleAttente: string =
+    "IP transmise aux éditeurs et à l'Inist si validée par l'Abes";
+  infobulleAttestation: string =
+    "IP transmise aux éditeurs et à l'Inist après réception de l'attestation";
+  infobulleValid: string =
+    "IP transmise aux éditeurs et à l’Inist à chaque fin de mois";
 
   get getUserSiren() {
     return this.$store.state.user.siren;
@@ -471,13 +500,13 @@ export default class ListeAcces extends ListeAccesProps {
         { text: "Statut", value: "statut", sortable: true, width: "13%" },
         { text: "Action", value: "buffer", sortable: false, width: "13%" },
         {
-          text: "Action admin",
+          text: "Dernière action de l’Abes",
           value: "dateModification",
           sortable: true,
           width: "10%"
         },
         {
-          text: "Commentaires",
+          text: "Précision sur l’IP",
           value: "commentaires",
           sortable: true,
           width: "17%"
@@ -502,13 +531,13 @@ export default class ListeAcces extends ListeAccesProps {
         { text: "Valeur", value: "ip", sortable: true, width: "15%" },
         { text: "Statut", value: "statut", sortable: true, width: "15%" },
         {
-          text: "Action admin",
+          text: "Dernière action de l’Abes",
           value: "dateModification",
           sortable: true,
           width: "15%"
         },
         {
-          text: "Commentaires",
+          text: "Précision sur l’IP",
           value: "commentaires",
           sortable: true,
           width: "17%"
@@ -712,9 +741,9 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   // Suppression par un USER
-  async supprimerIP(ip: string) {
+  async supprimerIP(IDip: string, ip: string) {
     const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
-      `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP
+      `Vous êtes sur le point de supprimer définitivement l'adresse IP ou plage d'adresses IP ${ip}
 
                 Etes-vous sûr de vouloir effectuer cette action ?`
     );
@@ -723,7 +752,7 @@ export default class ListeAcces extends ListeAccesProps {
       this.clearAlerts();
 
       iPService
-        .deleteIP(this.$store.getters.getToken(), ip)
+        .deleteIP(this.$store.getters.getToken(), IDip)
         .then(() => {
           this.notification = "IP supprimée.";
         })

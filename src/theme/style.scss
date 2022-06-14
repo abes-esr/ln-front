@@ -302,3 +302,18 @@ tbody tr:nth-of-type(odd) {
   display: inline-block;
   margin-right: 0.5em;
 }
+
+.v-data-footer {
+  font-size: 1rem;
+}
+
+.v-data-footer__icons-before .v-btn .v-icon,
+.v-data-footer__icons-after .v-btn .v-icon {
+  color: $couleur-1  !important;
+}
+
+.v-data-table-header th.sortable .v-data-table-header__icon {
+  color: $couleur-1  !important;
+  font-weight: bold;
+  font-size: 1.5rem !important;
+}
