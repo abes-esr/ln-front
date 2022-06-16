@@ -193,15 +193,16 @@ export default class Footer extends Vue {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  max-width: 200px;
 }
 
 .footer-btn .texte {
-  width: 170px !important;
+  width: 140px !important;
   text-transform: none !important;
   display: block !important;
-  word-wrap: break-word !important;
   white-space: normal;
   font-size: 12px;
+  word-break: normal;
 }
 
 .footer-top,

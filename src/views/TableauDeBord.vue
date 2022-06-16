@@ -187,7 +187,7 @@
                   class="fa-lg mx-2 icone-standard"
                 />
                 <span v-if="isAdmin">Dernières actions des utilisateurs</span>
-                <span v-else>Notifications</span>
+                <span v-else>Actions à faire</span>
               </v-card-title>
               <v-card-text
                 class="d-flex align-content-start flex-wrap notifs no-border"
