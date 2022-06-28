@@ -88,7 +88,7 @@
               >
               </module-segments-ip-plage>
             </v-col>
-            <v-col>
+            <v-col cols="4">
               <v-card-text flat class="overflow-auto fondGris">
                 <h2 class="pb-4">Nouvelles IP ou plages IP ajoutées</h2>
                 <v-simple-table dense>

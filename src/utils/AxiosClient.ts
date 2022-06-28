@@ -11,6 +11,7 @@ class AxiosClient {
     this.client = axios.create({
       baseURL: url
     });
+    this.client.defaults.timeoutErrorMessage = "Délai d'attente dépassé";
   }
 
   /**
@@ -67,21 +68,30 @@ class AxiosClient {
    * @param url URL de la requête HTTP
    * @param token Token Bearer à ajouter à l'entête
    */
-  get(url: string, token?: string, param?: any): Promise<AxiosResponse> {
+  get(
+    url: string,
+    token?: string,
+    param?: any,
+    longRequest?: boolean
+  ): Promise<AxiosResponse> {
     // Si un token est renseigné, on le rajoute à l'entête
     let config;
+    let timeout = 1000 * 10;
+    if (longRequest) {
+      timeout = 100000 * 10;
+    }
     if (token) {
       config = {
         headers: {
           Authorization: "Bearer " + token
         },
         params: param,
-        timeout: 1000 * 10
+        timeout: timeout
       };
     } else {
       config = {
         params: param,
-        timeout: 1000 * 10
+        timeout: timeout
       };
     }
 

@@ -67,13 +67,13 @@
                                   v-bind="attrs"
                                   v-on="on"
                                 >
-                                  Statut
                                   <v-icon
                                     small
                                     :color="statut ? 'primary' : ''"
                                   >
                                     mdi-filter
                                   </v-icon>
+                                  Statut
                                 </v-btn>
                               </template>
                               <div
@@ -84,6 +84,41 @@
                                     v-for="item in selectStatut"
                                     :key="item.id"
                                     @click="eventStatutChoice(item)"
+                                  >
+                                    <a>{{ item }}</a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </v-menu>
+                          </template>
+                          <template v-slot:header.typeIp="{ header }">
+                            {{ header.texte }}
+                            <v-menu offset-y :close-on-content-click="false">
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                  text
+                                  class="bouton-simple"
+                                  style="text-decoration: none;"
+                                  v-bind="attrs"
+                                  v-on="on"
+                                >
+                                  <v-icon
+                                    small
+                                    :color="statut ? 'primary' : ''"
+                                  >
+                                    mdi-filter
+                                  </v-icon>
+                                  Type d'IP
+                                </v-btn>
+                              </template>
+                              <div
+                                style="background-color: white; width: 500px"
+                              >
+                                <ul>
+                                  <li
+                                    v-for="item in selectType"
+                                    :key="item.id"
+                                    @click="eventTypeChoice(item)"
                                   >
                                     <a>{{ item }}</a>
                                   </li>
@@ -106,7 +141,7 @@
                                       class="bouton-simple pl-0"
                                       v-on="on"
                                       :loading="isExportLoading"
-                                      ><h2>Exporter la liste des IP</h2>
+                                      ><h2>Télécharger la liste des IP</h2>
                                       <font-awesome-icon
                                         :icon="['fas', 'download']"
                                         class="mx-2"
@@ -144,6 +179,28 @@
                               </v-tooltip>
                             </td>
                           </template>
+                          <template v-slot:[`item.statut`]="{ item }">
+                            <span class="pr-2">{{ item.statut }}</span>
+
+                            <v-tooltip bottom>
+                              <template v-slot:activator="{ on, attrs }">
+                                <span v-bind="attrs" v-on="on"
+                                  ><font-awesome-icon
+                                    :icon="['fas', 'info-circle']"
+                                /></span>
+                              </template>
+                              <span v-if="item.statut.includes('Validé')">{{
+                                infobulleValid
+                              }}</span>
+                              <span
+                                v-if="item.statut.includes('Attestation')"
+                                >{{ infobulleAttestation }}</span
+                              >
+                              <span v-if="item.statut.includes('attente')">{{
+                                infobulleAttente
+                              }}</span>
+                            </v-tooltip>
+                          </template>
                           <template v-slot:[`item.action`]="{ item }">
                             <v-btn
                               v-if="
@@ -164,7 +221,7 @@
                               icon
                               :loading="buttlonLoading"
                               title="Supprimer"
-                              @click="supprimerIP(item.id)"
+                              @click="supprimerIP(item.id, item.ip)"
                             >
                               <font-awesome-icon :icon="['fas', 'trash-alt']"
                             /></v-btn>
@@ -336,10 +393,18 @@ export default class ListeAcces extends ListeAccesProps {
   rulesForm: any = rulesForms;
   refreshKey: number = 0;
   statut: string = "";
+  type: string = "";
   selectStatut: Array<string> = [
     "Attestation à envoyer",
-    "IP Validée",
+    "IP Validée par l'Abes",
     "En attente d'examen par l'Abes",
+    "Tous"
+  ];
+  selectType: Array<string> = [
+    "IPV4",
+    "IPV6",
+    "Plage IPV4",
+    "Plage IPV6",
     "Tous"
   ];
   rechercher: string = "";
@@ -359,6 +424,13 @@ export default class ListeAcces extends ListeAccesProps {
   headers = [{}];
   dataLoading: boolean = true;
 
+  infobulleAttente: string =
+    "IP transmise aux éditeurs et à l'Inist si validée par l'Abes";
+  infobulleAttestation: string =
+    "IP transmise aux éditeurs et à l'Inist après réception de l'attestation";
+  infobulleValid: string =
+    "IP transmise aux éditeurs et à l’Inist à chaque fin de mois";
+
   get getUserSiren() {
     return this.$store.state.user.siren;
   }
@@ -375,6 +447,21 @@ export default class ListeAcces extends ListeAccesProps {
     const conditions = [] as any;
     if (this.statut) {
       conditions.push(this.filterStatut);
+    }
+    if (conditions.length > 0) {
+      return this.filteredAccesByType.filter(acces => {
+        return conditions.every(condition => {
+          return condition(acces);
+        });
+      });
+    }
+    return this.filteredAccesByType;
+  }
+
+  get filteredAccesByType(): string[] {
+    const conditions = [] as any;
+    if (this.type) {
+      conditions.push(this.filterType);
     }
     if (conditions.length > 0) {
       return this.acces.filter(acces => {
@@ -413,13 +500,13 @@ export default class ListeAcces extends ListeAccesProps {
         { text: "Statut", value: "statut", sortable: true, width: "13%" },
         { text: "Action", value: "buffer", sortable: false, width: "13%" },
         {
-          text: "Action admin",
+          text: "Dernière action de l’Abes",
           value: "dateModification",
           sortable: true,
           width: "10%"
         },
         {
-          text: "Commentaires",
+          text: "Précision sur l’IP",
           value: "commentaires",
           sortable: true,
           width: "17%"
@@ -444,13 +531,13 @@ export default class ListeAcces extends ListeAccesProps {
         { text: "Valeur", value: "ip", sortable: true, width: "15%" },
         { text: "Statut", value: "statut", sortable: true, width: "15%" },
         {
-          text: "Action admin",
+          text: "Dernière action de l’Abes",
           value: "dateModification",
           sortable: true,
           width: "15%"
         },
         {
-          text: "Commentaires",
+          text: "Précision sur l’IP",
           value: "commentaires",
           sortable: true,
           width: "17%"
@@ -468,6 +555,10 @@ export default class ListeAcces extends ListeAccesProps {
 
   filterStatut(statutRecherche) {
     return statutRecherche.statut.toString().includes(this.statut);
+  }
+
+  filterType(typeRecherche) {
+    return typeRecherche.typeIp.toString() === this.type;
   }
 
   getAll() {
@@ -650,9 +741,9 @@ export default class ListeAcces extends ListeAccesProps {
   }
 
   // Suppression par un USER
-  async supprimerIP(ip: string) {
+  async supprimerIP(IDip: string, ip: string) {
     const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
-      `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP
+      `Vous êtes sur le point de supprimer définitivement l'adresse IP ou plage d'adresses IP ${ip}
 
                 Etes-vous sûr de vouloir effectuer cette action ?`
     );
@@ -661,7 +752,7 @@ export default class ListeAcces extends ListeAccesProps {
       this.clearAlerts();
 
       iPService
-        .deleteIP(this.$store.getters.getToken(), ip)
+        .deleteIP(this.$store.getters.getToken(), IDip)
         .then(() => {
           this.notification = "IP supprimée.";
         })
@@ -756,6 +847,15 @@ export default class ListeAcces extends ListeAccesProps {
       this.statut = element;
     }
     this.filteredAccesByStatut;
+  }
+
+  eventTypeChoice(element: string): void {
+    if (element === "Tous") {
+      this.type = "";
+    } else {
+      this.type = element;
+    }
+    this.filteredAccesByType;
   }
 }
 </script>

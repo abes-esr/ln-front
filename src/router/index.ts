@@ -32,18 +32,17 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: "/motdepasseoublie",
+    name: "ForgotPassword",
+    component: () => import("../views/ForgotPassword.vue")
+  },
+  {
     path: "/reinitialisationPass",
     name: "ReinitialisationPass",
     component: () =>
       import(
         "../components/authentification/login/FormReinitialisationPass.vue"
       )
-  },
-  {
-    path: "/forgotPassword",
-    name: "ForgotPassword",
-    component: () =>
-      import("../components/authentification/login/ForgotPassword.vue")
   },
   //Etablissement
   {

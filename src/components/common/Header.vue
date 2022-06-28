@@ -9,8 +9,8 @@
     <template v-slot:img="{ props }">
       <v-img
         v-bind="props"
-        class="hidden-lg-and-down"
-        style="float: right; height: 300%; margin: -180px 0px 0px 0px;"
+        class="hidden-sm-and-down"
+        style="float: right; height: 300%; width: 60%; margin: -180px 0px 0px 0px;"
       ></v-img>
     </template>
     <v-layout class="d-flex flex-column" fill-height>
@@ -48,6 +48,7 @@
           ></v-container
         >
         <v-container
+          id="barreIcones"
           class="d-flex justify-end mainBar ma-0 pa-0 pr-12"
           style="max-height: 40px;"
           v-if="isLoggedIn"
@@ -177,3 +178,8 @@ export default class Header extends Vue {
   }
 }
 </script>
+<style scoped>
+#barreIcones .v-btn {
+  font-size: 0.75rem !important;
+}
+</style>

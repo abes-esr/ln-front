@@ -94,7 +94,16 @@
       </v-card-title>
 
       <v-card-text class="py-2 white--text footer-bottom">
-        <strong>Licences Nationales</strong>
+        <strong>Licences Nationales </strong
+        ><v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <span v-bind="attrs" v-on="on"> {{ appVersion }}</span>
+          </template>
+          <span>
+            Front: {{ appVersion }} <br /><br />
+            Back: {{ backVersion }} <br />
+          </span>
+        </v-tooltip>
         <div id="mentions">
           <a @click="$router.push({ path: '/donneespersonnelles' })"
             >Données personnelles</a
@@ -110,9 +119,24 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { Logger } from "@/utils/Logger";
 
 @Component
-export default class Footer extends Vue {}
+export default class Footer extends Vue {
+  appVersion: string = process.env.VUE_APP_VERSION;
+  backVersion: string = "";
+  mounted() {
+    authService
+      .getVersion()
+      .then(response => {
+        this.backVersion = response.data;
+      })
+      .catch(error => {
+        Logger.error("Impossible de récupérer le numéro de version : " + error);
+      });
+  }
+}
 </script>
 <style scoped lang="scss">
 #footer,
@@ -169,15 +193,16 @@ export default class Footer extends Vue {}
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  max-width: 200px;
 }
 
 .footer-btn .texte {
-  width: 170px !important;
+  width: 140px !important;
   text-transform: none !important;
   display: block !important;
-  word-wrap: break-word !important;
   white-space: normal;
   font-size: 12px;
+  word-break: normal;
 }
 
 .footer-top,

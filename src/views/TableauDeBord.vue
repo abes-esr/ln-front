@@ -187,7 +187,7 @@
                   class="fa-lg mx-2 icone-standard"
                 />
                 <span v-if="isAdmin">Dernières actions des utilisateurs</span>
-                <span v-else>Notifications</span>
+                <span v-else>Actions à faire</span>
               </v-card-title>
               <v-card-text
                 class="d-flex align-content-start flex-wrap notifs no-border"
@@ -582,12 +582,12 @@ export default class Home extends Vue {
 }
 
 .notifUserMsg {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 400;
 }
 
 .notifUserDesc {
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 400;
 }
 
@@ -632,5 +632,17 @@ ul li::before {
 
 .large-container {
   max-width: 150% !important;
+}
+
+h3 {
+  font-size: 1rem !important;
+}
+
+.v-card__text {
+  font-size: 1rem !important;
+}
+
+p {
+  font-size: 1rem !important;
 }
 </style>

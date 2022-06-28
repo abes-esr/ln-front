@@ -2,28 +2,10 @@
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col xl="5" lg="7" md="9" xs="11">
-        <transition name="fade">
-          <form-login
-            v-if="!forgotPasswordVisible"
-            @onChange="afficherMotDePasseOublie()"
-          />
-        </transition>
+        <form-login @onChange="afficherMotDePasseOublie()" />
 
-        <transition name="fade">
-          <forgot-password v-if="forgotPasswordVisible" />
-        </transition>
-        <v-row id="row_RevenirAccueil">
-          <v-col cols="8"></v-col>
-          <transition name="fade">
-            <a v-if="forgotPasswordVisible" @click="afficherConnexion()">
-              <font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
-              page d'accueil
-            </a>
-          </transition>
-        </v-row>
         <div
           id="noAccount"
-          v-if="!forgotPasswordVisible"
           class="
             mt-6
             d-flex
@@ -39,7 +21,6 @@
           >
           <v-btn
             class="btn-2"
-            v-if="!forgotPasswordVisible"
             href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#Beneficiaires"
             target="_blank"
             >Vérifier l'éligibilité
@@ -49,10 +30,7 @@
             />
           </v-btn>
 
-          <v-btn
-            class="btn-2"
-            v-if="!forgotPasswordVisible"
-            @click="creerCompte"
+          <v-btn class="btn-2" @click="creerCompte"
             >Créer un compte
             <font-awesome-icon :icon="['fas', 'plus-circle']" class="mx-2" />
           </v-btn>
@@ -64,12 +42,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import FormLogin from "../components/authentification/login/FormLogin.vue";
-import ForgotPassword from "../components/authentification/login/ForgotPassword.vue";
 import { Logger } from "@/utils/Logger";
 import Etablissement from "@/core/Etablissement";
 
 @Component({
-  components: { FormLogin, ForgotPassword }
+  components: { FormLogin }
 })
 export default class App extends Vue {
   forgotPasswordVisible: boolean = false;
@@ -86,12 +63,7 @@ export default class App extends Vue {
 
   afficherMotDePasseOublie(): void {
     this.$store.dispatch("closeDisplayedMessage");
-    this.forgotPasswordVisible = true;
-  }
-
-  afficherConnexion(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.forgotPasswordVisible = false;
+    this.$router.push({ name: "ForgotPassword" });
   }
 }
 </script>
