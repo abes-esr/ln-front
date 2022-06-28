@@ -81,10 +81,10 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                Type d'établissement
                 <v-icon small :color="statut ? 'primary' : ''">
                   mdi-filter
                 </v-icon>
+                Type d'établissement
               </v-btn>
             </template>
             <div style="background-color: white; width: 500px">
@@ -111,10 +111,10 @@
                 v-on="on"
                 style="text-decoration: none;"
               >
-                Statut
                 <v-icon small :color="statut ? 'primary' : ''">
                   mdi-filter
                 </v-icon>
+                Statut
               </v-btn>
             </template>
             <div style="background-color: white; width: 280px">

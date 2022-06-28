@@ -582,12 +582,12 @@ export default class Home extends Vue {
 }
 
 .notifUserMsg {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 400;
 }
 
 .notifUserDesc {
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 400;
 }
 
@@ -632,5 +632,17 @@ ul li::before {
 
 .large-container {
   max-width: 150% !important;
+}
+
+h3 {
+  font-size: 1rem !important;
+}
+
+.v-card__text {
+  font-size: 1rem !important;
+}
+
+p {
+  font-size: 1rem !important;
 }
 </style>

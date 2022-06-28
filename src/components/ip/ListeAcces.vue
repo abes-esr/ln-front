@@ -67,13 +67,13 @@
                                   v-bind="attrs"
                                   v-on="on"
                                 >
-                                  Statut
                                   <v-icon
                                     small
                                     :color="statut ? 'primary' : ''"
                                   >
                                     mdi-filter
                                   </v-icon>
+                                  Statut
                                 </v-btn>
                               </template>
                               <div
@@ -102,13 +102,13 @@
                                   v-bind="attrs"
                                   v-on="on"
                                 >
-                                  Type d'IP
                                   <v-icon
                                     small
                                     :color="statut ? 'primary' : ''"
                                   >
                                     mdi-filter
                                   </v-icon>
+                                  Type d'IP
                                 </v-btn>
                               </template>
                               <div

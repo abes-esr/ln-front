@@ -313,7 +313,11 @@ tbody tr:nth-of-type(odd) {
 }
 
 .v-data-table-header th.sortable .v-data-table-header__icon {
-  color: $couleur-1  !important;
+  color: $couleur-6  !important;
   font-weight: bold;
   font-size: 1.5rem !important;
+}
+
+thead button {
+  padding: 0 !important;
 }
