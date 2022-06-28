@@ -76,7 +76,7 @@ class AxiosClient {
   ): Promise<AxiosResponse> {
     // Si un token est renseigné, on le rajoute à l'entête
     let config;
-    let timeout = 1000 * 10;
+    let timeout = 3000 * 10;
     if (longRequest) {
       timeout = 100000 * 10;
     }
