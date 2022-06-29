@@ -105,7 +105,7 @@
                       required
                       @input="checkSiren()"
                       @keyup.enter="validate()"
-                      :readonly="action == Action.MODIFICATION"
+                      :readonly="action === Action.MODIFICATION"
                     ></v-text-field>
                   </v-col>
                 </v-row>
