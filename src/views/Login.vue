@@ -21,7 +21,7 @@
           >
           <v-btn
             class="btn-2"
-            href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#Beneficiaires"
+            href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
             target="_blank"
             >Vérifier l'éligibilité
             <font-awesome-icon

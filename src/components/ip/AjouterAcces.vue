@@ -33,7 +33,7 @@
                   size="2x"
                   style="color: #478dcb;"
                 /><a
-                  href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#TutoDeDeclarationDesIP"
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
                   target="_blank"
                   class="pl-3 pb-6 text-body-1 font-weight-bold"
                   >Consulter l'aide pour la déclaration des IP</a

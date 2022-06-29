@@ -52,7 +52,7 @@
                 à la disposition des professionnels de la documentation cette
                 application dédiée à la gestion des accès.
                 <a
-                  href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#Beneficiaires"
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
                   target="_blank"
                   >Vérifier l'éligibilité de votre établissement.</a
                 >

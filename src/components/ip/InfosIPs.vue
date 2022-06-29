@@ -15,7 +15,7 @@
               <v-list-item-title class="pb-2"
                 ><span class="dot"></span>
                 <a
-                  href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/co/StatutsEtProcessusDeValidationDesIP.html#CgILNaqqg4eJrTC78srR8c"
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP:CgILNaqqg4eJrTC78srR8c"
                   target="_blank"
                   >En savoir plus sur les délais d'ouverture des accès</a
                 ></v-list-item-title
@@ -23,7 +23,7 @@
               <v-list-item-title
                 ><span class="dot"></span>
                 <a
-                  href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/index.html#StatutsEtProcessusDeValidationDesIP"
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP"
                   target="_blank"
                   >Les différents statuts des IP</a
                 ></v-list-item-title
@@ -36,7 +36,7 @@
               <v-list-item-title class="pb-2"
                 ><span class="dot"></span>
                 <a
-                  href="http://documentation.abes.fr/aidelicencesnationales/aidelicencesnationalesTestsUX/co/StatutsEtProcessusDeValidationDesIP.html#DdxqgVeI57cdWkxUf4O9Vc"
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP:DdxqgVeI57cdWkxUf4O9Vc"
                   target="_blank"
                   >Pourquoi une attestation est parfois demandée ?</a
                 ></v-list-item-title
@@ -44,7 +44,7 @@
               <v-list-item-title
                 ><span class="dot"></span>
                 <a
-                  href="http://documentation.abes.fr/aidelicencesnationales/ModeleAttestationAdressesIP.PNG"
+                  href="https://www.licencesnationales.fr/modele_attestation_ip_licences_nationales/"
                   target="_blank"
                   >Télécharger un modèle d'attestation</a
                 ></v-list-item-title
