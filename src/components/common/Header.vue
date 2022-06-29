@@ -10,7 +10,7 @@
       <v-img
         v-bind="props"
         class="hidden-sm-and-down"
-        style="float: right; height: 300%; width: 60%; margin: -180px 0px 0px 0px;"
+        style="float: right; height: 300%; min-width: 60%; max-width:75%; margin: -180px 0px 0px 0px;"
       ></v-img>
     </template>
     <v-layout class="d-flex flex-column" fill-height>
