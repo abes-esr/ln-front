@@ -172,8 +172,8 @@ export default class ListeEtab extends Vue {
     "Tous",
     "Sans IP",
     "Examiner IP",
-    "IP Ok",
-    "Nouveau"
+    "Attestation à envoyer",
+    "IP Ok"
   ];
   rechercher: string = "";
   etabs: Array<Etablissement> = [];
