@@ -170,7 +170,7 @@ a {
 
 .btn-2 {
   color: $couleur-6  !important;
-  background-color: $couleur-3  !important;
+  background-color: $bouton-2  !important;
 }
 
 .btn-3 {
@@ -206,8 +206,12 @@ a {
   background: #bdbdbd;
 }
 
-nav svg {
-  color: #757575;
+.theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+  color: #757575 !important;
+}
+
+.theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+  color: #FFFFFF !important;
 }
 
 .v-text-field input[readonly="readonly"] :not(v-select__selections) {
@@ -288,9 +292,9 @@ tbody tr:nth-of-type(odd) {
     transform: scale(0.75);
     transform-origin: top left;
     width: 125%;
-    height: 125%;
     max-width: 125% !important;
     margin-left: -12.5%;
+    margin-bottom: -10% !important;
   }
 }
 
@@ -320,4 +324,20 @@ tbody tr:nth-of-type(odd) {
 
 thead button {
   padding: 0 !important;
+}
+
+.v-data-table-header .v-btn:hover::before {
+  opacity: 0.5 !important;
+}
+
+.theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
+  background: #cfcfcf !important;
+}
+
+.fa-orange {
+  color: $couleur-1;
+}
+
+.theme--dark.v-label {
+  color: #ffffff;
 }

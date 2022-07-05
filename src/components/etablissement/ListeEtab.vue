@@ -87,7 +87,7 @@
                 Type d'établissement
               </v-btn>
             </template>
-            <div style="background-color: white; width: 500px">
+            <div style="background-color: white;" class="pl-4 pr-8">
               <ul>
                 <li
                   v-for="item in typesEtab"
@@ -117,7 +117,7 @@
                 Statut
               </v-btn>
             </template>
-            <div style="background-color: white; width: 280px">
+            <div style="background-color: white;" class="pl-4 pr-8">
               <ul>
                 <li
                   v-for="item in selectStatut"

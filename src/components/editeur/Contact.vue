@@ -41,7 +41,7 @@
       </v-card-text>
       <v-card-actions class="pa-0">
         <v-btn class="ma-0 pa-0 bouton-simple" icon x-large @click="remove()">
-          <font-awesome-icon :icon="['fas', 'trash']" />
+          <font-awesome-icon :icon="['fas', 'times']" class="fa-orange" />
         </v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>

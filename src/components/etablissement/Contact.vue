@@ -97,6 +97,20 @@
         ></v-row>
         <v-row
           ><v-form ref="mail" :disabled="isDisableForm" style="width: 100%">
+            <v-alert
+              outlined
+              class="pa-3 fondBlanc"
+              v-if="action === Action.CREATION"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'info-circle']"
+                class="fa-2x mr-5 mb-1 mt-2 icone-information"
+              />
+              Choisir de préférence un alias pérenne pour continuer de recevoir
+              les différents messages informatifs sur la gestion du compte et
+              des IP déclarées en cas de changement d’interlocuteur ou
+              d’interlocutrice au sein de l’établissement
+            </v-alert>
             <v-text-field
               outlined
               label="Mail de contact"
