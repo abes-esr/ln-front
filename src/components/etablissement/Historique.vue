@@ -13,7 +13,7 @@
           <v-col cols="1" class="d-none d-md-flex"></v-col>
           <v-col cols="12" md="10">
             <v-card-text class="fondGris">
-              <v-select
+              <v-autocomplete
                 v-model="select"
                 :items="etabs"
                 item-text="nom"
@@ -24,7 +24,7 @@
                 outlined
                 filled
                 @change="getHistorique(select)"
-              ></v-select
+              ></v-autocomplete
             ></v-card-text> </v-col
         ></v-row>
       </v-form>
