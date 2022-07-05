@@ -1,6 +1,8 @@
 <template>
   <v-card elevation="0">
-    <v-card-title class="pa-3"><h1>Mot de passe oublié</h1></v-card-title>
+    <v-card-title class="pb-0 pl-0 pa-3"
+      ><h1 class="pb-1">Mot de passe oublié</h1></v-card-title
+    >
     <v-card-title class="pa-1">
       Choisir une option de réinitialisation <MessageBox></MessageBox>
     </v-card-title>

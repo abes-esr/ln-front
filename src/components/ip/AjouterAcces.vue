@@ -114,7 +114,9 @@
                             title="Supprimer"
                             @click="supprimerIP(item.id, index)"
                           >
-                            <font-awesome-icon :icon="['fas', 'trash-alt']"
+                            <font-awesome-icon
+                              :icon="['fas', 'times']"
+                              class="fa-orange"
                           /></v-btn>
                         </td>
                       </tr>

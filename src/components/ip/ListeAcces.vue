@@ -21,7 +21,9 @@
                     id="addIpButton"
                     @click="$router.push({ path: '/ajouterAcces/' })"
                     ><span class="btnText">Ajouter une IP ou une plage IP</span>
-                    <font-awesome-icon :icon="['fas', 'plus-circle']"/></v-btn
+                    <font-awesome-icon
+                      :icon="['fas', 'plus-circle']"
+                      style="font-size:1.1rem"/></v-btn
                 ></v-col>
               </v-row>
               <v-row>
@@ -77,7 +79,8 @@
                                 </v-btn>
                               </template>
                               <div
-                                style="background-color: white; width: 500px"
+                                style="background-color: white"
+                                class="pl-4 pr-8"
                               >
                                 <ul>
                                   <li
@@ -112,7 +115,8 @@
                                 </v-btn>
                               </template>
                               <div
-                                style="background-color: white; width: 500px"
+                                style="background-color: white;"
+                                class="pl-4 pr-8"
                               >
                                 <ul>
                                   <li
@@ -223,7 +227,9 @@
                               title="Supprimer"
                               @click="supprimerIP(item.id, item.ip)"
                             >
-                              <font-awesome-icon :icon="['fas', 'trash-alt']"
+                              <font-awesome-icon
+                                :icon="['fas', 'times']"
+                                class="fa-orange"
                             /></v-btn>
                           </template>
                         </v-data-table>
@@ -259,7 +265,7 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-col cols="12" style="padding: 24px;">
+    <v-col cols="12" style="padding: 24px;" v-if="!isAdmin">
       <v-row>
         <v-col cols="1" xs="0"/>
         <v-col cols="10" xs="12">

@@ -190,31 +190,28 @@
           md="4"
           lg="4"
           xl="4"
-          class="d-flex justify-space-around mr-16 flex-wrap"
+          class="d-flex justify-space-around flex-wrap"
           style="float: right;"
         >
           <v-row>
-            <v-col cols="6">
-              <v-btn
-                x-large
-                @click="clear"
-                class="bouton-annuler"
-                :disabled="isDisableForm"
-              >
-                Annuler</v-btn
-              ></v-col
+            <v-btn
+              x-large
+              @click="clear"
+              class="bouton-annuler"
+              :disabled="isDisableForm"
             >
-            <v-col cols="6">
-              <v-btn
-                color="button"
-                :loading="buttonLoading"
-                :disabled="isDisableForm"
-                x-large
-                @click="validate()"
-                >Enregistrer
-                <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
-              </v-btn></v-col
-            ></v-row
+              Annuler</v-btn
+            >
+            <v-btn
+              color="button"
+              class="ml-4"
+              :loading="buttonLoading"
+              :disabled="isDisableForm"
+              x-large
+              @click="validate()"
+              >Enregistrer
+              <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+            </v-btn></v-row
           >
         </v-col>
       </v-card-actions>

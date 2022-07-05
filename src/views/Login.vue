@@ -1,5 +1,5 @@
 <template>
-  <v-container fill-height class="d-flex justify-center">
+  <v-container class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col xl="5" lg="7" md="9" xs="11">
         <form-login @onChange="afficherMotDePasseOublie()" />
@@ -27,12 +27,17 @@
             <font-awesome-icon
               :icon="['fas', 'question-circle']"
               class="mx-2"
+              style="font-size: 1.1rem"
             />
           </v-btn>
 
           <v-btn class="btn-2" @click="creerCompte"
             >Créer un compte
-            <font-awesome-icon :icon="['fas', 'plus-circle']" class="mx-2" />
+            <font-awesome-icon
+              :icon="['fas', 'plus-circle']"
+              class="mx-2"
+              style="font-size: 1.1rem"
+            />
           </v-btn>
         </div>
       </v-col>
