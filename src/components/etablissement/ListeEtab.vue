@@ -172,7 +172,7 @@ export default class ListeEtab extends Vue {
     "Tous",
     "Sans IP",
     "Examiner IP",
-    "Attestation à envoyer",
+    "En attente d'attestation",
     "IP Ok"
   ];
   rechercher: string = "";
