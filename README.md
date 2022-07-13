@@ -2,8 +2,6 @@
 
 [![ci](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml/badge.svg)](https://github.com/abes-esr/licencesnationales-front/actions/workflows/build-test-pubtodockerhub.yml) [![Docker Pulls](https://img.shields.io/docker/pulls/abesesr/licencesnationales.svg)](https://hub.docker.com/r/abesesr/licencesnationales/)
 
-Application web Licences Nationales (client léger en JavaScript/VueJS) reposant sur l'[API Licences Nationales](https://github.com/abes-esr/licencesnationales-back). 
-
 Application web de gestion des droits des Licences Nationales. Ce dépôt concerne le code source de son interface graphique (client léger en JavaScript/VueJS) qui repose sur l'[API REST Licences Nationales](https://github.com/abes-esr/licencesnationales-back). 
 
 URL de producation de l'application : https://acces.licencesnationales.fr
