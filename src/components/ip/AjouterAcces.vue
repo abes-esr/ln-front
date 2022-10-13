@@ -5,30 +5,30 @@
       <v-row align="center" justify="center">
         <v-col lg="11" md="12" xs="12">
           <v-row>
-            <v-card-title
-              ><h1>
+            <v-card-title>
+              <h1>
                 Déclarer de nouvelles adresses ou plages IP
-              </h1></v-card-title
-            >
+              </h1>
+            </v-card-title>
           </v-row>
-          <v-row
-            ><v-col>
-              <a @click="$router.push({ path: '/listeAcces' })"
-                ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à
-                la liste complète des IP</a
-              ></v-col
-            ></v-row
-          >
+          <v-row>
+            <v-col>
+              <a @click="$router.push({ path: '/listeAcces' })">
+                <font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
+                liste complète des IP
+              </a>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col cols="12" md="8" class="pa-0">
               <MessageBox class="mr-2"></MessageBox>
               <v-card-title class="pb-0">
                 Choisir le type d'IP à déclarer
-              </v-card-title></v-col
-            >
+              </v-card-title>
+            </v-col>
             <v-col cols="12" md="4" class="pa-3">
-              <v-card-text class="fondGris"
-                ><font-awesome-icon
+              <v-card-text class="fondGris">
+                <font-awesome-icon
                   :icon="['fas', 'info-circle']"
                   size="2x"
                   style="color: #478dcb;"
@@ -37,8 +37,8 @@
                   target="_blank"
                   class="pl-3 pb-6 text-body-1 font-weight-bold"
                   >Consulter l'aide pour la déclaration des IP</a
-                ></v-card-text
-              >
+                >
+              </v-card-text>
             </v-col>
           </v-row>
           <v-row>
@@ -59,8 +59,8 @@
                     :key="n"
                     :label="typesIp[n - 1]"
                     :value="typesIp[n - 1]"
-                  ></v-radio
-                ></v-radio-group>
+                  ></v-radio>
+                </v-radio-group>
               </div>
             </v-col>
           </v-row>
@@ -117,12 +117,14 @@
                             <font-awesome-icon
                               :icon="['fas', 'times']"
                               class="fa-orange"
-                          /></v-btn>
+                            />
+                          </v-btn>
                         </td>
                       </tr>
                     </tbody>
-                  </template> </v-simple-table
-              ></v-card-text>
+                  </template>
+                </v-simple-table>
+              </v-card-text>
             </v-col>
           </v-row>
         </v-col>
@@ -145,6 +147,19 @@ import { Message, MessageType } from "@/core/CommonDefinition";
   components: { ModuleSegmentsIpPlage, ConfirmPopup, MessageBox }
 })
 export default class AjouterAcces extends Vue {
+  public metaInfo(): any {
+    return {
+      meta: [
+        {
+          name: "description",
+          content:
+            "Page de déclaration d'IP de l'application des Licences Nationales"
+        }
+      ],
+      title: "Ajout d'IP - Licences Nationales"
+    };
+  }
+
   id: string = "";
   ip: string = "";
   typeAcces: string = "";
@@ -255,9 +270,11 @@ export default class AjouterAcces extends Vue {
 h1 {
   font-size: 30px;
 }
+
 #radioIP {
   padding-left: 20px !important;
 }
+
 #fillHeight {
   height: 80%;
 }

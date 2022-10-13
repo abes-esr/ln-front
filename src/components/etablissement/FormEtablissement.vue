@@ -1,45 +1,35 @@
 <template>
   <v-card class="elevation-0">
-    <v-form
-      ref="formCreationCompte"
-      lazy-validation
-      class="elevation-0"
-      :disabled="isDisableForm"
-    >
+    <v-form ref="formCreationCompte" lazy-validation class="elevation-0" :disabled="isDisableForm">
       <h1 v-if="action === Action.CREATION" class="pl-3">
         Créer le compte de votre établissement
       </h1>
       <h1 v-if="action === Action.MODIFICATION" class="pl-3">
         {{ etablissement.nom }}
       </h1>
-      <h2
-        v-if="action === Action.CREATION"
-        @click="allerAConnexion"
-        class="pl-3"
-      >
+      <h2 v-if="action === Action.CREATION" @click="allerAConnexion" class="pl-3">
         Votre établissement a déjà un compte ?
         <a class="bouton-simple elevation-0 large">S'authentifier</a>
         <v-icon>mdi-arrow-right-circle-outline </v-icon>
       </h2>
       <v-card-text>
-        <v-col cols="12" md="6" lg="6" xl="6"><MessageBox></MessageBox> </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6">
+          <MessageBox></MessageBox>
+        </v-col>
         <v-col cols="12" md="6" lg="6" xl="6" v-if="returnLink">
           <v-alert outlined>
             <div>
-              <a @click="allerPageAccueil()"
-                ><font-awesome-icon :icon="['fas', 'reply']" /> Revenir à la
-                page d'accueil</a
-              >
+              <a @click="allerPageAccueil()">
+                <font-awesome-icon :icon="['fas', 'reply']" /> Revenir à la page
+                d'accueil
+              </a>
             </div>
           </v-alert>
         </v-col>
         <v-row v-if="action === Action.CREATION">
           <v-col cols="12" md="6" lg="6" xl="6">
             <v-alert dense outlined>
-              <font-awesome-icon
-                :icon="['fas', 'exclamation-triangle']"
-                class="mx-2 icone-attention"
-              />
+              <font-awesome-icon :icon="['fas', 'exclamation-triangle']" class="mx-2 icone-attention" />
               <h4 class="mb-1">
                 Avant de créer votre compte, vérifier l'éligibilité de votre
                 établissement
@@ -51,29 +41,20 @@
                 permettre la déclaration des adresses IP autorisées, l'Abes met
                 à la disposition des professionnels de la documentation cette
                 application dédiée à la gestion des accès.
-                <a
-                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-                  target="_blank"
-                  >Vérifier l'éligibilité de votre établissement.</a
-                >
+                <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  target="_blank">Vérifier l'éligibilité de votre établissement.</a>
               </p>
-              <v-checkbox
-                required
-                :rules="rulesForms.checkboxRules"
-                label="Je confirme que mon établissement est éligible"
-              ></v-checkbox>
+              <v-checkbox required :rules="rulesForms.checkboxRules"
+                label="Je confirme que mon établissement est éligible"></v-checkbox>
             </v-alert>
           </v-col>
         </v-row>
-        <div
-          class="mx-9"
-          v-if="
-            (action === Action.MODIFICATION && isAdmin) ||
-              action === Action.CREATION ||
-              action === Action.FUSION ||
-              Action.SCISSION
-          "
-        >
+        <div class="mx-9" v-if="
+          (action === Action.MODIFICATION && isAdmin) ||
+            action === Action.CREATION ||
+            action === Action.FUSION ||
+            Action.SCISSION
+        ">
           <v-row>
             <v-card-title>Informations de l'établissement</v-card-title>
           </v-row>
@@ -81,90 +62,47 @@
           <div class="mx-9">
             <v-row>
               <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
-                <v-row
-                  ><v-text-field
-                    outlined
-                    label="Nom de l'établissement"
-                    placeholder="Nom de l'établissement"
-                    v-model="etablissement.nom"
-                    :rules="rulesForms.nomEtabRules"
-                    :readonly="action === Action.MODIFICATION && !isAdmin"
-                    required
-                    @keyup.enter="validate()"
-                  ></v-text-field
-                ></v-row>
-                <v-row
-                  ><v-col :cols="12" class="pa-0"
-                    ><v-text-field
-                      outlined
-                      label="SIREN"
-                      placeholder="SIREN"
-                      maxlength="9"
-                      v-model="etablissement.siren"
-                      :rules="rulesForms.siren"
-                      required
-                      @input="checkSiren()"
-                      @keyup.enter="validate()"
-                      :readonly="action === Action.MODIFICATION"
-                    ></v-text-field>
+                <v-row>
+                  <v-text-field outlined label="Nom de l'établissement" placeholder="Nom de l'établissement"
+                    v-model="etablissement.nom" :rules="rulesForms.nomEtabRules"
+                    :readonly="action === Action.MODIFICATION && !isAdmin" required @keyup.enter="validate()">
+                  </v-text-field>
+                </v-row>
+                <v-row>
+                  <v-col :cols="12" class="pa-0">
+                    <v-text-field outlined label="SIREN" placeholder="SIREN" maxlength="9" v-model="etablissement.siren"
+                      :rules="rulesForms.siren" required @input="checkSiren()" @keyup.enter="validate()"
+                      :readonly="action === Action.MODIFICATION"></v-text-field>
                   </v-col>
                 </v-row>
-                <v-row
-                  ><v-chip
-                    class="ma-2"
-                    :class="checkSirenColor"
-                    label
-                    v-if="
-                      action == Action.CREATION ||
-                        action == Action.FUSION ||
-                        action == Action.SCISSION
-                    "
-                    >SIREN : {{ checkSirenAPI }}
-                  </v-chip></v-row
-                >
-                <v-row v-if="action == Action.MODIFICATION"
-                  ><v-text-field
-                    outlined
-                    label="ID Abes"
-                    placeholder="ID Abes"
-                    v-model="etablissement.idAbes"
-                    readonly
-                  ></v-text-field
-                ></v-row>
+                <v-row>
+                  <v-chip class="ma-2" :class="checkSirenColor" label v-if="
+                    action == Action.CREATION ||
+                      action == Action.FUSION ||
+                      action == Action.SCISSION
+                  ">SIREN : {{ checkSirenAPI }}
+                  </v-chip>
+                </v-row>
+                <v-row v-if="action == Action.MODIFICATION">
+                  <v-text-field outlined label="ID Abes" placeholder="ID Abes" v-model="etablissement.idAbes" readonly>
+                  </v-text-field>
+                </v-row>
               </v-col>
               <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
               <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
                 <v-row>
-                  <v-select
-                    outlined
-                    v-model="etablissement.typeEtablissement"
-                    :items="typesEtab"
-                    label="Type d'établissement"
-                    placeholder="Type d'établissement"
-                    persistent-placeholder
-                    :readonly="action === Action.MODIFICATION && !isAdmin"
-                    :rules="rulesForms.typeEtabRules"
-                    required
-                  ></v-select>
+                  <v-select outlined v-model="etablissement.typeEtablissement" :items="typesEtab"
+                    label="Type d'établissement" placeholder="Type d'établissement" persistent-placeholder
+                    :readonly="action === Action.MODIFICATION && !isAdmin" :rules="rulesForms.typeEtabRules" required>
+                  </v-select>
                 </v-row>
-                <v-row
-                  ><v-alert
-                    outlined
-                    v-if="action == Action.CREATION"
-                    style="width: 100%"
-                  >
-                    <font-awesome-icon
-                      :icon="['fas', 'info-circle']"
-                      class="fa-2x mr-5 mb-1 icone-information"
-                    />
-                    <a
-                      class="noUnderlineLink"
-                      href="https://annuaire-entreprises.data.gouv.fr/"
-                      target="_blank"
-                      >Trouver le SIREN de votre établissement</a
-                    >
-                  </v-alert></v-row
-                >
+                <v-row>
+                  <v-alert outlined v-if="action == Action.CREATION" style="width: 100%">
+                    <font-awesome-icon :icon="['fas', 'info-circle']" class="fa-2x mr-5 mb-1 icone-information" />
+                    <a class="noUnderlineLink" href="https://annuaire-entreprises.data.gouv.fr/" target="_blank">Trouver
+                      le SIREN de votre établissement</a>
+                  </v-alert>
+                </v-row>
               </v-col>
             </v-row>
           </div>
@@ -174,45 +112,21 @@
             Information Contact
           </v-card-title>
           <v-divider class="mb-4"></v-divider>
-          <contact
-            ref="formContact"
-            :action="action"
-            :contact="etablissement.contact"
-            :isDisableForm="isDisableForm"
-            class="mx-9"
-          />
+          <contact ref="formContact" :action="action" :contact="etablissement.contact" :isDisableForm="isDisableForm"
+            class="mx-9" />
         </div>
       </v-card-text>
       <v-card-actions v-if="action !== Action.SCISSION">
         <v-spacer class="hidden-sm-and-down"></v-spacer>
-        <v-col
-          cols="12"
-          md="4"
-          lg="4"
-          xl="4"
-          class="d-flex justify-space-around flex-wrap"
-          style="float: right;"
-        >
+        <v-col cols="12" md="4" lg="4" xl="4" class="d-flex justify-space-around flex-wrap" style="float: right;">
           <v-row>
-            <v-btn
-              x-large
-              @click="clear"
-              class="bouton-annuler"
-              :disabled="isDisableForm"
-            >
-              Annuler</v-btn
-            >
-            <v-btn
-              color="button"
-              class="ml-4"
-              :loading="buttonLoading"
-              :disabled="isDisableForm"
-              x-large
-              @click="validate()"
-              >Enregistrer
+            <v-btn x-large @click="clear" class="bouton-annuler" :disabled="isDisableForm">
+              Annuler</v-btn>
+            <v-btn color="button" class="ml-4" :loading="buttonLoading" :disabled="isDisableForm" x-large
+              @click="validate()">Enregistrer
               <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
-            </v-btn></v-row
-          >
+            </v-btn>
+          </v-row>
         </v-col>
       </v-card-actions>
     </v-form>
@@ -239,6 +153,25 @@ import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
   components: { MessageBox, Contact, ConfirmPopup }
 })
 export default class FormEtablissement extends Vue {
+  public metaInfo(): any {
+    let titre = "";
+    if (this.action === Action.CREATION) {
+      titre = "Inscription";
+    } else {
+      titre = "Modification du compte";
+    }
+    return {
+      meta: [
+        {
+          name: "description",
+          content:
+            "Création de compte sur l'application des Licences Nationales"
+        }
+      ],
+      title: titre + " - Licences Nationales"
+    };
+  }
+
   etablissement: Etablissement = new Etablissement();
   @Prop() action!: Action;
   @Prop() listeSirenFusion!: Array<string>;
@@ -545,8 +478,8 @@ export default class FormEtablissement extends Vue {
   async popUpSiren() {
     await (this.$refs.confirm as ConfirmPopup).open(
       `Ce SIREN correspond à l'établissement : ` +
-        this.checkSirenAPI +
-        ` 
+      this.checkSirenAPI +
+      ` 
 
                 Confirmer ?`
     );

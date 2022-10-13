@@ -4,31 +4,53 @@
     <MessageBox></MessageBox>
     <v-card-title class="pr-0">
       <v-row class="d-flex flex-row-reverse ma-0">
-        <v-btn @click="allerAScionnerEtab()" class="btn-1 ml-2">Scission
+        <v-btn @click="allerAScionnerEtab()" class="btn-1 ml-2"
+          >Scission
           <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2" />
         </v-btn>
-        <v-btn @click="allerAFusionnerEtab" class="btn-1 mx-2">Fusion
+        <v-btn @click="allerAFusionnerEtab" class="btn-1 mx-2"
+          >Fusion
           <font-awesome-icon :icon="['fas', 'object-group']" class="mx-2" />
         </v-btn>
-        <v-btn @click="ajouterEtablissement()" class="btn-1 mx-2">Créer un établissement
+        <v-btn @click="ajouterEtablissement()" class="btn-1 mx-2"
+          >Créer un établissement
           <font-awesome-icon :icon="['fas', 'plus']" class="mx-2" />
         </v-btn>
       </v-row>
     </v-card-title>
     <v-card-text class="mt-3 fondGris">
-      <v-data-table dense :headers="headers" :items="filteredEtabByStatut" :items-per-page="25" :footer-props="{
-        showFirstLastPage: true,
-        'items-per-page-options': [25, 50, 100, -1]
-      }" class="elevation-0 ma-3" :search="rechercher" :loading="dataLoading" id="mytable">
+      <v-data-table
+        dense
+        :headers="headers"
+        :items="filteredEtabByStatut"
+        :items-per-page="25"
+        :footer-props="{
+          showFirstLastPage: true,
+          'items-per-page-options': [25, 50, 100, -1]
+        }"
+        class="elevation-0 ma-3"
+        :search="rechercher"
+        :loading="dataLoading"
+        id="mytable"
+      >
         <template v-slot:top>
           <v-row class="ma-0">
             <v-col cols="12" sm="6" class="px-0">
               <v-tooltip top max-width="20vw" open-delay="100">
                 <template v-slot:activator="{ on }">
-                  <v-btn text @click="downloadEtablissements()" class="pl-0 bouton-simple" v-on="on"
-                    :loading="isExportLoading">
+                  <v-btn
+                    text
+                    @click="downloadEtablissements()"
+                    class="pl-0 bouton-simple"
+                    v-on="on"
+                    :loading="isExportLoading"
+                  >
                     <h2>Télécharger la liste des établissements</h2>
-                    <font-awesome-icon :icon="['fas', 'download']" size="2x" class="mx-2" />
+                    <font-awesome-icon
+                      :icon="['fas', 'download']"
+                      size="2x"
+                      class="mx-2"
+                    />
                   </v-btn>
                 </template>
                 <span>Le téléchargement correspond à la vue filtrée</span>
@@ -37,8 +59,15 @@
             <v-col cols="0" sm="3" class="px-0"></v-col>
             <v-col cols="12" sm="3" class="px-0">
               <div class="d-flex align-content-end justify-end">
-                <v-text-field v-model="rechercher" label="Chercher dans les colonnes" prepend-inner-icon="mdi-magnify"
-                  outlined filled dense clearable></v-text-field>
+                <v-text-field
+                  v-model="rechercher"
+                  label="Chercher dans les colonnes"
+                  prepend-inner-icon="mdi-magnify"
+                  outlined
+                  filled
+                  dense
+                  clearable
+                ></v-text-field>
               </div>
             </v-col>
           </v-row>
@@ -47,7 +76,13 @@
           {{ header.texte }}
           <v-menu offset-y :close-on-content-click="false">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn text class="bouton-simple" style="text-decoration: none;" v-bind="attrs" v-on="on">
+              <v-btn
+                text
+                class="bouton-simple"
+                style="text-decoration: none;"
+                v-bind="attrs"
+                v-on="on"
+              >
                 <v-icon small :color="statut ? 'primary' : ''">
                   mdi-filter
                 </v-icon>
@@ -56,7 +91,11 @@
             </template>
             <div style="background-color: white;" class="pl-4 pr-8">
               <ul>
-                <li v-for="item in typesEtab" :key="item.id" @click="eventTypeEtabChoice(item)">
+                <li
+                  v-for="item in typesEtab"
+                  :key="item.id"
+                  @click="eventTypeEtabChoice(item)"
+                >
                   <a>{{ item }}</a>
                 </li>
               </ul>
@@ -67,7 +106,13 @@
           {{ header.texte }}
           <v-menu offset-y :close-on-content-click="false">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn text class="bouton-simple" v-bind="attrs" v-on="on" style="text-decoration: none;">
+              <v-btn
+                text
+                class="bouton-simple"
+                v-bind="attrs"
+                v-on="on"
+                style="text-decoration: none;"
+              >
                 <v-icon small :color="statut ? 'primary' : ''">
                   mdi-filter
                 </v-icon>
@@ -76,7 +121,11 @@
             </template>
             <div style="background-color: white;" class="pl-4 pr-8">
               <ul>
-                <li v-for="item in selectStatut" :key="item.id" @click="eventStatutChoice(item)">
+                <li
+                  v-for="item in selectStatut"
+                  :key="item.id"
+                  @click="eventStatutChoice(item)"
+                >
                   <a>{{ item }}</a>
                 </li>
               </ul>
@@ -88,10 +137,14 @@
         </template>
 
         <template v-slot:item.nom="{ item }">
-          <a class="bouton-simple" @click="allerAAfficherEtab(item)"><strong>{{ item.nom }}</strong></a>
+          <a class="bouton-simple" @click="allerAAfficherEtab(item)"
+            ><strong>{{ item.nom }}</strong></a
+          >
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <v-icon large class="mr-2" @click="allerAIPs(item)">mdi-ip-network</v-icon>
+          <v-icon large class="mr-2" @click="allerAIPs(item)"
+            >mdi-ip-network</v-icon
+          >
         </template>
       </v-data-table>
     </v-card-text>

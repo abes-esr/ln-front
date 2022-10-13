@@ -1,9 +1,11 @@
+import "./utils/hooks";
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { VueReCaptcha } from "vue-recaptcha-v3";
+import VueMeta from "vue-meta";
 import { Logger } from "@/utils/Logger";
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -30,7 +32,7 @@ Vue.use(VueReCaptcha, {
   loaderOptions: {
     autoHideBadge: true
   }
-});
+}).use(VueMeta);
 
 library.add(fas); // Import de toutes les icones
 Vue.component("font-awesome-icon", FontAwesomeIcon);

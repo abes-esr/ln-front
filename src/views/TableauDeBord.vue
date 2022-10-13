@@ -5,67 +5,36 @@
     </h1>
     <MessageBox></MessageBox>
     <ConfirmPopup ref="confirm"></ConfirmPopup>
-    <v-container
-      class="pt-0 elevation-0"
-      :class="[$vuetify.breakpoint.lgAndDown ? 'large-container' : '']"
-    >
+    <v-container class="pt-0 elevation-0" :class="[$vuetify.breakpoint.lgAndDown ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
-        <v-card-title class="px-0 pb-0"
-          >Information du compte
+        <v-card-title class="px-0 pb-0">Information du compte
           <v-tooltip top max-width="20vw" open-delay="100">
             <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                class="bouton-simple"
-                @click="downloadEtablissement()"
-                v-on="on"
-                :loading="isExportLoading"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'download']"
-                  class="mx-2 fa-lg"
-                />
+              <v-btn icon class="bouton-simple" @click="downloadEtablissement()" v-on="on" :loading="isExportLoading">
+                <font-awesome-icon :icon="['fas', 'download']" class="mx-2 fa-lg" />
               </v-btn>
             </template>
             <span>Exporter les infos du compte</span>
           </v-tooltip>
         </v-card-title>
-        <span
-          >Compte créé le :
-          {{ etablissement.dateCreation.toLocaleDateString() }}</span
-        >
+        <span>Compte créé le :
+          {{ etablissement.dateCreation.toLocaleDateString() }}</span>
         <v-row class="d-flex justify-space-between flex-wrap pt-3">
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
-            <div
-              style="height: 100%; position:relative;"
-              class="borderCol fondBlanc"
-              :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']"
-            >
+            <div style="height: 100%; position:relative;" class="borderCol fondBlanc"
+              :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']">
               <div class="d-flex">
                 <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
-                <v-tooltip
-                  top
-                  max-width="20vw"
-                  open-delay="100"
-                  v-if="!isAdmin"
-                >
+                <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
                   <template v-slot:activator="{ on }">
-                    <font-awesome-icon
-                      v-on="on"
-                      :icon="['fas', 'lock']"
-                      class="fa-2x mx-2"
-                      style="margin-top: 10px; position: absolute; right: 0;"
-                    />
+                    <font-awesome-icon v-on="on" :icon="['fas', 'lock']" class="fa-2x mx-2"
+                      style="margin-top: 10px; position: absolute; right: 0;" />
                   </template>
                   <span>Non modifiable par l'utilisateur</span>
                 </v-tooltip>
               </div>
-              <v-card-text
-                class="d-flex align-content-start flex-wrap pt-0 no-border"
-              >
-                <div
-                  class="d-flex flex-column justify-start mx-3  mb-3 mt-0 bloc-info"
-                >
+              <v-card-text class="d-flex align-content-start flex-wrap pt-0 no-border">
+                <div class="d-flex flex-column justify-start mx-3  mb-3 mt-0 bloc-info">
                   <div class="mt-2">
                     <h3 class="d-inline">Siren :</h3>
                     {{ etablissement.siren }}
@@ -84,43 +53,26 @@
                   </div>
                 </div>
               </v-card-text>
-              <v-alert
-                outlined
-                class="ma-2 pt-1 pb-0"
-                style="position: absolute; bottom: 0; font-size: 14px;"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'info-circle']"
-                  class="fa-2x mr-5 mb-1 icone-information"
-                />
+              <v-alert outlined class="ma-2 pt-1 pb-0" style="position: absolute; bottom: 0; font-size: 14px;">
+                <font-awesome-icon :icon="['fas', 'info-circle']" class="fa-2x mr-5 mb-1 icone-information" />
                 <p class="mb-0 pl-12">
                   Pour toute demande de modification des infos de
                   l'établissement, nous contacter via le guichet d'assistance
-                  <a
-                    href="https://stp.abes.fr/node/3?origine=LicencesNationales"
-                    target="_blank"
-                    >ABESstp
+                  <a href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">ABESstp
                   </a>
                 </p>
               </v-alert>
             </div>
           </v-col>
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
-            <div
-              style="height: 100%; position: relative;"
-              class="borderCol fondBlanc"
-            >
+            <div style="height: 100%; position: relative;" class="borderCol fondBlanc">
               <div class="d-flex justify-space-between align-center">
                 <h2 class="my-3 pl-4 mb-0">
                   Contact
                 </h2>
               </div>
-              <v-card-text
-                class="d-flex align-content-start flex-wrap pt-0 no-border"
-              >
-                <div
-                  class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info"
-                >
+              <v-card-text class="d-flex align-content-start flex-wrap pt-0 no-border">
+                <div class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info">
                   <div class="mt-2">
                     <h3 class="d-inline">Nom :</h3>
                     {{ etablissement.contact.nom }}
@@ -158,73 +110,41 @@
                     {{ etablissement.contact.cedex }}
                   </div>
                 </div>
-                <v-row
-                  style="position: absolute; bottom: 0; right: 0;"
-                  class="text-right pb-4 pr-4"
-                >
+                <v-row style="position: absolute; bottom: 0; right: 0;" class="text-right pb-4 pr-4">
                   <v-col cols="12">
-                    <v-btn class="btn-2 " @click="allerAMonProfil()"
-                      >Modifier contact</v-btn
-                    ></v-col
-                  >
+                    <v-btn class="btn-2 " @click="allerAMonProfil()">Modifier contact</v-btn>
+                  </v-col>
                   <v-col cols="12">
-                    <v-btn class="btn-2" @click="allerAModifierMotDePasse()"
-                      >Modifier mot de passe</v-btn
-                    ></v-col
-                  >
+                    <v-btn class="btn-2" @click="allerAModifierMotDePasse()">Modifier mot de passe</v-btn>
+                  </v-col>
                 </v-row>
               </v-card-text>
             </div>
           </v-col>
           <v-col cols="12" md="6" lg="6" xl="6">
             <div style="height: 100%" class="borderCol fondBlanc">
-              <v-card-title
-                class="d-block titre-block"
-                style="margin-bottom:-4px;"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'bell']"
-                  class="fa-lg mx-2 icone-standard"
-                />
+              <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
+                <font-awesome-icon :icon="['fas', 'bell']" class="fa-lg mx-2 icone-standard" />
                 <span v-if="isAdmin">Dernières actions des utilisateurs</span>
                 <span v-else>Actions à faire</span>
               </v-card-title>
-              <v-card-text
-                class="d-flex align-content-start flex-wrap notifs no-border"
-              >
-                <div
-                  class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
-                >
+              <v-card-text class="d-flex align-content-start flex-wrap notifs no-border">
+                <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
                   <div v-if="notifsLoading">
-                    <v-progress-circular
-                      indeterminate
-                      color="primary"
-                    ></v-progress-circular>
+                    <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
                   <ul>
-                    <li
-                      style="margin-bottom: 1em"
-                      v-for="item in this.notificationsAdmin"
-                      :key="item.index"
-                    >
+                    <li style="margin-bottom: 1em" v-for="item in this.notificationsAdmin" :key="item.index">
                       Siren: {{ item.siren }}<br />Nom établissement:
                       <a @click="allerPageEtablissement(item.siren)">{{
-                        item.nomEtab
-                      }}</a
-                      ><br />Evenement: {{ item.typeNotif }}<br />Date:
+                      item.nomEtab
+                      }}</a><br />Evenement: {{ item.typeNotif }}<br />Date:
                       {{ dateFormatted(item.dateEvent) }}
                     </li>
-                    <li
-                      style="margin-bottom: 1em"
-                      v-for="item in this.notificationsUser"
-                      :key="item.index"
-                    >
+                    <li style="margin-bottom: 1em" v-for="item in this.notificationsUser" :key="item.index">
                       <span class="notifUserMsg" v-html="item.message"></span>
                       <br />
-                      <span
-                        class="notifUserDesc"
-                        v-html="item.description"
-                      ></span>
+                      <span class="notifUserDesc" v-html="item.description"></span>
                     </li>
                   </ul>
                 </div>
@@ -232,43 +152,23 @@
             </div>
           </v-col>
           <v-col cols="12" md="6" lg="6" xl="6" v-if="isAdmin">
-            <div
-              class="borderCol fondBlanc"
-              style="height: 100%; position: relative;"
-            >
-              <v-card-title
-                class="d-block titre-block"
-                style="margin-bottom:-4px;"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'paper-plane']"
-                  class="fa-lg mx-2"
-                />
+            <div class="borderCol fondBlanc" style="height: 100%; position: relative;">
+              <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
+                <font-awesome-icon :icon="['fas', 'paper-plane']" class="fa-lg mx-2" />
                 Envoi aux éditeurs
               </v-card-title>
               <v-card-text class="no-border">
-                <div
-                  class="d-flex flex-column justify-start mx-3 my-3  bloc-info"
-                >
+                <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
                   <div v-if="datesLoading">
-                    <v-progress-circular
-                      indeterminate
-                      color="primary"
-                    ></v-progress-circular>
+                    <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
                   <ul>
-                    <li
-                      style="margin-bottom: 0.5em"
-                      v-for="item in this.datesEnvoi"
-                      :key="item.index"
-                    >
+                    <li style="margin-bottom: 0.5em" v-for="item in this.datesEnvoi" :key="item.index">
                       <span v-html="item"></span>
                     </li>
                   </ul>
                 </div>
-                <v-btn @click="envoiEditeurs()" class="bottom ma-4"
-                  >Envoi aux éditeurs</v-btn
-                >
+                <v-btn @click="envoiEditeurs()" class="bottom ma-4">Envoi aux éditeurs</v-btn>
               </v-card-text>
             </div>
           </v-col>
@@ -307,6 +207,20 @@ export default class Home extends Vue {
   buttonLoading: boolean = false;
   notifsLoading: boolean = true;
   datesLoading: boolean = true;
+
+  public metaInfo(): any {
+    return {
+      meta: [
+        {
+          name: "description",
+          content:
+            "Tableau de bord utilisateur de l'application des Licences Nationales"
+        },
+        { name: "keywords", content: "tableau de bord licences nationales" }
+      ],
+      title: "Tableau de bord - Licences Nationales"
+    };
+  }
 
   constructor() {
     super();
@@ -391,9 +305,9 @@ export default class Home extends Vue {
           result.data.forEach(element => {
             this.datesEnvoi.push(
               "<strong>Envoyé le " +
-                moment(element).format("DD/MM/YYYY HH:MM") +
-                "</strong> - " +
-                moment(element).fromNow()
+              moment(element).format("DD/MM/YYYY HH:MM") +
+              "</strong> - " +
+              moment(element).fromNow()
             );
           });
         })
@@ -592,16 +506,23 @@ export default class Home extends Vue {
 }
 
 ul {
-  list-style: none; /* Remove default bullets */
+  list-style: none;
+  /* Remove default bullets */
 }
 
 ul li::before {
-  content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
-  color: #cf491f; /* Change the color */
-  font-weight: bolder; /* If you want it to be bold */
-  display: inline-block; /* Needed to add space between the bullet and the text */
-  width: 1em; /* Also needed for space (tweak if needed) */
-  margin-left: -1em; /* Also needed for space (tweak if needed) */
+  content: "\2022";
+  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: #cf491f;
+  /* Change the color */
+  font-weight: bolder;
+  /* If you want it to be bold */
+  display: inline-block;
+  /* Needed to add space between the bullet and the text */
+  width: 1em;
+  /* Also needed for space (tweak if needed) */
+  margin-left: -1em;
+  /* Also needed for space (tweak if needed) */
 }
 
 .borderCol {

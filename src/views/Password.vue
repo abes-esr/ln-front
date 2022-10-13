@@ -15,5 +15,18 @@ import { Component, Vue } from "vue-property-decorator";
 @Component({
   components: { ChangePassword }
 })
-export default class Password extends Vue {}
+export default class Password extends Vue {
+  public metaInfo(): any {
+    return {
+      meta: [
+        {
+          name: "description",
+          content:
+            "Page de modification du mot de passe de l'application des Licences Nationales"
+        }
+      ],
+      title: "Modifier mon mot de passe - Licences Nationales"
+    };
+  }
+}
 </script>

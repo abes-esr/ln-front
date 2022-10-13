@@ -22,6 +22,19 @@ import ForgotPassword from "../components/authentification/login/ForgotPassword.
   components: { ForgotPassword }
 })
 export default class App extends Vue {
+  public metaInfo(): any {
+    return {
+      meta: [
+        {
+          name: "description",
+          content:
+            "Page de réinitialisation du mot de passe de l'application des Licences Nationales"
+        }
+      ],
+      title: "Mot de passe oublié - Licences Nationales"
+    };
+  }
+
   allerAConnexion(): void {
     this.$store.dispatch("closeDisplayedMessage");
     this.$router.push({ name: "Login" });

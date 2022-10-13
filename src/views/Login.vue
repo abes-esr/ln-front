@@ -14,11 +14,11 @@
             pb-8
           "
         >
-          <span class="d-block full-width"
-            ><h1 class="pb-2">
+          <span class="d-block full-width">
+            <h1 class="pb-2">
               Votre établissement n'a pas encore de compte ?
-            </h1></span
-          >
+            </h1>
+          </span>
           <v-btn
             class="btn-2"
             href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
@@ -54,6 +54,18 @@ import Etablissement from "@/core/Etablissement";
   components: { FormLogin }
 })
 export default class App extends Vue {
+  public metaInfo(): any {
+    return {
+      meta: [
+        {
+          name: "description",
+          content: "Page de connexion de l'application des Licences Nationales"
+        }
+      ],
+      title: "Connexion - Licences Nationales"
+    };
+  }
+
   forgotPasswordVisible: boolean = false;
   creerCompte(): void {
     this.$store
