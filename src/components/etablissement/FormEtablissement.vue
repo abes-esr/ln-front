@@ -51,9 +51,9 @@
         </v-row>
         <div class="mx-9" v-if="
           (action === Action.MODIFICATION && isAdmin) ||
-            action === Action.CREATION ||
-            action === Action.FUSION ||
-            Action.SCISSION
+          action === Action.CREATION ||
+          action === Action.FUSION ||
+          Action.SCISSION
         ">
           <v-row>
             <v-card-title>Informations de l'établissement</v-card-title>
@@ -78,8 +78,8 @@
                 <v-row>
                   <v-chip class="ma-2" :class="checkSirenColor" label v-if="
                     action == Action.CREATION ||
-                      action == Action.FUSION ||
-                      action == Action.SCISSION
+                    action == Action.FUSION ||
+                    action == Action.SCISSION
                   ">SIREN : {{ checkSirenAPI }}
                   </v-chip>
                 </v-row>
@@ -146,11 +146,8 @@ import { Action, Message, MessageType } from "@/core/CommonDefinition";
 import Contact from "@/components/etablissement/Contact.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import MessageBox from "@/components/common/MessageBox.vue";
-// EXPERIMENTATION BOUTON SIREN
-import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-
 @Component({
-  components: { MessageBox, Contact, ConfirmPopup }
+  components: { MessageBox, Contact }
 })
 export default class FormEtablissement extends Vue {
   public metaInfo(): any {
@@ -442,7 +439,7 @@ export default class FormEtablissement extends Vue {
           .catch(err => {
             Logger.error(err);
             if (err instanceof SirenNotFoundError) {
-              this.checkSirenAPI = "inconnu";
+              this.checkSirenAPI = "Inconnu";
               this.checkSirenColor = "siren-erreur";
             } else if (err instanceof DataGouvApiError) {
               this.checkSirenAPI =
@@ -473,16 +470,6 @@ export default class FormEtablissement extends Vue {
       this.etablissement.reset();
       window.scrollTo(0, 0);
     }
-  }
-
-  async popUpSiren() {
-    await (this.$refs.confirm as ConfirmPopup).open(
-      `Ce SIREN correspond à l'établissement : ` +
-      this.checkSirenAPI +
-      ` 
-
-                Confirmer ?`
-    );
   }
 }
 </script>

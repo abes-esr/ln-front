@@ -3,9 +3,13 @@
  */
 
 export interface JsonCheckSirenResponse {
-  unite_legale: JsonCheckSirenInfo;
+  uniteLegale: JsonCheckSirenInfo;
 }
 
 export interface JsonCheckSirenInfo {
-  denomination: string;
+  periodesUniteLegale: JsonCheckSirenInfoDetails;
+}
+
+export interface JsonCheckSirenInfoDetails {
+  denominationUniteLegal: string;
 }

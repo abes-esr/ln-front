@@ -5,7 +5,7 @@ import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApi
 
 export class DataGouvApiService {
   // Client HTTP
-  client: AxiosClient = new AxiosClient("https://entreprise.data.gouv.fr/api");
+  client: AxiosClient = new AxiosClient(process.env.VUE_APP_ROOT_API);
 
   /**
    * Appel API pour se logger et obtenir un getToken d'identification
@@ -17,7 +17,7 @@ export class DataGouvApiService {
   checkSiren(num: string): Promise<string> {
     return new Promise((resolve, reject) => {
       return this.client
-        .get("/sirene/v3/unites_legales/" + num)
+        .get("/siren/" + num)
         .then(result => {
           /**
            * Attention, l'assignation de AxiosResponse<any> vers l'interface n'est pas considérée comme fiable à 100%
@@ -26,19 +26,21 @@ export class DataGouvApiService {
            */
           const response: JsonCheckSirenResponse = result.data;
 
-          if (response.unite_legale.denomination == null) {
+          if (response.uniteLegale.periodesUniteLegale[0].denominationUniteLegale == null) {
             resolve("Dénomination non renseignée");
           } else {
-            resolve(response.unite_legale.denomination);
+            resolve(response.uniteLegale.periodesUniteLegale[0].denominationUniteLegale);
           }
         })
         .catch(err => {
+          console.log(err)
           if (err.response) {
             if (
-              err.response.status == 404 &&
-              err.response.data.message == "no results found"
+              err.response.status == 404
             ) {
               reject(new SirenNotFoundError("SIREN introuvable"));
+            } else if (err.response.status == 400){
+              reject(new SirenNotFoundError("Format incorrect"));
             } else {
               reject(
                 new DataGouvApiError(
