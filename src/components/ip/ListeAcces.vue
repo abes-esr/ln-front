@@ -17,25 +17,15 @@
                   </a>
                 </v-col>
                 <v-col cols="8">
-                  <v-btn
-                    id="addIpButton"
-                    @click="$router.push({ path: '/ajouterAcces/' })"
-                    ><span class="btnText">Ajouter une IP ou une plage IP</span>
-                    <font-awesome-icon
-                      :icon="['fas', 'plus-circle']"
-                      style="font-size:1.1rem"
-                    />
+                  <v-btn id="addIpButton" @click="$router.push({ path: '/ajouterAcces/' })"><span class="btnText">Ajouter
+                      une IP ou une plage IP</span>
+                    <font-awesome-icon :icon="['fas', 'plus-circle']" style="font-size:1.1rem" />
                   </v-btn>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-alert
-                    dense
-                    :value="error !== ''"
-                    type="error"
-                    v-html="error"
-                  >
+                  <v-alert dense :value="error !== ''" type="error" v-html="error">
                   </v-alert>
                   <v-alert dense :value="notification !== ''" type="success">
                     {{ notification }}
@@ -43,53 +33,27 @@
                   <v-card-text class="fondGris">
                     <v-row>
                       <v-col>
-                        <v-data-table
-                          id="mytable"
-                          :key="refreshKey"
-                          :headers="headers"
-                          :items="filteredAccesByStatut"
-                          :items-per-page="10"
-                          :footer-props="{
+                        <v-data-table id="mytable" :key="refreshKey" :headers="headers" :items="filteredAccesByStatut"
+                          :items-per-page="10" :footer-props="{
                             showFirstLastPage: true,
                             'items-per-page-options': [10, 25, 50, 75, -1]
-                          }"
-                          :item-class="RowClasses"
-                          :search="rechercher"
-                          :loading="dataLoading"
+                          }" :item-class="RowClasses" :search="rechercher" :loading="dataLoading"
                           noDataText="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP."
-                          class="row-height-50"
-                          flat
-                        >
+                          class="row-height-50" flat>
                           <template v-slot:header.statut="{ header }">
                             {{ header.texte }}
                             <v-menu offset-y :close-on-content-click="false">
                               <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                  text
-                                  class="bouton-simple"
-                                  style="text-decoration: none;"
-                                  v-bind="attrs"
-                                  v-on="on"
-                                >
-                                  <v-icon
-                                    small
-                                    :color="statut ? 'primary' : ''"
-                                  >
+                                <v-btn text class="bouton-simple" style="text-decoration: none;" v-bind="attrs" v-on="on">
+                                  <v-icon small :color="statut ? 'primary' : ''">
                                     mdi-filter
                                   </v-icon>
                                   Statut
                                 </v-btn>
                               </template>
-                              <div
-                                style="background-color: white"
-                                class="pl-4 pr-8"
-                              >
+                              <div style="background-color: white" class="pl-4 pr-8">
                                 <ul>
-                                  <li
-                                    v-for="item in selectStatut"
-                                    :key="item.id"
-                                    @click="eventStatutChoice(item)"
-                                  >
+                                  <li v-for="item in selectStatut" :key="item.id" @click="eventStatutChoice(item)">
                                     <a>{{ item }}</a>
                                   </li>
                                 </ul>
@@ -100,32 +64,16 @@
                             {{ header.texte }}
                             <v-menu offset-y :close-on-content-click="false">
                               <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                  text
-                                  class="bouton-simple"
-                                  style="text-decoration: none;"
-                                  v-bind="attrs"
-                                  v-on="on"
-                                >
-                                  <v-icon
-                                    small
-                                    :color="statut ? 'primary' : ''"
-                                  >
+                                <v-btn text class="bouton-simple" style="text-decoration: none;" v-bind="attrs" v-on="on">
+                                  <v-icon small :color="statut ? 'primary' : ''">
                                     mdi-filter
                                   </v-icon>
                                   Type d'IP
                                 </v-btn>
                               </template>
-                              <div
-                                style="background-color: white;"
-                                class="pl-4 pr-8"
-                              >
+                              <div style="background-color: white;" class="pl-4 pr-8">
                                 <ul>
-                                  <li
-                                    v-for="item in selectType"
-                                    :key="item.id"
-                                    @click="eventTypeChoice(item)"
-                                  >
+                                  <li v-for="item in selectType" :key="item.id" @click="eventTypeChoice(item)">
                                     <a>{{ item }}</a>
                                   </li>
                                 </ul>
@@ -135,43 +83,22 @@
                           <template v-slot:top>
                             <v-row>
                               <v-col cols="12" sm="6" class="px-0">
-                                <v-tooltip
-                                  top
-                                  max-width="20vw"
-                                  open-delay="100"
-                                >
+                                <v-tooltip top max-width="20vw" open-delay="100">
                                   <template v-slot:activator="{ on }">
-                                    <v-btn
-                                      text
-                                      @click="downloadIPs()"
-                                      class="bouton-simple pl-0"
-                                      v-on="on"
-                                      :loading="isExportLoading"
-                                    >
+                                    <v-btn text @click="downloadIPs()" class="bouton-simple pl-0" v-on="on"
+                                      :loading="isExportLoading">
                                       <h2>Télécharger la liste des IP</h2>
-                                      <font-awesome-icon
-                                        :icon="['fas', 'download']"
-                                        class="mx-2"
-                                        size="2x"
-                                      />
+                                      <font-awesome-icon :icon="['fas', 'download']" class="mx-2" size="2x" />
                                     </v-btn>
                                   </template>
-                                  <span
-                                    >Le téléchargement correspond à la vue
-                                    filtrée</span
-                                  >
+                                  <span>Le téléchargement correspond à la vue
+                                    filtrée</span>
                                 </v-tooltip>
                               </v-col>
                               <v-col cols="0" sm="3"></v-col>
                               <v-col cols="12" sm="3" class="px-0">
-                                <v-text-field
-                                  v-model="rechercher"
-                                  label="Chercher dans les colonnes"
-                                  prepend-inner-icon="mdi-magnify"
-                                  outlined
-                                  filled
-                                  clearable
-                                ></v-text-field>
+                                <v-text-field v-model="rechercher" label="Chercher dans les colonnes"
+                                  prepend-inner-icon="mdi-magnify" outlined filled clearable></v-text-field>
                               </v-col>
                             </v-row>
                           </template>
@@ -193,49 +120,28 @@
                             <v-tooltip bottom>
                               <template v-slot:activator="{ on, attrs }">
                                 <span v-bind="attrs" v-on="on">
-                                  <font-awesome-icon
-                                    :icon="['fas', 'info-circle']"
-                                  />
+                                  <font-awesome-icon :icon="['fas', 'info-circle']" />
                                 </span>
                               </template>
                               <span v-if="item.statut.includes('Validé')">{{
                                 infobulleValid
                               }}</span>
-                              <span
-                                v-if="item.statut.includes('Attestation')"
-                                >{{ infobulleAttestation }}</span
-                              >
+                              <span v-if="item.statut.includes('Attestation')">{{ infobulleAttestation }}</span>
                               <span v-if="item.statut.includes('attente')">{{
                                 infobulleAttente
                               }}</span>
                             </v-tooltip>
                           </template>
                           <template v-slot:[`item.action`]="{ item }">
-                            <v-btn
-                              v-if="
-                                isAdmin &&
-                                  $store.getters.getCurrentEtablissement()
-                                    .statut == 'Validé'
-                              "
-                              class="ma-0 pa-0 bouton-simple "
-                              icon
-                              title="Examiner"
-                              @click.stop="openDialog(item)"
-                            >
+                            <v-btn v-if="isAdmin &&
+                              $store.getters.getCurrentEtablissement()
+                                .statut == 'Validé'
+                              " class="ma-0 pa-0 bouton-simple " icon title="Examiner" @click.stop="openDialog(item)">
                               <font-awesome-icon :icon="['fas', 'search']" />
                             </v-btn>
-                            <v-btn
-                              v-if="!isAdmin"
-                              class="ma-0 pa-0 bouton-simple "
-                              icon
-                              :loading="buttlonLoading"
-                              title="Supprimer"
-                              @click="supprimerIP(item.id, item.ip)"
-                            >
-                              <font-awesome-icon
-                                :icon="['fas', 'times']"
-                                class="fa-orange"
-                              />
+                            <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple " icon :loading="buttlonLoading"
+                              title="Supprimer" @click="supprimerIP(item.id, item.ip)">
+                              <font-awesome-icon :icon="['fas', 'times']" class="fa-orange" />
                             </v-btn>
                           </template>
                         </v-data-table>
@@ -244,23 +150,12 @@
 
                     <v-row>
                       <v-col>
-                        <div
-                          style="float: right;"
-                          class="actions"
-                          v-if="isAdmin"
-                        >
-                          <v-btn @click="clearActions" class="btn-6"
-                            ><span class="btnText">Annuler</span>
+                        <div style="float: right;" class="actions" v-if="isAdmin">
+                          <v-btn @click="clearActions" class="btn-6"><span class="btnText">Annuler</span>
                           </v-btn>
-                          <v-btn
-                            @click="dispatchAllAction"
-                            :loading="buttlonLoading"
-                            ><span class="btnText"
-                              >Enregistrer mes actions</span
-                            >
-                            <font-awesome-icon
-                              :icon="['fas', 'arrow-circle-right']"
-                            />
+                          <v-btn @click="dispatchAllAction" :loading="buttlonLoading"><span class="btnText">Enregistrer
+                              mes actions</span>
+                            <font-awesome-icon :icon="['fas', 'arrow-circle-right']" />
                           </v-btn>
                         </div>
                       </v-col>
@@ -277,10 +172,7 @@
       <v-row>
         <v-col cols="1" xs="0" />
         <v-col cols="10" xs="12">
-          <infos-i-ps
-            v-if="!isAdmin"
-            :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']"
-          ></infos-i-ps>
+          <infos-i-ps v-if="!isAdmin" :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']"></infos-i-ps>
         </v-col>
       </v-row>
     </v-col>
@@ -298,14 +190,12 @@
           <v-expansion-panels focusable accordion>
             <v-expansion-panel>
               <v-expansion-panel-header>
-                <span v-if="checkIfWhoIsRenater(whoIs)"
-                  >L'adresse <span v-if="whoIs2 !== ''">de début </span>fait
+                <span v-if="checkIfWhoIsRenater(whoIs)">L'adresse <span v-if="whoIs2 !== ''">de début </span>fait
                   partie du réseau RENATER
                   <span style="padding: 5px;" />
                   <font-awesome-icon :icon="['fas', 'check']" />
                 </span>
-                <span v-else
-                  >L'adresse <span v-if="whoIs2 !== ''">de début </span> ne fait
+                <span v-else>L'adresse <span v-if="whoIs2 !== ''">de début </span> ne fait
                   pas partie du réseau RENATER<span style="padding: 5px;" />
                   <font-awesome-icon :icon="['fas', 'times']" />
                 </span>
@@ -317,15 +207,11 @@
             </v-expansion-panel>
             <v-expansion-panel v-if="whoIs2 !== ''">
               <v-expansion-panel-header>
-                <span v-if="checkIfWhoIsRenater(whoIs2)"
-                  >L'adresse de fin fait partie du réseau RENATER
+                <span v-if="checkIfWhoIsRenater(whoIs2)">L'adresse de fin fait partie du réseau RENATER
                   <span style="padding: 5px;" />
                   <font-awesome-icon :icon="['fas', 'check']" />
                 </span>
-                <span v-else
-                  >L'adresse de fin ne fait pas partie du réseau RENATER<span
-                    style="padding: 5px;"
-                  />
+                <span v-else>L'adresse de fin ne fait pas partie du réseau RENATER<span style="padding: 5px;" />
                   <font-awesome-icon :icon="['fas', 'times']" />
                 </span>
                 Afficher/Cacher WhoIS
@@ -337,29 +223,18 @@
           </v-expansion-panels>
           <br />
           <h3>Commentaire admin</h3>
-          <v-textarea
-            outlined
-            auto-grow
-            counter="4000"
-            :rules="rulesForm.commentaireAdmin"
-            rows="2"
-            label="Raisons de la suppression"
-            v-model="commentaires"
-            clearable
-          ></v-textarea>
+          <v-textarea outlined auto-grow counter="4000" :rules="rulesForm.commentaireAdmin" rows="2"
+            label="Raisons de la suppression" v-model="commentaires" clearable></v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-row>
             <v-col>
               <div style="float: right" class="actions">
-                <v-btn
-                  @click="
-                    dialog = false;
-                    currentIPid = '';
-                    commentaires = '';
-                  "
-                  class="btn-6"
-                >
+                <v-btn @click="
+                  dialog = false;
+                currentIPid = '';
+                commentaires = '';
+                " class="btn-6">
                   Annuler
                 </v-btn>
                 <v-btn @click="addActionToBuffer('SUPPRIMER')" class="btn-5">
@@ -622,6 +497,7 @@ export default class ListeAcces extends ListeAccesProps {
       dateCreation: moment(acces.dateCreation).format("L"),
       dateModification: this.getDateModification(acces),
       typeIp: typeAcces + acces.typeIp,
+      typeAcces: acces.typeAcces,
       ip: acces.ip,
       statut: acces.statut,
       commentaires: acces.commentaires
